@@ -1,0 +1,22 @@
+{
+  "name": "shutterhaus-site",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Shutterhaus Visuals — photography portfolio with a Google-auth admin gallery",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "verify": "node tools/verify.mjs",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.58.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.5"
+  }
+}

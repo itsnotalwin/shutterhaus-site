@@ -1,0 +1,245 @@
+/**
+ * Render the built site in headless Chrome and assert the design matches the
+ * reference. Run: node tools/verify.mjs [baseUrl]
+ *
+ * CDP gotcha: enable every domain FIRST, then Page.navigate. Enabling domains
+ * after navigation races the frame and Runtime.evaluate lands on about:blank.
+ */
+import { writeFileSync, mkdirSync } from "node:fs";
+
+const BASE = (process.argv[2] ?? "http://localhost:4173/shutterhaus-site").replace(/\/$/, "");
+const CDP = "http://127.0.0.1:9222";
+const OUT = process.env.SHOT_DIR ?? ".";
+mkdirSync(OUT, { recursive: true });
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+const targets = await (await fetch(`${CDP}/json/new?url=about:blank`, { method: "PUT" })).json();
+const ws = new WebSocket(targets.webSocketDebuggerUrl);
+await new Promise((r) => (ws.onopen = r));
+
+let id = 0;
+const pending = new Map();
+const events = [];
+ws.onmessage = (m) => {
+  const msg = JSON.parse(m.data);
+  if (msg.id && pending.has(msg.id)) {
+    pending.get(msg.id)(msg);
+    pending.delete(msg.id);
+  } else if (msg.method) events.push(msg);
+};
+const send = (method, params = {}) =>
+  new Promise((res) => {
+    const n = ++id;
+    pending.set(n, res);
+    ws.send(JSON.stringify({ id: n, method, params }));
+  });
+
+const evaluate = async (expression) => {
+  const r = await send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true });
+  if (r.result?.exceptionDetails) {
+    throw new Error("eval threw: " + (r.result.exceptionDetails.exception?.description ?? expression));
+  }
+  return r.result?.result?.value;
+};
+
+await send("Page.enable");
+await send("Runtime.enable");
+await send("Log.enable");
+await send("Network.enable");
+await send("Network.setCacheDisabled", { cacheDisabled: true });
+
+const results = [];
+const check = (name, pass, detail = "") => {
+  results.push({ name, pass: !!pass, detail: String(detail) });
+  console.log(`${pass ? "PASS" : "FAIL"}  ${name}${detail ? `  — ${detail}` : ""}`);
+};
+
+async function viewport(width, height) {
+  await send("Emulation.setDeviceMetricsOverride", {
+    width,
+    height,
+    deviceScaleFactor: 1,
+    mobile: width < 700,
+  });
+  await sleep(350);
+}
+async function shot(file) {
+  const r = await send("Page.captureScreenshot", { format: "png" });
+  writeFileSync(`${OUT}/${file}`, Buffer.from(r.result.data, "base64"));
+  console.log("      shot:", file);
+}
+const goto = async (path, wait = 3000) => {
+  await send("Page.navigate", { url: `${BASE}${path}` });
+  await sleep(wait);
+};
+const consoleErrors = () =>
+  events
+    .filter(
+      (e) =>
+        e.method === "Runtime.exceptionThrown" ||
+        (e.method === "Log.entryAdded" && e.params?.entry?.level === "error"),
+    )
+    .map((e) => e.params?.exceptionDetails?.exception?.description ?? e.params?.entry?.text ?? "")
+    .filter((t) => t && !/favicon|picsum|net::ERR|Failed to load resource/i.test(t));
+
+// ============================================== desktop home
+await viewport(1440, 900);
+await goto("/");
+
+const info = await evaluate(`(() => {
+  const cs = (s) => { const el = document.querySelector(s); return el ? getComputedStyle(el) : null; };
+  return {
+    title: document.title,
+    header: !!document.querySelector('.site-header'),
+    logo: document.querySelector('.logo')?.innerText.replace(/\\n/g, ' '),
+    smFS: cs('.logo-sm')?.fontSize,
+    lgFS: cs('.logo-lg')?.fontSize,
+    lgWeight: cs('.logo-lg')?.fontWeight,
+    lgFamily: cs('.logo-lg')?.fontFamily,
+    nav: [...document.querySelectorAll('.nav-link')].map(a => a.textContent),
+    active: document.querySelector('.nav-link.is-active')?.textContent,
+    social: document.querySelectorAll('.site-social a').length,
+    cols: document.querySelectorAll('.col').length,
+    imgs: document.querySelectorAll('.cell img').length,
+    perCol: [...document.querySelectorAll('.col')].map(c => c.querySelectorAll('img').length),
+    overflow: document.documentElement.scrollWidth - window.innerWidth,
+    headerH: document.querySelector('.site-header')?.getBoundingClientRect().height,
+    bodyBg: getComputedStyle(document.body).backgroundColor,
+    bodyColor: getComputedStyle(document.body).color,
+    navColor: getComputedStyle(document.querySelector('.nav-link:not(.is-active)')).color,
+    navSize: getComputedStyle(document.querySelector('.nav-link')).fontSize,
+    activeColor: getComputedStyle(document.querySelector('.nav-link.is-active')).color,
+    bw: !!document.querySelector('.shell.is-bw'),
+    colScroll: [...document.querySelectorAll('.col')].map(c => c.scrollHeight > c.clientHeight),
+    // Scope to gallery images: the lightbox holds an <img> with src="" until
+    // first use, which reports as a "broken" image by design.
+    broken: [...document.querySelectorAll('.cell img')].filter(i => i.complete && i.naturalWidth === 0).length,
+  };
+})()`);
+console.log("\n--- home ---\n" + JSON.stringify(info, null, 2));
+
+check("title set", /shutterhaus/i.test(info.title), info.title);
+check("header renders", info.header);
+check("logo two-line lockup", /SHUTTERHAUS/i.test(info.logo ?? ""), info.logo);
+check("small word < big word", parseFloat(info.smFS) < parseFloat(info.lgFS), `${info.smFS} < ${info.lgFS}`);
+// Archivo Black ships a single weight (400) — it IS the black. The family is
+// the real signal that the wordmark is heavy, plus a font-size floor.
+check("wordmark is the display face", /Archivo/i.test(info.lgFamily ?? ""), info.lgFamily);
+check("wordmark is large", parseFloat(info.lgFS) >= 24, info.lgFS);
+check("nav = photo,video,contact", info.nav.join(",") === "photo,video,contact", info.nav.join(","));
+check("photo active on load", info.active === "photo", info.active);
+check("social icons", info.social >= 1, String(info.social));
+check("3 columns", info.cols === 3, String(info.cols));
+check("all columns populated", info.perCol.every((n) => n > 0), info.perCol.join("/"));
+check("no horizontal overflow", info.overflow <= 0, `${info.overflow}px`);
+check("columns scroll independently", info.colScroll.some(Boolean), JSON.stringify(info.colScroll));
+check("black & white shell", info.bw);
+check("white page bg", info.bodyBg === "rgb(255, 255, 255)", info.bodyBg);
+check("inactive nav is muted", info.navColor !== info.activeColor, `muted ${info.navColor} vs active ${info.activeColor}`);
+check("nav text size", parseFloat(info.navSize) >= 11, info.navSize);
+check("no broken images", info.broken === 0, String(info.broken));
+await shot("shot-home.png");
+
+// ============================================== lightbox
+await evaluate(`document.querySelector('.cell img[data-full]')?.click()`);
+await sleep(600);
+const lb = await evaluate(`(() => {
+  const b = document.querySelector('.lb');
+  return { hidden: b?.hidden, hasImg: !!b?.querySelector('.lb__img')?.src };
+})()`);
+check("lightbox opens on click", lb.hidden === false && lb.hasImg, JSON.stringify(lb));
+if (lb.hidden === false) {
+  await shot("shot-lightbox.png");
+  await evaluate(`document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}))`);
+  await sleep(400);
+  check("Esc closes lightbox", await evaluate(`document.querySelector('.lb')?.hidden === true`));
+}
+
+// ============================================== contact
+await evaluate(`location.hash = '#/contact'`);
+await sleep(900);
+const contact = await evaluate(`(() => ({
+  active: document.querySelector('.nav-link.is-active')?.textContent,
+  form: !!document.querySelector('.cform'),
+  fields: [...document.querySelectorAll('.cform input, .cform textarea, .cform select')].map(f=>f.name),
+  mailto: !!document.querySelector('a[href^="mailto:"]'),
+  overflow: document.documentElement.scrollWidth - window.innerWidth,
+}))()`);
+check("contact route", contact.active === "contact", contact.active);
+check("contact form", contact.form);
+check("form has name/email/message", ["name","email","message"].every(f=>contact.fields.includes(f)), contact.fields.join(","));
+check("mailto link", contact.mailto);
+check("contact no overflow", contact.overflow <= 0, `${contact.overflow}px`);
+await shot("shot-contact.png");
+
+// ============================================== video
+await evaluate(`location.hash = '#/video'`);
+await sleep(900);
+const video = await evaluate(`(() => ({
+  active: document.querySelector('.nav-link.is-active')?.textContent,
+  empty: !!document.querySelector('.empty'),
+}))()`);
+check("video route", video.active === "video", video.active);
+check("video shows empty state (no uploads yet)", video.empty);
+await shot("shot-video.png");
+
+// ============================================== mobile
+for (const w of [360, 390, 768]) {
+  await viewport(w, 780);
+  await evaluate(`location.hash = '#/photo'`);
+  await sleep(700);
+  const mob = await evaluate(`(() => ({
+    overflow: document.documentElement.scrollWidth - window.innerWidth,
+    clipped: [...document.querySelectorAll('.logo, .nav-link, .site-header *')]
+      .filter(e => e.scrollWidth > e.clientWidth + 1 && e.clientWidth > 0).length,
+    cols: document.querySelectorAll('.col').length,
+    navW: document.querySelector('.site-nav')?.getBoundingClientRect().width,
+  }))()`);
+  check(`mobile ${w}: no overflow`, mob.overflow <= 0, `${mob.overflow}px`);
+  check(`mobile ${w}: no clipped chrome`, mob.clipped === 0, String(mob.clipped));
+  if (w === 390) await shot("shot-mobile.png");
+}
+
+// ============================================== admin
+await viewport(1440, 900);
+await goto("/admin.html", 2600);
+const adm = await evaluate(`(() => ({
+  title: document.title,
+  root: !!document.querySelector('#app') && document.querySelector('#app').children.length > 0,
+  html: document.querySelector('#app')?.innerHTML.slice(0, 120),
+  google: !!document.querySelector('.gbtn'),
+  // NB: "\\s" must stay escaped — an unescaped \s in this template literal
+  // collapses to /s+/ and silently strips every letter "s" from the output.
+  text: document.querySelector('#app')?.innerText.replace(/\\s+/g,' ').slice(0,200),
+  allowlist: document.body.innerText.includes('itsnotalwin@gmail.com'),
+  notConfigured: document.body.innerText.includes("isn't connected yet"),
+  overflow: document.documentElement.scrollWidth - window.innerWidth,
+}))()`);
+console.log("\n--- admin ---\n" + JSON.stringify(adm, null, 2));
+check("admin mounts", adm.root);
+// With no .env the admin correctly shows the "connect Supabase" notice
+// instead of a sign-in button. Both states are correct; assert the right one.
+const gateOk = adm.notConfigured || adm.google;
+check("admin gate is correct for this config", gateOk, adm.notConfigured ? "not-configured notice" : `google=${adm.google}`);
+if (!adm.notConfigured) {
+  check("admin shows Google sign-in", adm.google || /google/i.test(adm.text ?? ""));
+  check("admin names the allowed account", adm.allowlist);
+} else {
+  check("admin explains the .env step", /env/i.test(adm.text ?? ""), (adm.text ?? "").slice(0, 60));
+}
+check("admin no overflow", adm.overflow <= 0, `${adm.overflow}px`);
+await shot("shot-admin.png");
+
+// ============================================== console
+const errs = consoleErrors();
+check("no console errors", errs.length === 0, errs.slice(0, 3).join(" | "));
+
+const failed = results.filter((r) => !r.pass);
+console.log(`\n${results.length - failed.length}/${results.length} checks passed`);
+if (failed.length) {
+  console.log("FAILED:");
+  for (const f of failed) console.log(`  - ${f.name} (${f.detail})`);
+}
+ws.close();
+process.exit(failed.length ? 1 : 0);
