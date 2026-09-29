@@ -122,12 +122,25 @@ hosting bill.
 
 ---
 
-## 6. Deploy — Cloudflare Pages (primary)
+## 6. Deploy — GitHub Pages (current) / Cloudflare Pages (alternative)
 
-The repo is **private**, and GitHub Pages does not host private repositories on a
-free plan. So the site deploys to **Cloudflare Pages**, which builds directly from
-the same private GitHub repo. Keep the repo private; do not make it public just to
-host it.
+**Current: GitHub Pages.** `.github/workflows/deploy.yml` builds on every push to
+`main` and publishes through `actions/deploy-pages`. The site is live at
+`https://shutterhausvisuals.co.za`. See "Custom domain: GitHub Pages + HostAfrica"
+below for the DNS and cert setup — that is the path you are on.
+
+> **Private repo.** GitHub Pages does not host private repositories on a free
+> plan, which is why the Cloudflare path existed first. This repo now deploys via
+> GitHub Pages, so either it is public, or the account has a paid plan. Check
+> before assuming the private repo is the blocker again.
+
+### Cloudflare Pages (alternative, not in use)
+
+The remaining subsections describe a Cloudflare Pages deploy, which is **not the
+current setup**. Keep them only if you deliberately migrate.
+
+Cloudflare Pages builds from the same private GitHub repo, so keep the repo
+private; do not make it public just to host it.
 
 > **Note on UI labels.** Cloudflare's dashboard moves things around. The flow below
 > is described plainly, but exact button wording ("Connect to Git", "Set up a custom
@@ -228,30 +241,108 @@ resolving to the actual `admin.html` in `dist/`.
 
 `vite.config.ts` sets `const base = process.env.BASE_PATH ?? "/"`.
 
+- **Current build (GitHub Pages, relative base): `BASE_PATH: ./`.** The workflow
+  sets it, so leave it alone. One build then serves both the domain root and the
+  `github.io` subpath.
 - **Cloudflare Pages (custom domain or `*.pages.dev`): leave `BASE_PATH` unset.**
   The default `"/"` is correct, because the site is served from the domain root.
-- `BASE_PATH` only matters for a **project subpath** deploy — see the fallback
-  below. The router is hash-based either way, so a wrong `base` only ever breaks
-  asset URLs, never deep links.
+- **A `github.io` subpath deploy** would need `/shutterhaus-site/` — not the
+  current setup, where the relative base covers both cases.
+- The router is hash-based either way, so a wrong `base` only ever breaks asset
+  URLs, never deep links.
 
-### Fallback: GitHub Pages
+### Custom domain: GitHub Pages + HostAfrica (the current setup)
 
-> **Not the current deployment.** This path only applies if the repo is made public
-> (or you move to a paid GitHub plan) and you specifically want GitHub Pages.
-> Cloudflare Pages is the supported target.
+> **This is the live deployment.** The site is served from
+> `https://shutterhausvisuals.co.za` by **GitHub Pages**, with DNS at HostAfrica.
+> Cloudflare Pages is not in use — the sections above describe it as the original
+> plan, kept for reference only.
 
-- GitHub Pages does not serve **private** repositories on the free plan. A private
-  repo needs a paid plan (Pro/Team/Enterprise). Making the repo public is the other
-  option, and would expose the source.
-- The site would then be served from a **project subpath**
-  (`https://<user>.github.io/shutterhaus-site/`), not a domain root, so
-  **`BASE_PATH` must be set to `/shutterhaus-site/`** in the build environment.
-  Without it, every asset 404s.
-- The existing workflow `.github/workflows/deploy.yml` is the GitHub Pages
-  workflow. As written it pins Node 20 and **does not set `BASE_PATH`** — it needs
-  one added to the build step's `env` before it would produce a working subpath
-  build. It also runs on every push to `main`, so on the Cloudflare Pages setup it
-  is at best redundant and will fail while the repo is private.
+#### How it actually deploys
+
+`.github/workflows/deploy.yml` builds with `BASE_PATH: ./` (a **relative** base, not
+`/` and not `/shutterhaus-site/`) and publishes `dist/` to GitHub Pages. The
+relative base is deliberate: assets resolve against the document, so one build
+serves correctly at **both** the domain root and the `github.io` project subpath.
+An absolute base can only be right for one of them.
+
+The repo is private and GitHub Pages deploys it fine, because the deploy goes
+through the **Actions** path (`build_type: workflow`) rather than the legacy
+Pages-for-private-repos path that needs a paid plan. The old note claiming
+private repos cannot use GitHub Pages does not apply to this route.
+
+#### DNS records — all four A records are required
+
+At HostAfrica, for `shutterhausvisuals.co.za`:
+
+| Type | Name | Value |
+| --- | --- | --- |
+| A | `@` | `185.199.108.153` |
+| A | `@` | `185.199.109.153` |
+| A | `@` | `185.199.110.153` |
+| A | `@` | `185.199.111.153` |
+| CNAME | `www` | `shutterhausvisuals.co.za` |
+
+**All four A records, not one.** GitHub Pages checks DNS and cert validation
+behaves differently:
+
+- The Pages **DNS check passes on a single A record** — it only needs to resolve.
+- **ACME/TLS validation round-robins across all four IPs.** Three that do not
+  answer for your domain, and the cert request fails with
+  `bad_authz` ("The ACME authorization is in a bad state") while the DNS check
+  still shows green.
+
+That mismatch is the whole reason a site can look correctly configured and still
+never get a certificate. If the cert is failing, count the A records first.
+
+#### About the CNAME file
+
+`public/CNAME` exists so the **published artifact** declares the domain
+(Vite copies `public/` into `dist/`). With `build_type: workflow` the authoritative
+copy of the domain is the repo's **Settings → Pages** field, so the two must agree
+— they are not alternatives, and editing one does not configure the other.
+
+#### If the certificate gets stuck in `bad_authz`
+
+`bad_authz` does **not** self-heal, and re-saving the domain in Settings does not
+clear it — GitHub keeps returning the same state. What does work:
+
+1. Confirm all four A records are present (above).
+2. In **Settings → Pages**, **remove** the custom domain (save with it blank).
+   That drops the Pages config back to the `github.io` subpath and clears the
+   ACME authorization state. `Enforce HTTPS` resets to on at this point.
+3. **Re-add** the domain and save.
+
+GitHub then reports **"Certificate Requested"** and retries on its own backoff.
+The retry cannot be rushed — polling or re-saving does not accelerate it. Expect
+several minutes to an hour, and treat a still-`bad_authz` state straight after the
+re-add as normal rather than as failure.
+
+While the certificate is pending, `Enforce HTTPS` is unavailable (GitHub blocks
+the toggle) and `http://` stops redirecting to `https://`. **An existing valid
+certificate keeps serving normally throughout** — the site stays up on `https://`
+and only the redirect waits for the new cert. Check with:
+
+```bash
+curl -s -o /dev/null -w "code=%{http_code} ssl=%{ssl_verify_result}\n" \
+  --resolve shutterhausvisuals.co.za:443:185.199.108.153 \
+  https://shutterhausvisuals.co.za/
+```
+
+`ssl_verify_result=0` means the chain validates. Inspect the current state with
+`gh api repos/itsnotalwin/shutterhaus-site/pages` — `https_certificate.state` and
+`https_enforced` are the two fields that matter.
+
+#### Cloudflare Pages (original plan, not in use)
+
+Retained above for reference: GitHub Pages cannot serve a **private** repo on the
+free plan via the legacy path, which is why Cloudflare Pages was chosen first. The
+Actions-based deploy in `deploy.yml` sidesteps that constraint, which is how this
+repo now runs on GitHub Pages while staying private.
+
+On the Cloudflare Pages path the site would be served from the domain root, so
+`BASE_PATH` would be left unset (`"/"`). The `github.io` subpath path would need
+`/shutterhaus-site/` — neither applies to the current relative-base build.
 
 ---
 
@@ -279,6 +370,7 @@ same-named outputs, so keep originals somewhere else. `shots/` is gitignored.
 ```
 index.html          public site shell
 admin.html          admin shell
+public/CNAME        custom domain, copied into dist/ by the build
 src/
   main.ts           router, wiring
   admin.ts          admin panel UI
@@ -307,5 +399,11 @@ supabase/schema.sql run once in the SQL editor
   set, otherwise falls back to a `mailto:` with the message pre-filled.
 - **Two entry points.** `index.html` and `admin.html` are both Vite inputs
   (see `rollupOptions.input`), producing separate bundles.
-- **The GitHub Pages workflow** (`.github/workflows/deploy.yml`) still
-  exists. See the fallback subsection of §6 before assuming it is doing anything.
+- **Deployment.** `.github/workflows/deploy.yml` deploys to **GitHub Pages** on
+  every push to `main` (see §6). The site is live at
+  `https://shutterhausvisuals.co.za`; the `github.io` subpath serves the same
+  build. **Share the bare domain, never `www.`** — the `www` hostname has no
+  certificate of its own and will throw a security warning.
+- **TLS.** If the padlock ever disappears or cert issuance fails, work through §6
+  "If the certificate gets stuck in `bad_authz`" before touching anything else.
+  Count the A records first — that mismatch is the usual cause.
