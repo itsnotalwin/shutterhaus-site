@@ -42,12 +42,19 @@ export async function signOut(): Promise<void> {
   localStorage.removeItem("shutterhaus_admin_email");
 }
 
-/** Current session, or null. Also re-syncs the cached email the admin UI shows. */
-export async function getSession(): Promise<{ email: string | null } | null> {
+/**
+ * Current session as `{ email }`, or **null when signed out**.
+ *
+ * Returning null matters: the admin gate branches on `if (!session)`, so an
+ * object with a null email would fall through to the "not on the allowlist"
+ * branch and show a signed-out visitor an allowlist error.
+ */
+export async function getSession(): Promise<{ email: string } | null> {
   if (!isSupabaseConfigured) return null;
   const { data } = await db().auth.getSession();
   const email = data.session?.user?.email ?? null;
-  if (email) localStorage.setItem("shutterhaus_admin_email", email);
+  if (!email) return null;
+  localStorage.setItem("shutterhaus_admin_email", email);
   return { email };
 }
 

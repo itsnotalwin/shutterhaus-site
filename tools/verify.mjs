@@ -208,7 +208,9 @@ const adm = await evaluate(`(() => ({
   title: document.title,
   root: !!document.querySelector('#app') && document.querySelector('#app').children.length > 0,
   html: document.querySelector('#app')?.innerHTML.slice(0, 120),
-  google: !!document.querySelector('.gbtn'),
+  google: !!document.querySelector('.gbtn, .gate__btn'),
+  // A signed-out visitor must NOT be told they're on the wrong allowlist.
+  spuriousAllowlistError: /isn't on the admin allowlist/.test(document.body.innerText),
   // NB: "\\s" must stay escaped — an unescaped \s in this template literal
   // collapses to /s+/ and silently strips every letter "s" from the output.
   text: document.querySelector('#app')?.innerText.replace(/\\s+/g,' ').slice(0,200),
@@ -227,6 +229,13 @@ if (!adm.notConfigured) {
   check("admin names the allowed account", adm.allowlist);
 } else {
   check("admin explains the .env step", /env/i.test(adm.text ?? ""), (adm.text ?? "").slice(0, 60));
+  // Regression guard: getSession() once returned {email:null} when signed out,
+  // which fell through to the allowlist branch and showed a false error.
+  check(
+    "signed-out visitor sees no allowlist error",
+    !adm.spuriousAllowlistError,
+    "a signed-out visitor must not be told they're on the wrong allowlist",
+  );
 }
 check("admin no overflow", adm.overflow <= 0, `${adm.overflow}px`);
 await shot("shot-admin.png");
