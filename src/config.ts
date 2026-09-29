@@ -54,7 +54,6 @@ export const SITE: SiteConfig = {
   /** `id` must match a route in src/main.ts */
   nav: [
     { id: "photo", label: "photo" },
-    { id: "video", label: "video" },
     { id: "pricing", label: "pricing" },
     { id: "contact", label: "contact" },
   ],

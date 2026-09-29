@@ -22,11 +22,3 @@ export interface Photo {
 
 /** Admin view of a photo — same row, filename guaranteed by the query. */
 export type AdminPhoto = Photo & { filename: string };
-
-export interface VideoItem {
-  id: string;
-  /** where the hosted file lives */
-  src: string;
-  poster?: string;
-  title: string;
-}

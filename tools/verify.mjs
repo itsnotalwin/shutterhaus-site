@@ -127,7 +127,7 @@ check("small word < big word", parseFloat(info.smFS) < parseFloat(info.lgFS), `$
 // the real signal that the wordmark is heavy, plus a font-size floor.
 check("wordmark is the display face", /Archivo/i.test(info.lgFamily ?? ""), info.lgFamily);
 check("wordmark is large", parseFloat(info.lgFS) >= 24, info.lgFS);
-check("nav = photo,video,pricing,contact", info.nav.join(",") === "photo,video,pricing,contact", info.nav.join(","));
+check("nav = photo,pricing,contact", info.nav.join(",") === "photo,pricing,contact", info.nav.join(","));
 check("photo active on load", info.active === "photo", info.active);
 check("social icons", info.social >= 1, String(info.social));
 check("3 columns", info.cols === 3, String(info.cols));
@@ -173,16 +173,19 @@ check("mailto link", contact.mailto);
 check("contact no overflow", contact.overflow <= 0, `${contact.overflow}px`);
 await shot("shot-contact.png");
 
-// ============================================== video
+// ============================================== video is gone
+// Alwin does not shoot video. This route must stay dead — a stray #/video link
+// (or a cached tab) should fall back to the gallery, not 404 or blank.
 await evaluate(`location.hash = '#/video'`);
 await sleep(900);
-const video = await evaluate(`(() => ({
+const noVideo = await evaluate(`(() => ({
   active: document.querySelector('.nav-link.is-active')?.textContent,
+  cols: document.querySelectorAll('.col').length,
   empty: !!document.querySelector('.empty'),
 }))()`);
-check("video route", video.active === "video", video.active);
-check("video shows empty state (no uploads yet)", video.empty);
-await shot("shot-video.png");
+check("no video nav item", !info.nav.includes("video"), info.nav.join(","));
+check("#/video falls back to the gallery", noVideo.cols === 3, `active=${noVideo.active} cols=${noVideo.cols}`);
+check("no video empty-state leaked", !noVideo.empty);
 
 // ============================================== mobile
 for (const w of [360, 390, 768]) {

@@ -2,9 +2,9 @@ import "./styles.css";
 import { SITE } from "./config";
 import { renderShell } from "./layout";
 import { photoPage } from "./pages";
-import { videoPage, contactPage, pricingPage } from "./pages-more";
+import { contactPage, pricingPage } from "./pages-more";
 import { listPublicPhotos } from "./store";
-import { DEMO_PHOTOS, DEMO_VIDEOS } from "./demo";
+import { DEMO_PHOTOS } from "./demo";
 import { initLightbox } from "./lightbox";
 import { isSupabaseConfigured } from "./supabase";
 
@@ -44,14 +44,6 @@ async function paint(): Promise<void> {
     app.innerHTML = renderShell("pricing", pricingPage());
     scrollTo(0, 0);
     document.title = `pricing — ${SITE.nameTop} ${SITE.nameBig2}`;
-    return;
-  }
-
-  if (r === "video") {
-    const videos = DEMO_VIDEOS;
-    app.innerHTML = renderShell("video", videoPage(videos, cols));
-    scrollTo(0, 0);
-    document.title = `video — ${SITE.nameTop} ${SITE.nameBig2}`;
     return;
   }
 

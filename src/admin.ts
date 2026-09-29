@@ -14,7 +14,6 @@ const app = document.getElementById("app")!;
 
 const TABS = [
   { id: "photos", label: "photos" },
-  { id: "videos", label: "videos" },
   { id: "details", label: "site details" },
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
@@ -99,14 +98,6 @@ function photosView(msg?: { kind: "ok" | "err"; text: string }): string {
     <section class="cards">${cards}</section>`;
 }
 
-function videosView(): string {
-  return `<p class="pad">
-      Videos are edited in <code>src/demo.ts</code> (<code>DEMO_VIDEOS</code>) and committed —
-      keeps hosting free and the site fast. Host the files on Supabase Storage or
-      Cloudinary, paste the URL, done.
-    </p>`;
-}
-
 function detailsView(): string {
   return `<p class="pad">
       Name, nav, contact details and social links all live in <code>src/config.ts</code>.
@@ -132,7 +123,7 @@ function notConfigured(): string {
 
 function paint(msg?: { kind: "ok" | "err"; text: string }): void {
   const body =
-    tab === "photos" ? photosView(msg) : tab === "videos" ? videosView() : detailsView();
+    tab === "photos" ? photosView(msg) : detailsView();
   app.innerHTML = shell(body);
   wire();
 }

@@ -121,7 +121,6 @@ img { display: block; max-width: 100%; }
   transition: opacity 0.2s;
 }
 .cell img:hover { opacity: 0.92; }
-.cell--video video { width: 100%; display: block; background: #000; }
 .cell figcaption {
   font-size: 11px;
   color: var(--dim);

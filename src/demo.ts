@@ -1,4 +1,4 @@
-import type { Photo, VideoItem } from "./types";
+import type { Photo } from "./types";
 
 /**
  * The first real shoot — Chanelle. These files live in `public/gallery/`, so
@@ -9,6 +9,11 @@ import type { Photo, VideoItem } from "./types";
  * Add more shoots by dropping web-sized JPGs in public/gallery/ and adding a
  * line here. `sort_order` controls their position; it wraps every 3 items into
  * the 3 columns.
+ *
+ * NOTE: FINALS-44 was removed — it was a pixel-identical duplicate of
+ * FINALS-43 (verified with tools/compare-pair.py, RMS 0.000). Re-run
+ * tools/find-duplicates.py before adding a new shoot to avoid shipping the
+ * same frame twice.
  */
 export const DEMO_PHOTOS: Photo[] = [
   { id: "c34", url: "gallery/finals-34.jpg", alt: "Portrait, natural light", album: "photo", sort_order: 0, visible: true, filename: "finals-34.jpg" },
@@ -21,8 +26,4 @@ export const DEMO_PHOTOS: Photo[] = [
   { id: "c41", url: "gallery/finals-41.jpg", alt: "Golden hour, outdoors", album: "photo", sort_order: 7, visible: true, filename: "finals-41.jpg" },
   { id: "c42", url: "gallery/finals-42.jpg", alt: "Studio portrait", album: "photo", sort_order: 8, visible: true, filename: "finals-42.jpg" },
   { id: "c43", url: "gallery/finals-43.jpg", alt: "Candid moment", album: "photo", sort_order: 9, visible: true, filename: "finals-43.jpg" },
-  { id: "c44", url: "gallery/finals-44.jpg", alt: "On location, Gauteng", album: "photo", sort_order: 10, visible: true, filename: "finals-44.jpg" },
 ];
-
-/** Videos are edited here and committed — no extra hosting cost. */
-export const DEMO_VIDEOS: VideoItem[] = [];

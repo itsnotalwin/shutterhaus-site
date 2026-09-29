@@ -1,34 +1,6 @@
 import { SITE } from "./config";
 import { escapeHtml } from "./layout";
-import type { VideoItem } from "./types";
 import type { PricingTier } from "./config";
-
-/** The video route — same column grid, each item plays in place. */
-export function videoPage(videos: VideoItem[], cols: number): string {
-  if (!videos.length) {
-    return `<section class="empty">
-      <p>Nothing filmed yet.</p>
-      <p class="dim">Motion work is being edited — get in touch if it's urgent.</p>
-    </section>`;
-  }
-
-  const buckets: VideoItem[][] = Array.from({ length: cols }, () => []);
-  videos.forEach((v, i) => buckets[i % cols].push(v));
-
-  const one = (v: VideoItem) => `<figure class="cell cell--video">
-        <video controls preload="metadata"
-               ${v.poster ? `poster="${escapeHtml(v.poster)}"` : ""}
-               playsinline>
-          <source src="${escapeHtml(v.src)}" />
-          Your browser can't play this video.
-        </video>
-        ${v.title ? `<figcaption>${escapeHtml(v.title)}</figcaption>` : ""}
-      </figure>`;
-
-  return `<section class="grid" data-cols="${cols}">
-    ${buckets.map((b) => `<div class="col">${b.map(one).join("")}</div>`).join("")}
-  </section>`;
-}
 
 /**
  * The pricing route. Same chrome as the rest of the site: white, heavy
