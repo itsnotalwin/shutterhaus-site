@@ -26,9 +26,12 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          # A project Pages site is served from /<repo>/, so assets must be
-          # built with that base. Cloudflare Pages (domain root) leaves this
-          # unset and builds with "/".
+          # STILL the github.io project subpath, because the site is served
+          # from there until shutterhausvisuals.co.za has its TLS certificate
+          # (GitHub only issues that on a deploy). Once the domain is live,
+          # change this to "" so assets resolve from the domain root — and
+          # do it in its own commit, never together with a change that would
+          # break the github.io site.
           BASE_PATH: /shutterhaus-site/
           # Public values only — RLS on the Supabase side is the real gate.
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
