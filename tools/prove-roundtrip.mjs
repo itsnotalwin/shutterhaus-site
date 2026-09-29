@@ -70,8 +70,11 @@ const info = JSON.parse(
         loaded: imgs.filter(i => i.complete && i.naturalWidth > 0).length,
         broken: imgs.filter(i => i.complete && i.naturalWidth === 0).map(i => i.src),
         alts: imgs.map(i => i.alt),
-        fromGitHub: imgs.filter(i => /itsnotalwin\\.github\\.io/.test(i.src)).length,
-        fromSupabase: imgs.filter(i => /supabase\\.co/.test(i.src)).length,
+        // The site is served from BOTH shutterhausvisuals.co.za (root) and
+        // itsnotalwin.github.io/shutterhaus-site/ (subpath) from one relative-
+        // base build, so which host an image came from proves nothing. What
+        // matters is that the bytes are NOT coming from Supabase Storage.
+        fromSupabase: imgs.filter(i => /supabase\.co/.test(i.src)).length,
       };
     })())`,
     sessionId,
@@ -88,9 +91,9 @@ const check = (name, ok, detail = "") => {
 console.log(`\n=== round-trip: metadata from Supabase, bytes from GitHub ===\n`);
 check("gallery rendered", info.count > 0, `${info.count} photos`);
 check(
-  "images served from github.io",
-  info.fromGitHub === info.count && info.count > 0,
-  `${info.fromGitHub}/${info.count}`,
+  "every image loaded",
+  info.loaded === info.count && info.count > 0,
+  `${info.loaded}/${info.count}`,
 );
 check(
   "no supabase.co/storage image URLs",

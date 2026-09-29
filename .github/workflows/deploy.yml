@@ -26,13 +26,12 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          # STILL the github.io project subpath, because the site is served
-          # from there until shutterhausvisuals.co.za has its TLS certificate
-          # (GitHub only issues that on a deploy). Once the domain is live,
-          # change this to "" so assets resolve from the domain root — and
-          # do it in its own commit, never together with a change that would
-          # break the github.io site.
-          BASE_PATH: /shutterhaus-site/
+          # Relative base: assets resolve against the document, so the SAME
+          # build works at both addresses — the domain root ("/") and the
+          # github.io project subpath ("/shutterhaus-site/"). A single absolute
+          # base can only ever be correct for one of them, which is how the
+          # domain rollout broke the github.io site on 2026-09-29.
+          BASE_PATH: ./
           # Public values only — RLS on the Supabase side is the real gate.
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
