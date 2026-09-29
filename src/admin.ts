@@ -169,13 +169,33 @@ function wire(): void {
   });
 
   document.querySelectorAll<HTMLButtonElement>("[data-act]").forEach((b) => {
-    b.addEventListener("click", () => void act(b.dataset.act!, b.dataset.id!));
+    b.addEventListener("click", () => {
+      // A rejected write must surface, not vanish into an unhandled rejection:
+      // otherwise "hide" silently leaves the photo live on the public site.
+      act(b.dataset.act!, b.dataset.id!).catch((err) => {
+        console.error("[admin] action failed", err);
+        paint({
+          kind: "err",
+          text: `That didn't save: ${err instanceof Error ? err.message : "unknown error"}. Try again.`,
+        });
+      });
+    });
   });
 
   document.querySelectorAll<HTMLInputElement>("[data-alt-for]").forEach((inp) => {
     inp.addEventListener("change", () => {
-      void updatePhoto(inp.dataset.altFor!, { alt: inp.value.trim() });
-      paint({ kind: "ok", text: "Alt text saved." });
+      // Only claim success once the write actually resolved. Painting "saved"
+      // before awaiting made a failed save look successful, and the re-render
+      // then silently reverted the text the photographer had typed.
+      updatePhoto(inp.dataset.altFor!, { alt: inp.value.trim() })
+        .then(() => paint({ kind: "ok", text: "Alt text saved." }))
+        .catch((err) => {
+          console.error("[admin] alt text save failed", err);
+          paint({
+            kind: "err",
+            text: `Alt text didn't save: ${err instanceof Error ? err.message : "unknown error"}. Your text is still in the box — copy it before reloading.`,
+          });
+        });
     });
   });
 }

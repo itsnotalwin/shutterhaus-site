@@ -5,7 +5,10 @@
 
 :root {
   --ink: #111;
-  --grey: #8c8c8c;
+  /* Inactive nav was #8c8c8c — only 3.36:1 on white, failing WCAG AA at 12px.
+     #6b6b6b is 5.3:1 and still reads as "quiet next to" the active item, so the
+     hierarchy survives without the contrast failing. */
+  --grey: #6b6b6b;
   --line: #e6e6e6;
   --paper: #fff;
   --dim: #6d6d6d;
