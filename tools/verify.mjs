@@ -8,7 +8,11 @@
 import { writeFileSync, mkdirSync } from "node:fs";
 
 const BASE = (process.argv[2] ?? "http://localhost:4173/shutterhaus-site").replace(/\/$/, "");
-const CDP = "http://127.0.0.1:9222";
+// Hardcoding 9222 here silently ignored CDP_PORT, so domain runs connected to a
+// different Chrome instance than the one launched with the host-resolver
+// override — which resolved the domain to the stale parking IP and produced a
+// bogus "Privacy error" that looked like a site outage.
+const CDP = `http://127.0.0.1:${process.env.CDP_PORT ?? "9222"}`;
 const OUT = process.env.SHOT_DIR ?? ".";
 mkdirSync(OUT, { recursive: true });
 
@@ -107,9 +111,12 @@ const info = await evaluate(`(() => {
     headerH: document.querySelector('.site-header')?.getBoundingClientRect().height,
     bodyBg: getComputedStyle(document.body).backgroundColor,
     bodyColor: getComputedStyle(document.body).color,
-    navColor: getComputedStyle(document.querySelector('.nav-link:not(.is-active)')).color,
-    navSize: getComputedStyle(document.querySelector('.nav-link')).fontSize,
-    activeColor: getComputedStyle(document.querySelector('.nav-link.is-active')).color,
+    // Null-safe: a slow first paint on a cold TLS handshake (the custom domain)
+    // can leave these missing, and getComputedStyle(null) throws and aborts the
+    // entire run instead of just reporting a failed check.
+    navColor: cs('.nav-link:not(.is-active)')?.color,
+    navSize: cs('.nav-link')?.fontSize,
+    activeColor: cs('.nav-link.is-active')?.color,
     bw: !!document.querySelector('.shell.is-bw'),
     colScroll: [...document.querySelectorAll('.col')].map(c => c.scrollHeight > c.clientHeight),
     // Scope to gallery images: the lightbox holds an <img> with src="" until
@@ -256,7 +263,7 @@ const pr = await evaluate(`(() => ({
   terms: document.querySelectorAll('.terms li').length,
   ctas: [...document.querySelectorAll('.tier__cta')].map(a=>a.getAttribute('href')),
   overflow: document.documentElement.scrollWidth - window.innerWidth,
-  bg: getComputedStyle(document.querySelector('.tier')).backgroundColor,
+  bg: document.querySelector('.tier') ? getComputedStyle(document.querySelector('.tier')).backgroundColor : null,
 }))()`);
 console.log("\\n--- pricing ---\\n" + JSON.stringify(pr, null, 2));
 check("pricing route renders", pr.tiers >= 3, String(pr.tiers));
