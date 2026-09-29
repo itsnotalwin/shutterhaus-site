@@ -418,10 +418,150 @@ code {
 .card__acts button:hover { background: #e9e9e9; }
 .card__acts .is-danger { color: #b3261e; }
 
+/* ---------------------------------------------------------- pricing */
+/* Same restraint as the rest of the site: hairline rules, one heavy
+   display size, no colour except the "most popular" flag. */
+
+.pricing {
+  max-width: 1180px;
+  padding: 46px 0 90px;
+}
+.pricing__head { margin-bottom: 46px; max-width: 62ch; }
+.pricing__h {
+  font-family: var(--font-display);
+  font-size: 40px;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  margin: 0 0 16px;
+}
+.pricing__intro { font-size: 14px; line-height: 1.7; color: var(--dim); margin: 0; }
+.pricing__sub {
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 0 0 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.pricing__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--gut);
+  align-items: start;
+}
+
+.tier {
+  position: relative;
+  border: 1px solid var(--line);
+  padding: 26px 22px 24px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.tier--pop { border-color: var(--ink); }
+.tier__flag {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 9px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 5px 9px;
+}
+.tier__name {
+  font-family: var(--font-display);
+  font-size: 17px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+}
+.tier__price {
+  font-family: var(--font-display);
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin: 0 0 4px;
+}
+.tier__spec {
+  font-size: 11px;
+  color: var(--dim);
+  margin: 0 0 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.tier__fit { font-size: 13px; line-height: 1.6; margin: 0 0 16px; }
+.tier__list { list-style: none; margin: 0 0 22px; padding: 0; flex: 1; }
+.tier__list li {
+  position: relative;
+  font-size: 12.5px;
+  line-height: 1.55;
+  padding-left: 15px;
+  margin-bottom: 9px;
+  color: #2a2a2a;
+}
+/* the tick is a hairline cross, not a glyph — matches the hairline rules */
+.tier__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 7px;
+  height: 1px;
+  background: var(--ink);
+}
+.tier__cta {
+  display: block;
+  text-align: center;
+  border: 1px solid var(--ink);
+  padding: 11px 12px;
+  font-size: 12px;
+  color: var(--ink);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+.tier__cta:hover { background: var(--ink); color: #fff; }
+.tier--pop .tier__cta { background: var(--ink); color: #fff; }
+.tier--pop .tier__cta:hover { background: #000; }
+
+.pricing__addons, .pricing__terms { margin-top: 60px; }
+.addons { list-style: none; margin: 0; padding: 0; }
+.addons li {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 13px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+}
+.addons__p { font-family: var(--font-display); font-size: 13px; white-space: nowrap; }
+
+.terms { list-style: none; margin: 0 0 18px; padding: 0; max-width: 78ch; }
+.terms li {
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--dim);
+  margin-bottom: 9px;
+}
+.pricing__note {
+  font-size: 12.5px;
+  line-height: 1.65;
+  border-left: 2px solid var(--ink);
+  padding-left: 14px;
+  margin: 0;
+  max-width: 78ch;
+}
+
 /* ------------------------------------------------------ responsive */
 
 @media (max-width: 900px) {
   .contact { grid-template-columns: 1fr; gap: 36px; }
+  .pricing__grid { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 640px) {
@@ -439,5 +579,8 @@ code {
   .logo-sm { font-size: 10px; }
   .col { max-height: none; overflow: visible; }
   .contact__h { font-size: 30px; }
+  .pricing__h { font-size: 30px; }
+  .pricing__grid { grid-template-columns: 1fr; }
+  .tier__price { font-size: 30px; }
   .adm__bar { flex-wrap: wrap; }
 }

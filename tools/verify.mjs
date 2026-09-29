@@ -127,7 +127,7 @@ check("small word < big word", parseFloat(info.smFS) < parseFloat(info.lgFS), `$
 // the real signal that the wordmark is heavy, plus a font-size floor.
 check("wordmark is the display face", /Archivo/i.test(info.lgFamily ?? ""), info.lgFamily);
 check("wordmark is large", parseFloat(info.lgFS) >= 24, info.lgFS);
-check("nav = photo,video,contact", info.nav.join(",") === "photo,video,contact", info.nav.join(","));
+check("nav = photo,video,pricing,contact", info.nav.join(",") === "photo,video,pricing,contact", info.nav.join(","));
 check("photo active on load", info.active === "photo", info.active);
 check("social icons", info.social >= 1, String(info.social));
 check("3 columns", info.cols === 3, String(info.cols));
@@ -230,6 +230,45 @@ if (!adm.notConfigured) {
 }
 check("admin no overflow", adm.overflow <= 0, `${adm.overflow}px`);
 await shot("shot-admin.png");
+
+// ============================================== pricing
+await goto("/#/pricing", 2200);
+const pr = await evaluate(`(() => ({
+  route: location.hash,
+  active: document.querySelector('.nav-link.is-active')?.textContent,
+  tiers: document.querySelectorAll('.tier').length,
+  names: [...document.querySelectorAll('.tier__name')].map(e=>e.textContent),
+  prices: [...document.querySelectorAll('.tier__price')].map(e=>e.textContent),
+  popular: document.querySelectorAll('.tier--pop').length,
+  addons: document.querySelectorAll('.addons li').length,
+  terms: document.querySelectorAll('.terms li').length,
+  ctas: [...document.querySelectorAll('.tier__cta')].map(a=>a.getAttribute('href')),
+  overflow: document.documentElement.scrollWidth - window.innerWidth,
+  bg: getComputedStyle(document.querySelector('.tier')).backgroundColor,
+}))()`);
+console.log("\\n--- pricing ---\\n" + JSON.stringify(pr, null, 2));
+check("pricing route renders", pr.tiers >= 3, String(pr.tiers));
+check("nav marks pricing active", pr.active === "pricing", String(pr.active));
+check("4 tiers from the pricing PDF", pr.tiers === 4, String(pr.tiers));
+check("all tier names present", pr.names.every(Boolean), pr.names.join("/"));
+check("every tier has a price", pr.prices.every(p => /^R[\\s]?[0-9]/.test(p)), pr.prices.join(" "));
+check("exactly one 'most popular'", pr.popular === 1, String(pr.popular));
+check("add-ons listed", pr.addons === 6, String(pr.addons));
+check("booking terms listed", pr.terms >= 4, String(pr.terms));
+check("every tier links to contact", pr.ctas.every(h => h === "#/contact"), pr.ctas.join(","));
+check("tier cards are white", pr.bg === "rgb(255, 255, 255)", pr.bg);
+check("pricing no overflow", pr.overflow <= 0, `${pr.overflow}px`);
+await shot("shot-pricing.png");
+
+// ============================================== mobile pricing
+for (const w of [360, 390, 768]) {
+  await send("Emulation.setDeviceMetricsOverride", { width: w, height: 800, deviceScaleFactor: 1, mobile: true });
+  await goto("/#/pricing", 1600);
+  const o = await evaluate(`document.documentElement.scrollWidth - window.innerWidth`);
+  check(`pricing mobile ${w}: no overflow`, o <= 0, `${o}px`);
+}
+await send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+await shot("shot-pricing-mobile.png");
 
 // ============================================== console
 const errs = consoleErrors();

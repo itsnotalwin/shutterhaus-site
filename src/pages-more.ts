@@ -1,6 +1,7 @@
 import { SITE } from "./config";
 import { escapeHtml } from "./layout";
 import type { VideoItem } from "./types";
+import type { PricingTier } from "./config";
 
 /** The video route — same column grid, each item plays in place. */
 export function videoPage(videos: VideoItem[], cols: number): string {
@@ -26,6 +27,56 @@ export function videoPage(videos: VideoItem[], cols: number): string {
 
   return `<section class="grid" data-cols="${cols}">
     ${buckets.map((b) => `<div class="col">${b.map(one).join("")}</div>`).join("")}
+  </section>`;
+}
+
+/**
+ * The pricing route. Same chrome as the rest of the site: white, heavy
+ * wordmark-scale type, hairline rules, no colour except the "popular" flag.
+ */
+export function pricingPage(): string {
+  const p = SITE.pricing;
+  if (!p.show) return `<section class="empty"><p>Packages coming soon.</p></section>`;
+
+  const tier = (t: PricingTier) => `<article class="tier${t.popular ? " tier--pop" : ""}">
+    ${t.popular ? `<span class="tier__flag">Most popular</span>` : ""}
+    <h3 class="tier__name">${escapeHtml(t.name)}</h3>
+    <p class="tier__price">${escapeHtml(t.price)}</p>
+    <p class="tier__spec">${escapeHtml(t.spec)}</p>
+    <p class="tier__fit">${escapeHtml(t.fit)}</p>
+    <ul class="tier__list">
+      ${t.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}
+    </ul>
+    <a class="tier__cta" href="#/contact">Book this</a>
+  </article>`;
+
+  return `<section class="pricing">
+    <header class="pricing__head">
+      <h1 class="pricing__h">${escapeHtml(p.heading)}</h1>
+      <p class="pricing__intro">${escapeHtml(p.intro)}</p>
+    </header>
+
+    <div class="pricing__grid">${p.tiers.map(tier).join("")}</div>
+
+    <div class="pricing__addons">
+      <h2 class="pricing__sub">${escapeHtml(p.addonsTitle)}</h2>
+      <ul class="addons">
+        ${p.addons
+          .map(
+            (a) =>
+              `<li><span>${escapeHtml(a.label)}</span><span class="addons__p">${escapeHtml(a.price)}</span></li>`,
+          )
+          .join("")}
+      </ul>
+    </div>
+
+    <div class="pricing__terms">
+      <h2 class="pricing__sub">Booking terms</h2>
+      <ul class="terms">
+        ${p.terms.map((t) => `<li>${escapeHtml(t)}</li>`).join("")}
+      </ul>
+      <p class="pricing__note">${escapeHtml(p.depositNote)}</p>
+    </div>
   </section>`;
 }
 
