@@ -1,8 +1,12 @@
 -- ============================================================
---  Shutterhaus Visuals — Supabase setup
---  Run this ONCE in the Supabase SQL Editor (Dashboard > SQL > New query).
---  It creates the photos table, the public bucket, and the RLS policies
---  that lock uploads down to the admin email only.
+--  Shutterhaus Visuals — Supabase schema
+--
+--  ALREADY APPLIED to project vthmxvvtbxtqlyqksche ("Shutterhaus Visuals",
+--  eu-west-1) and verified: an unauthenticated INSERT into public.photos
+--  is rejected with "new row violates row-level security policy".
+--
+--  Kept here so the setup is reproducible and reviewable. Re-running it is
+--  safe — every statement is IF NOT EXISTS / OR REPLACE / DROP-then-CREATE.
 -- ============================================================
 
 -- 1. Table ---------------------------------------------------------------
@@ -23,19 +27,12 @@ create table if not exists public.photos (
 create index if not exists photos_album_order_idx
   on public.photos (album, sort_order);
 
--- 2. Row Level Security ----------------------------------------------------
-alter table public.photos enable row level security;
-
--- Anyone (including signed-out visitors) can read photos, but the public site
--- only ever queries `visible = true` rows. Admins read everything.
-drop policy if exists "photos public read" on public.photos;
-create policy "photos public read"
-  on public.photos for select
-  using (visible = true or is_admin());
-
--- 3. The admin check — this is the access control for the whole backend ----
+-- 2. The admin check — the access control for the whole backend ---------------
 -- is_admin() returns true only for the emails in the admin list.
 -- >>> EDIT THE EMAIL LIST HERE IF YOU EVER ADD A SECOND ADMIN. <<<
+-- NOTE: this function must be defined BEFORE the policies below. Postgres
+-- validates the policy expression at CREATE time, so a policy referencing a
+-- function that does not exist yet fails immediately.
 create or replace function public.is_admin()
 returns boolean
 language sql
@@ -49,6 +46,16 @@ as $$
     ]
   );
 $$;
+
+-- 3. Row Level Security ----------------------------------------------------
+alter table public.photos enable row level security;
+
+-- Anyone (including signed-out visitors) can read photos, but the public site
+-- only ever queries `visible = true` rows. Admins read everything.
+drop policy if exists "photos public read" on public.photos;
+create policy "photos public read"
+  on public.photos for select
+  using (visible = true or is_admin());
 
 -- Only admins can insert / update / delete.
 drop policy if exists "photos admin insert" on public.photos;
