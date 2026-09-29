@@ -26,6 +26,10 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
+          # A project Pages site is served from /<repo>/, so assets must be
+          # built with that base. Cloudflare Pages (domain root) leaves this
+          # unset and builds with "/".
+          BASE_PATH: /shutterhaus-site/
           # Public values only — RLS on the Supabase side is the real gate.
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
