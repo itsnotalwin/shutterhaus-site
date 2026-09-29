@@ -2,12 +2,18 @@ import { defineConfig } from "vite";
 import { resolve } from "node:path";
 
 /**
- * GitHub Pages deploys a project site under /<repo>/ — set `base` to that path
- * (repo "shutterhaus-site" → "/shutterhaus-site/"). For a user site at
- * itsnotalwin.github.io, set base to "/" instead.
+ * Base path for asset URLs.
+ *
+ * - Cloudflare Pages (custom domain or *.pages.dev): "/" — the default.
+ * - GitHub Pages project site: "/shutterhaus-site/", set BASE_PATH in CI.
+ *
+ * The router is hash-based (`/#/photo`), so a wrong base only ever breaks
+ * asset URLs, never deep links.
  */
+const base = process.env.BASE_PATH ?? "/";
+
 export default defineConfig({
-  base: "/shutterhaus-site/",
+  base,
   build: {
     outDir: "dist",
     rollupOptions: {
