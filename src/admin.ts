@@ -8,7 +8,7 @@ import {
   getSession,
   isSupabaseConfigured,
 } from "./supabase";
-import { listAllPhotos, uploadPhoto, updatePhoto, deletePhoto, type AdminPhoto } from "./store";
+import { listAllPhotos, updatePhoto, deletePhoto, type AdminPhoto } from "./store";
 
 const app = document.getElementById("app")!;
 
@@ -85,15 +85,22 @@ function photosView(msg?: { kind: "ok" | "err"; text: string }): string {
 
   return `
     ${msg ? `<p class="notice notice--${msg.kind}">${escapeHtml(msg.text)}</p>` : ""}
-    <section class="drop" id="drop">
-      <input type="file" id="file" accept="image/*" multiple hidden />
-      <strong>Drop images here</strong>
-      <span>or click to choose — JPG, PNG, WebP</span>
-      <div class="drop__prog" id="prog" hidden><i></i></div>
+    <section class="drop drop--static">
+      <strong>Adding new photos</strong>
+      <span>Image files live in the GitHub repository, not in a database.</span>
+      <p class="drop__how">
+        From your machine, run
+        <code>python tools/add-photos.py "C:/path/to/your/shoot"</code> —
+        it resizes, optimises, drops the files into
+        <code>public/gallery/</code> and prints the commit command. Everything
+        you do <em>often</em> — alt text, order, hide and show — is right here
+        below and saves instantly, with no deploy.
+      </p>
     </section>
     <p class="pad pad--dim">
       Left to right is the order visitors see. “hide” keeps an image in your library
-      but off the public site.
+      but off the public site. “delete” removes the row only — the file itself
+      stays in the repository, so a deleted photo can always be brought back.
     </p>
     <section class="cards">${cards}</section>`;
 }
@@ -143,30 +150,8 @@ function wire(): void {
     });
   });
 
-  const drop = document.getElementById("drop");
-  const file = document.getElementById("file") as HTMLInputElement | null;
-  drop?.addEventListener("click", () => file?.click());
-
-  ["dragenter", "dragover"].forEach((ev) =>
-    drop?.addEventListener(ev, (e) => {
-      e.preventDefault();
-      drop.classList.add("is-over");
-    }),
-  );
-  ["dragleave", "drop"].forEach((ev) =>
-    drop?.addEventListener(ev, (e) => {
-      e.preventDefault();
-      drop.classList.remove("is-over");
-    }),
-  );
-  drop?.addEventListener("drop", (e) => {
-    const dt = (e as DragEvent).dataTransfer;
-    if (dt?.files.length) void ingest(dt.files);
-  });
-  file?.addEventListener("change", () => {
-    if (file.files?.length) void ingest(file.files);
-    file.value = "";
-  });
+  // No file-input wiring: image files live in git, not in a bucket, so there is
+  // nothing for the browser to upload. See the "Adding new photos" panel.
 
   document.querySelectorAll<HTMLButtonElement>("[data-act]").forEach((b) => {
     b.addEventListener("click", () => {
@@ -202,32 +187,9 @@ function wire(): void {
 
 /* ------------------------------------------------------------------ logic */
 
-async function ingest(files: FileList): Promise<void> {
-  const imgs = Array.from(files).filter((f) => f.type.startsWith("image/"));
-  if (!imgs.length) {
-    paint({ kind: "err", text: "Those files aren't images." });
-    return;
-  }
-
-  const prog = document.getElementById("prog");
-  const bar = prog?.querySelector("i") as HTMLElement | null;
-  if (prog) prog.hidden = false;
-
-  let ok = 0;
-  for (const f of imgs) {
-    try {
-      await uploadPhoto(f);
-      ok += 1;
-    } catch (e) {
-      paint({ kind: "err", text: `${f.name} failed: ${(e as Error).message}` });
-    }
-    if (bar) bar.style.width = `${Math.round(((ok + 1) / imgs.length) * 100)}%`;
-  }
-  if (prog) setTimeout(() => (prog.hidden = true), 500);
-
-  items = await listAllPhotos();
-  paint({ kind: "ok", text: `Uploaded ${ok} image${ok === 1 ? "" : "s"}. Review, then hit show.` });
-}
+// No upload path: image bytes are committed to the repo, not written to a
+// bucket from the browser. See the "Adding new photos" panel in photosView()
+// and tools/add-photos.py.
 
 async function act(action: string, id: string): Promise<void> {
   const i = items.findIndex((p) => p.id === id);

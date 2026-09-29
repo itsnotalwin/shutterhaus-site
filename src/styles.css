@@ -376,6 +376,23 @@ code {
 }
 .drop__prog i { display: block; height: 100%; width: 0; background: var(--ink); transition: width 0.2s; }
 
+/* The "adding photos" panel is now instructions, not a drop target. */
+.drop--static { cursor: default; background: #fcfcfc; border-style: solid; }
+.drop--static:hover { border-color: var(--line); background: #fcfcfc; }
+.drop__how {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--dim);
+  max-width: 68ch;
+}
+.drop__how code {
+  font-size: 12px;
+  background: #f1f1f1;
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+
 /* card grid */
 .cards {
   display: grid;
