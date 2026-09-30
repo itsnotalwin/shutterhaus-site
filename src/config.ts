@@ -30,7 +30,8 @@ export interface SiteConfig {
    * Which frame carries the home hero, by filename. Auto-detection picks the
    * first landscape shot, but that is a guess — this pins it so the choice is
    * deliberate and changeable without touching page code. Set to null to fall
-   * back to auto-detection.
+   * back to auto-detection. **HOME IS LOCKED** (see HOME-LOCKED.md): changing
+   * this needs Alwin to reopen the home route.
    */
   heroPhoto: string | null;
   /** heading block on the services route, reused by the home page CTA */
@@ -227,6 +228,9 @@ export const SITE: SiteConfig = {
   // so 6 is the fix that keeps the columns even without filling the page. 8
   // and 9 both strand a column and are what created the white hole in the
   // first place — 8 divides by neither width.
+  //
+  // **HOME IS LOCKED** (see HOME-LOCKED.md). Do not "tidy" this number or the
+  // column count in stripCols() without Alwin reopening the home route.
   homeGalleryCount: 6,
   // Pinned deliberately: strongest subject in the set AND real dark space in
   // the lower-left for the white headline. Chosen from a side-by-side of all
