@@ -219,6 +219,29 @@ function figure(p: Photo, index: number): string {
 }
 
 /**
+ * A portfolio wall cell: a button carrying the thumbnail plus a larger copy
+ * that the CSS shows on hover (pointer devices only).
+ *
+ * The lightbox opens on CLICK of `.cell img[data-full]`, so the thumbnail
+ * keeps that attribute and the button must not swallow the event — hence no
+ * JS here at all. The preview img is `aria-hidden` and `tabindex="-1"` so
+ * screen readers and keyboard users get the thumbnail, not a duplicate frame.
+ */
+function wallCell(p: Photo, index: number): string {
+  const thumb = figure(p, index);
+  const peekSrc = derivative(p.url, 1200, "jpg") ?? p.url;
+  return `<button class="pf-cell" type="button" aria-label="Enlarge ${escapeHtml(
+    p.alt || p.filename || "photo",
+  )}">
+      ${thumb}
+      <span class="pf-peek" aria-hidden="true">
+        <img src="${escapeHtml(peekSrc)}" alt="" tabindex="-1"
+             loading="lazy" decoding="async" />
+      </span>
+    </button>`;
+}
+
+/**
  * The portfolio route: one editorial wall of every frame.
  *
  * Alwin's call: "instead of having too many different things in portfolio just
@@ -228,11 +251,22 @@ function figure(p: Photo, index: number): string {
 export function portfolioPage(photos: Photo[], cols: number): string {
   if (!photos.length) return emptyGallery();
 
+  // The WALL never goes to a single column. `columnsFor()` returns 1 under
+  // 640px, which is right for the about/contact figure but wrong here: 50
+  // frames one per row measured 75,006px tall on a 390px phone — 28 screens of
+  // scrolling. Alwin chose 2 columns on mobile, 3 on desktop.
+  const wallCols = Math.max(2, cols);
+
   // Flatten to one index space so `index === 0` is always the lead frame,
   // whichever column it lands in after the round-robin.
+  //
+  // Round-robin rather than the home strip's `packByHeight()`: on a 50-frame
+  // wall a ragged bottom is harmless — the page simply continues — and evenly
+  // sized columns make the full-length page easier to scan. See
+  // tools/probe-wall.mjs for the numbers.
   let n = 0;
-  const wall = columnise(photos, cols)
-    .map((col) => `<div class="col">${col.map((p) => figure(p, n++)).join("")}</div>`)
+  const wall = columnise(photos, wallCols)
+    .map((col) => `<div class="col">${col.map((p) => wallCell(p, n++)).join("")}</div>`)
     .join("");
 
   return `<section class="page portfolio">
@@ -241,7 +275,7 @@ export function portfolioPage(photos: Photo[], cols: number): string {
       <h1 class="phead__h">Portfolio</h1>
       <p class="phead__p">Portraits, couples, families and everything in between. This is the work, unfiltered.</p>
     </header>
-    <div class="grid grid--wall" data-cols="${cols}">${wall}</div>
+    <div class="grid grid--wall" data-cols="${wallCols}">${wall}</div>
   </section>`;
 }
 
