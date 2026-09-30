@@ -13,7 +13,11 @@ const BASE = (process.argv[2] ?? "http://localhost:4173/shutterhaus-site").repla
 // override — which resolved the domain to the stale parking IP and produced a
 // bogus "Privacy error" that looked like a site outage.
 const CDP = `http://127.0.0.1:${process.env.CDP_PORT ?? "9222"}`;
-const OUT = process.env.SHOT_DIR ?? ".";
+// Default into the gitignored shots/ dir, NOT the repo root. verify.mjs writes
+// shot-*.png, and with the old "." default those landed as untracked files in
+// the project root — visible in `git status` and one `git add -A` away from a
+// commit. Callers can still override with SHOT_DIR.
+const OUT = process.env.SHOT_DIR ?? "shots/verify";
 mkdirSync(OUT, { recursive: true });
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

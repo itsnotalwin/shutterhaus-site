@@ -7,3 +7,5 @@ shots/
 *.log
 .vscode/
 .idea/
+# verify.mjs screenshots, if SHOT_DIR is ever pointed back at the root
+shot-*.png
