@@ -42,6 +42,8 @@ img { display: block; max-width: 100%; }
 .shell { min-height: 100%; }
 
 .site-header {
+  position: relative;
+  /* The mobile nav drawer is absolutely positioned against this. */
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -86,6 +88,32 @@ img { display: block; max-width: 100%; }
 
 /* Nav sits centre-left, matching the reference's offset placement. */
 .site-nav { display: flex; gap: 30px; }
+
+/* The reference collapses the nav behind a hamburger below 760px. Hidden on
+   desktop entirely so it can never be tabbed to when it's not on screen. */
+.burger {
+  display: none;
+  justify-self: end;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+.burger__bars { display: block; width: 20px; }
+.burger__bars i {
+  display: block;
+  height: 1px;
+  background: var(--ink);
+  transition: transform 0.18s ease;
+}
+.burger__bars i:first-child { margin-bottom: 5px; }
+.burger[aria-expanded="true"] .burger__bars i:first-child { transform: translateY(3px) rotate(45deg); }
+.burger[aria-expanded="true"] .burger__bars i:last-child { transform: translateY(-3px) rotate(-45deg); }
+.burger:focus-visible { outline: 1px solid var(--ink); outline-offset: 2px; }
 .nav-link {
   font-size: 12px;
   color: var(--grey);

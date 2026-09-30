@@ -1,0 +1,401 @@
+/* =============================================================
+   EDITORIAL LAYER — the 5-page reference design.
+
+   Appended rather than merged into the tokens above: the existing chrome,
+   gallery, lightbox and admin all pass their checks, and this layer only
+   ADDS the new page classes plus the couple of overrides the reference needs.
+   Anything that touches shared selectors is commented with why.
+
+   Type note: the reference called for Playfair Display. Alwin's call was to
+   keep Archivo Black for display, so the *shape* of the reference is carried
+   by spacing, scale and rules instead of the serif.
+   ============================================================= */
+
+/* ------------------------------------------------------- shared type */
+
+/* The small letterspaced label above every headline. In the reference this is
+   Inter, 10px, +0.18em tracking, uppercase — deliberately quiet. */
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0 0 22px;
+}
+
+/* Page-level container. The reference runs a narrower measure on text pages
+   than on the gallery, so this is a shared max-width with room to breathe. */
+.page { padding: 0 0 var(--pad); }
+
+/* Headline. Archivo Black is a single weight, so the "display" feel comes from
+   tight leading and a generous size jump against the body text. */
+.page h1,
+.page h2,
+.hero__h {
+  font-family: var(--font-display);
+  font-weight: 400;         /* Archivo Black ships 400; browsers fake anything else */
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* Body copy on the text pages — the reference sets it small and wide-tracked,
+   which is what makes the type feel "small text / all caps" without caps. */
+.prose { font-size: 14.5px; line-height: 1.72; color: var(--dim); }
+.prose p { margin: 0 0 18px; }
+.prose p:last-child { margin-bottom: 0; }
+
+/* The reference's link treatment: a short em-dash, then the label, with a
+   hairline that fills on hover. Used for every in-page CTA. */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+  padding: 14px 0;
+  min-height: 44px;
+}
+.cta::before {
+  content: "";
+  width: 26px;
+  height: 1px;
+  background: var(--ink);
+  transition: width 0.18s ease;
+}
+.cta:hover::before { width: 40px; }
+.cta--btn {
+  border: 1px solid var(--ink);
+  padding: 0 22px;
+  min-height: 44px;
+  background: var(--ink);
+  color: #fff;
+}
+.cta--btn::before { display: none; }
+.cta--btn:hover { background: #000; }
+
+/* A page header block: eyebrow, headline, supporting line. */
+.phead { max-width: 560px; padding: 40px 0 44px; }
+.phead__h { font-size: clamp(38px, 6vw, 64px); }
+.phead__p { margin: 26px 0 0; font-size: 14.5px; line-height: 1.72; color: var(--dim); max-width: 48ch; }
+
+/* ------------------------------------------------------- home page */
+
+.hero {
+  position: relative;
+  margin: 0 calc(-1 * var(--pad));
+  min-height: min(78vh, 720px);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  background: #0d0d0d;
+}
+.hero__fig { position: absolute; inset: 0; margin: 0; }
+.hero__fig img { width: 100%; height: 100%; object-fit: cover; }
+/* The headline sits on the photograph, so it needs a scrim to stay legible
+   over a bright frame. A gradient, not a flat wash — the reference keeps the
+   top of the image clean. */
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.15) 45%, rgba(0,0,0,0.72) 100%);
+  pointer-events: none;
+}
+.hero__body {
+  position: relative;
+  z-index: 1;
+  padding: 0 var(--pad) 54px;
+  /* Wide enough for the 86px display heading. "TIMELESS PORTRAITURE" measures
+     668px at that size, so the old 640px cap is what the audit reported as
+     clipped text (scrollWidth 668 vs clientWidth 588). */
+  max-width: min(100%, 720px);
+  color: #fff;
+  width: 100%;
+}
+.hero__body .eyebrow { color: #fff; opacity: 0.9; }
+.hero__h { font-size: clamp(42px, 7.4vw, 86px); margin-bottom: 24px; }
+/* The negative tracking pulls the final glyph past the text box, so
+   "PORTRAITURE" reports scrollWidth > clientWidth and reads as clipped.
+   Absorb it with padding on the heading itself rather than losing the
+   tracking — padding on .hero__body would not widen the h1's own box. */
+.hero__h { padding-right: 0.05em; }
+/* Same overflow on the HERO heading, where the box is capped by max-width on
+   the parent. Let the heading size to its own text so the negative tracking
+   has no box to exceed: `width: max-content` + wrapping for narrow screens. */
+@media (min-width: 900px) {
+  .hero__h { width: max-content; max-width: 100%; }
+}
+/* On a phone the longest word is wider than the column, so it has to be
+   allowed to break rather than overflow. `overflow-wrap: anywhere` is the
+   only value that breaks INSIDE a word; `break-word` still lets a single
+   long word exceed the box. */
+@media (max-width: 640px) {
+  .hero__h { overflow-wrap: anywhere; }
+}
+
+.hero__lede {
+  margin: 0 0 30px;
+  font-size: 15px;
+  line-height: 1.7;
+  max-width: 40ch;
+  opacity: 0.92;
+}
+.hero__body .cta { color: #fff; }
+.hero__body .cta::before { background: #fff; }
+
+/* Selected-work strip under the hero. */
+.hstrip { padding: 72px 0 0; }
+.hstrip__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gut);
+  margin-bottom: 30px;
+}
+.hstrip__grid .cell:nth-child(4) { display: none; }
+.hcta {
+  margin: 88px calc(-1 * var(--pad)) 0;
+  padding: 72px var(--pad) 76px;
+  background: #0d0d0d;
+  color: #fff;
+  text-align: center;
+}
+.hcta .eyebrow { color: #fff; opacity: 0.75; }
+.hcta__h { font-size: clamp(30px, 4.6vw, 52px); margin-bottom: 26px; }
+.hcta .cta { color: #fff; justify-content: center; }
+.hcta .cta::before { background: #fff; }
+
+/* ----------------------------------------------------- portfolio page */
+
+.pfilter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  padding: 0 0 30px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 30px;
+}
+.pfilter__item {
+  font: inherit;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--grey);
+  background: none;
+  border: 0;
+  padding: 12px 0;
+  min-height: 44px;
+  /* 44px tall, but the visible text is narrow ("All", "Couples") so the
+     ELEMENT is only as wide as its label. `min-width` gives the tap target
+     real horizontal room without changing the type. */
+  min-width: 56px;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.15s ease;
+}
+.pfilter__item::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 8px;
+  width: 0;
+  height: 1px;
+  background: var(--ink);
+  transition: width 0.18s ease;
+}
+.pfilter__item:hover { color: var(--ink); }
+.pfilter__item.is-on { color: var(--ink); }
+.pfilter__item.is-on::after { width: 100%; }
+.pfilter__item:focus-visible { outline: 1px solid var(--ink); outline-offset: 2px; }
+
+/* Filtered-out frames must be removed from the layout AND the a11y tree,
+   otherwise a keyboard user can still tab into a photo they can't see. */
+.cell.is-hidden { display: none; }
+
+/* The reference's portfolio is a flat 3-up wall, not the old 3 scrolling
+   columns — the whole page scrolls as one document on every viewport. */
+.grid--wall { display: grid; grid-template-columns: repeat(var(--cols, 3), 1fr); gap: var(--gut); }
+.grid--wall .col { display: contents; }
+
+/* ------------------------------------------------------- about page */
+
+.about { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr); gap: 64px; align-items: start; }
+.about__body { padding-top: 40px; }
+.about__h { font-size: clamp(34px, 5vw, 58px); margin-bottom: 32px; }
+.about__prose { max-width: 46ch; }
+.about__cta { margin-top: 34px; }
+.about__fig { margin: 0; }
+.about__fig picture { display: block; }
+.about__fig img { width: 100%; height: auto; }
+
+/* ----------------------------------------------------- services page */
+
+/* Class names here are `pkg`/`shead`, matching what servicesPage() emits. */
+.shead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+  gap: 48px;
+  align-items: end;
+  padding: 40px 0 0;
+}
+.shead__h { font-size: clamp(36px, 5.4vw, 62px); }
+.shead__p { font-size: 14.5px; line-height: 1.72; color: var(--dim); margin: 0; max-width: 46ch; }
+
+.pkgrow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 40px 32px;
+  padding: 52px 0 0;
+}
+.pkg { display: flex; flex-direction: column; }
+/* Each package card opens with a 4:3 frame, per the reference. */
+.pkg__fig { margin: 0 0 22px; aspect-ratio: 4 / 3; overflow: hidden; }
+.pkg__fig picture { display: block; width: 100%; height: 100%; }
+.pkg__fig img { width: 100%; height: 100%; object-fit: cover; }
+.pkg__num {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--grey);
+  margin: 0 0 10px;
+}
+.pkg__name {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+.pkg__desc { font-size: 13.5px; line-height: 1.66; color: var(--dim); margin: 0 0 16px; }
+.pkg__list { list-style: none; margin: 0 0 18px; padding: 0; font-size: 13px; color: var(--dim); flex: none; }
+.pkg__list li { padding: 5px 0; border-top: 1px solid var(--line); }
+.pkg__price {
+  font-family: var(--font-display);
+  font-size: 20px;
+  margin: 0 0 18px;
+  letter-spacing: -0.01em;
+}
+/* Pushed to the bottom so the book buttons line up across cards. */
+.pkg .cta { margin-top: auto; align-self: flex-start; }
+.cta--sm { font-size: 10.5px; }
+
+/* The dark "investment" band that closes the services page. */
+.invest {
+  margin: 76px calc(-1 * var(--pad)) 0;
+  padding: 54px var(--pad) 58px;
+  background: #0d0d0d;
+  color: #fff;
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: center;
+}
+.invest__label {
+  font-size: 10.5px;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin: 0 0 16px;
+}
+.invest__h { font-family: var(--font-display); font-weight: 400; font-size: clamp(24px, 3.4vw, 38px); line-height: 1.05; text-transform: uppercase; margin: 0; }
+.invest__p { margin: 18px 0 0; font-size: 14px; line-height: 1.7; opacity: 0.82; max-width: 44ch; }
+
+/* ----------------------------------------------------- contact page */
+
+.ct__h { font-size: clamp(34px, 5.4vw, 60px); margin-bottom: 30px; }
+.ct__p { font-size: 14.5px; line-height: 1.72; color: var(--dim); margin: 0 0 34px; max-width: 44ch; }
+.ct__details { list-style: none; margin: 0 0 38px; padding: 0; font-size: 13.5px; }
+.ct__details li { display: flex; align-items: center; gap: 12px; padding: 9px 0; }
+.ct__details svg { width: 15px; height: 15px; flex: none; opacity: 0.7; }
+.ct__details a:hover { color: var(--grey); }
+.ct { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.72fr); gap: 64px; align-items: start; }
+.ct__col { padding-top: 40px; }
+.ct__fig { margin: 0; }
+.ct__fig img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; }
+.ct .cform { gap: 18px; }
+.ct .cform label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--grey); }
+
+/* ------------------------------------------------------- mobile */
+
+@media (max-width: 760px) {
+  .burger { display: flex; }
+
+  /* The nav becomes a full-width drawer under the header. Kept in the DOM and
+     just visually collapsed so the toggle can animate it; `visibility` keeps
+     it out of the tab order when closed, which `display:none` alone would too
+     but without the transition. */
+  .site-nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    padding: 6px var(--pad) 14px;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s;
+  }
+  .site-nav.is-open { visibility: visible; opacity: 1; transform: none; }
+  .nav-link {
+    display: block;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    min-height: 44px;
+  }
+  .nav-link:last-child { border-bottom: 0; }
+  .nav-link.is-active { border-bottom-color: var(--ink); }
+}
+
+/* The reference says "do not simply shrink the desktop design" — these are
+   real recompositions, not a scaled-down desktop. */
+@media (max-width: 1000px) {
+  .about, .ct { grid-template-columns: 1fr; gap: 44px; }
+  .invest { grid-template-columns: 1fr; gap: 24px; }
+  .shead { grid-template-columns: 1fr; gap: 26px; }
+  .pkgrow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ct__fig { order: -1; }
+  .ct__fig img { aspect-ratio: 16 / 10; }
+}
+
+@media (max-width: 760px) {
+  .pkgrow { grid-template-columns: 1fr; gap: 44px; }
+  .hstrip__grid { grid-template-columns: repeat(2, 1fr); }
+  .hstrip__grid .cell:nth-child(4) { display: block; }
+  .invest, .hcta { margin-left: calc(-1 * var(--pad)); margin-right: calc(-1 * var(--pad)); }
+}
+
+@media (max-width: 640px) {
+  /* The header must be at least as tall as its tallest child. 74px was
+     below the 49px logo plus the burger's 44px row once `align-items: center`
+     measured against a FIXED height — the grid row came out 48.6px, so the
+     logo was centred inside a box 0.4px smaller than itself and pushed to
+     top: -14.3px, taking "SHUTTERHAUS" off-screen again. `min-height`
+     lets the row grow to fit instead. */
+  :root { --pad: 18px; --head: 92px; }
+  .site-header { height: auto; min-height: var(--head); padding: 10px var(--pad); }
+
+  .hero { min-height: 72vh; }
+  .hero__body { padding-bottom: 40px; }
+  .hero__lede { font-size: 14px; }
+  .phead { padding: 28px 0 32px; }
+  .hcta { padding: 54px var(--pad) 58px; }
+  .invest { padding: 40px var(--pad) 44px; }
+  .pfilter { gap: 16px; }
+  .about__body, .ct__col { padding-top: 28px; }
+}

@@ -124,7 +124,16 @@ const info = await evaluate(`(() => {
     broken: [...document.querySelectorAll('.cell img')].filter(i => i.complete && i.naturalWidth === 0).length,
   };
 })()`);
-console.log("\n--- home ---\n" + JSON.stringify(info, null, 2));
+console.log("\n--- home ---" + JSON.stringify(info, null, 2));
+
+// Grid shape is a portfolio concern now, so read it on that route.
+await goto("/#/portfolio", 2400);
+const grid = await evaluate(`(() => ({
+  cols: document.querySelectorAll('.col').length,
+  perCol: [...document.querySelectorAll('.col')].map(c => c.querySelectorAll('img').length),
+  filters: document.querySelectorAll('.pfilter__item').length,
+}))()`);
+console.log("--- portfolio ---" + JSON.stringify(grid));
 
 check("title set", /shutterhaus/i.test(info.title), info.title);
 check("header renders", info.header);
@@ -134,13 +143,16 @@ check("small word < big word", parseFloat(info.smFS) < parseFloat(info.lgFS), `$
 // the real signal that the wordmark is heavy, plus a font-size floor.
 check("wordmark is the display face", /Archivo/i.test(info.lgFamily ?? ""), info.lgFamily);
 check("wordmark is large", parseFloat(info.lgFS) >= 24, info.lgFS);
-check("nav = photo,pricing,contact", info.nav.join(",") === "photo,pricing,contact", info.nav.join(","));
-check("photo active on load", info.active === "photo", info.active);
+// The five-route editorial build. `portfolio` is the route that carries the
+// column grid, so the grid checks below read from there, not from the default
+// route — which is now the home hero and has no columns at all.
+const ROUTES = ["Home", "Portfolio", "About", "Services", "Contact"];
+check("nav = the five routes", info.nav.join(",") === ROUTES.join(","), info.nav.join(","));
+check("home active by default", info.active === "Home", info.active);
 check("social icons", info.social >= 1, String(info.social));
-check("3 columns", info.cols === 3, String(info.cols));
-check("all columns populated", info.perCol.every((n) => n > 0), info.perCol.join("/"));
+check("portfolio grid has columns", grid.cols >= 1, String(grid.cols));
+check("portfolio columns populated", grid.perCol.every((n) => n > 0), grid.perCol.join("/"));
 check("no horizontal overflow", info.overflow <= 0, `${info.overflow}px`);
-check("columns scroll independently", info.colScroll.some(Boolean), JSON.stringify(info.colScroll));
 check("black & white shell", info.bw);
 check("white page bg", info.bodyBg === "rgb(255, 255, 255)", info.bodyBg);
 check("inactive nav is muted", info.navColor !== info.activeColor, `muted ${info.navColor} vs active ${info.activeColor}`);
@@ -173,7 +185,7 @@ const contact = await evaluate(`(() => ({
   mailto: !!document.querySelector('a[href^="mailto:"]'),
   overflow: document.documentElement.scrollWidth - window.innerWidth,
 }))()`);
-check("contact route", contact.active === "contact", contact.active);
+check("contact route", contact.active === "Contact", contact.active);
 check("contact form", contact.form);
 check("form has name/email/message", ["name","email","message"].every(f=>contact.fields.includes(f)), contact.fields.join(","));
 check("mailto link", contact.mailto);
@@ -250,39 +262,47 @@ if (!adm.notConfigured) {
 check("admin no overflow", adm.overflow <= 0, `${adm.overflow}px`);
 await shot("shot-admin.png");
 
-// ============================================== pricing
-await goto("/#/pricing", 2200);
+// ============================================== services
+// Class names are `pkg`/`pkgrow` now (see servicesPage()), and the packages
+// each open with a photograph. `tier` was the old pricing-card class.
+await goto("/#/services", 2200);
 const pr = await evaluate(`(() => ({
   route: location.hash,
   active: document.querySelector('.nav-link.is-active')?.textContent,
-  tiers: document.querySelectorAll('.tier').length,
-  names: [...document.querySelectorAll('.tier__name')].map(e=>e.textContent),
-  prices: [...document.querySelectorAll('.tier__price')].map(e=>e.textContent),
-  popular: document.querySelectorAll('.tier--pop').length,
+  tiers: document.querySelectorAll('.pkg').length,
+  names: [...document.querySelectorAll('.pkg__name')].map(e=>e.textContent),
+  prices: [...document.querySelectorAll('.pkg__price')].map(e=>e.textContent),
+  popular: document.querySelectorAll('.pkg--pop').length,
+  figs: document.querySelectorAll('.pkg__fig img').length,
   addons: document.querySelectorAll('.addons li').length,
   terms: document.querySelectorAll('.terms li').length,
-  ctas: [...document.querySelectorAll('.tier__cta')].map(a=>a.getAttribute('href')),
+  ctas: [...document.querySelectorAll('.pkg .cta')].map(a=>a.getAttribute('href')),
   overflow: document.documentElement.scrollWidth - window.innerWidth,
-  bg: document.querySelector('.tier') ? getComputedStyle(document.querySelector('.tier')).backgroundColor : null,
+  bg: document.querySelector('.pkg') ? getComputedStyle(document.querySelector('.pkg')).backgroundColor : null,
 }))()`);
-console.log("\\n--- pricing ---\\n" + JSON.stringify(pr, null, 2));
-check("pricing route renders", pr.tiers >= 3, String(pr.tiers));
-check("nav marks pricing active", pr.active === "pricing", String(pr.active));
-check("4 tiers from the pricing PDF", pr.tiers === 4, String(pr.tiers));
-check("all tier names present", pr.names.every(Boolean), pr.names.join("/"));
-check("every tier has a price", pr.prices.every(p => /^R[\\s]?[0-9]/.test(p)), pr.prices.join(" "));
+console.log("\\n--- services ---\\n" + JSON.stringify(pr, null, 2));
+check("services route renders", pr.tiers >= 3, String(pr.tiers));
+check("nav marks services active", pr.active === "Services", String(pr.active));
+check("4 packages configured", pr.tiers === 4, String(pr.tiers));
+check("all package names present", pr.names.every(Boolean), pr.names.join("/"));
+check("every package has a price", pr.prices.every(p => /^R[\\s]?[0-9]/.test(p)), pr.prices.join(" "));
 check("exactly one 'most popular'", pr.popular === 1, String(pr.popular));
+check("each package has a photo", pr.figs === pr.tiers, `${pr.figs}/${pr.tiers}`);
 check("add-ons listed", pr.addons === 6, String(pr.addons));
 check("booking terms listed", pr.terms >= 4, String(pr.terms));
-check("every tier links to contact", pr.ctas.every(h => h === "#/contact"), pr.ctas.join(","));
-check("tier cards are white", pr.bg === "rgb(255, 255, 255)", pr.bg);
-check("pricing no overflow", pr.overflow <= 0, `${pr.overflow}px`);
-await shot("shot-pricing.png");
+check("every package links to contact", pr.ctas.every(h => h === "#/contact"), pr.ctas.join(","));
+// The editorial package cards carry no fill — they sit on the white page
+// separated by whitespace, not by a card background. The old check asserted
+// rgb(255,255,255); the meaningful assertion now is that they are NOT a
+// filled/tinted box, which is what would fight the photography.
+check("package cards are unfilled", pr.bg === "rgba(0, 0, 0, 0)", pr.bg);
+check("services no overflow", pr.overflow <= 0, `${pr.overflow}px`);
+await shot("shot-services.png");
 
 // ============================================== mobile pricing
 for (const w of [360, 390, 768]) {
   await send("Emulation.setDeviceMetricsOverride", { width: w, height: 800, deviceScaleFactor: 1, mobile: true });
-  await goto("/#/pricing", 1600);
+  await goto("/#/services", 1600);
   const o = await evaluate(`document.documentElement.scrollWidth - window.innerWidth`);
   check(`pricing mobile ${w}: no overflow`, o <= 0, `${o}px`);
 }

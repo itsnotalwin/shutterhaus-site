@@ -41,7 +41,7 @@ export function escapeHtml(s: string): string {
  */
 export function header(active: string): string {
   const wordmark = `
-    <a class="logo" href="#/photo" aria-label="${escapeHtml(SITE.nameTop)} — home">
+    <a class="logo" href="#/home" aria-label="${escapeHtml(SITE.nameTop)} — home">
       <span class="logo-row">
         <span class="logo-sm">${escapeHtml(SITE.nameTop)}</span>
         <span class="logo-lg">${escapeHtml(SITE.nameBig1)}</span>
@@ -52,7 +52,9 @@ export function header(active: string): string {
   const nav = SITE.nav
     .map(
       (n) =>
-        `<a class="nav-link${n.id === active ? " is-active" : ""}" href="#/${n.id}">${escapeHtml(n.label)}</a>`,
+        `<a class="nav-link${n.id === active ? " is-active" : ""}" href="#/${n.id}"${
+          n.id === active ? ' aria-current="page"' : ""
+        }>${escapeHtml(n.label)}</a>`,
     )
     .join("");
 
@@ -66,7 +68,10 @@ export function header(active: string): string {
 
   return `<header class="site-header">
     ${wordmark}
-    <nav class="site-nav" aria-label="Primary">${nav}</nav>
+    <button class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="site-nav">
+      <span class="burger__bars" aria-hidden="true"><i></i><i></i></span>
+    </button>
+    <nav class="site-nav" id="site-nav" aria-label="Primary">${nav}</nav>
     <div class="site-social">${social}</div>
   </header>`;
 }

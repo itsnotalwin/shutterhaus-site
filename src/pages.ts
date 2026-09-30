@@ -1,4 +1,5 @@
 import { escapeHtml } from "./layout";
+import { SITE } from "./config";
 import type { Photo } from "./types";
 
 /** Round-robin into N columns, preserving the admin's chosen order. */
@@ -23,7 +24,7 @@ const WIDTHS = [400, 800, 1200, 1600];
  * own CDN transformations) so callers fall back to a plain src rather than
  * emitting a srcset that 404s.
  */
-function derivative(url: string, w: number, ext: "webp" | "jpg"): string | null {
+export function derivative(url: string, w: number, ext: "webp" | "jpg"): string | null {
   const m = /^(.*)\.(jpe?g|png)$/i.exec(url);
   if (!m) return null;
   if (/^https?:\/\//i.test(url)) return null;
@@ -38,12 +39,55 @@ function derivative(url: string, w: number, ext: "webp" | "jpg"): string | null 
  * WebP takes roughly a third fewer bytes for the same picture, which is the
  * whole game on a 1.6Mbps phone.
  */
-function pictureFor(url: string, sizes: string): string {
+/**
+ * The largest derivative that ACTUALLY EXISTS for this file, as a plain string.
+ *
+ * `derivative()` only builds a path — it does not check the file is there. So
+ * asking for a width nobody generated yields a URL that 404s, and because it
+ * returned a non-null string the caller's `?? url` fallback never fires. That
+ * is how the home hero rendered as a black box: no photo is 1600px wide.
+ *
+ * Walks WIDTHS downwards and returns the first generated file, falling back to
+ * the original when the photo came from an absolute URL (Supabase CDN) or has
+ * no derivatives at all.
+ */
+export function bestDerivative(
+  url: string,
+  ext: "webp" | "jpg" = "jpg",
+  sourceWidth?: number | null,
+): string {
+  // `derivative()` only BUILDS a path — it never checks the file is on disk.
+  // So walking WIDTHS downward and taking the first non-null result always
+  // returns 1600w, which make-derivatives.py deliberately never generated for
+  // a source narrower than 1600px. That 404 is what rendered the home hero as
+  // a black box while every other check stayed green.
+  //
+  // The real ceiling is the source width, so cap by that. When it is unknown
+  // (Supabase CDN absolute URL) return the original, which always exists.
+  if (/^https?:\/\//i.test(url)) return url;
+  for (let i = WIDTHS.length - 1; i >= 0; i--) {
+    const w = WIDTHS[i]!;
+    if (sourceWidth && w > sourceWidth) continue;
+    const d = derivative(url, w, ext);
+    if (d) return d;
+  }
+  return url;
+}
+
+export function pictureFor(url: string, sizes: string, sourceWidth?: number | null): string {
   // Build width+url pairs BEFORE filtering, so the `w` descriptor can never
   // drift out of step with the file it describes.
+  //
+  // `sourceWidth` caps the ladder. Only widths that were actually GENERATED
+  // may be advertised: tools/make-derivatives.py never upscales, so a -1600w
+  // file does not exist for a 1440px photo — and a srcset entry for a missing
+  // file is worse than none, because the browser picks that exact candidate
+  // and 404s, while the `src` fallback only applies when NO <source> matches.
+  // That is what rendered the home hero as a black box.
   const set = (ext: "webp" | "jpg"): string =>
     WIDTHS.map((w) => ({ w, u: derivative(url, w, ext) }))
       .filter((p): p is { w: number; u: string } => p.u !== null)
+      .filter((p) => !sourceWidth || p.w <= sourceWidth)
       .map((p) => `${p.u} ${p.w}w`)
       .join(", ");
 
@@ -62,13 +106,31 @@ function pictureFor(url: string, sizes: string): string {
 const SIZES =
   "(max-width: 639px) 100vw, (max-width: 999px) 50vw, (max-width: 1399px) 33vw, 50vw";
 
+/**
+ * The category a photo belongs to, read off its `cat-` prefix.
+ *
+ * The admin stores it as `cat-portrait` inside `album`, because the schema has
+ * no dedicated column. A photo with no prefix is treated as "portrait" — every
+ * frame still has to appear under exactly one filter.
+ */
+export function categoryOf(p: Photo): string {
+  const m = /(?:^|\s)cat-([a-z]+)/i.exec(p.album || "");
+  const key = (m?.[1] ?? "portrait").toLowerCase();
+  return SITE.categories.includes(key) ? key : "portrait";
+}
+
+/** "portrait" -> "Portrait", for the caption line. */
+function titleCase(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 function figure(p: Photo, index: number): string {
   // The first frame is the LCP element. Marking it lazy forces the browser to
   // discover it, then decide — which is exactly the 6.4s stall we measured.
   // Only the first is eager; the rest stay lazy.
   const loading = index === 0 ? "eager" : "lazy";
   const priority = index === 0 ? ' fetchpriority="high"' : "";
-  const sources = pictureFor(p.url, SIZES);
+  const sources = pictureFor(p.url, SIZES, p.width);
   // Intrinsic ratio is unknown here, so aspect-ratio comes from the DB if we
   // have it; otherwise the CSS fallback keeps the box from collapsing.
   const ratio = p.width && p.height ? ` style="aspect-ratio:${p.width}/${p.height}"` : "";
@@ -80,9 +142,110 @@ function figure(p: Photo, index: number): string {
       <picture>${sources}
         <img src="${escapeHtml(fb)}" alt="${escapeHtml(p.alt || p.filename || "")}"
              loading="${loading}" decoding="async"${priority}${ratio}
-             data-full="${escapeHtml(p.url)}" data-alt="${escapeHtml(p.alt || "")}" />
+             data-full="${escapeHtml(p.url)}" data-alt="${escapeHtml(p.alt || "")}"
+             data-cat="${escapeHtml(categoryOf(p))}" />
       </picture>
     </figure>`;
+}
+
+/**
+ * The portfolio route.
+ *
+ * Same frames as the old photo route, but with the reference's editorial
+ * treatment: a wide lead frame, a category filter row, and a 3-up wall below.
+ * Filtering is client-side by `data-cat` — every frame is in the DOM, the
+ * non-matching ones are hidden. No refetch, and the lightbox keeps working
+ * because it walks the same set.
+ */
+export function portfolioPage(photos: Photo[], cols: number): string {
+  if (!photos.length) return emptyGallery();
+
+  const filters = [`<button class="pfilter__item is-on" type="button" data-filter="all">All</button>`]
+    .concat(
+      SITE.categories.map(
+        (c) =>
+          `<button class="pfilter__item" type="button" data-filter="${escapeHtml(c)}">${escapeHtml(titleCase(c))}s</button>`,
+      ),
+    )
+    .join("");
+
+  // Flatten to one index space so `index === 0` is always the lead frame,
+  // whichever column it lands in after the round-robin.
+  let n = 0;
+  const wall = columnise(photos, cols)
+    .map((col) => `<div class="col">${col.map((p) => figure(p, n++)).join("")}</div>`)
+    .join("");
+
+  return `<section class="page portfolio">
+    <header class="phead">
+      <p class="eyebrow">A collection of moments</p>
+      <h1 class="phead__h">Portfolio</h1>
+      <p class="phead__p">A curated selection of portraits, couples, families and creative work. Real people, real stories.</p>
+    </header>
+    <div class="pfilter" role="group" aria-label="Filter by category">${filters}</div>
+    <div class="grid grid--wall" data-cols="${cols}">${wall}</div>
+  </section>`;
+}
+
+/** The shared empty state — reachable from home and portfolio alike. */
+export function emptyGallery(): string {
+  return `<section class="empty">
+      <p>No photos published yet.</p>
+      <p class="dim">If you're the admin, add some in <a href="#/admin">the gallery manager</a>.</p>
+    </section>`;
+}
+
+/**
+ * The home route: full-bleed hero, then a short editorial strip of frames.
+ *
+ * The hero is a real photograph rather than a flat black block — the reference
+ * puts the work behind the headline, and a black rectangle reads as a broken
+ * image to a first-time visitor.
+ */
+export function homePage(photos: Photo[]): string {
+  const h = SITE.home;
+  const hero = photos[0];
+  const strip = photos.slice(1, 1 + SITE.homeGalleryCount);
+
+      // No 1600w derivative exists for these files — asking for one returns a
+      // path that 404s. bestDerivative() walks down to a width that does.
+      const heroFig = hero
+    ? `<figure class="hero__fig">${pictureFor(hero.url, "100vw", hero.width)}
+        <img src="${escapeHtml(bestDerivative(hero.url, "jpg", hero.width))}"
+             alt="${escapeHtml(hero.alt || hero.filename || "")}"
+             loading="eager" decoding="async" fetchpriority="high"
+             style="aspect-ratio:${hero.width ?? 1600}/${hero.height ?? 1067}" />
+      </figure>`
+    : "";
+
+  return `<section class="page home">
+    <div class="hero">
+      ${heroFig}
+      <div class="hero__scrim" aria-hidden="true"></div>
+      <div class="hero__body">
+        <p class="eyebrow">${escapeHtml(h.eyebrow)}</p>
+        <h1 class="hero__h">${escapeHtml(h.heading)}</h1>
+        <p class="hero__lede">${escapeHtml(h.lede)}</p>
+        <a class="cta" href="#/portfolio">${escapeHtml(h.cta)}</a>
+      </div>
+    </div>
+
+    ${
+      strip.length
+        ? `<section class="hstrip">
+            <p class="eyebrow">Selected work</p>
+            <div class="hstrip__grid">${strip.map((p) => figure(p, 0)).join("")}</div>
+            <a class="cta cta--line" href="#/portfolio">See the full portfolio</a>
+          </section>`
+        : ""
+    }
+
+    <section class="hcta">
+      <p class="eyebrow">${escapeHtml(SITE.services.eyebrow)}</p>
+      <h2 class="hcta__h">${escapeHtml(SITE.services.heading)}</h2>
+      <a class="cta" href="#/services">${escapeHtml(SITE.services.cta)}</a>
+    </section>
+  </section>`;
 }
 
 /** The photo route: independent columns, each scrolling on its own. */

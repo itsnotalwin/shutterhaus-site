@@ -1,8 +1,9 @@
 import "./styles.css";
+import "./editorial.css";
 import { SITE } from "./config";
 import { renderShell } from "./layout";
-import { photoPage } from "./pages";
-import { contactPage, pricingPage } from "./pages-more";
+import { photoPage, portfolioPage, homePage, emptyGallery } from "./pages";
+import { contactPage, servicesPage, aboutPage } from "./pages-more";
 import { listPublicPhotos } from "./store";
 import { DEMO_PHOTOS } from "./demo";
 import { initLightbox, markLoadedImages } from "./lightbox";
@@ -19,11 +20,28 @@ function columnsFor(w: number): number {
 
 function route(): string {
   const h = location.hash.replace(/^#\/?/, "").split("?")[0];
-  return h || "photo";
+  return h || "home";
+}
+
+/** `photo` is the old single-page route — keep it as an alias for /portfolio. */
+const ALIASES: Record<string, string> = {
+  photo: "portfolio",
+  pricing: "services",
+};
+
+/** Routes that need the photo set rather than just static copy. */
+const GALLERY_ROUTES = new Set(["home", "portfolio", "about"]);
+
+function setTitle(r: string): void {
+  const label = r.charAt(0).toUpperCase() + r.slice(1);
+  document.title =
+    r === "home"
+      ? `${SITE.nameTop} ${SITE.nameBig2} — photography in Gauteng`
+      : `${label} — ${SITE.nameTop} ${SITE.nameBig2}`;
 }
 
 async function paint(): Promise<void> {
-  const r = route();
+  const r = ALIASES[route()] ?? route();
   const cols = columnsFor(innerWidth);
 
   if (r === "admin") {
@@ -33,21 +51,72 @@ async function paint(): Promise<void> {
   }
 
   if (r === "contact") {
-    app.innerHTML = renderShell("contact", contactPage());
-    wireContact();
-    scrollTo(0, 0);
-    document.title = `contact — ${SITE.nameTop} ${SITE.nameBig2}`;
+    // The reference puts a photograph beside the form, so this page needs a
+    // photo too — same non-blocking pattern as about.
+    let photos = DEMO_PHOTOS;
+    const draw = () => {
+      app.innerHTML = renderShell("contact", contactPage(photos));
+      markLoadedImages();
+      wireContact();
+      wireBurger();
+      scrollTo(0, 0);
+    };
+    draw();
+    setTitle("contact");
+    if (isSupabaseConfigured) {
+      const live = await listPublicPhotos().catch(() => null);
+      if (live?.length) {
+        photos = live;
+        draw();
+      }
+    }
     return;
   }
 
-  if (r === "pricing") {
-    app.innerHTML = renderShell("pricing", pricingPage());
-    scrollTo(0, 0);
-    document.title = `pricing — ${SITE.nameTop} ${SITE.nameBig2}`;
+  if (r === "services") {
+    // Package cards carry a photograph each, same non-blocking pattern.
+    let photos = DEMO_PHOTOS;
+    const draw = () => {
+      app.innerHTML = renderShell("services", servicesPage(photos));
+      markLoadedImages();
+      wireBurger();
+      scrollTo(0, 0);
+    };
+    draw();
+    setTitle("services");
+    if (isSupabaseConfigured) {
+      const live = await listPublicPhotos().catch(() => null);
+      if (live?.length) {
+        photos = live;
+        draw();
+      }
+    }
     return;
   }
 
-  // photo — the default route
+  if (r === "about") {
+    // The about page shows one portrait beside the prose, so it needs a photo
+    // but must never wait on the network for it.
+    let photos = DEMO_PHOTOS;
+    const draw = () => {
+      app.innerHTML = renderShell("about", aboutPage(photos));
+      markLoadedImages();
+      wireBurger();
+      scrollTo(0, 0);
+    };
+    draw();
+    setTitle("about");
+    if (isSupabaseConfigured) {
+      const live = await listPublicPhotos().catch(() => null);
+      if (live?.length) {
+        photos = live;
+        draw();
+      }
+    }
+    return;
+  }
+
+  // home + portfolio — the two routes built around the wall of frames.
   //
   // The gallery must NEVER depend on a network call succeeding. Two failure
   // modes to survive: Supabase being unreachable, and supabase-js burning ~6s
@@ -55,13 +124,21 @@ async function paint(): Promise<void> {
   // short cap — the bundled set renders immediately and is upgraded in place
   // if live photos arrive. A visitor never sees a blank page.
   let photos = DEMO_PHOTOS;
-  let paintGallery = () => {
-    app.innerHTML = renderShell("photo", photoPage(photos, cols));
+  const draw = () => {
+    const body =
+      r === "home"
+        ? photos.length
+          ? homePage(photos)
+          : emptyGallery()
+        : portfolioPage(photos, cols);
+    app.innerHTML = renderShell(r, body);
     markLoadedImages();
+    wireBurger();
+    if (r === "portfolio") wireFilter();
     scrollTo(0, 0);
   };
-  paintGallery();
-  document.title = `${SITE.nameTop} ${SITE.nameBig2} — photography in Gauteng`;
+  draw();
+  setTitle(r);
 
   if (isSupabaseConfigured) {
     const TIMEOUT_MS = 2500;
@@ -79,7 +156,7 @@ async function paint(): Promise<void> {
       // bundled set so the site is never empty.
       if (live.length) {
         photos = live;
-        paintGallery();
+        draw();
       }
     } catch (err) {
       console.warn("[gallery] Supabase unreachable, keeping bundled set:", err);
@@ -87,6 +164,58 @@ async function paint(): Promise<void> {
       if (t !== undefined) clearTimeout(t);
     }
   }
+}
+
+/**
+ * Portfolio category filter.
+ *
+ * Toggles a class on the frames rather than re-rendering: every <img> stays in
+ * the DOM, so nothing refetches and the lightbox — which walks the same set —
+ * keeps working without a re-init.
+ */
+function wireFilter(): void {
+  const buttons = document.querySelectorAll<HTMLButtonElement>(".pfilter__item");
+  if (!buttons.length) return;
+
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const want = btn.dataset.filter ?? "all";
+      buttons.forEach((b) => {
+        const on = b === btn;
+        b.classList.toggle("is-on", on);
+        b.setAttribute("aria-pressed", String(on));
+      });
+      for (const cell of document.querySelectorAll<HTMLElement>(".cell")) {
+        const cat = cell.querySelector("img")?.dataset.cat ?? "portrait";
+        cell.classList.toggle("is-hidden", want !== "all" && cat !== want);
+      }
+      // Keyboard focus can end up on a hidden frame after filtering.
+      (document.activeElement as HTMLElement | null)?.blur();
+    });
+  });
+}
+
+/** Mobile menu toggle. The button and the panel are both in the header. */
+function wireBurger(): void {
+  const btn = document.querySelector<HTMLButtonElement>(".burger");
+  const nav = document.getElementById("site-nav");
+  if (!btn || !nav) return;
+
+  const set = (open: boolean) => {
+    btn.setAttribute("aria-expanded", String(open));
+    btn.classList.toggle("is-on", open);
+    nav.classList.toggle("is-open", open);
+    document.body.classList.toggle("nav-open", open);
+  };
+
+  btn.addEventListener("click", () => set(btn.getAttribute("aria-expanded") !== "true"));
+  // Any nav link closes the panel — otherwise it stays open over the new page.
+  nav.addEventListener("click", (e) => {
+    if ((e.target as HTMLElement).closest("a")) set(false);
+  });
+  addEventListener("keydown", (e) => {
+    if (e.key === "Escape") set(false);
+  });
 }
 
 /** Contact form: posts to Formspree if configured, else opens the mail client. */

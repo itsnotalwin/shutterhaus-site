@@ -19,6 +19,15 @@ export interface SiteConfig {
   blurb: string;
   /** Shown on the pricing page. Set showPricing to false to hide the nav item. */
   pricing: PricingConfig;
+  /** editorial copy for the reference layout's home + about pages */
+  home: { eyebrow: string; heading: string; lede: string; cta: string };
+  about: { eyebrow: string; heading: string; body: string[]; cta: string };
+  /** portfolio filter keys; each must match a `cat-` prefix the store sets */
+  categories: string[];
+  /** how many frames the home page features under its hero */
+  homeGalleryCount: number;
+  /** heading block on the services route, reused by the home page CTA */
+  services: { eyebrow: string; heading: string; cta: string };
 }
 
 export interface PricingTier {
@@ -53,9 +62,11 @@ export const SITE: SiteConfig = {
 
   /** `id` must match a route in src/main.ts */
   nav: [
-    { id: "photo", label: "photo" },
-    { id: "pricing", label: "pricing" },
-    { id: "contact", label: "contact" },
+    { id: "home", label: "Home" },
+    { id: "photo", label: "Portfolio" },
+    { id: "about", label: "About" },
+    { id: "services", label: "Services" },
+    { id: "contact", label: "Contact" },
   ],
 
   /** Top-right icons. Delete any you don't want. */
@@ -165,6 +176,40 @@ export const SITE: SiteConfig = {
 
     depositNote: "50% deposit to book · EFT accepted",
   },
+
+  // ---- editorial copy for the five-page reference layout ----
+  /**
+   * The reference design was a 5-page editorial site (Home / Portfolio /
+   * About / Services / Contact). This holds the copy for the three pages that
+   * had no equivalent before. Kept in config so it can be reworded without
+   * touching page code.
+   */
+  home: {
+    eyebrow: "Photography is poetry.",
+    heading: "Timeless Portraiture",
+    lede: "Real people. Honest moments. Portraits that look beyond the now.",
+    cta: "View portfolio",
+  },
+  about: {
+    eyebrow: "About me",
+    heading: "Photography Is Poetry.",
+    /** paragraphs, in order, on the left column beside the portrait */
+    body: [
+      "I'm a photographer based in Gauteng, drawn to the raw, unfiltered beauty of real people and unfiltered moments. For me, photography isn't just about what you see — it's about what you feel.",
+      "I believe the best images aren't staged. They happen. They live in the in-between, in the quiet looks, the laughter, the chaos, the stillness.",
+      "This is my way of telling your story — honestly, creatively, and with intention.",
+    ],
+    cta: "Let's create together",
+  },
+  /**
+   * Category filter labels on the portfolio. `key` matches the `cat-` prefix
+   * the store puts on each photo, so filtering is data-driven rather than
+   * a hardcoded list in the page.
+   */
+  categories: ["portrait", "couple", "family", "creative"],
+  /** Home page: how many frames to feature under the hero. */
+  homeGalleryCount: 4,
+  services: { eyebrow: "Services", heading: "Capture What Matters.", cta: "View packages" },
 };
 
 /** Fonts loaded in index.html. Change these to re-skin the type. */

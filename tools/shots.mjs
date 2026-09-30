@@ -15,21 +15,28 @@ mkdirSync(OUT, { recursive: true });
 // Every route across the viewports that actually break layouts. The first
 // pass only covered 5 of these 13, which is how a clipped header survived
 // into the commit — a route/viewport nobody looked at.
-const VIEWS = [
-  { name: "phone-360-photo", w: 360, h: 740, route: "", dpr: 3 },
-  { name: "phone-390-photo", w: 390, h: 844, route: "", dpr: 3 },
-  { name: "phone-360-pricing", w: 360, h: 740, route: "#/pricing", dpr: 3 },
-  { name: "phone-390-pricing", w: 390, h: 844, route: "#/pricing", dpr: 3 },
-  { name: "phone-360-contact", w: 360, h: 740, route: "#/contact", dpr: 3 },
-  { name: "phone-390-contact", w: 390, h: 844, route: "#/contact", dpr: 3 },
-  { name: "tablet-768-photo", w: 768, h: 1024, route: "", dpr: 2 },
-  { name: "tablet-768-pricing", w: 768, h: 1024, route: "#/pricing", dpr: 2 },
-  { name: "tablet-768-contact", w: 768, h: 1024, route: "#/contact", dpr: 2 },
-  { name: "desktop-1024-photo", w: 1024, h: 768, route: "", dpr: 1 },
-  { name: "desktop-1440-photo", w: 1440, h: 900, route: "", dpr: 1 },
-  { name: "desktop-1440-pricing", w: 1440, h: 900, route: "#/pricing", dpr: 1 },
-  { name: "desktop-1440-contact", w: 1440, h: 900, route: "#/contact", dpr: 1 },
+//
+// Route list follows the 5-page editorial build: home / portfolio / about /
+// services / contact. `photo` is the legacy alias and is deliberately NOT
+// shot here — `audit-ui.mjs` covers it as the alias it is.
+const ROUTES = [
+  ["home", "#/home"],
+  ["portfolio", "#/portfolio"],
+  ["about", "#/about"],
+  ["services", "#/services"],
+  ["contact", "#/contact"],
 ];
+const VIEWS = [];
+for (const [w, h, dpr, label] of [
+  [360, 740, 3, "phone-360"],
+  [390, 844, 3, "phone-390"],
+  [768, 1024, 2, "tablet-768"],
+  [1440, 900, 1, "desktop-1440"],
+]) {
+  for (const [rname, route] of ROUTES) {
+    VIEWS.push({ name: `${label}-${rname}`, w, h, route, dpr });
+  }
+}
 
 const t = await (await fetch(CDP + "/json/new?url=about:blank", { method: "PUT" })).json();
 const ws = new WebSocket(t.webSocketDebuggerUrl);

@@ -17,9 +17,20 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 mkdirSync(OUT, { recursive: true });
 
 const COMBOS = [];
+// All five routes of the editorial build, plus the legacy `photo` alias.
+// A route nobody audits is a route nobody looks at, which is how the clipped
+// header and the black-box hero both shipped green.
+const ROUTES = [
+  ["home", "#/home"],
+  ["portfolio", "#/portfolio"],
+  ["about", "#/about"],
+  ["services", "#/services"],
+  ["contact", "#/contact"],
+  ["photo-alias", ""],
+];
 for (const w of [320, 360, 390, 414, 768, 1024, 1440]) {
-  for (const route of ["", "#/pricing", "#/contact"]) {
-    COMBOS.push({ w, route, tag: `w${w}${route || "-photo"}` });
+  for (const [name, route] of ROUTES) {
+    COMBOS.push({ w, route, tag: `w${w}-${name}` });
   }
 }
 
