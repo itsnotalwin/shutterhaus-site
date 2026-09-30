@@ -63,7 +63,13 @@ img { display: block; max-width: 100%; }
   line-height: 0.86;
   letter-spacing: -0.02em;
   text-transform: uppercase;
-  min-height: 44px;
+  /* NOT min-height: 44px. The header is a centred grid, so making the logo
+     taller than its content re-centres it and pushed the small top word to
+     top: -7.2px at 390px — i.e. OFF-SCREEN. "SHUTTERHAUS" disappeared and
+     only "VISUALS" was visible. The 44px tap target is handled by padding on
+     .logo instead, which grows the hit box without changing the layout box
+     the grid measures. */
+  padding: 11px 0;
 }
 .logo-row { display: flex; align-items: baseline; gap: 6px; }
 .logo-sm {
@@ -115,6 +121,81 @@ img { display: block; max-width: 100%; }
 /* --------------------------------------------------------- gallery */
 
 .main { padding: 0 var(--pad) var(--pad); }
+
+/* Gallery intro — one line of context above the work. Deliberately small:
+   the photographs are the point, this only stops the page opening on a bare
+   wall of images. */
+.intro {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 30px 0 26px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: var(--gut);
+}
+.intro__lede {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--dim);
+  max-width: 52ch;
+}
+.intro__count {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--grey);
+  white-space: nowrap;
+}
+
+/* Footer — a hairline, four facts, and a quiet end to the page. */
+.foot {
+  border-top: 1px solid var(--line);
+  padding: 22px var(--pad) 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.foot__row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
+.foot__mark {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  margin-right: 4px;
+}
+.foot__link {
+  font-size: 12.5px;
+  color: var(--ink);
+  /* 44px tap target, same rule as every other link on the site. Padding
+     rather than min-height so the footer's baseline alignment holds. */
+  display: inline-block;
+  min-height: 44px;
+  line-height: 44px;
+  border-bottom: 1px solid var(--line);
+}
+.foot__link:hover { border-bottom-color: var(--ink); }
+.foot__meta { font-size: 11.5px; color: var(--dim); }
+.foot__row--fine { color: var(--dim); }
+
+.contact__back {
+  margin: 8px var(--pad) 40px;
+  font-size: 12px;
+}
+.contact__back a {
+  display: inline-block;
+  min-height: 44px;
+  line-height: 44px;
+  color: var(--grey);
+  border-bottom: 1px solid var(--line);
+}
+.contact__back a:hover { color: var(--ink); border-bottom-color: var(--ink); }
 
 .grid {
   display: grid;
@@ -543,8 +624,18 @@ code {
   background: #fff;
   display: flex;
   flex-direction: column;
+  /* Equal-height cards are right; the CTA must still sit on the BOTTOM
+     border, not float in the middle of a stretched box. That needs the
+     card to be the flex item that grows and the list NOT to absorb the
+     slack — `.tier__list` was `flex: 1`, which pushed the button down and
+     left a visible void in the shorter cards. Alwin read that as
+     "half filled". */
   height: 100%;
+  /* Push the CTA down instead of letting the list grow. */
+  justify-content: flex-start;
 }
+.tier__list { list-style: none; margin: 0 0 22px; padding: 0; }
+.tier__cta { margin-top: auto; }
 .tier--pop { border-color: var(--ink); }
 .tier__flag {
   position: absolute;
@@ -581,7 +672,6 @@ code {
   border-bottom: 1px solid var(--line);
 }
 .tier__fit { font-size: 13px; line-height: 1.6; margin: 0 0 16px; }
-.tier__list { list-style: none; margin: 0 0 22px; padding: 0; flex: 1; }
 .tier__list li {
   position: relative;
   font-size: 12.5px;
@@ -646,6 +736,17 @@ code {
 }
 
 /* ------------------------------------------------------ responsive */
+
+@media (max-width: 640px) {
+  .intro {
+    /* On a phone the lede needs the full width; the count moves under it
+       rather than trying to share a line and colliding with the text. */
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 24px 0 20px;
+  }
+}
 
 @media (max-width: 900px) {
   .contact { grid-template-columns: 1fr; gap: 36px; }

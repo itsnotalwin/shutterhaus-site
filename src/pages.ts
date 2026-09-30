@@ -1,4 +1,5 @@
 import { escapeHtml } from "./layout";
+import { SITE } from "./config";
 import type { Photo } from "./types";
 
 /** Round-robin into N columns, preserving the admin's chosen order. */
@@ -102,4 +103,17 @@ export function photoPage(photos: Photo[], cols: number): string {
       .map((col) => `<div class="col">${col.map((p) => figure(p, n++)).join("")}</div>`)
       .join("")}
   </section>`;
+}
+
+/**
+ * The gallery used to open straight into a wall of photographs with no words
+ * at all, which is most of what made the site read as empty. One line of
+ * context and a count — enough to orient, not enough to compete with the work.
+ */
+export function galleryIntro(photos: number): string {
+  const n = String(photos).padStart(2, "0");
+  return `<header class="intro">
+    <p class="intro__lede">${escapeHtml(SITE.blurb)}</p>
+    <p class="intro__count">${escapeHtml(n)} frames</p>
+  </header>`;
 }

@@ -73,7 +73,29 @@ export function header(active: string): string {
 
 /** Full page shell — header + the active route's body. */
 export function renderShell(active: string, body: string): string {
-  return `<div class="shell${SITE.blackAndWhite ? " is-bw" : ""}">${header(active)}<main class="main">${body}</main></div>`;
+  return `<div class="shell${SITE.blackAndWhite ? " is-bw" : ""}">${header(active)}<main class="main">${body}</main>${footer()}</div>`;
+}
+
+/**
+ * One hairline rule, four facts, nothing else. The site had no footer at all,
+ * which is most of why it read as unfinished — there was no quiet end to the
+ * page. Kept deliberately sparse: no newsletter, no social proof, no colour.
+ */
+export function footer(): string {
+  const c = SITE.contact;
+  const year = new Date().getFullYear();
+  return `<footer class="foot">
+    <div class="foot__row">
+      <span class="foot__mark">${escapeHtml(SITE.nameTop)}</span>
+      <a class="foot__link" href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a>
+      <a class="foot__link" href="tel:${escapeHtml(c.phone.replace(/\s/g, ""))}">${escapeHtml(c.phone)}</a>
+      <span class="foot__meta">${escapeHtml(c.location)}</span>
+    </div>
+    <div class="foot__row foot__row--fine">
+      <span class="foot__meta">&copy; ${year} ${escapeHtml(SITE.nameTop)} ${escapeHtml(SITE.nameBig2)}</span>
+      <span class="foot__meta">${escapeHtml(c.hours)}</span>
+    </div>
+  </footer>`;
 }
 
 export { FONTS };
