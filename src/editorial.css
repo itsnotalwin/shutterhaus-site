@@ -97,7 +97,18 @@
   background: #0d0d0d;
 }
 .hero__fig { position: absolute; inset: 0; margin: 0; }
-.hero__fig img { width: 100%; height: 100%; object-fit: cover; }
+/* `cover` fills the box, so a portrait source gets centre-cropped — which
+   zooms into the middle of the frame and slices the subject's head off. Bias
+   the crop to the upper third, where faces actually are, and let the scrim
+   carry the bottom. */
+.hero__fig img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* 30% kept the head in frame on desktop but still grazed the top of her hair
+     at 1440. 20% lifts the crop further: more sky/floor, less hair-clipped. */
+  object-position: 50% 20%;
+}
 /* The headline sits on the photograph, so it needs a scrim to stay legible
    over a bright frame. A gradient, not a flat wash — the reference keeps the
    top of the image clean. */
@@ -328,6 +339,22 @@
 
 @media (max-width: 760px) {
   .burger { display: flex; }
+
+  /* The desktop template is `1fr auto 1fr` (3 cells) but mobile has FOUR
+     children — logo, burger, nav, socials — so the burger wrapped onto a second
+     grid row and pushed the header 44px taller. Rebalance to THREE tracks on
+     mobile, with the nav pulled out of flow to become the drawer:
+        logo | burger | socials
+     The burger sits centre and the socials pin right, which keeps the same
+     visual order the reference shows on a phone. */
+  .site-header {
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-areas: "logo burger social" "nav nav nav";
+  }
+  .logo { grid-area: logo; }
+  .burger { grid-area: burger; align-self: center; }
+  .site-social { grid-area: social; justify-self: end; }
+  .site-nav { grid-area: nav; }
 
   /* The nav becomes a full-width drawer under the header. Kept in the DOM and
      just visually collapsed so the toggle can animate it; `visibility` keeps

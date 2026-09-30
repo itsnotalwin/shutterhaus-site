@@ -204,12 +204,26 @@ export function emptyGallery(): string {
  */
 export function homePage(photos: Photo[]): string {
   const h = SITE.home;
-  const hero = photos[0];
-  const strip = photos.slice(1, 1 + SITE.homeGalleryCount);
+  // The hero is a wide box; most gallery frames are portrait. Taking photos[0]
+  // blindly meant a 1440x1800 portrait centre-cropped into a 1440x710 hero —
+  // which zooms into the middle band and slices the subject's head off.
+  //
+  // Prefer a landscape frame, but not just any: a wide shot of a city skyline
+  // crops fine yet says nothing about portraiture, which is what the headline
+  // claims. Prefer a landscape frame that is also close enough to be a
+  // PORTRAIT (subject fills the frame), then any landscape, then anything.
+  const landscape = photos.filter((p) => (p.width ?? 0) > (p.height ?? 0));
+  // A "portrait" shot is roughly square-to-4:5 — the subject dominates.
+  // A 3:2 landscape is usually a wide establishing shot.
+  const portraitShot = landscape.filter((p) => {
+    const r = (p.width ?? 0) / (p.height ?? 0);
+    return r >= 1 && r <= 1.5;
+  });
+  const hero = portraitShot[0] ?? landscape[0] ?? photos[0];
+  // Never feature the same frame twice on one page.
+  const strip = photos.filter((p) => p.id !== hero?.id).slice(0, SITE.homeGalleryCount);
 
-      // No 1600w derivative exists for these files — asking for one returns a
-      // path that 404s. bestDerivative() walks down to a width that does.
-      const heroFig = hero
+  const heroFig = hero
     ? `<figure class="hero__fig">${pictureFor(hero.url, "100vw", hero.width)}
         <img src="${escapeHtml(bestDerivative(hero.url, "jpg", hero.width))}"
              alt="${escapeHtml(hero.alt || hero.filename || "")}"

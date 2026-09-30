@@ -63,7 +63,10 @@ export const SITE: SiteConfig = {
   /** `id` must match a route in src/main.ts */
   nav: [
     { id: "home", label: "Home" },
-    { id: "photo", label: "Portfolio" },
+    // The route is `portfolio`; `photo` is the legacy alias kept working in
+    // main.ts for old links. Using the real id here means the nav href and the
+    // active-state check agree instead of relying on the alias.
+    { id: "portfolio", label: "Portfolio" },
     { id: "about", label: "About" },
     { id: "services", label: "Services" },
     { id: "contact", label: "Contact" },
