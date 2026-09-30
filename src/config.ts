@@ -26,6 +26,13 @@ export interface SiteConfig {
   categories: string[];
   /** how many frames the home page features under its hero */
   homeGalleryCount: number;
+  /**
+   * Which frame carries the home hero, by filename. Auto-detection picks the
+   * first landscape shot, but that is a guess — this pins it so the choice is
+   * deliberate and changeable without touching page code. Set to null to fall
+   * back to auto-detection.
+   */
+  heroPhoto: string | null;
   /** heading block on the services route, reused by the home page CTA */
   services: { eyebrow: string; heading: string; cta: string };
 }
@@ -209,9 +216,13 @@ export const SITE: SiteConfig = {
    * the store puts on each photo, so filtering is data-driven rather than
    * a hardcoded list in the page.
    */
+  // Alwin's favourites, 50 frames. All on the portfolio, no category filter.
   categories: ["portrait", "couple", "family", "creative"],
-  /** Home page: how many frames to feature under the hero. */
-  homeGalleryCount: 4,
+  homeGalleryCount: 8,
+  // Pinned deliberately: strongest subject in the set AND real dark space in
+  // the lower-left for the white headline. Chosen from a side-by-side of all
+  // six landscape frames cropped to the hero ratio.
+  heroPhoto: "27-img-0297.jpg",
   services: { eyebrow: "Services", heading: "Capture What Matters.", cta: "View packages" },
 };
 

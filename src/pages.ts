@@ -113,7 +113,7 @@ const SIZES =
  * no dedicated column. A photo with no prefix is treated as "portrait" — every
  * frame still has to appear under exactly one filter.
  */
-export function categoryOf(p: Photo): string {
+function categoryOf(p: Photo): string {
   const m = /(?:^|\s)cat-([a-z]+)/i.exec(p.album || "");
   const key = (m?.[1] ?? "portrait").toLowerCase();
   return SITE.categories.includes(key) ? key : "portrait";
@@ -149,25 +149,14 @@ function figure(p: Photo, index: number): string {
 }
 
 /**
- * The portfolio route.
+ * The portfolio route: one editorial wall of every frame.
  *
- * Same frames as the old photo route, but with the reference's editorial
- * treatment: a wide lead frame, a category filter row, and a 3-up wall below.
- * Filtering is client-side by `data-cat` — every frame is in the DOM, the
- * non-matching ones are hidden. No refetch, and the lightbox keeps working
- * because it walks the same set.
+ * Alwin's call: "instead of having too many different things in portfolio just
+ * make it portfolio with all images" — the category filter is gone, so every
+ * frame in the gallery shows and the lightbox walks the whole set.
  */
 export function portfolioPage(photos: Photo[], cols: number): string {
   if (!photos.length) return emptyGallery();
-
-  const filters = [`<button class="pfilter__item is-on" type="button" data-filter="all">All</button>`]
-    .concat(
-      SITE.categories.map(
-        (c) =>
-          `<button class="pfilter__item" type="button" data-filter="${escapeHtml(c)}">${escapeHtml(titleCase(c))}s</button>`,
-      ),
-    )
-    .join("");
 
   // Flatten to one index space so `index === 0` is always the lead frame,
   // whichever column it lands in after the round-robin.
@@ -178,11 +167,10 @@ export function portfolioPage(photos: Photo[], cols: number): string {
 
   return `<section class="page portfolio">
     <header class="phead">
-      <p class="eyebrow">A collection of moments</p>
+      <p class="eyebrow">${photos.length} photographs · Gauteng</p>
       <h1 class="phead__h">Portfolio</h1>
-      <p class="phead__p">A curated selection of portraits, couples, families and creative work. Real people, real stories.</p>
+      <p class="phead__p">Portraits, couples, families and everything in between. This is the work, unfiltered.</p>
     </header>
-    <div class="pfilter" role="group" aria-label="Filter by category">${filters}</div>
     <div class="grid grid--wall" data-cols="${cols}">${wall}</div>
   </section>`;
 }
@@ -219,7 +207,10 @@ export function homePage(photos: Photo[]): string {
     const r = (p.width ?? 0) / (p.height ?? 0);
     return r >= 1 && r <= 1.5;
   });
-  const hero = portraitShot[0] ?? landscape[0] ?? photos[0];
+  // A pinned hero wins; that is a deliberate art-direction choice, not a guess.
+  // Fall back through the same ladder when it is unset or the file is gone.
+  const pinned = SITE.heroPhoto ? photos.find((p) => p.filename === SITE.heroPhoto) : undefined;
+  const hero = pinned ?? portraitShot[0] ?? landscape[0] ?? photos[0];
   // Never feature the same frame twice on one page.
   const strip = photos.filter((p) => p.id !== hero?.id).slice(0, SITE.homeGalleryCount);
 

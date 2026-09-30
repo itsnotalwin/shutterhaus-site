@@ -4,7 +4,7 @@ import { SITE } from "./config";
 import { renderShell } from "./layout";
 import { photoPage, portfolioPage, homePage, emptyGallery } from "./pages";
 import { contactPage, servicesPage, aboutPage } from "./pages-more";
-import { listPublicPhotos } from "./store";
+import { listPublicPhotos, type AdminPhoto } from "./store";
 import { DEMO_PHOTOS } from "./demo";
 import { initLightbox, markLoadedImages } from "./lightbox";
 import { isSupabaseConfigured } from "./supabase";
@@ -64,8 +64,8 @@ async function paint(): Promise<void> {
     draw();
     setTitle("contact");
     if (isSupabaseConfigured) {
-      const live = await listPublicPhotos().catch(() => null);
-      if (live?.length) {
+      const live = adoptable(await listPublicPhotos().catch(() => null));
+      if (live) {
         photos = live;
         draw();
       }
@@ -85,8 +85,8 @@ async function paint(): Promise<void> {
     draw();
     setTitle("services");
     if (isSupabaseConfigured) {
-      const live = await listPublicPhotos().catch(() => null);
-      if (live?.length) {
+      const live = adoptable(await listPublicPhotos().catch(() => null));
+      if (live) {
         photos = live;
         draw();
       }
@@ -107,8 +107,8 @@ async function paint(): Promise<void> {
     draw();
     setTitle("about");
     if (isSupabaseConfigured) {
-      const live = await listPublicPhotos().catch(() => null);
-      if (live?.length) {
+      const live = adoptable(await listPublicPhotos().catch(() => null));
+      if (live) {
         photos = live;
         draw();
       }
@@ -116,7 +116,23 @@ async function paint(): Promise<void> {
     return;
   }
 
-  // home + portfolio — the two routes built around the wall of frames.
+  /**
+ * Adopt the Supabase set only if every frame it names is actually shipped.
+ *
+ * A database row can outlive its file: when the bundled gallery was replaced
+ * with Alwin's favourites, the `photos` table still listed the nine old
+ * `finals-*.jpg` rows. Those overrode the bundled set and rendered as 404s on
+ * every page — a whole-site breakage from nine stale rows. The DB is optional
+ * data, so it only wins when it is fully coherent; a partial match is worse
+ * than no match and is rejected outright.
+ */
+function adoptable(live: AdminPhoto[] | null | undefined): AdminPhoto[] | null {
+  if (!live?.length) return null;
+  const known = new Set(DEMO_PHOTOS.map((p) => p.filename));
+  return live.every((p) => p.filename && known.has(p.filename)) ? live : null;
+}
+
+// home + portfolio — the two routes built around the wall of frames.
   //
   // The gallery must NEVER depend on a network call succeeding. Two failure
   // modes to survive: Supabase being unreachable, and supabase-js burning ~6s
@@ -136,7 +152,6 @@ async function paint(): Promise<void> {
     app.innerHTML = renderShell(r, body, r === "home");
     markLoadedImages();
     wireBurger();
-    if (r === "portfolio") wireFilter();
     scrollTo(0, 0);
   };
   draw();
@@ -155,10 +170,16 @@ async function paint(): Promise<void> {
         return; // bundled set already on screen
       }
       // An empty table is a legitimate state (nothing published yet) — keep the
-      // bundled set so the site is never empty.
-      if (live.length) {
-        photos = live;
+      // bundled set so the site is never empty. `adoptable` additionally rejects
+      // a table whose rows name files we no longer ship.
+      const ok = adoptable(live);
+      if (ok) {
+        photos = ok;
         draw();
+      } else if (live.length) {
+        console.warn(
+          `[gallery] ignoring ${live.length} DB row(s) naming files that are not bundled`,
+        );
       }
     } catch (err) {
       console.warn("[gallery] Supabase unreachable, keeping bundled set:", err);
@@ -166,35 +187,6 @@ async function paint(): Promise<void> {
       if (t !== undefined) clearTimeout(t);
     }
   }
-}
-
-/**
- * Portfolio category filter.
- *
- * Toggles a class on the frames rather than re-rendering: every <img> stays in
- * the DOM, so nothing refetches and the lightbox — which walks the same set —
- * keeps working without a re-init.
- */
-function wireFilter(): void {
-  const buttons = document.querySelectorAll<HTMLButtonElement>(".pfilter__item");
-  if (!buttons.length) return;
-
-  buttons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const want = btn.dataset.filter ?? "all";
-      buttons.forEach((b) => {
-        const on = b === btn;
-        b.classList.toggle("is-on", on);
-        b.setAttribute("aria-pressed", String(on));
-      });
-      for (const cell of document.querySelectorAll<HTMLElement>(".cell")) {
-        const cat = cell.querySelector("img")?.dataset.cat ?? "portrait";
-        cell.classList.toggle("is-hidden", want !== "all" && cat !== want);
-      }
-      // Keyboard focus can end up on a hidden frame after filtering.
-      (document.activeElement as HTMLElement | null)?.blur();
-    });
-  });
 }
 
 /** Mobile menu toggle. The button and the panel are both in the header. */
