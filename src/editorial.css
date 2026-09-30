@@ -202,25 +202,33 @@
 
 /* Selected-work strip under the hero.
  *
- * This was a plain 3-col GRID, which is what made the section read as "spaced
- * out and a bit shitty": every row took the height of its tallest cell, so
- * short frames got letterboxed into dead space and the wall lost the packing
- * rhythm the first site had. The old layout was true masonry — columns that
- * pack tight, no dead space between frames.
+ * The section went through three layouts, and only the third is balanced:
  *
- * CSS `columns` gives exactly that and needs no JS: each column packs its
- * frames edge to edge then continues into the next, so row heights stop
- * mattering. `break-inside: avoid` keeps a single frame from being split
- * across a column boundary. The count is set inline from the same `cols`
- * value the portfolio wall uses, so both agree per viewport.
+ *  1. A plain 3-col GRID — every row took the height of its tallest cell, so
+ *     short frames got letterboxed into dead space. Alwin: "spaces shitty."
+ *  2. CSS `columns` — packed tight, but it fills strictly top-to-bottom, so
+ *     8 frames became 3/3/2 and the third column ended 379px short at 1440 and
+ *     183px short at 390. Alwin: "slides seem uneven."
+ *  3. This one — real column divs filled by `packByHeight()`, which places
+ *     each frame in whichever column is currently shortest. The ragged bottom
+ *     is gone and the packing is still tight.
+ *
+ * The column count arrives as `--strip-cols` from the same `cols` value the
+ * portfolio wall uses, so both agree at every viewport.
  */
 .hstrip { padding: 72px 0 0; }
 .hstrip__grid {
-  column-gap: var(--gut);
+  display: grid;
+  /* Explicit count, set inline as `--strip-cols` from the same value the JS
+   * used to emit the columns. `auto-fit` does NOT infer a track per child, and
+   * `grid-auto-flow: column` flows items into ROWS — which stacks the columns
+   * vertically. One source of truth: `stripCols()` in pages.ts. */
+  grid-template-columns: repeat(var(--strip-cols, 3), minmax(0, 1fr));
+  gap: var(--gut);
   margin-bottom: 30px;
 }
-.hstrip__grid .cell { break-inside: avoid; margin-bottom: var(--gut); }
-.hstrip__grid .cell:last-child { margin-bottom: 0; }
+.hstrip__col { display: flex; flex-direction: column; gap: var(--gut); }
+.hstrip__col .cell { margin: 0; }
 .hcta {
   margin: 88px calc(-1 * var(--pad)) 0;
   padding: 72px var(--pad) 76px;
@@ -454,7 +462,6 @@
 
 @media (max-width: 760px) {
   .pkgrow { grid-template-columns: 1fr; gap: 44px; }
-  .hstrip__grid { column-count: 2 !important; }
   .invest, .hcta { margin-left: calc(-1 * var(--pad)); margin-right: calc(-1 * var(--pad)); }
 }
 
