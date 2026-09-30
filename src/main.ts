@@ -144,7 +144,7 @@ function adoptable(live: AdminPhoto[] | null | undefined): AdminPhoto[] | null {
     const body =
       r === "home"
         ? photos.length
-          ? homePage(photos)
+          ? homePage(photos, cols)
           : emptyGallery()
         : portfolioPage(photos, cols);
     // The home header floats over the hero photograph; portfolio keeps the

@@ -200,15 +200,27 @@
 .hero__body .cta { color: #fff; }
 .hero__body .cta::before { background: #fff; }
 
-/* Selected-work strip under the hero. */
+/* Selected-work strip under the hero.
+ *
+ * This was a plain 3-col GRID, which is what made the section read as "spaced
+ * out and a bit shitty": every row took the height of its tallest cell, so
+ * short frames got letterboxed into dead space and the wall lost the packing
+ * rhythm the first site had. The old layout was true masonry — columns that
+ * pack tight, no dead space between frames.
+ *
+ * CSS `columns` gives exactly that and needs no JS: each column packs its
+ * frames edge to edge then continues into the next, so row heights stop
+ * mattering. `break-inside: avoid` keeps a single frame from being split
+ * across a column boundary. The count is set inline from the same `cols`
+ * value the portfolio wall uses, so both agree per viewport.
+ */
 .hstrip { padding: 72px 0 0; }
 .hstrip__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--gut);
+  column-gap: var(--gut);
   margin-bottom: 30px;
 }
-.hstrip__grid .cell:nth-child(4) { display: none; }
+.hstrip__grid .cell { break-inside: avoid; margin-bottom: var(--gut); }
+.hstrip__grid .cell:last-child { margin-bottom: 0; }
 .hcta {
   margin: 88px calc(-1 * var(--pad)) 0;
   padding: 72px var(--pad) 76px;
@@ -442,8 +454,7 @@
 
 @media (max-width: 760px) {
   .pkgrow { grid-template-columns: 1fr; gap: 44px; }
-  .hstrip__grid { grid-template-columns: repeat(2, 1fr); }
-  .hstrip__grid .cell:nth-child(4) { display: block; }
+  .hstrip__grid { column-count: 2 !important; }
   .invest, .hcta { margin-left: calc(-1 * var(--pad)); margin-right: calc(-1 * var(--pad)); }
 }
 

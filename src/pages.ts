@@ -190,7 +190,7 @@ export function emptyGallery(): string {
  * puts the work behind the headline, and a black rectangle reads as a broken
  * image to a first-time visitor.
  */
-export function homePage(photos: Photo[]): string {
+export function homePage(photos: Photo[], cols: number): string {
   const h = SITE.home;
   // The hero is a wide box; most gallery frames are portrait. Taking photos[0]
   // blindly meant a 1440x1800 portrait centre-cropped into a 1440x710 hero —
@@ -239,7 +239,7 @@ export function homePage(photos: Photo[]): string {
       strip.length
         ? `<section class="hstrip">
             <p class="eyebrow">Selected work</p>
-            <div class="hstrip__grid">${strip.map((p) => figure(p, 0)).join("")}</div>
+            <div class="hstrip__grid" style="column-count:${cols}">${strip.map((p) => figure(p, 0)).join("")}</div>
             <a class="cta cta--line" href="#/portfolio">See the full portfolio</a>
           </section>`
         : ""

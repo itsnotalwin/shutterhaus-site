@@ -76,14 +76,24 @@ for (const v of VIEWS) {
   // Scroll the full page so lazy images below the fold are actually fetched,
   // then return to the top. Without this a screenshot captures empty
   // placeholders and looks like a broken site when it isn't one.
+  //
+  // `--full` keeps it scrolled down and captures with
+  // `captureBeyondViewport`, so a section below the fold (the home page's
+  // selected-work strip) is actually in frame instead of showing the hero.
+  const FULL = process.argv.includes("--full");
   await send("Runtime.evaluate", {
     expression:
       "new Promise(r=>{const h=document.documentElement.scrollHeight;" +
-      "window.scrollTo(0,h);setTimeout(()=>{window.scrollTo(0,0);r(1)},1500)})",
+      "window.scrollTo(0,h);setTimeout(()=>{" +
+      (FULL ? "" : "window.scrollTo(0,0);") +
+      "r(1)},1500)})",
     awaitPromise: true,
   });
   await sleep(1800);
-  const shot = await send("Page.captureScreenshot", { format: "png" });
+  const shot = await send("Page.captureScreenshot", {
+    format: "png",
+    ...(FULL ? { captureBeyondViewport: true } : {}),
+  });
   if (!shot.result?.data) {
     console.log("FAIL  " + v.name + " — no screenshot");
     continue;

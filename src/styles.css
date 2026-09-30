@@ -217,9 +217,12 @@ img { display: block; max-width: 100%; }
   padding-top: 6px;
 }
 
-/* Monochrome by default, per the reference. */
-.shell.is-bw .cell img { filter: grayscale(1) contrast(1.04); }
-.shell.is-bw .cell img:hover { filter: grayscale(0.35) contrast(1.02); }
+/* The frames are shown exactly as shot. Alwin was explicit: "they should keep
+   their uploaded colours and no filter when revealing colour or not." The old
+   `grayscale(1) -> grayscale(0.35)` on hover desaturated every image until
+   the pointer landed on it, which read as a defect rather than a choice — so
+   there is no filter on these at all now. If you ever want a monochrome look,
+   do it in the edit, not in the browser. */
 
 /* --------------------------------------------------------- contact */
 
