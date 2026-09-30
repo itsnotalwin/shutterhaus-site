@@ -63,7 +63,12 @@ img { display: block; max-width: 100%; }
   line-height: 0.86;
   letter-spacing: -0.02em;
   text-transform: uppercase;
-  min-height: 44px;
+  /* Padding, NOT min-height. The header is a centred grid, so a min-height
+     taller than the logo's own content re-centres it and pushes the small top
+     word to top: -3px at 390px — off-screen, so "SHUTTERHAUS" disappears and
+     only "VISUALS" shows. Padding grows the tap box without changing the
+     layout box the grid measures. */
+  padding: 11px 0;
 }
 .logo-row { display: flex; align-items: baseline; gap: 6px; }
 .logo-sm {

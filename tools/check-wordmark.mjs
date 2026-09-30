@@ -45,6 +45,11 @@ for (const w of [390, 1440]) {
         logo: R(logo), row: R(row), second: R(second),
         // The second word must start BELOW the first row, not beside it.
         stacked: R(second).t >= R(row).t + R(row).h - 4,
+        // AND the first word must be ON SCREEN. A centred grid plus a
+        // min-height taller than its content once pushed .logo-sm above the
+        // viewport top at 390px — "SHUTTERHAUS" vanished and only "VISUALS"
+        // showed. A stacking check cannot see a clipping bug.
+        onScreen: R(row).t >= 0,
         target: Math.round(logo.getBoundingClientRect().height),
       };
     })()`,
@@ -55,11 +60,13 @@ for (const w of [390, 1440]) {
   const okStack = v.stacked;
   const okTap = v.target >= 44;
   const okText = /SHUTTERHAUS/i.test(v.text) && /VISUALS/i.test(v.text);
-  const line = (okStack && okTap && okText) ? "ok  " : "FAIL";
+  const okOn = v.onScreen;
+  const line = okStack && okTap && okText && okOn ? "ok  " : "FAIL";
   if (line === "FAIL") fails++;
   console.log(
     `${line}  w${w}  display=${v.display}  text="${v.text}"  ` +
-    `rowTop=${v.row.t} 2ndTop=${v.second.t} stacked=${okStack} tapH=${v.target}`,
+    `rowTop=${v.row.t} 2ndTop=${v.second.t} stacked=${okStack} ` +
+    `onScreen=${okOn} tapH=${v.target}`,
   );
 }
 ws.close();
