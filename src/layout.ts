@@ -18,9 +18,13 @@ const ICONS: Record<IconId, string> = {
     '<path d="M18.2 10.2c0-.7-.06-1.3-.18-1.9H10.4v3.6h4.4a3.8 3.8 0 0 1-1.65 2.5v2h2.66c1.56-1.44 2.35-3.55 2.35-6.2z" fill="#4285F4" stroke="none"/><path d="M10.4 18.6c2.2 0 4.06-.73 5.41-1.98l-2.66-2.06c-.73.5-1.67.8-2.75.8-2.12 0-3.92-1.43-4.56-3.36H3.08v2.14A8 8 0 0 0 10.4 18.6z" fill="#34A853" stroke="none"/><path d="M5.84 11.99a4.8 4.8 0 0 1 0-3.06V6.79H3.08a8 8 0 0 0 0 7.34l2.76-2.14z" fill="#FBBC05" stroke="none"/><path d="M10.4 5.52c1.2 0 2.28.41 3.13 1.22l2.34-2.34A7.6 7.6 0 0 0 10.4 3.2a8 8 0 0 0-7.32 4.81l2.76 2.06c.64-1.93 2.44-3.36 4.56-3.36z" fill="#EA4335" stroke="none"/>',
 };
 
-export function icon(id: IconId, size = 15): string {
+export function icon(id: IconId, size = 20): string {
+  // Stroke scales with the viewBox, so a 20px icon draws a 1.25/20 stroke at
+  // 1.25px — the same optical weight as the old 15px icon only by accident.
+  // Drop to 1.05 so growing the icon makes it look bigger, not bolder. The
+  // brief is a minimal brutalist line, and a thick stroke reads as a blob.
   return `<svg class="icon" viewBox="0 0 20 20" width="${size}" height="${size}" fill="none"
-    stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"
+    stroke="currentColor" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"
     aria-hidden="true">${ICONS[id]}</svg>`;
 }
 

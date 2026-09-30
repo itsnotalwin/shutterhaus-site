@@ -59,7 +59,8 @@ function pictureFor(url: string, sizes: string): string {
  * above, with a 14px gutter. Anything that overstates this downloads too large;
  * anything that understates it downloads too small and looks soft.
  */
-const SIZES = "(max-width: 639px) 100vw, (max-width: 999px) 50vw, 33vw";
+const SIZES =
+  "(max-width: 639px) 100vw, (max-width: 999px) 50vw, (max-width: 1399px) 33vw, 50vw";
 
 function figure(p: Photo, index: number): string {
   // The first frame is the LCP element. Marking it lazy forces the browser to

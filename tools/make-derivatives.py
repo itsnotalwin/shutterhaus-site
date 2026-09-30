@@ -23,8 +23,11 @@ DERIV_RE = re.compile(r"-\d+w$")
 # Widths a phone and a desktop actually request, plus a 3x slot for retina
 # tablets. 1600 is the largest useful: nothing renders wider than ~640 CSS px.
 WIDTHS = (400, 800, 1200, 1600)
-QUALITY = 80
-WEBP_QUALITY = 72
+QUALITY = 88
+# WebP at 72 was visibly soft on a photography portfolio — the whole point of
+# the site is the image, and q72 plus the greyscale filter together read as
+# "low quality". q86 is roughly JPEG q92 for a fraction more bytes than q72.
+WEBP_QUALITY = 86
 
 
 def derivatives(src: Path, out_dir: Path) -> tuple[int, int]:
