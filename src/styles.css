@@ -52,20 +52,20 @@ img { display: block; max-width: 100%; }
 
 /* Logo lockup: small word inline, big word wrapping onto a second line. */
 .logo {
+  /* "SHUTTERHAUS" on the first line, "VISUALS" on the second (see
+     .logo-lg--b). The tap-target pass added a second .logo rule with
+     `display: inline-flex` to give it a 44px box — inline-flex lays the two
+     spans out as ROW flex items, which silently collapsed the wordmark from
+     two stacked lines into one line. `inline-block` is what preserves the
+     stacked layout; the min-height below is enough to size the target. */
   display: inline-block;
   justify-self: start;
   line-height: 0.86;
   letter-spacing: -0.02em;
   text-transform: uppercase;
-}
-.logo-row { display: flex; align-items: baseline; gap: 6px; }
-/* The logo is the "back to top / home" control. Give it a real 44px target
-   without disturbing the baseline-aligned type inside it. */
-.logo {
-  display: inline-flex;
-  align-items: baseline;
   min-height: 44px;
 }
+.logo-row { display: flex; align-items: baseline; gap: 6px; }
 .logo-sm {
   font-family: var(--font-display);
   font-size: 12px;
