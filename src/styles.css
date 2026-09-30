@@ -59,6 +59,13 @@ img { display: block; max-width: 100%; }
   text-transform: uppercase;
 }
 .logo-row { display: flex; align-items: baseline; gap: 6px; }
+/* The logo is the "back to top / home" control. Give it a real 44px target
+   without disturbing the baseline-aligned type inside it. */
+.logo {
+  display: inline-flex;
+  align-items: baseline;
+  min-height: 44px;
+}
 .logo-sm {
   font-family: var(--font-display);
   font-size: 12px;
@@ -78,7 +85,12 @@ img { display: block; max-width: 100%; }
   font-size: 12px;
   color: var(--grey);
   letter-spacing: 0.01em;
-  padding-bottom: 2px;
+  /* min-height rather than padding alone, so the 44px tap target holds at
+     every width — a tablet is a touch device too, and the first mobile pass
+     only fixed this inside the 640px query, leaving 768/1024/1440 at 18px. */
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   border-bottom: 1px solid transparent;
   transition: color 0.15s;
 }
@@ -86,7 +98,18 @@ img { display: block; max-width: 100%; }
 .nav-link.is-active { color: var(--ink); border-bottom-color: var(--ink); }
 
 .site-social { display: flex; gap: 16px; justify-self: end; }
-.social { color: var(--ink); opacity: 0.85; transition: opacity 0.15s; }
+.social {
+  color: var(--ink);
+  opacity: 0.85;
+  transition: opacity 0.15s;
+  /* Same 44px floor as the nav, at every width. Padding (not a negative
+     margin) is what sizes the target, and the flex gap absorbs the growth. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+}
 .social:hover { opacity: 0.5; }
 
 /* --------------------------------------------------------- gallery */
@@ -167,7 +190,16 @@ img { display: block; max-width: 100%; }
 .contact__p { font-size: 14px; line-height: 1.6; color: var(--dim); max-width: 42ch; }
 .contact__list { list-style: none; margin: 30px 0 0; padding: 0; font-size: 14px; }
 .contact__list li { margin-bottom: 12px; }
-.contact__list a { border-bottom: 1px solid var(--line); padding-bottom: 2px; }
+/* These are the primary contact actions — tap-to-call, tap-to-email,
+   tap-to-WhatsApp. At 20px tall they were the easiest thing on the page to
+   miss with a thumb, so the link is padded out to a real target and the
+   underline is kept to preserve the reference's look. */
+.contact__list a {
+  display: inline-block;
+  min-height: 44px;
+  line-height: 44px;
+  border-bottom: 1px solid var(--line);
+}
 .contact__list a:hover { border-bottom-color: var(--ink); }
 .dim { color: var(--dim); }
 
@@ -185,8 +217,13 @@ img { display: block; max-width: 100%; }
 .cform select,
 .cform textarea {
   font-family: var(--font-body);
-  font-size: 14px;
+  /* 16px on touch: anything smaller makes iOS Safari zoom the page on focus,
+     which is its own "the site jumped" complaint. */
+  font-size: 16px;
   color: var(--ink);
+  /* min-height, not just padding: the 44px tap minimum has to hold on tablet
+     and desktop too, not only inside the 640px media query. */
+  min-height: 44px;
   padding: 10px 12px;
   border: 1px solid var(--line);
   background: #fff;
@@ -201,6 +238,7 @@ img { display: block; max-width: 100%; }
   font-size: 12px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  min-height: 48px;
   padding: 13px 18px;
   background: var(--ink);
   color: #fff;
@@ -220,7 +258,11 @@ img { display: block; max-width: 100%; }
 .lb {
   position: fixed;
   inset: 0;
-  background: rgba(12, 12, 12, 0.96);
+  /* Fully opaque. At 0.96 the page behind stayed faintly visible through the
+     backdrop — the header, the nav and the neighbouring thumbnails all ghosted
+     through behind the photograph, which reads as a rendering bug rather than
+     as a deliberate scrim. A photo viewer wants the photo and nothing else. */
+  background: #0c0c0c;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -497,8 +539,10 @@ code {
 .tier--pop { border-color: var(--ink); }
 .tier__flag {
   position: absolute;
-  top: -1px;
-  right: -1px;
+  /* `right: -1px` pushed the badge one full pixel past the card's border
+     box, so it visibly overhung the edge. Sit it just inside instead. */
+  top: 0;
+  right: 0;
   background: var(--ink);
   color: #fff;
   font-size: 9px;
@@ -551,6 +595,9 @@ code {
   display: block;
   text-align: center;
   border: 1px solid var(--ink);
+  /* The CTA on every package card — a primary action, so it gets the same
+     44px floor as the form button. */
+  min-height: 44px;
   padding: 11px 12px;
   font-size: 12px;
   color: var(--ink);
@@ -615,32 +662,11 @@ code {
   .tier__price { font-size: 30px; }
   .adm__bar { flex-wrap: wrap; }
 
-  /* Touch targets, done with SIZE rather than overlapping negative margins.
-
-     The first attempt padded .nav-link/.social and pulled the layout back with
-     equal negative margins. That is the usual trick and it is wrong inside a
-     flex/grid track: the parent lays children out by their margin box, so the
-     negative margin shrinks the track below what the padded children need.
-     .site-social measured 46px of space for 58px of content — the
-     scrollWidth>clientWidth the verifier reports as clipped chrome.
-
-     So: pad for the tap box and let the LAYOUT be honest about it. Each icon
-     gains 24px and the nav is nudged tighter to pay for it. Nothing overlaps,
-     nothing clips, and every target clears 44px. */
-  .nav-link {
-    padding: 13px 8px 15px;
-  }
-  .social {
-    padding: 14px 12px;
-    /* The global `* { box-sizing: border-box }` applies here, so min-width is
-       the TOTAL width, not the content width. Safe to ask for the full 44px
-       now that the negative margins that used to break the track are gone. */
-    min-width: 44px;
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
+  /* Tap targets are now handled in the BASE rules (min-height/min-width on
+     .nav-link, .social, form fields, .tier__cta, .contact__list a), so they
+     hold on tablet and desktop too. This block only pays for the extra
+     padding with tighter gaps — the header must still fit 390px. */
+  .nav-link { padding: 0 8px; }
   .site-nav { gap: 16px; }
   .site-social { gap: 8px; }
 
