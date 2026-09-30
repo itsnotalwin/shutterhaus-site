@@ -116,14 +116,27 @@ img { display: block; max-width: 100%; }
 .col::-webkit-scrollbar { display: none; }
 
 .cell { margin: 0; }
+/* The <picture> wrapper is the direct child now, so it has to be the block
+   that fills the cell; the img inside it then fills that. */
+.cell picture { display: block; }
 .cell img {
   width: 100%;
   height: auto;
-  background: #f0f0f0;
+  /* Placeholder grey flashed on every not-yet-loaded frame. On a phone that
+     is most of the second screen, so it read as broken rather than loading. */
+  background: #f4f4f4;
   cursor: zoom-in;
-  transition: opacity 0.2s;
+  transition: opacity 0.25s;
 }
-.cell img:hover { opacity: 0.92; }
+/* Fade in on decode so a slow frame never pops in at full contrast. */
+.cell img:not(.is-loaded) { opacity: 0; }
+.cell img.is-loaded { opacity: 1; }
+/* Only dim a frame that has actually loaded, and only where hover exists —
+   :hover never fires on touch, and an un-fired rule would leave the frame
+   stuck at the opacity below. */
+@media (hover: hover) {
+  .cell img.is-loaded:hover { opacity: 0.92; }
+}
 .cell figcaption {
   font-size: 11px;
   color: var(--dim);
@@ -596,10 +609,56 @@ code {
   .site-social { grid-area: social; }
   .logo-lg { font-size: 21px; }
   .logo-sm { font-size: 10px; }
-  .col { max-height: none; overflow: visible; }
   .contact__h { font-size: 30px; }
   .pricing__h { font-size: 30px; }
   .pricing__grid { grid-template-columns: 1fr; }
   .tier__price { font-size: 30px; }
   .adm__bar { flex-wrap: wrap; }
+
+  /* Touch targets, done with SIZE rather than overlapping negative margins.
+
+     The first attempt padded .nav-link/.social and pulled the layout back with
+     equal negative margins. That is the usual trick and it is wrong inside a
+     flex/grid track: the parent lays children out by their margin box, so the
+     negative margin shrinks the track below what the padded children need.
+     .site-social measured 46px of space for 58px of content — the
+     scrollWidth>clientWidth the verifier reports as clipped chrome.
+
+     So: pad for the tap box and let the LAYOUT be honest about it. Each icon
+     gains 24px and the nav is nudged tighter to pay for it. Nothing overlaps,
+     nothing clips, and every target clears 44px. */
+  .nav-link {
+    padding: 13px 8px 15px;
+  }
+  .social {
+    padding: 14px 12px;
+    /* The global `* { box-sizing: border-box }` applies here, so min-width is
+       the TOTAL width, not the content width. Safe to ask for the full 44px
+       now that the negative margins that used to break the track are gone. */
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .site-nav { gap: 16px; }
+  .site-social { gap: 8px; }
+
+  /* Let the PAGE scroll on a phone. The desktop design gives each column its
+     own scrollbar, which is the reference's signature look — but on touch it
+     means the page itself is stationary, a nested scroll area fights the
+     browser's own momentum, and the footer can be unreachable. That is the
+     "laggy and not working well" feeling, and no amount of image weight
+     fixes it. Normal document flow is what a phone expects. */
+  .col {
+    max-height: none;
+    overflow: visible;
+    /* The column is a flex column in a 1-col grid; nothing to scroll itself. */
+    scroll-snap-type: none;
+  }
+  .cell { scroll-snap-align: none; }
+
+  /* The grid gap was the only thing separating frames vertically; give the
+     photo a little more air than the 10px mobile gutter. */
+  .grid { gap: 12px; }
 }

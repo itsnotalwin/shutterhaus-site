@@ -1,5 +1,29 @@
 /** Click-to-enlarge lightbox for the photo grid. */
+
+/**
+ * Tag every grid frame that has decoded so the CSS fade-in can run.
+ *
+ * Called after EVERY gallery paint, not once at boot: the grid re-renders when
+ * live Supabase photos replace the bundled set, and frames added by that
+ * second paint would otherwise sit at opacity 0 waiting for a class nothing
+ * ever sets.
+ */
+export function markLoadedImages(): void {
+  for (const im of document.querySelectorAll<HTMLImageElement>(".cell img")) {
+    if (im.classList.contains("is-loaded")) continue;
+    if (im.complete && im.naturalWidth > 0) {
+      im.classList.add("is-loaded");
+      continue;
+    }
+    im.addEventListener("load", () => im.classList.add("is-loaded"), { once: true });
+    // A failed frame must not stay invisible forever.
+    im.addEventListener("error", () => im.classList.add("is-loaded"), { once: true });
+  }
+}
+
 export function initLightbox(): void {
+  markLoadedImages();
+
   const box = document.createElement("div");
   box.className = "lb";
   box.setAttribute("role", "dialog");

@@ -5,7 +5,7 @@ import { photoPage } from "./pages";
 import { contactPage, pricingPage } from "./pages-more";
 import { listPublicPhotos } from "./store";
 import { DEMO_PHOTOS } from "./demo";
-import { initLightbox } from "./lightbox";
+import { initLightbox, markLoadedImages } from "./lightbox";
 import { isSupabaseConfigured } from "./supabase";
 
 const app = document.getElementById("app")!;
@@ -57,6 +57,7 @@ async function paint(): Promise<void> {
   let photos = DEMO_PHOTOS;
   let paintGallery = () => {
     app.innerHTML = renderShell("photo", photoPage(photos, cols));
+    markLoadedImages();
     scrollTo(0, 0);
   };
   paintGallery();
