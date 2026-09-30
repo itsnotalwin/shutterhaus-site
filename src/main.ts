@@ -131,7 +131,9 @@ async function paint(): Promise<void> {
           ? homePage(photos)
           : emptyGallery()
         : portfolioPage(photos, cols);
-    app.innerHTML = renderShell(r, body);
+    // The home header floats over the hero photograph; portfolio keeps the
+    // solid header (its grid starts below the fold anyway).
+    app.innerHTML = renderShell(r, body, r === "home");
     markLoadedImages();
     wireBurger();
     if (r === "portfolio") wireFilter();

@@ -73,16 +73,25 @@ img { display: block; max-width: 100%; }
   padding: 11px 0;
 }
 .logo-row { display: flex; align-items: baseline; gap: 6px; }
+/* Both words are tracked out, and the small one is sized so its optical width
+   MATCHES the big word below — that shared measure is what makes it read as a
+   single considered lockup rather than a caption stacked on a title. The
+   reference does exactly this in a spaced serif. Archivo Black is far wider
+   per glyph, so the small word needs fewer characters-worth of tracking to
+   land on the same width. */
 .logo-sm {
   font-family: var(--font-display);
-  font-size: 12px;
-  letter-spacing: 0.01em;
-  transform: translateY(-0.42em);
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  transform: translateY(-0.5em);
 }
 .logo-lg {
   font-family: var(--font-display);
   font-size: 27px;
-  letter-spacing: -0.025em;
+  /* Display type at this size needs the tracking pulled IN, not out — a wide
+     gap between SHUTTER/HAUS reads as two words. */
+  letter-spacing: -0.005em;
+  font-weight: 400;
 }
 .logo-lg--b { display: block; }
 

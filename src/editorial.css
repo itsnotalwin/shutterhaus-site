@@ -29,6 +29,35 @@
    than on the gallery, so this is a shared max-width with room to breathe. */
 .page { padding: 0 0 var(--pad); }
 
+/* --------------------------------------------------------- home hero */
+
+/* On the home page the header floats ON the hero photograph, as in the
+   reference — no white bar, white type, the picture running to the top edge.
+   Scoped to the home route: a transparent header over a white page would be
+   invisible, so the other pages keep their solid chrome. */
+.shell--over .site-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  /* No fill — the photograph IS the background. Only a soft top scrim, so
+     white type stays legible over a bright sky without dulling the image. */
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 100%);
+}
+.shell--over .nav-link { color: rgba(255, 255, 255, 0.82); }
+.shell--over .nav-link:hover,
+.shell--over .nav-link.is-active { color: #fff; }
+.shell--over .nav-link.is-active { border-bottom-color: #fff; }
+.shell--over .social { color: rgba(255, 255, 255, 0.85); }
+.shell--over .social:hover { color: #fff; opacity: 1; }
+/* The wordmark inherits colour, so it turns white with everything else. */
+.shell--over .logo { color: #fff; }
+/* Burger bars are background-coloured, so invert them here too. */
+.shell--over .burger__bars i { background: #fff; }
+/* The mobile drawer hangs over page content below, so it must stay solid. */
+.shell--over .site-nav { color: var(--ink); }
+
 /* Headline. Archivo Black is a single weight, so the "display" feel comes from
    tight leading and a generous size jump against the body text. */
 .page h1,
@@ -105,9 +134,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* 30% kept the head in frame on desktop but still grazed the top of her hair
-     at 1440. 20% lifts the crop further: more sky/floor, less hair-clipped. */
-  object-position: 50% 20%;
+  /* 0%, not 20%. The subject's head sits hard against the top of the SOURCE
+     frame, so any downward bias clips her hair — measured across 0/6/12/20%,
+     only 0% keeps the whole head with air above it. The cost is more sky and
+     less floor; the scrim handles the bottom where the headline goes. */
+  object-position: 50% 0%;
 }
 /* The headline sits on the photograph, so it needs a scrim to stay legible
    over a bright frame. A gradient, not a flat wash — the reference keeps the

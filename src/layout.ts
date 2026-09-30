@@ -76,9 +76,16 @@ export function header(active: string): string {
   </header>`;
 }
 
-/** Full page shell — header + the active route's body. */
-export function renderShell(active: string, body: string): string {
-  return `<div class="shell${SITE.blackAndWhite ? " is-bw" : ""}">${header(active)}<main class="main">${body}</main></div>`;
+/**
+ * Full page shell — header + the active route's body.
+ *
+ * `over` makes the header float transparently on top of the first photograph
+ * instead of sitting in its own white bar. Only the home page uses it; every
+ * other route has a white page behind the header, where transparent type
+ * would be invisible.
+ */
+export function renderShell(active: string, body: string, over = false): string {
+  return `<div class="shell${SITE.blackAndWhite ? " is-bw" : ""}${over ? " shell--over" : ""}">${header(active)}<main class="main">${body}</main></div>`;
 }
 
 export { FONTS };
