@@ -69,8 +69,12 @@ export const SITE: SiteConfig = {
     phone: "+27 73 095 8363",
     location: "Gauteng, South Africa",
     hours: "Evenings & weekends, by appointment",
-    /** Paste a Formspree/Basin endpoint to use a real form, or leave '' for mailto: */
-    formEndpoint: "",
+    /**
+     * Formspree endpoint. Set means the form POSTs here and works on any
+     * device, including phones with no mail app. Empty falls back to a
+     * `mailto:` handoff, which silently does nothing on such phones.
+     */
+    formEndpoint: "https://formspree.io/f/xjyklqkp",
   },
 
   blurb:
