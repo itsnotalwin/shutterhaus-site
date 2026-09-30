@@ -225,7 +225,7 @@
    * vertically. One source of truth: `stripCols()` in pages.ts. */
   grid-template-columns: repeat(var(--strip-cols, 3), minmax(0, 1fr));
   gap: var(--gut);
-  margin-bottom: 30px;
+  margin-bottom: 14px;
 }
 .hstrip__col { display: flex; flex-direction: column; gap: var(--gut); }
 .hstrip__col .cell { margin: 0; }

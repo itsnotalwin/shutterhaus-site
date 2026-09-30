@@ -218,7 +218,14 @@ export const SITE: SiteConfig = {
    */
   // Alwin's favourites, 50 frames. All on the portfolio, no category filter.
   categories: ["portrait", "couple", "family", "creative"],
-  homeGalleryCount: 8,
+  // The strip is 3 columns on desktop and 2 on mobile, so the frame count has
+  // to suit BOTH: what divides by 3 (3, 6, 9, 12) does not divide by 2, and
+  // vice versa. 12 is the smallest count that is even at either width, and
+  // measured across 8..12 it splits 4/4/4 on desktop and 6/6 on mobile — the
+  // only count with no leftover column at any viewport. Alwin's bar was
+  // "clean", not "perfect", and an even split is what reads as deliberate.
+  // 8 (the previous value) forces 4/3/3 and leaves a ~298px hole.
+  homeGalleryCount: 12,
   // Pinned deliberately: strongest subject in the set AND real dark space in
   // the lower-left for the white headline. Chosen from a side-by-side of all
   // six landscape frames cropped to the hero ratio.
