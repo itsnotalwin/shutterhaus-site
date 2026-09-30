@@ -218,14 +218,16 @@ export const SITE: SiteConfig = {
    */
   // Alwin's favourites, 50 frames. All on the portfolio, no category filter.
   categories: ["portrait", "couple", "family", "creative"],
-  // The strip is 3 columns on desktop and 2 on mobile, so the frame count has
-  // to suit BOTH: what divides by 3 (3, 6, 9, 12) does not divide by 2, and
-  // vice versa. 12 is the smallest count that is even at either width, and
-  // measured across 8..12 it splits 4/4/4 on desktop and 6/6 on mobile — the
-  // only count with no leftover column at any viewport. Alwin's bar was
-  // "clean", not "perfect", and an even split is what reads as deliberate.
-  // 8 (the previous value) forces 4/3/3 and leaves a ~298px hole.
-  homeGalleryCount: 12,
+  // 6, and the count is load-bearing. The strip is 3 columns on desktop and 2
+  // on mobile, so the count has to divide by BOTH. Measured across 6..12 with
+  // the height-aware packer, the only counts with no leftover column at any
+  // viewport are 6 (2/2/2 and 3/3) and 12 (4/4/4 and 6/6).
+  //
+  // I picked 12 first and Alwin's verdict was "too many images on home now",
+  // so 6 is the fix that keeps the columns even without filling the page. 8
+  // and 9 both strand a column and are what created the white hole in the
+  // first place — 8 divides by neither width.
+  homeGalleryCount: 6,
   // Pinned deliberately: strongest subject in the set AND real dark space in
   // the lower-left for the white headline. Chosen from a side-by-side of all
   // six landscape frames cropped to the hero ratio.

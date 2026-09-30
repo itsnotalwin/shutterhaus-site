@@ -263,9 +263,18 @@ export function emptyGallery(): string {
  * custom property — a mismatch between the two is what left all 8 frames in
  * one column at 390px.
  */
-function stripCols(cols: number, frameCount: number): number {
-  const want = Math.max(2, cols);
-  // Never render empty columns when there are fewer frames than columns.
+function stripCols(frameCount: number): number {
+  // The strip uses TWO columns at every width, not the portfolio's three.
+  //
+  // A column count that divides the frame count is what keeps the bottom edge
+  // even, and Alwin wants few frames: "too many images on home now". Six
+  // frames only splits evenly as 3/3 or 2/2 — as 3 columns it forces 2/1/3 and
+  // strands the middle column 252px short, which is the white hole again.
+  //
+  // So: two columns everywhere, six frames, 3/3. On a phone 3+3 still reads as
+  // a short wall rather than a long one. Both the emitted columns and the grid
+  // track count come from this one function, so they cannot disagree.
+  const want = 2;
   return Math.min(want, frameCount);
 }
 
@@ -325,7 +334,7 @@ export function homePage(photos: Photo[], cols: number): string {
       strip.length
         ? `<section class="hstrip">
             <p class="eyebrow">Selected work</p>
-            <div class="hstrip__grid" style="--strip-cols:${stripCols(cols, strip.length)}">${packByHeight(strip, stripCols(cols, strip.length))
+            <div class="hstrip__grid" style="--strip-cols:${stripCols(strip.length)}">${packByHeight(strip, stripCols(strip.length))
               .map((col) => `<div class="hstrip__col">${col.map((p) => figure(p, 0)).join("")}</div>`)
               .join("")}</div>
             <a class="cta cta--line" href="#/portfolio">See the full portfolio</a>
