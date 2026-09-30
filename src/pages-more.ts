@@ -61,6 +61,7 @@ export function contactPage(): string {
     <div class="contact__col">
       <h1 class="contact__h">Let's shoot.</h1>
       <p class="contact__p">${escapeHtml(SITE.blurb)}</p>
+
       <ul class="contact__list">
         <li><a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></li>
         <li><a href="tel:${escapeHtml(c.phone.replace(/\s/g, ""))}">${escapeHtml(c.phone)}</a></li>
@@ -85,6 +86,5 @@ export function contactPage(): string {
       <button type="submit">Send enquiry</button>
       <p class="cform__note dim" id="cform-note"></p>
     </form>
-  </section>
-  <p class="contact__back"><a href="#/photo">&larr; Back to the work</a></p>`;
+  </section>`;
 }

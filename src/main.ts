@@ -1,7 +1,7 @@
 import "./styles.css";
 import { SITE } from "./config";
 import { renderShell } from "./layout";
-import { photoPage, galleryIntro } from "./pages";
+import { photoPage } from "./pages";
 import { contactPage, pricingPage } from "./pages-more";
 import { listPublicPhotos } from "./store";
 import { DEMO_PHOTOS } from "./demo";
@@ -56,10 +56,7 @@ async function paint(): Promise<void> {
   // if live photos arrive. A visitor never sees a blank page.
   let photos = DEMO_PHOTOS;
   let paintGallery = () => {
-    app.innerHTML = renderShell(
-      "photo",
-      galleryIntro(photos.length) + photoPage(photos, cols),
-    );
+    app.innerHTML = renderShell("photo", photoPage(photos, cols));
     markLoadedImages();
     scrollTo(0, 0);
   };
