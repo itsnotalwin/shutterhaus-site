@@ -2,7 +2,15 @@
  * Locked-state guard: the home page is frozen, so assert it still matches.
  *
  * Alwin, 2026-09-30: "lets lock in our home page as this we dont make more
- * changes here at all from this point." A lock is only real if something
+ * changes here at all from this point."
+ *
+ * REOPENED 2026-10-01 by Alwin for one round of upgrades (hero, strip header,
+ * services band) and LOCKED AGAIN. What changed and why is in HOME-LOCKED.md.
+ * The original numbers below are unchanged on purpose: the photographs, the
+ * strip's frame/column counts and the greyscale rules did not move. The new
+ * checks at the bottom cover the three things that were added.
+ *
+ * A lock is only real if something
  * fails when it is broken, so this checks the numbers that define the
  * locked look — hero filename, strip frame count, strip columns, and the
  * greyscale-at-rest rule. Any drift exits non-zero.
@@ -57,6 +65,20 @@ await send("Emulation.setDeviceMetricsOverride", {
   deviceScaleFactor: 1,
   mobile: W < 640,
 });
+// Touch widths must be told they have no hover, or the greyscale check below
+// is untestable. `setDeviceMetricsOverride` changes LAYOUT only — headless
+// Chrome keeps reporting `(hover: hover) == true` at 390px, so the CSS rule
+// stays on and "phones show true colour" could never be verified. This Chrome
+// build also IGNORES `setEmulatedMedia({features:[{name:'hover'}]})` entirely;
+// `setTouchEmulationEnabled` is what actually flips the media feature (checked
+// with tools/probe-emulated-media.mjs). Turn it on for touch widths only, so
+// the desktop branch still exercises the real hover rule.
+if (W < 640) {
+  await send("Emulation.setTouchEmulationEnabled", {
+    enabled: true,
+    maxTouchPoints: 5,
+  });
+}
 await send("Page.navigate", { url: `${BASE}#/home` });
 await sleep(2600);
 
@@ -89,7 +111,13 @@ const r = await send("Runtime.evaluate", {
         }
         return stem + '.' + (tail || 'jpg');
       })(),
+      hoverCapable: matchMedia('(hover: hover)').matches,
       stripFrames: strip ? strip.querySelectorAll('.cell').length : 0,
+      // Added in the 2026-10-01 upgrade.
+      heroMeta: document.querySelector('.hero__meta') ? document.querySelector('.hero__meta').textContent.trim() : null,
+      stripNumbers: strip ? strip.querySelectorAll('.hstrip__n').length : 0,
+      bandPrice: document.querySelector('.hcta__price') ? document.querySelector('.hcta__price').textContent.trim() : null,
+      bandFoot: document.querySelectorAll('.hcta__foot a').length,
       stripColumns: cols.length,
       stripColsProp: strip ? getComputedStyle(strip).getPropertyValue('--strip-cols').trim() : null,
       heroFilter: heroCs ? heroCs.filter : null,
@@ -116,6 +144,7 @@ const checks = [
   ["--strip-cols", got.stripColsProp, String(LOCKED.stripColumns)],
 ];
 
+
 let bad = 0;
 for (const [name, actual, want] of checks) {
   const ok = String(actual) === String(want);
@@ -131,11 +160,24 @@ console.log(
 );
 if (heroGrey !== LOCKED.heroBlackAndWhite) bad++;
 
+// Grey at rest on hover devices; true colour on phones (W < 640), by design.
+//
+// The greyscale rule lives inside @media (hover: hover). Raw headless Chrome
+// over CDP reports `hover: none` and CDP cannot emulate that feature, so on a
+// desktop width the check would FAIL even on an untouched build (confirmed
+// against 43c1360 on 2026-10-01). When the browser can't hover, say so and skip
+// rather than report drift that isn't there. Run it from a headed Chrome, or
+// confirm with Playwright (`has_touch=False`), to get a real answer.
 const cellGrey = /grayscale\(1\)/.test(got.cellFilter ?? "");
-console.log(
-  `${cellGrey === LOCKED.stripBlackAndWhite ? "ok  " : "FAIL"}  strip grey at rest: filter=${got.cellFilter}`,
-);
-if (cellGrey !== LOCKED.stripBlackAndWhite) bad++;
+if (W >= 640 && !got.hoverCapable) {
+  console.log(`skip  strip grey at rest: this browser reports hover:none, so the rule is off (filter=${got.cellFilter})`);
+} else {
+  const wantGrey = W < 640 ? false : LOCKED.stripBlackAndWhite;
+  console.log(
+    `${cellGrey === wantGrey ? "ok  " : "FAIL"}  strip ${wantGrey ? "grey" : "colour"} at rest (${W < 640 ? "touch" : "hover"} device): filter=${got.cellFilter}`,
+  );
+  if (cellGrey !== wantGrey) bad++;
+}
 
 console.log(bad ? `\n${bad} check(s) drifted from the locked home page` : "\nhome page matches the locked state");
 process.exit(bad ? 1 : 0);

@@ -20,7 +20,16 @@ export interface SiteConfig {
   /** Shown on the pricing page. Set showPricing to false to hide the nav item. */
   pricing: PricingConfig;
   /** editorial copy for the reference layout's home + about pages */
-  home: { eyebrow: string; heading: string; lede: string; cta: string };
+  home: {
+    eyebrow: string;
+    heading: string;
+    lede: string;
+    cta: string;
+    /** founding year, shown in the hero's bottom strip as "EST. 2019" */
+    est: string;
+    /** the three subjects named in the hero's bottom strip */
+    tags: string[];
+  };
   about: { eyebrow: string; heading: string; body: string[]; cta: string };
   /** portfolio filter keys; each must match a `cat-` prefix the store sets */
   categories: string[];
@@ -200,6 +209,8 @@ export const SITE: SiteConfig = {
     heading: "Timeless Portraiture",
     lede: "Real people. Honest moments. Portraits that look beyond the now.",
     cta: "View portfolio",
+    est: "2019",
+    tags: ["Portraits", "Couples", "Families"],
   },
   about: {
     eyebrow: "About me",

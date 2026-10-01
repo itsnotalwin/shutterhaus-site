@@ -19,6 +19,9 @@
 
   --font-display: "Archivo Black", "Helvetica Neue", Arial, sans-serif;
   --font-body: "Inter", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  /* System monospace on purpose: no extra font request, and it reads as
+     "spec sheet" next to the Archivo display type. Used for metadata only. */
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
 
 * { box-sizing: border-box; }

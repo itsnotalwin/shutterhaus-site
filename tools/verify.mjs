@@ -132,11 +132,29 @@ console.log("\n--- home ---" + JSON.stringify(info, null, 2));
 
 // Grid shape is a portfolio concern now, so read it on that route.
 await goto("/#/portfolio", 2400);
-const grid = await evaluate(`(() => ({
-  cols: document.querySelectorAll('.col').length,
-  perCol: [...document.querySelectorAll('.col')].map(c => c.querySelectorAll('img').length),
-  filters: document.querySelectorAll('.pfilter__item').length,
-}))()`);
+// The wall is JUSTIFIED ROWS now (src/rows.ts), not columns: `display:contents`
+// had dissolved the column boxes and left ragged notches under every short
+// frame, which is what Alwin called unclean. Assert the new shape instead.
+const grid = await evaluate(`(() => {
+  const rows = [...document.querySelectorAll('.pf-row')];
+  const wall = document.querySelector('.grid--wall');
+  const cells = rows.map(r => [...r.querySelectorAll('.pf-row__cell')]);
+  return {
+    cols: rows.length,
+    perCol: cells.map(c => c.length),
+    rows: rows.length,
+    cells: document.querySelectorAll('.pf-row__cell').length,
+    // Every frame in a row must share one height, or the row is ragged.
+    maxHeightSpread: Math.max(0, ...rows.map(r => {
+      const hs = [...r.querySelectorAll('.pf-row__cell')].map(c => c.getBoundingClientRect().height);
+      return hs.length ? Math.max(...hs) - Math.min(...hs) : 0;
+    })),
+    // Every row box must match the wall width, or it does not end flush.
+    maxWidthErr: wall ? Math.max(0, ...rows.map(r => Math.abs(
+      r.getBoundingClientRect().width - wall.getBoundingClientRect().width))) : -1,
+    filters: document.querySelectorAll('.pfilter__item').length,
+  };
+})()`);
 console.log("--- portfolio ---" + JSON.stringify(grid));
 
 check("title set", /shutterhaus/i.test(info.title), info.title);
@@ -154,8 +172,12 @@ const ROUTES = ["Home", "Portfolio", "About", "Services", "Contact"];
 check("nav = the five routes", info.nav.join(",") === ROUTES.join(","), info.nav.join(","));
 check("home active by default", info.active === "Home", info.active);
 check("social icons", info.social >= 1, String(info.social));
-check("portfolio grid has columns", grid.cols >= 1, String(grid.cols));
-check("portfolio columns populated", grid.perCol.every((n) => n > 0), grid.perCol.join("/"));
+check("portfolio wall has rows", grid.rows >= 1, String(grid.rows));
+check("portfolio rows populated", grid.perCol.every((n) => n > 0), grid.perCol.join("/"));
+check("all 50 frames in the wall", grid.cells === 50, String(grid.cells));
+// Justified: one height per row, every row flush to the wall width.
+check("rows share one height", grid.maxHeightSpread <= 1, `${grid.maxHeightSpread.toFixed(1)}px`);
+check("every row ends flush", grid.maxWidthErr <= 2, `${grid.maxWidthErr.toFixed(1)}px`);
 check("no horizontal overflow", info.overflow <= 0, `${info.overflow}px`);
 check("black & white shell", info.bw);
 check("white page bg", info.bodyBg === "rgb(255, 255, 255)", info.bodyBg);
@@ -201,13 +223,14 @@ await shot("shot-contact.png");
 // (or a cached tab) should fall back to the gallery, not 404 or blank.
 await evaluate(`location.hash = '#/video'`);
 await sleep(900);
+// `.col` no longer exists on the wall — it is justified rows now. Count cells.
 const noVideo = await evaluate(`(() => ({
   active: document.querySelector('.nav-link.is-active')?.textContent,
-  cols: document.querySelectorAll('.col').length,
+  cells: document.querySelectorAll('.pf-row__cell').length,
   empty: !!document.querySelector('.empty'),
 }))()`);
 check("no video nav item", !info.nav.includes("video"), info.nav.join(","));
-check("#/video falls back to the gallery", noVideo.cols === 3, `active=${noVideo.active} cols=${noVideo.cols}`);
+check("#/video falls back to the gallery", noVideo.cells === 50, `active=${noVideo.active} cells=${noVideo.cells}`);
 check("no video empty-state leaked", !noVideo.empty);
 
 // ============================================== mobile

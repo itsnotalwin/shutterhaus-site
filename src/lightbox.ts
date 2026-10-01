@@ -76,6 +76,26 @@ export function initLightbox(): void {
     }
   });
 
+  // Keyboard activation for the portfolio wall cells.
+  //
+  // Those cells carry `role="button" tabindex="0"`, so Enter and Space must
+  // open the frame — otherwise the page advertises a keyboard affordance that
+  // does nothing, which is what the <button> wrapper used to do: the lightbox
+  // opens on click of the inner img, so pressing Enter on the focused button
+  // fired nothing. Opening the frame that contains focus is what the user
+  // expects from a role=button, and it keeps the shadow DOM and textContent
+  // intact (an <img> inside a button has neither).
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const cell = (e.target as HTMLElement | null)?.closest?.(".pf-cell");
+    if (!cell) return;
+    e.preventDefault();
+    const img = cell.querySelector<HTMLImageElement>(".cell img[data-full]");
+    if (!img) return;
+    const framesNow = Array.from(document.querySelectorAll<HTMLImageElement>(".cell img[data-full]"));
+    open(framesNow.indexOf(img));
+  });
+
   document.addEventListener("keydown", (e) => {
     if (box.hidden) return;
     if (e.key === "Escape") close();

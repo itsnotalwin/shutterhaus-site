@@ -375,6 +375,118 @@
   .pf-cell { cursor: pointer; }
 }
 
+/* Justified rows. The JS in src/rows.ts computes each row's height and each
+ * frame's width, so this layer only lays them out in a line. The old
+ * `display:contents` grid is gone: it turned the wall row-major and left a
+ * ragged notch under every short frame. */
+/* Reset the inherited `.grid` tracks. `.grid` (styles.css) is
+ * `display:grid` with `grid-template-columns: repeat(var(--cols,3), 1fr)`; a
+ * bare `display:flex` override leaves those three 1fr tracks in place, so each
+ * row was laid out inside a third of the container and then overflowed it by
+ * exactly one gutter. `grid-template-columns: none` is what actually clears
+ * them. */
+.grid--wall {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gut);
+  grid-template-columns: none;
+  align-items: stretch;
+}
+.pf-row { display: flex; align-items: stretch; gap: var(--gut); width: 100%; }
+.pf-row__cell { overflow: hidden; }
+/* Every frame fills its row height exactly — that is what keeps the row's top
+ * and bottom edges on one line.
+ *
+ * No `object-fit: cover` here. The cell width was computed from each photo's
+ * own aspect ratio against the same row height, so width/height already match
+ * the image exactly and cover has nothing to crop — it is only a guard against
+ * a sub-pixel rounding mismatch. Alwin chose justified rows specifically to
+ * avoid cropping any frame. */
+.pf-row .cell,
+.pf-row .cell picture,
+.pf-row .cell img { width: 100%; height: 100%; }
+.pf-row .cell img { object-fit: cover; }
+
+/* ------------------------------------------------ portfolio wall behaviour
+ *
+ * Alwin: "yes, but only on phones — desktop opens on hover." Two columns on
+ * mobile (50 frames one-per-row was 28 screens of scroll), and on a real
+ * pointer the frame under the cursor lifts into a larger preview.
+ *
+ * The preview is a second `<img>` in a `<button>` rendered only for the
+ * portfolio wall, so it cannot affect the locked home strip — those cells stay
+ * plain `<figure>`.
+ *
+ * `:hover` only exists where a pointer does, so the whole thing sits inside
+ * `@media (hover: hover)`. Touch devices keep the tap-to-open lightbox and
+ * never get a stuck-open preview.
+ */
+.pf-cell {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  overflow: visible;
+}
+.pf-cell > .cell { display: block; }
+/* Hide the wall thumbnail once the preview is showing.
+ *
+ * Note the nesting: `figure()` wraps the thumbnail in `.cell > picture > img`,
+ * so `> picture` alone never matches — the rule has to reach the figure.
+ */
+@media (hover: hover) {
+  .pf-cell:hover .cell,
+  .pf-cell:focus-visible .cell {
+    opacity: 0;
+    transition: opacity 120ms ease;
+  }
+}
+
+/* The preview itself: same frame, larger, centred over the grid. */
+.pf-peek {
+  position: absolute;
+  inset: 0;
+  display: none;
+  place-items: center;
+  z-index: 40;
+  pointer-events: none;
+}
+.pf-peek img {
+  max-width: min(46vw, 620px);
+  max-height: 82vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  opacity: 1 !important;
+  /* A soft drop shadow alone is invisible against a light frame, which is most
+   * of this set — the preview just read as another cell. The ring does the
+   * work: it separates the frame from the wall whatever the photo's own tone. */
+  box-shadow:
+    0 0 0 1px rgba(12, 12, 12, 0.16),
+    0 30px 80px rgba(0, 0, 0, 0.28);
+  transform: scale(0.97);
+  transition: transform 160ms ease;
+}
+@media (hover: hover) {
+  .pf-cell:hover .pf-peek,
+  .pf-cell:focus-visible .pf-peek {
+    display: grid;
+  }
+  .pf-cell:hover .pf-peek img,
+  .pf-cell:focus-visible .pf-peek img {
+    transform: scale(1);
+  }
+}
+@media (max-width: 760px) {
+  /* Touch: no hover preview at all, the tap-to-open lightbox is the whole
+   * interaction. `display:none !important` so no stray rule can revive it. */
+  .pf-peek { display: none !important; }
+  .pf-cell { cursor: pointer; }
+}
+
 /* ------------------------------------------------------- about page */
 
 .about { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr); gap: 64px; align-items: start; }

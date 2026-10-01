@@ -1,6 +1,7 @@
 import { escapeHtml } from "./layout";
 import { SITE } from "./config";
 import type { Photo } from "./types";
+import { layoutRows, renderRow, gutterPx } from "./rows";
 
 /** Round-robin into N columns, preserving the admin's chosen order. */
 export function columnise<T>(items: T[], cols: number): T[][] {
@@ -230,15 +231,14 @@ function figure(p: Photo, index: number): string {
 function wallCell(p: Photo, index: number): string {
   const thumb = figure(p, index);
   const peekSrc = derivative(p.url, 1200, "jpg") ?? p.url;
-  return `<button class="pf-cell" type="button" aria-label="Enlarge ${escapeHtml(
-    p.alt || p.filename || "photo",
-  )}">
-      ${thumb}
-      <span class="pf-peek" aria-hidden="true">
-        <img src="${escapeHtml(peekSrc)}" alt="" tabindex="-1"
-             loading="lazy" decoding="async" />
-      </span>
-    </button>`;
+  return `<span class="pf-cell" role="button" tabindex="0"
+               aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">
+        ${thumb}
+        <span class="pf-peek" aria-hidden="true">
+          <img src="${escapeHtml(peekSrc)}" alt="" tabindex="-1"
+               loading="lazy" decoding="async" />
+        </span>
+      </span>`;
 }
 
 /**
@@ -248,25 +248,22 @@ function wallCell(p: Photo, index: number): string {
  * make it portfolio with all images" — the category filter is gone, so every
  * frame in the gallery shows and the lightbox walks the whole set.
  */
-export function portfolioPage(photos: Photo[], cols: number): string {
+export function portfolioPage(photos: Photo[], cols: number, rowWidth: number): string {
   if (!photos.length) return emptyGallery();
 
-  // The WALL never goes to a single column. `columnsFor()` returns 1 under
-  // 640px, which is right for the about/contact figure but wrong here: 50
-  // frames one per row measured 75,006px tall on a 390px phone — 28 screens of
-  // scrolling. Alwin chose 2 columns on mobile, 3 on desktop.
-  const wallCols = Math.max(2, cols);
-
-  // Flatten to one index space so `index === 0` is always the lead frame,
-  // whichever column it lands in after the round-robin.
+  // Justified rows, not columns — Alwin, 2026-09-30, choosing between three
+  // options for the wall: "justified rows — no gaps, no cropping, rows stay
+  // aligned". See src/rows.ts for the grouping maths.
   //
-  // Round-robin rather than the home strip's `packByHeight()`: on a 50-frame
-  // wall a ragged bottom is harmless — the page simply continues — and evenly
-  // sized columns make the full-length page easier to scan. See
-  // tools/probe-wall.mjs for the numbers.
+  // The previous approach rendered `.col` wrappers with
+  // `display:contents`, which dissolved them and silently turned the wall into
+  // a row-major grid: every row became as tall as its tallest photo, so short
+  // frames left ragged white notches. That is what made the page read unclean.
+  const rows = layoutRows(photos, rowWidth);
+  const gutter = gutterPx();
   let n = 0;
-  const wall = columnise(photos, wallCols)
-    .map((col) => `<div class="col">${col.map((p) => wallCell(p, n++)).join("")}</div>`)
+  const wall = rows
+    .map((r) => renderRow(r, rowWidth, (p) => wallCell(p, n++), 0, gutter))
     .join("");
 
   return `<section class="page portfolio">
@@ -275,7 +272,7 @@ export function portfolioPage(photos: Photo[], cols: number): string {
       <h1 class="phead__h">Portfolio</h1>
       <p class="phead__p">Portraits, couples, families and everything in between. This is the work, unfiltered.</p>
     </header>
-    <div class="grid grid--wall" data-cols="${wallCols}">${wall}</div>
+    <div class="grid grid--wall">${wall}</div>
   </section>`;
 }
 

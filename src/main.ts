@@ -140,13 +140,31 @@ function adoptable(live: AdminPhoto[] | null | undefined): AdminPhoto[] | null {
   // short cap — the bundled set renders immediately and is upgraded in place
   // if live photos arrive. A visitor never sees a blank page.
   let photos = DEMO_PHOTOS;
+
+  /**
+   * Content width the portfolio wall must fill.
+   *
+   * Read from the `--pad` custom property on :root rather than by measuring
+   * `.main`, because `.main` does not exist on the first synchronous render —
+   * the shell has not been laid out yet — and the fallback guess made every row
+   * too wide. `--pad` is the same number the real content box is built from and
+   * is available immediately.
+   */
+  const wallWidth = (): number => {
+    const pad = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue("--pad")
+    );
+    const p = Number.isFinite(pad) ? pad : 18;
+    return Math.max(280, Math.round(window.innerWidth - 2 * p));
+  };
+
   const draw = () => {
     const body =
       r === "home"
         ? photos.length
           ? homePage(photos, cols)
           : emptyGallery()
-        : portfolioPage(photos, cols);
+        : portfolioPage(photos, cols, r === "portfolio" ? wallWidth() : 0);
     // The home header floats over the hero photograph; portfolio keeps the
     // solid header (its grid starts below the fold anyway).
     app.innerHTML = renderShell(r, body, r === "home");
