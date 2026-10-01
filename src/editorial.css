@@ -377,58 +377,12 @@
 .hcta__foot a { color: inherit; min-height: 44px; display: inline-flex; align-items: center; margin: -14px 0; }
 .hcta__foot a:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
 
-/* ----------------------------------------------------- portfolio page */
 
-/* The portfolio page is ~11400px tall on desktop, so a filter bar at the top
-   is out of reach for most of the wall. Sticky keeps it usable; the 8px
-   background padding stops frames scrolling underneath the rule above it. */
-.pfilter {
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 22px;
-  padding: 10px 0 14px;
-  border-bottom: 1px solid var(--line);
-  margin-bottom: 30px;
-  /* Matches the page background, or frames show through the gaps. */
-  background: var(--paper);
-}
-.pfilter__item {
-  font: inherit;
-  font-size: 10.5px;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--grey);
-  background: none;
-  border: 0;
-  padding: 12px 0;
-  min-height: 44px;
-  /* 44px tall, but the visible text is narrow ("All", "Couples") so the
-     ELEMENT is only as wide as its label. `min-width` gives the tap target
-     real horizontal room without changing the type. */
-  min-width: 56px;
-  text-align: left;
-  cursor: pointer;
-  position: relative;
-  transition: color 0.15s ease;
-}
-.pfilter__item::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 8px;
-  width: 0;
-  height: 1px;
-  background: var(--ink);
-  transition: width 0.18s ease;
-}
-.pfilter__item:hover { color: var(--ink); }
-.pfilter__item.is-on { color: var(--ink); }
-.pfilter__item.is-on::after { width: 100%; }
-.pfilter__item:focus-visible { outline: 1px solid var(--ink); outline-offset: 2px; }
+
+
+
+
+
 
 /* Filtered-out frames must be removed from the layout AND the a11y tree,
    otherwise a keyboard user can still tab into a photo they can't see. */
@@ -460,19 +414,13 @@
   margin: 0;
 }
 .portfolio .phead__p { display: none; }
-.portfolio .pfilter { margin-bottom: 18px; padding-top: 6px; align-items: center; }
-.portfolio .pfilter__item { font-family: var(--font-mono); letter-spacing: 0.14em; }
-.pfilter__cue {
-  margin-left: auto;
-  font: 11px/1 var(--font-mono);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--grey);
-}
+
+
+
 @media (max-width: 760px) {
-  .pfilter__cue { display: none; }
-  .portfolio .pfilter { gap: 14px; margin-top: 14px; }
-  .portfolio .pfilter__item { min-width: 0; font-size: 9.5px; }
+  
+  
+  
   .page.portfolio .phead__h { font-size: 44px; }
 }
 
@@ -497,66 +445,12 @@
  * turned row-major, so every track became as tall as its tallest frame and each
  * short frame left a white notch underneath.
  */
-.grid--wall {
-  display: grid;
-  grid-template-columns: repeat(var(--wall-cols, 3), minmax(0, 1fr));
-  gap: var(--gut);
-  align-items: start;
-}
-.wall__col {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gut);
-  min-width: 0;
 
-  /* EACH COLUMN SCROLLS ON ITS OWN.
-   *
-   * Alwin, 2026-10-01, twice: "all 3 columns should scroll separately" and "it
-   * should scroll like the first home page we had". This is `.col` from
-   * src/styles.css applied to the wall — the same native scroller, hidden
-   * scrollbar, and `overscroll-behavior: contain` so a gesture that runs out of
-   * column does not chain into the page.
-   *
-   * The first attempt at this drove the columns with one JS wheel handler that
-   * moved all three together. That was my call, not Alwin's, and it is the
-   * thing he pushed back on twice. Do not re-derive that argument: independent
-   * columns are the design.
-   *
-   * No JS is involved. Native scrolling gets momentum on touch, keyboard
-   * paging, and anchoring for free, and it is what the locked home page
-   * already does. */
-  max-height: calc(100vh - var(--head) - var(--pad));
-  /* dvh tracks the phone's collapsing URL bar; vh above is the fallback. */
-  max-height: calc(100dvh - var(--head) - var(--pad));
-  overflow-y: auto;
-  /* Not `contain` — that swallowed the gesture at the end of a column and
-   * left the visitor unable to reach the closing band from over the wall.
-   * `auto` lets a spent column hand the gesture to the page, which is the
-   * behaviour `.col` gets by default. The home strip uses `contain` because it
-   * is the last thing on its page; the wall has a band below it. */
-  overscroll-behavior: auto;
-  scrollbar-width: none;
-}
-.wall__col::-webkit-scrollbar { display: none; }
-/* The scrollbars are hidden, so nothing said a column could scroll. A fade on the
-   bottom edge says "there is more" without adding chrome. The 64px of bottom
-   padding is the matching half: without it the LAST frame of a column would sit
-   permanently inside the fade and look washed out when scrolled to the end. */
-.wall__col {
-  padding-bottom: 64px;
-  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 64px), transparent 100%);
-  mask-image: linear-gradient(180deg, #000 calc(100% - 64px), transparent 100%);
-}
 
-/* Each frame fills its column width and keeps its own ratio. `height:auto` is
- * the load-bearing part: forcing a height here is what cropped frames before. */
-.wall__col .cell,
-.wall__col .cell picture,
-.wall__col .cell img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
+
+
+
+
 
 /* ------------------------------------------------ portfolio wall behaviour
  *
@@ -601,19 +495,7 @@
    that is given `display` AND toggled with `hidden` needs this. */
 .pf-cell[hidden] { display: none; }
 
-/* Frame number, bottom-left of each tile. Same treatment as the home strip's
-   .hstrip__n: mono, blended with `difference` so it reads on dark and pale
-   frames alike without a chip behind it. */
-.pf-cell__n {
-  position: absolute;
-  left: 10px;
-  bottom: 9px;
-  font: 11px/1 var(--font-mono);
-  letter-spacing: 0.1em;
-  color: #fff;
-  mix-blend-mode: difference;
-  pointer-events: none;
-}
+
 @media (max-width: 760px) {
   .pf-cell { cursor: pointer; }
 }
@@ -808,6 +690,55 @@
   .hcta__grid { grid-template-columns: 1fr; gap: 36px; padding-bottom: 48px; }
   .hcta__foot span { display: none; }
   .invest { padding: 40px var(--pad) 44px; }
-  .pfilter { gap: 16px; }
+  
   .about__body, .ct__col { padding-top: 28px; }
+}
+
+/* ---------------------------------------------------- static wall, 10 rows
+ *
+ * Alwin, 2026-10-01: no per-column scroll, static, no numbering, 30 of the best,
+ * 3 per row, "no spacing issues at all".
+ *
+ * `.pf-row` is a plain 3-column grid. No max-height, no overflow, no mask, no
+ * wheel handler: nothing here scrolls, so a stray rule elsewhere cannot make it.
+ *
+ * The evenness comes from the DATA, not from here — every row in src/rows.ts
+ * holds three frames of the exact same aspect ratio, so at a fixed column width
+ * the three are the same height and there is no gap under any of them. CSS
+ * `align-items: stretch` is the default and is left alone: stretch cannot change
+ * an image's height here because the grid row is sized by the tallest item and
+ * all three are equal, so the cells are already equal.
+ *
+ * `align-items: start` is set anyway, deliberately. If a future pick breaks the
+ * ratio guarantee, stretch would make a short photo look TALLER (letterboxed
+ * whitespace) instead of leaving a visible gap, which hides the fault. `start`
+ * surfaces it.
+ */
+.pf-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gut);
+}
+.pf-row {
+  display: grid;
+  /* ALWAYS three, at every viewport. A row is one grid line and must never
+     wrap: with two columns the third cell drops below its own row, which is a
+     visible step in the spacing — the exact defect Alwin said not to ship. The
+     inline --row-cols is deliberately NOT used here. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gut);
+  align-items: start;
+}
+.pf-row .cell,
+.pf-row .cell picture,
+.pf-row .cell img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+@media (max-width: 760px) {
+  /* Still three per row. Two would wrap the third cell onto its own line and
+     put a step in the spacing; the photos are smaller, but even. */
+  .pf-row { gap: 12px; }
+  .pf-rows { gap: 12px; }
 }

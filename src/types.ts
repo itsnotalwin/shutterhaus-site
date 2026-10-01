@@ -22,3 +22,10 @@ export interface Photo {
 
 /** Admin view of a photo — same row, filename guaranteed by the query. */
 export type AdminPhoto = Photo & { filename: string };
+
+/**
+ * One row of the portfolio wall: three photo ids sharing an exact aspect ratio.
+ *
+ * The ratio guarantee is what keeps the rows gap-free. See tools/rows.py.
+ */
+export type PhotoRow = [string, string, string];

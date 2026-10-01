@@ -1,6 +1,7 @@
 import { escapeHtml } from "./layout";
 import { SITE } from "./config";
 import type { Photo } from "./types";
+import { PHOTO_ROWS } from "./rows";
 import { SHOOT_OF } from "./shoots";
 // src/rows.ts (justified rows) went away with the row layout — the wall uses
 // `packByHeight()` from this file now, the same packer the home strip uses.
@@ -353,7 +354,6 @@ function figure(p: Photo, index: number): string {
    return `<span class="pf-cell" role="button" tabindex="0" data-photo-id="${escapeHtml(p.id)}"
                 data-n="${n}" aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">
          ${figure(p, -1)}
-         <span class="pf-cell__n" aria-hidden="true">${String(n).padStart(2, "0")}</span>
        </span>`;
  }
 
@@ -409,47 +409,70 @@ function filterBar(photos: Photo[]): string {
 }
 
 /**
- * The portfolio route: one editorial wall of every frame.
+ * The portfolio route: 30 chosen frames, 10 static rows of 3.
  *
- * Alwin's call: "instead of having too many different things in portfolio just
- * make it portfolio with all images" — the category filter is gone, so every
- * frame in the gallery shows and the lightbox walks the whole set.
+ * Alwin, 2026-10-01, verbatim: "I dont like having the scroll on each column
+ * anymore, static is better, but remove any numbering you have on images, choose
+ * 30 of the best to use 3 per row and make sure it sits nice no spacing issues at
+ * all please."
+ *
+ * So: the scroll is gone entirely, the printed numbers are gone, the wall is 30
+ * frames in 10 rows of 3, and the spacing is exact.
+ *
+ * WHY THE SPACING IS EXACT. Three uncropped photos at three different aspect
+ * ratios are not one height, and the short ones leave a gap under them. CSS
+ * cannot fix that without cropping (object-fit: cover), which Alwin has rejected
+ * from the start. So it is solved in the data: every row in src/rows.ts holds
+ * three frames of the EXACT same ratio, which at a fixed column width means three
+ * identical heights and a gap of zero under every photo. tools/check-rows.py
+ * fails if a row ever mixes ratios, so this cannot quietly regress.
+ *
+ * The category filter went with the scroll. It existed to narrow 50 frames; with
+ * 30 deliberately chosen ones there is nothing left for it to select between, and
+ * a filter over hand-picked work hides work on purpose.
  */
 export function portfolioPage(photos: Photo[], cols: number): string {
   if (!photos.length) return emptyGallery();
 
-  // Three columns on desktop, two on a phone — Alwin, 2026-10-01: "maybe we
-  // should do a 3 column one for desktop and 2 column for mobile only portfolio
-  // page, work now it should be as clean and well put together as the home page".
-  //
-  // The driver was spacing, not geometry: justified rows put FIVE OR SIX frames
-  // side by side at 1440, which read as a contact sheet rather than a portfolio.
-  //
-  // This reuses `packByHeight` — the same packer the home strip uses — rather
-  // than a third approach. Keeping each photo's own ratio (no cropping) and
-  // packing the columns to an even bottom is exactly what Alwin chose, and it is
-  // the arrangement the locked home page already proves at 42px/10px ragged.
-  const columns = packByHeight(photos, cols);
-  // Frame numbers are assigned ONCE, here, from the full unfiltered wall, and
-  // travel with the cell (data-n). Filtering must not renumber: "#23" has to
-  // keep meaning the same photograph, or a client quoting a number to Alwin
-  // gets a different frame after clicking a filter. See readingOrder().
-  const order = readingOrder(columns);
-  const wall = columns
-    .map(
-      (col) =>
-        `<div class="wall__col">${col.map((p) => wallCell(p, order.get(p) ?? 0)).join("")}</div>`,
-    )
-    .join("");
+  const byId = new Map(photos.map((p) => [p.id, p]));
+
+  // A frame id that is not in the gallery would render a hole in a row, and a hole
+  // is exactly the "spacing issue" this page is not allowed to have. Name the
+  // offender rather than leaving a gap for someone to photograph.
+  const missing: string[] = [];
+
+  let n = 1; // 1-based: the lightbox prints it as "07 / 30"
+  const shown: string[] = [];
+
+  const rows = PHOTO_ROWS.map((row, ri) => {
+    const cells: string[] = [];
+    for (const id of row) {
+      const p = byId.get(id);
+      if (!p) {
+        missing.push(`row ${ri + 1}/${id}`);
+        continue;
+      }
+      shown.push(p.id);
+      cells.push(wallCell(p, n++));
+    }
+    if (cells.length < 3) return "";
+    return `<div class="pf-row" style="--row-cols:${cols}">${cells.join("")}</div>`;
+  }).join("");
+
+  if (missing.length) {
+    throw new Error(
+      `rows.ts references photos the gallery does not have: ${missing.join(", ")}. ` +
+        `Regenerate src/rows.ts (python tools/build-rows-ts.py) or fix tools/rows.py.`,
+    );
+  }
 
   return `<section class="page portfolio">
     <header class="phead">
-      <p class="eyebrow">${photos.length} photographs · Gauteng</p>
+      <p class="eyebrow">${shown.length} photographs · Gauteng</p>
       <h1 class="phead__h">Portfolio</h1>
       <p class="phead__p">Portraits and places, shot around Gauteng.</p>
     </header>
-    ${filterBar(photos)}
-    <div class="grid grid--wall" style="--wall-cols:${cols}">${wall}</div>
+    <div class="pf-rows">${rows}</div>
     ${pfBand()}
   </section>`;
 }

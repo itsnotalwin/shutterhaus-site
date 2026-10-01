@@ -140,48 +140,36 @@ console.log("\n--- home ---" + JSON.stringify(info, null, 2));
 
 // Grid shape is a portfolio concern now, so read it on that route.
 await goto("/#/portfolio", 2400);
-// The wall is PACKED COLUMNS now (Alwin, 2026-10-01: "3 column for desktop and
-// 2 column for mobile only portfolio page"), so these read columns. They used to
-// read `.pf-row` / `.pf-row__cell` and reported 0 once the rows were gone.
+// The wall is now 30 chosen frames in 10 STATIC rows of 3 (Alwin, 2026-10-01:
+// no scroll, no numbering, 3 per row, "no spacing issues at all"). It is no
+// longer .grid--wall, no longer packed by height, and no longer 50 frames, so
+// every assertion that read those was rewritten rather than loosened.
 const grid = await evaluate(`(() => {
-  const wall = document.querySelector('.grid--wall');
-  const cols = [...wall.querySelectorAll('.wall__col')];
-  const cells = [...wall.querySelectorAll('.pf-cell')];
+  const rows = [...document.querySelectorAll('.pf-row')];
+  const cells = [...document.querySelectorAll('.pf-cell')];
+  const heights = rows.map(r =>
+    [...r.querySelectorAll('.pf-cell')].map(c => c.getBoundingClientRect().height));
   return {
-    cols: cols.length,
-    // The CSS track count, which must agree with the columns emitted by JS.
-    tracks: getComputedStyle(wall).gridTemplateColumns.split(' ').filter(Boolean).length,
-    trackVar: getComputedStyle(wall).getPropertyValue('--wall-cols').trim(),
-    perCol: cols.map(c => c.querySelectorAll('.pf-cell').length),
+    rows: rows.length,
+    perRow: rows.map(r => r.querySelectorAll('.pf-cell').length),
+    tracks: rows.length ? getComputedStyle(rows[0]).gridTemplateColumns.split(' ').filter(Boolean).length : 0,
     cells: cells.length,
-    // Every frame present exactly once.
-    imgs: wall.querySelectorAll('.pf-cell img').length,
-    // Even bottom: the rendered height of each column. The packer balances
-    // these, so the spread is the real raggedness the visitor sees.
-    bottomSpread: Math.max(...cols.map(c => Math.round(c.getBoundingClientRect().height))) -
-                  Math.min(...cols.map(c => Math.round(c.getBoundingClientRect().height))),
-    filters: document.querySelectorAll('.pfilter__item').length,
-    // The closing band, and the shoot order as actually rendered.
+    imgs: document.querySelectorAll('.pf-cell img').length,
+    // THE spacing metric: how far apart the tallest and shortest cell of a row
+    // are. 0 means every row is exactly one height, which is only true because
+    // each row holds three frames of the same aspect ratio.
+    rowSpread: Math.max(0, ...heights.map(hs => hs.length ? Math.max(...hs) - Math.min(...hs) : 0)),
+    // Nothing on this page may be its own scroller.
+    scrollables: [...document.querySelectorAll('.pf-row, .pf-rows, .pf-cell')]
+      .filter(e => e.scrollHeight > e.clientHeight + 1).length,
+    // No printed numbers, and no filter bar — both removed on request.
+    printedNumbers: document.querySelectorAll('.pf-cell__n').length,
+    filterBar: !!document.querySelector('.pfilter'),
+    // data-n must survive: the lightbox counter reads it ("07 / 30").
+    dataN: cells.filter(c => c.dataset.n).length,
     band: !!document.querySelector('.hcta'),
     bandCta: document.querySelector('.hcta__btn')?.getAttribute('href') ?? null,
     bandLinks: document.querySelectorAll('.hcta__foot a').length,
-    // The frame's OWN filename, in the order the visitor reads them: column by
-    // column, top to bottom. This is the order the packer optimised for, so
-    // reading it any other way would test a sequence nobody sees.
-    //
-    // Scoped to '.cell img' on purpose: a wall cell can carry more than one img
-    // (the thumbnail plus an aria-hidden hover peek), so selecting every img
-    // yields more entries than there are frames and every alternate entry is an
-    // empty string. Only the thumbnail carries the filename attribute.
-    //
-    // Read src instead of the attribute and it gives a derivative
-    // ("x-400w.jpg"), which is not in the shoot map — an earlier version of this
-    // check did that, so the adjacency comparison was undefined === undefined
-    // for every pair and it passed without checking anything.
-    fileOf: cols.flatMap(c =>
-      [...c.querySelectorAll('.pf-cell .cell img')].map(
-        (el) => el.getAttribute('data-filename') || "",
-      )),
   };
 })()`);
 console.log("--- portfolio ---" + JSON.stringify(grid));
@@ -201,20 +189,20 @@ const ROUTES = ["Home", "Portfolio", "About", "Services", "Contact"];
 check("nav = the five routes", info.nav.join(",") === ROUTES.join(","), info.nav.join(","));
 check("home active by default", info.active === "Home", info.active);
 check("social icons", info.social >= 1, String(info.social));
-// Three columns on desktop, two on a phone — Alwin, 2026-10-01, portfolio only.
-// `tracks` is asserted too: `pfCols()` and the CSS breakpoint must agree, or the
-// grid draws a different number of columns than the JS emitted.
-check("portfolio wall has columns", grid.cols >= 1, String(grid.cols));
-check("portfolio columns populated", grid.perCol.every((n) => n > 0), grid.perCol.join("/"));
-check("all 50 frames in the wall", grid.cells === 50, String(grid.cells));
-check("one image per frame", grid.imgs === 50, String(grid.imgs));
-check("CSS tracks match emitted columns", grid.tracks === grid.cols,
-  `var=${grid.trackVar} tracks=${grid.tracks} emitted=${grid.cols}`);
-// Packed columns must land on an even bottom. The threshold is scaled to the
-// viewport rather than fixed, because the same absolute raggedness is a bigger
-// share of a narrow column. Measured 29px at 1440 against a 108px floor.
-check("columns end evenly", grid.bottomSpread <= Math.max(28, Math.round(0.24 * (await evaluate(`innerWidth`)))),
-  `${grid.bottomSpread}px spread`);
+// The curated static wall: 30 frames, 10 rows of 3, nothing scrolls, no numbers.
+check("ten rows of three", grid.rows === 10 && grid.perRow.every(n => n === 3),
+  grid.rows + " rows, " + grid.perRow.join("/"));
+check("30 frames in the wall", grid.cells === 30, String(grid.cells));
+check("one image per frame", grid.imgs === 30, String(grid.imgs));
+check("three CSS tracks per row", grid.tracks === 3, String(grid.tracks));
+// "No spacing issues at all" — measured, not eyeballed. 1px of tolerance is
+// fractional layout rounding; a photo at a different ratio would show as more.
+check("every row is exactly one height (no gap under any photo)", grid.rowSpread <= 1,
+  "worst spread " + grid.rowSpread.toFixed(2) + "px");
+check("nothing on the page scrolls", grid.scrollables === 0, String(grid.scrollables));
+check("no numbers printed on the images", grid.printedNumbers === 0, String(grid.printedNumbers));
+check("no filter bar", !grid.filterBar);
+check("data-n kept for the lightbox counter", grid.dataN === 30, String(grid.dataN));
 
 // The closing band. Measured missing on this route on 2026-10-01: the page ended
 // on `.page.portfolio`, so a visitor who liked a frame had no way to enquire.
@@ -318,7 +306,7 @@ const noVideo = await evaluate(`(() => ({
   empty: !!document.querySelector('.empty'),
 }))()`);
 check("no video nav item", !info.nav.includes("video"), info.nav.join(","));
-check("#/video falls back to the gallery", noVideo.cells === 50, `active=${noVideo.active} cells=${noVideo.cells}`);
+check("#/video falls back to the gallery", noVideo.cells === 30, `active=${noVideo.active} cells=${noVideo.cells}`);
 check("no video empty-state leaked", !noVideo.empty);
 
 // ============================================== mobile
