@@ -214,32 +214,34 @@ function figure(p: Photo, index: number): string {
         <img src="${escapeHtml(fb)}" alt="${escapeHtml(p.alt || p.filename || "")}"
              loading="${loading}" decoding="async"${priority}${ratio}
              data-full="${escapeHtml(p.url)}" data-alt="${escapeHtml(p.alt || "")}"
-             data-cat="${escapeHtml(categoryOf(p))}" />
+             data-cat="${escapeHtml(categoryOf(p))}"
+             data-filename="${escapeHtml(p.filename || "")}" />
       </picture>
     </figure>`;
 }
 
 /**
- * A portfolio wall cell: a button carrying the thumbnail plus a larger copy
- * that the CSS shows on hover (pointer devices only).
- *
- * The lightbox opens on CLICK of `.cell img[data-full]`, so the thumbnail
- * keeps that attribute and the button must not swallow the event — hence no
- * JS here at all. The preview img is `aria-hidden` and `tabindex="-1"` so
- * screen readers and keyboard users get the thumbnail, not a duplicate frame.
- */
-function wallCell(p: Photo, index: number): string {
-  const thumb = figure(p, index);
-  const peekSrc = derivative(p.url, 1200, "jpg") ?? p.url;
-  return `<span class="pf-cell" role="button" tabindex="0"
-               aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">
-        ${thumb}
-        <span class="pf-peek" aria-hidden="true">
-          <img src="${escapeHtml(peekSrc)}" alt="" tabindex="-1"
-               loading="lazy" decoding="async" />
-        </span>
-      </span>`;
-}
+ * A portfolio wall cell: a button wrapping the thumbnail.
+  *
+  * It used to carry a second, larger `<img>` that the CSS revealed on hover.
+  * Removed 2026-10-01 — Alwin, "when i hover it destroys the crop... make it
+  * like the home page images". Measured: 247px of thumbnail replaced by 492px of
+  * the same frame, thumbnail underneath at opacity 0. Inside a justified row
+  * that swaps in a differently-cropped copy whose height disagrees with its
+  * neighbours. The wall now inherits the home page's monochrome-at-rest hover
+  * from `.shell.is-bw .cell img`, which needs no element of its own.
+  *
+  * The lightbox opens on CLICK of `.cell img[data-full]`, so the thumbnail
+  * keeps that attribute and the button must not swallow the event — hence no
+  * JS here at all.
+  */
+ function wallCell(p: Photo, index: number): string {
+   const thumb = figure(p, index);
+   return `<span class="pf-cell" role="button" tabindex="0"
+                aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">
+         ${thumb}
+       </span>`;
+ }
 
 /**
  * The portfolio route: one editorial wall of every frame.
@@ -273,7 +275,43 @@ export function portfolioPage(photos: Photo[], cols: number, rowWidth: number): 
       <p class="phead__p">Portraits, couples, families and everything in between. This is the work, unfiltered.</p>
     </header>
     <div class="grid grid--wall">${wall}</div>
+    ${pfBand()}
   </section>`;
+}
+
+/**
+ * The closing band on the portfolio route.
+ *
+ * Measured 2026-10-01: the page ended on `.page.portfolio` and nothing else — no
+ * footer, no price, no way to reach Alwin without scrolling back to the nav. On
+ * a page whose entire job is "look at my work", that is the worst place to dead-
+ * end: a visitor who likes a frame has no next step.
+ *
+ * This is `homeBand()`, the same band the home page uses, with the wording
+ * changed. Reusing it rather than writing a second one means the price and the
+ * contact links have a single source, and the portfolio cannot drift out of sync
+ * with what Services charges. It also inherits the deliberate choice recorded
+ * there: ONE contact line inside the band, not a site-wide footer.
+ *
+ * The three replacements match on markup that `homeBand()` controls, so a
+ * wording change there that breaks one of them fails silently into an unchanged
+ * string rather than an error. `verify.mjs` asserts the band and its CTA are
+ * present on this route, which is what catches that.
+ */
+function pfBand(): string {
+  return homeBand()
+    .replace(
+      `<p class="eyebrow">${escapeHtml(SITE.services.eyebrow)}</p>`,
+      `<p class="eyebrow">Book a shoot</p>`,
+    )
+    .replace(
+      `<h2 class="hcta__h">${escapeHtml(SITE.services.heading)}</h2>`,
+      `<h2 class="hcta__h">Like what you see?</h2>`,
+    )
+    .replace(
+      `<a class="hcta__btn" href="#/services">${escapeHtml(SITE.services.cta)} →</a>`,
+      `<a class="hcta__btn" href="#/contact">Get a quote →</a>`,
+    );
 }
 
 /** The shared empty state — reachable from home and portfolio alike. */

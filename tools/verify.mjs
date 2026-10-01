@@ -5,9 +5,17 @@
  * CDP gotcha: enable every domain FIRST, then Page.navigate. Enabling domains
  * after navigation races the frame and Runtime.evaluate lands on about:blank.
  */
-import { writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync, readFileSync } from "node:fs";
 
-const BASE = (process.argv[2] ?? "http://localhost:4173/shutterhaus-site").replace(/\/$/, "");
+// Root, NOT a sub-path.
+//
+// `vite preview` serves this app at /, so a base carrying a path
+// (/shutterhaus-site) makes every gallery request 404 into the SPA fallback and
+// come back as `text/html` — 200 OK, no broken-image icon, just blank frames.
+// The tools are invoked with the project directory as an argument, which is
+// exactly where the path came from. The image tools below now also report
+// NOT-IMAGE responses so this class of mistake is legible instead of silent.
+const BASE = (process.argv[2] ?? "http://localhost:4173").replace(/\/$/, "");
 // Hardcoding 9222 here silently ignored CDP_PORT, so domain runs connected to a
 // different Chrome instance than the one launched with the host-resolver
 // override — which resolved the domain to the stale parking IP and produced a
@@ -153,6 +161,24 @@ const grid = await evaluate(`(() => {
     maxWidthErr: wall ? Math.max(0, ...rows.map(r => Math.abs(
       r.getBoundingClientRect().width - wall.getBoundingClientRect().width))) : -1,
     filters: document.querySelectorAll('.pfilter__item').length,
+    // The closing band, and the shoot order as actually rendered.
+    band: !!document.querySelector('.hcta'),
+    bandCta: document.querySelector('.hcta__btn')?.getAttribute('href') ?? null,
+    bandLinks: document.querySelectorAll('.hcta__foot a').length,
+    // The frame's OWN filename, for the shoot-clumping check below.
+    //
+    // Scoped to '.cell img' on purpose: each wall cell contains TWO images (the
+    // thumbnail and the aria-hidden hover peek), so selecting every img yields
+    // 100 entries for 50 frames and every alternate entry is an empty string.
+    // Only the thumbnail carries the filename attribute.
+    //
+    // Read src instead of the attribute and it gives a derivative
+    // ("x-400w.jpg"), which is not in the shoot map — an earlier version of this
+    // check did that, so the adjacency comparison was undefined === undefined
+    // for every pair and it passed without checking anything.
+    fileOf: [...document.querySelectorAll('.pf-row__cell .cell img')].map(
+      (el) => el.getAttribute('data-filename') || "",
+    ),
   };
 })()`);
 console.log("--- portfolio ---" + JSON.stringify(grid));
@@ -178,6 +204,55 @@ check("all 50 frames in the wall", grid.cells === 50, String(grid.cells));
 // Justified: one height per row, every row flush to the wall width.
 check("rows share one height", grid.maxHeightSpread <= 1, `${grid.maxHeightSpread.toFixed(1)}px`);
 check("every row ends flush", grid.maxWidthErr <= 2, `${grid.maxWidthErr.toFixed(1)}px`);
+
+// The closing band. Measured missing on this route on 2026-10-01: the page ended
+// on `.page.portfolio`, so a visitor who liked a frame had no way to enquire.
+// `pfBand()` reuses `homeBand()` with three string replacements, which fail
+// SILENTLY into unchanged markup if that function's wording moves — so the
+// assertions below are what actually notice.
+check("portfolio ends with the band", grid.band);
+check("band CTA goes to contact", grid.bandCta === "#/contact", String(grid.bandCta));
+check("band carries contact links", grid.bandLinks >= 2, String(grid.bandLinks));
+
+// No two frames from the same shoot may be adjacent on the wall. Read from the
+// rendered DOM and the same clustering the generator used, so this fails if
+// demo.ts is regenerated without re-running shootorder.py — the exact way the
+// clump comes back.
+{
+  const order = grid.fileOf ?? [];
+  const meta = JSON.parse(
+    readFileSync(new URL("../interleave-order.json", import.meta.url), "utf8"),
+  );
+  const shootOf = meta.shoot_of;
+  let adjacentSame = 0;
+  let unknown = 0;
+  for (let i = 1; i < order.length; i++) {
+    const a = shootOf[order[i]];
+    const b = shootOf[order[i - 1]];
+    if (a === undefined || b === undefined) unknown++;
+    else if (a === b) adjacentSame++;
+  }
+  // Counted BEFORE the adjacency result is trusted. A run of undefined values
+  // compares equal to itself and would report "no clumping" while having
+  // checked nothing at all — which is how the earlier src-based version of this
+  // check passed while reading 100 "frames" that matched none.
+  check("shoot map covers every frame", unknown === 0, `${unknown} unmapped`);
+  check(
+    "no two same-shoot frames are adjacent",
+    unknown === 0 && adjacentSame === 0,
+    `${adjacentSame} adjacent pair(s) of ${order.length}`,
+  );
+  // A visible run, not just a pair: five in a row was what the wall looked like
+  // before any of this. Reported rather than asserted because the cluster sizes
+  // make the achievable floor non-zero.
+  let worstRun = 1;
+  let run = 1;
+  for (let i = 1; i < order.length; i++) {
+    run = shootOf[order[i]] === shootOf[order[i - 1]] ? run + 1 : 1;
+    if (run > worstRun) worstRun = run;
+  }
+  check("longest same-shoot run stays short", worstRun <= 2, `${worstRun} in a row`);
+}
 check("no horizontal overflow", info.overflow <= 0, `${info.overflow}px`);
 check("black & white shell", info.bw);
 check("white page bg", info.bodyBg === "rgb(255, 255, 255)", info.bodyBg);

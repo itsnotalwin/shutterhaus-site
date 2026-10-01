@@ -6,12 +6,32 @@ srcset cap in `pictureFor()` depends on a correct `width`, and a wrong one
 advertises a derivative that was never generated — which is what rendered
 the home hero as a black box once already.
 
-Ordering: natural filename order (the leading number Alwin's export used).
-That number is the shoot order, so it is preserved.
+Ordering: shoots are spread apart, not simply sorted by filename. See below.
 
 Run: python tools/build-demo-ts.py
 Idempotent — regenerates the file wholesale.
+
+--- Why the order is not the export order -------------------------------
+
+Alwin, 2026-10-01: "too many of the same shoot next to or close to each other
+should have variance". The export order put 16 frames of one session in a single
+block, so half the wall was the same woman in the same outfit in the same room.
+
+tools/shootorder.py decides the order: it clusters the gallery into shoots by
+colour and image hash, then interleaves them so no two frames from one shoot sit
+next to each other, and as few as possible sit within a few positions of each
+other. It writes interleave-order.json, which this script consumes.
+
+This script HARD-FAILS if that order file is missing or was written for a
+different set of frames. It used to print a warning and fall back to export
+order, which reintroduced the clump silently and looked like the fix had been
+undone. When the gallery changes:
+
+  python tools/shootorder.py --write   # re-spread the shoots
+  python tools/build-demo-ts.py        # regenerate src/demo.ts
 """
+import hashlib
+import json
 import re
 from pathlib import Path
 
@@ -20,10 +40,72 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parent.parent
 DEMO = ROOT / "src" / "demo.ts"
 GALLERY = ROOT / "public" / "gallery"
+ORDER_FILE = ROOT / "interleave-order.json"
 
 # Suffixes make-derivatives.py appends; only real originals belong here.
 DERIV = re.compile(r"-\d+w\.(jpe?g|webp|png)$", re.I)
 
+
+def gallery_fingerprint(files: list[Path]) -> str:
+    """
+    A digest of WHICH frames exist, matching what shootorder.py records.
+
+    Name and size are enough here. Re-hashing image content would catch an
+    in-place edit that keeps the filename, which does not happen in this
+    workflow — add or remove an image, and both the name and the frame count
+    change. The two functions must stay in step: one records the digest, the
+    other refuses a file whose digest no longer matches.
+    """
+    parts = [f"{p.name}:{p.stat().st_size}" for p in files]
+    return hashlib.sha256("\n".join(parts).encode("utf-8")).hexdigest()[:16]
+
+
+def apply_shoot_order(files: list[Path]) -> list[Path]:
+    """
+    Re-sort into the shoot-spread order, or refuse.
+
+    Every failure path here raises instead of warning. That is the point of the
+    function: a stale or missing order file makes the wall clump again, and a
+    printed warning scrolls past while `demo.ts` still gets written and shipped.
+    Exiting non-zero means the build stops with the reason on screen.
+
+    Appending unknown frames at the end — the earlier behaviour — is specifically
+    the failure being avoided. It yields a wall that is *mostly* spread with one
+    clump tacked on, which reads as success. The digest catches that case before
+    the ordering is applied at all.
+    """
+    if not ORDER_FILE.exists():
+        raise SystemExit(
+            "interleave-order.json not found. Regenerate it, do not fall back:\n"
+            "  python tools/shootorder.py --write\n"
+            "Export order clumps same-shoot frames, which is the problem this exists "
+            "to fix, and shipping it looks exactly like the fix never happened."
+        )
+
+    meta = json.loads(ORDER_FILE.read_text(encoding="utf-8"))
+
+    if meta.get("fingerprint") != gallery_fingerprint(files):
+        raise SystemExit(
+            "interleave-order.json is STALE — it was written for a different set of "
+            "frames than public/gallery/ now holds.\n"
+            "Regenerate it:\n"
+            "  python tools/shootorder.py --write\n"
+            "then re-run this script."
+        )
+
+    rank = {name: i for i, name in enumerate(meta.get("order", []))}
+    unknown = [p.name for p in files if p.name not in rank]
+    if unknown:
+        # The digest matching while names are missing means the two scripts
+        # disagree about which files count as originals — a real bug, not drift.
+        raise SystemExit(
+            f"{len(unknown)} frame(s) missing from the order despite a matching "
+            f"digest: {', '.join(unknown[:3])}{'...' if len(unknown) > 3 else ''}\n"
+            "The two tools disagree about which files are originals."
+        )
+
+    files.sort(key=lambda p: (rank[p.name], p.name))
+    return files
 
 def main() -> None:
     files = [
@@ -37,6 +119,7 @@ def main() -> None:
         return (int(m.group(1)) if m else 10**9, p.stem)
 
     files.sort(key=key)
+    files = apply_shoot_order(files)
 
     rows = []
     for i, p in enumerate(files):

@@ -7,5 +7,9 @@ shots/
 *.log
 .vscode/
 .idea/
+# Python bytecode from the tools/ generators (shootorder.py, build-demo-ts.py).
+# These are build artifacts of a local tool, never inputs.
+__pycache__/
+*.pyc
 # verify.mjs screenshots, if SHOT_DIR is ever pointed back at the root
 shot-*.png

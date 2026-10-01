@@ -85,14 +85,33 @@ for (const w of WIDTHS) {
     await new Promise((r) => setTimeout(r, 1500));
 
     // Failed requests are the other half of the signal: a 404 that a retry or
-    // a later swap might mask still needs to be reported.
-    const bad = [];
-    for (const e of events) {
-      if (e.method === "Network.loadingFailed") bad.push(e.params.errorText);
-      if (e.method === "Network.responseReceived" && e.params.response.status >= 400) {
-        bad.push(e.params.response.status + " " + (e.params.response.url || "").split("/").pop());
-      }
-    }
+        // a later swap might mask still needs to be reported.
+        //
+        // A 200 that is NOT AN IMAGE must be reported too, and that is the bug this
+        // run exposed. Pointed at a base URL carrying a path
+        // (http://localhost:4173/shutterhaus-site), `vite preview` did not serve
+        // gallery/ at all and every image request fell through to the SPA
+        // fallback: HTTP 200, `text/html`, 2351 bytes. That is the worst shape for
+        // this tool — no >=400 status to catch, so the only signal was
+        // naturalWidth === 0, which is indistinguishable from an ordinary decode
+        // failure. Checking the response type names the actual cause.
+        const bad = [];
+        for (const e of events) {
+          if (e.method === "Network.loadingFailed") bad.push(e.params.errorText);
+          if (e.method === "Network.responseReceived" && e.params.response.status >= 400) {
+            bad.push(e.params.response.status + " " + (e.params.response.url || "").split("/").pop());
+          }
+          // An image slot served as HTML is a path bug (wrong base URL), never a
+          // missing derivative. Say so, because the two have opposite fixes.
+          if (e.method === "Network.responseReceived") {
+            const { url = "", mimeType = "" } = e.params.response;
+            const type = e.params.response.headers?.["content-type"] ?? mimeType ?? "";
+            const looksLikeImage = /gallery\//.test(url);
+            if (looksLikeImage && type && !type.startsWith("image/")) {
+              bad.push(`NOT-IMAGE ${type} ${url.split("/").slice(-2).join("/")}`);
+            }
+          }
+        }
 
     const r = await send("Runtime.evaluate", {
       expression: `(() => {

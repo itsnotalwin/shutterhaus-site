@@ -431,85 +431,6 @@
 .grid--wall { display: grid; grid-template-columns: repeat(var(--cols, 3), 1fr); gap: var(--gut); }
 .grid--wall .col { display: contents; }
 
-/* ------------------------------------------------ portfolio wall behaviour
- *
- * Alwin: "yes, but only on phones — desktop opens on hover." Two columns on
- * mobile (50 frames one-per-row was 28 screens of scroll), and on a real
- * pointer the frame under the cursor lifts into a larger preview.
- *
- * The preview is a second `<img>` in a `<button>` rendered only for the
- * portfolio wall, so it cannot affect the locked home strip — those cells stay
- * plain `<figure>`.
- *
- * `:hover` only exists where a pointer does, so the whole thing sits inside
- * `@media (hover: hover)`. Touch devices keep the tap-to-open lightbox and
- * never get a stuck-open preview.
- */
-.pf-cell {
-  position: relative;
-  display: block;
-  width: 100%;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: zoom-in;
-  overflow: visible;
-}
-.pf-cell > .cell { display: block; }
-/* Hide the wall thumbnail once the preview is showing.
- *
- * Note the nesting: `figure()` wraps the thumbnail in `.cell > picture > img`,
- * so `> picture` alone never matches — the rule has to reach the figure.
- */
-@media (hover: hover) {
-  .pf-cell:hover .cell,
-  .pf-cell:focus-visible .cell {
-    opacity: 0;
-    transition: opacity 120ms ease;
-  }
-}
-
-/* The preview itself: same frame, larger, centred over the grid. */
-.pf-peek {
-  position: absolute;
-  inset: 0;
-  display: none;
-  place-items: center;
-  z-index: 40;
-  pointer-events: none;
-}
-.pf-peek img {
-  max-width: min(46vw, 620px);
-  max-height: 82vh;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  opacity: 1 !important;
-  /* A soft drop shadow alone is invisible against a light frame, which is most
-   * of this set — the preview just read as another cell. The ring does the
-   * work: it separates the frame from the wall whatever the photo's own tone. */
-  box-shadow:
-    0 0 0 1px rgba(12, 12, 12, 0.16),
-    0 30px 80px rgba(0, 0, 0, 0.28);
-  transform: scale(0.97);
-  transition: transform 160ms ease;
-}
-@media (hover: hover) {
-  .pf-cell:hover .pf-peek,
-  .pf-cell:focus-visible .pf-peek {
-    display: grid;
-  }
-  .pf-cell:hover .pf-peek img,
-  .pf-cell:focus-visible .pf-peek img {
-    transform: scale(1);
-  }
-}
-@media (max-width: 760px) {
-  /* Touch: no hover preview at all, the tap-to-open lightbox is the whole
-   * interaction. `display:none !important` so no stray rule can revive it. */
-  .pf-peek { display: none !important; }
-  .pf-cell { cursor: pointer; }
-}
 
 /* Justified rows. The JS in src/rows.ts computes each row's height and each
  * frame's width, so this layer only lays them out in a line. The old
@@ -543,19 +464,29 @@
 .pf-row .cell img { width: 100%; height: 100%; }
 .pf-row .cell img { object-fit: cover; }
 
+
 /* ------------------------------------------------ portfolio wall behaviour
  *
- * Alwin: "yes, but only on phones — desktop opens on hover." Two columns on
- * mobile (50 frames one-per-row was 28 screens of scroll), and on a real
- * pointer the frame under the cursor lifts into a larger preview.
+ * Alwin, 2026-10-01: "when i hover it destroys the crop, lets not make the image
+ * bigger or blow up on hover, make it like the home page images".
  *
- * The preview is a second `<img>` in a `<button>` rendered only for the
- * portfolio wall, so it cannot affect the locked home strip — those cells stay
- * plain `<figure>`.
+ * There is no hover preview on the wall, deliberately. The overlay it replaces
+ * was measured at 247px of thumbnail swapping to 492px of the same photograph —
+ * a clean 2x — with the thumbnail underneath at opacity 0. In a justified row
+ * that is a substitution, not a preview: the cell takes a differently-cropped
+ * copy whose height and aspect ratio disagree with the frames either side of
+ * it. No amount of toning the scale down fixes that, because the row was built
+ * around the crop it was given.
  *
- * `:hover` only exists where a pointer does, so the whole thing sits inside
- * `@media (hover: hover)`. Touch devices keep the tap-to-open lightbox and
- * never get a stuck-open preview.
+ * So the wall uses the home page's treatment, which needs no element of its
+ * own — `.shell.is-bw .cell img` in styles.css already renders every frame
+ * monochrome at rest and returns it to full colour on hover. Nothing about the
+ * layout moves, because nothing about the layout changes.
+ *
+ * Removing the markup also halves the images on this page: each cell used to
+ * carry a thumbnail AND a separate 1200w preview, so 50 frames meant 100 <img>.
+ *
+ * Tap-to-open lightbox is untouched; that is the real way to see a frame large.
  */
 .pf-cell {
   position: relative;
@@ -568,58 +499,7 @@
   overflow: visible;
 }
 .pf-cell > .cell { display: block; }
-/* Hide the wall thumbnail once the preview is showing.
- *
- * Note the nesting: `figure()` wraps the thumbnail in `.cell > picture > img`,
- * so `> picture` alone never matches — the rule has to reach the figure.
- */
-@media (hover: hover) {
-  .pf-cell:hover .cell,
-  .pf-cell:focus-visible .cell {
-    opacity: 0;
-    transition: opacity 120ms ease;
-  }
-}
-
-/* The preview itself: same frame, larger, centred over the grid. */
-.pf-peek {
-  position: absolute;
-  inset: 0;
-  display: none;
-  place-items: center;
-  z-index: 40;
-  pointer-events: none;
-}
-.pf-peek img {
-  max-width: min(46vw, 620px);
-  max-height: 82vh;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  opacity: 1 !important;
-  /* A soft drop shadow alone is invisible against a light frame, which is most
-   * of this set — the preview just read as another cell. The ring does the
-   * work: it separates the frame from the wall whatever the photo's own tone. */
-  box-shadow:
-    0 0 0 1px rgba(12, 12, 12, 0.16),
-    0 30px 80px rgba(0, 0, 0, 0.28);
-  transform: scale(0.97);
-  transition: transform 160ms ease;
-}
-@media (hover: hover) {
-  .pf-cell:hover .pf-peek,
-  .pf-cell:focus-visible .pf-peek {
-    display: grid;
-  }
-  .pf-cell:hover .pf-peek img,
-  .pf-cell:focus-visible .pf-peek img {
-    transform: scale(1);
-  }
-}
 @media (max-width: 760px) {
-  /* Touch: no hover preview at all, the tap-to-open lightbox is the whole
-   * interaction. `display:none !important` so no stray rule can revive it. */
-  .pf-peek { display: none !important; }
   .pf-cell { cursor: pointer; }
 }
 
