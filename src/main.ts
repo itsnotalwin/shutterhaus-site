@@ -2,7 +2,7 @@ import "./styles.css";
 import "./editorial.css";
 import { SITE } from "./config";
 import { renderShell } from "./layout";
-import { portfolioPage, homePage, emptyGallery } from "./pages";
+import { portfolioPage, homePage, emptyGallery, packByHeight } from "./pages";
 import { contactPage, servicesPage, aboutPage } from "./pages-more";
 import { listPublicPhotos, type AdminPhoto } from "./store";
 import { DEMO_PHOTOS } from "./demo";
@@ -31,6 +31,110 @@ function columnsFor(w: number): number {
  */
 function pfCols(w: number): number {
   return w < 640 ? 2 : 3;
+}
+
+/**
+ * Drive the portfolio filter bar.
+ *
+ * Hides the cells that do not match and repacks the columns, rather than just
+ * hiding them and leaving a ragged hole where a column used to be. Repacking
+ * calls the same `packByHeight()` the initial render used, so filtering cannot
+ * reintroduce the clumping the spread order exists to prevent.
+ *
+ * Delegates on the bar itself rather than binding 50 listeners.
+ */
+function wireFilterBar(): void {
+  const bar = document.querySelector<HTMLElement>(".pfilter");
+  if (!bar) return;
+
+  // Deliberately NOT snapshotted. repackWall() moves cells between columns, so
+  // a list captured at wire time goes stale after the first filter change: the
+  // moved cells fall out of it, the id lookup stops matching, and
+  // repackWall()'s guard bails silently — which looked exactly like the feature
+  // not working. Query fresh on every click.
+  const cells = () => [...document.querySelectorAll<HTMLElement>(".pf-cell")];
+
+  bar.addEventListener("click", (ev) => {
+    const btn = (ev.target as HTMLElement).closest<HTMLElement>(".pfilter__item");
+    if (!btn) return;
+    const want = btn.dataset.filter ?? "all";
+
+    for (const b of bar.querySelectorAll<HTMLElement>(".pfilter__item")) {
+      const on = b === btn;
+      b.classList.toggle("is-on", on);
+      b.setAttribute("aria-pressed", String(on));
+    }
+
+    // Map each cell back to its photo via data-filename, then re-pack the
+    // visible ones. Re-running the packer is what keeps the filtered wall even.
+    for (const cell of cells()) {
+      const f = cell.querySelector<HTMLElement>(".cell img")?.dataset.filename;
+      const photo = DEMO_PHOTOS.find((p) => p.filename === f);
+      cell.hidden = !(want === "all" || photo?.album === want);
+    }
+    repackWall();
+  });
+}
+
+/**
+ * Rebuild the visible columns in place, without re-rendering the page.
+ *
+ * Called after a filter change. Two things it has to get right, and both have a
+ * way to fail quietly:
+ *
+ *  1. Filtering to fewer frames than there are columns (Landscapes is 4 frames
+ *     against 3 columns) must not leave an empty track — a tall gap where a
+ *     column used to be. So the number of ACTIVE columns is capped at the
+ *     number of visible frames.
+ *
+ *  2. The surplus columns must not be REMOVED. An earlier version removed them,
+ *     which meant clicking "All" afterwards could not bring them back and the
+ *     wall stayed two-up for the rest of the session. They are hidden with CSS
+ *     instead, and the grid track count is set to match the active ones.
+ *
+ * Cells are looked up once by id and moved by appendChild, so a cell can end up
+ * in exactly one column no matter what order the packer returns.
+ */
+function repackWall(): void {
+  const wall = document.querySelector<HTMLElement>(".grid--wall");
+  if (!wall) return;
+
+  const visible = [...wall.querySelectorAll<HTMLElement>(".pf-cell")].filter((c) => !c.hidden);
+  if (!visible.length) return;
+
+  const byId = new Map(DEMO_PHOTOS.map((p) => [p.id, p]));
+  const photos = visible
+    .map((c) => byId.get(c.dataset.photoId ?? ""))
+    .filter((p): p is NonNullable<typeof p> => !!p);
+  // Bail rather than half-repack: if a cell's id cannot be resolved, moving the
+  // rest would silently reshuffle the wall and lose frames.
+  if (photos.length !== visible.length) return;
+
+  const all = [...wall.querySelectorAll<HTMLElement>(".wall__col")];
+  const n = Math.max(1, Math.min(all.length, photos.length));
+  const packed = packByHeight(photos, n);
+
+  // Snapshot the cell elements by photo id ONCE, before anything moves.
+  const cellOf = new Map<string, HTMLElement>();
+  for (const c of visible) {
+    const id = c.dataset.photoId;
+    if (id) cellOf.set(id, c);
+  }
+
+  // First move every visible cell into the first active column, so the
+  // per-column assignment below starts from a known state and no cell is left
+  // stranded in a column that is about to be hidden.
+  for (const c of visible) all[0].appendChild(c);
+
+  all.slice(0, n).forEach((col, i) => {
+    for (const p of packed[i] ?? []) {
+      const cell = cellOf.get(p.id);
+      if (cell) col.appendChild(cell);
+    }
+  });
+
+  for (let i = 0; i < all.length; i++) all[i].hidden = i >= n;
+  wall.style.setProperty("--wall-cols", String(n));
 }
 
 function route(): string {
@@ -168,6 +272,8 @@ function adoptable(live: AdminPhoto[] | null | undefined): AdminPhoto[] | null {
     app.innerHTML = renderShell(r, body, r === "home");
     markLoadedImages();
     wireBurger();
+    // Only the portfolio route emits `.pfilter`; the function no-ops elsewhere.
+    wireFilterBar();
     scrollTo(0, 0);
   };
   draw();

@@ -33,11 +33,15 @@ undone. When the gallery changes:
 import hashlib
 import json
 import re
+import sys
 from pathlib import Path
 
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "tools"))
+
+from frame_meta import FRAMES  # noqa: E402
 DEMO = ROOT / "src" / "demo.ts"
 GALLERY = ROOT / "public" / "gallery"
 ORDER_FILE = ROOT / "interleave-order.json"
@@ -124,10 +128,21 @@ def main() -> None:
     rows = []
     for i, p in enumerate(files):
         w, h = Image.open(p).size
-        slug = re.sub(r"[^a-z0-9]+", " ", p.stem.lower()).strip()
+        # Real per-frame description, from tools/frame_meta.py. These used to be
+        # a hardcoded "Portrait, natural light" on all 50 frames, which is the
+        # alt text, the SEO description and the lightbox caption at once — 50
+        # identical ones was an accessibility bug and wasted search value.
+        meta = FRAMES.get(p.name)
+        if meta is None:
+            raise SystemExit(
+                f"no alt text for {p.name} — add it to tools/frame_meta.py "
+                f"(or run tools/check-frame-meta.py to see the gap)"
+            )
+        alt = meta["alt"].replace('"', '\\"')
+        cat = meta["cat"]
         rows.append(
             f'  {{ id: "c{i}", url: "gallery/{p.name}", '
-            f'alt: "Portrait, natural light", album: "photo", '
+            f'alt: "{alt}", album: "{cat}", '
             f"sort_order: {i}, visible: true, width: {w}, height: {h}, "
             f'filename: "{p.name}" }},'
         )

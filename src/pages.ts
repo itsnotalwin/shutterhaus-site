@@ -125,6 +125,13 @@ export function packByHeight<T extends Photo>(items: T[], cols: number): T[][] {
           for (let y = 0; y < buckets[j].length; y++) {
             const A = buckets[i][x];
             const B = buckets[j][y];
+            // A column must never be emptied. This search only scores HEIGHT,
+            // so it will happily move the last short frame out of a column and
+            // leave it holding nothing — a tall empty gap beside a crowded one.
+            // That is exactly what filtering to 4 frames across 3 columns
+            // produced (0/3/1). Reject any swap that would empty a column.
+            if (buckets[i].length < 2 || buckets[j].length < 2) continue;
+
             buckets[i][x] = B;
             buckets[j][y] = A;
 
@@ -330,11 +337,56 @@ function figure(p: Photo, index: number): string {
    // Every frame here is below the header, so all of them stay lazy and the
    // browser picks what to fetch when it scrolls. Passing 0 for all of them is
    // what previously marked one arbitrary frame as the page's LCP element.
-   return `<span class="pf-cell" role="button" tabindex="0"
+   return `<span class="pf-cell" role="button" tabindex="0" data-photo-id="${escapeHtml(p.id)}"
                 aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">
          ${figure(p, -1)}
        </span>`;
  }
+
+/**
+ * The portfolio filter bar.
+ *
+ * The `.pfilter` stylesheet shipped in src/editorial.css with nothing emitting
+ * it (verify.mjs counted `filters: 0` and nothing complained). This is that
+ * markup.
+ *
+ * Categories come from `photo.album`, which tools/build-demo-ts.py now writes
+ * from tools/frame_meta.py — 46 portraits and 4 landscapes in the real gallery.
+ * There are no couples, families or social groups in it, so the bar does not
+ * claim any. An earlier mockup of this bar showed invented counts of 28/9/7/6
+ * against categories the frames do not contain; do not reintroduce those.
+ *
+ * "All" comes first and is the default, so the bar is a filter rather than a
+ * set of tabs that hide work behind them.
+ */
+function filterBar(photos: Photo[]): string {
+  const counts = new Map<string, number>();
+  for (const p of photos) {
+    const k = p.album || "other";
+    counts.set(k, (counts.get(k) ?? 0) + 1);
+  }
+  // Only offer a bar when it would actually distinguish something. With one
+  // category the bar is chrome around a single option.
+  if (counts.size < 2) return "";
+
+  const label: Record<string, string> = {
+    portrait: "Portraits",
+    landscape: "Landscapes",
+  };
+  const items = [
+    `<button class="pfilter__item is-on" type="button" data-filter="all"
+         aria-pressed="true">All · ${photos.length}</button>`,
+    ...[...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .map(
+        ([cat, n]) =>
+          `<button class="pfilter__item" type="button" data-filter="${escapeHtml(cat)}"
+             aria-pressed="false">${escapeHtml(label[cat] ?? cat)} · ${n}</button>`,
+      ),
+  ].join("");
+
+  return `<nav class="pfilter" aria-label="Filter photographs by category">${items}</nav>`;
+}
 
 /**
  * The portfolio route: one editorial wall of every frame.
@@ -366,8 +418,9 @@ export function portfolioPage(photos: Photo[], cols: number): string {
     <header class="phead">
       <p class="eyebrow">${photos.length} photographs · Gauteng</p>
       <h1 class="phead__h">Portfolio</h1>
-      <p class="phead__p">Portraits, couples, families and everything in between. This is the work, unfiltered.</p>
+      <p class="phead__p">Portraits and places, shot around Gauteng.</p>
     </header>
+    ${filterBar(photos)}
     <div class="grid grid--wall" style="--wall-cols:${cols}">${wall}</div>
     ${pfBand()}
   </section>`;

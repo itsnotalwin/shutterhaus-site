@@ -379,13 +379,21 @@
 
 /* ----------------------------------------------------- portfolio page */
 
+/* The portfolio page is ~11400px tall on desktop, so a filter bar at the top
+   is out of reach for most of the wall. Sticky keeps it usable; the 8px
+   background padding stops frames scrolling underneath the rule above it. */
 .pfilter {
+  position: sticky;
+  top: 0;
+  z-index: 5;
   display: flex;
   flex-wrap: wrap;
   gap: 22px;
-  padding: 0 0 30px;
+  padding: 10px 0 14px;
   border-bottom: 1px solid var(--line);
   margin-bottom: 30px;
+  /* Matches the page background, or frames show through the gaps. */
+  background: var(--paper);
 }
 .pfilter__item {
   font: inherit;
