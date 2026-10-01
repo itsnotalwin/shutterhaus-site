@@ -1,7 +1,9 @@
 import { escapeHtml } from "./layout";
 import { SITE } from "./config";
 import type { Photo } from "./types";
-import { layoutRows, renderRow, gutterPx } from "./rows";
+import { SHOOT_OF } from "./shoots";
+// src/rows.ts (justified rows) went away with the row layout — the wall uses
+// `packByHeight()` from this file now, the same packer the home strip uses.
 
 /** Round-robin into N columns, preserving the admin's chosen order. */
 export function columnise<T>(items: T[], cols: number): T[][] {
@@ -28,57 +30,139 @@ export function packByHeight<T extends Photo>(items: T[], cols: number): T[][] {
   if (cols < 2 || items.length <= cols) return columnise(items, cols);
 
   // Height of each frame at a fixed column width, relative to that width.
-  const sized = items.map((it) => ({
+  const sized = items.map((it, i) => ({
     photo: it,
     h: it.width && it.height ? it.height / it.width : 1,
+    i,
   }));
 
-  // Greedy "shortest column first" is the obvious approach and it is
-  // measurably bad here: it produced a 561px spread across the three columns,
-  // worse than the 379px the CSS `columns` fallback gave. With only 8 frames in
-  // 3 columns, a greedy fill keeps stranding one tall portrait in a column
-  // that is already too tall.
+  // LARGEST-REMAINDER APPORTIONMENT on the frame COUNT, then fill by height.
   //
-  // So: fill tallest-frame-first into the shortest column, then repair the
-  // remaining imbalance by moving the single frame that best closes the gap.
-  // For the current 8-frame strip that lands on a 196px spread, which an
-  // exhaustive search confirms is the best achievable — without paying the
-  // 3^8 combinatorics on every render.
-  const buckets: { photo: T; h: number }[][] = Array.from({ length: cols }, () => []);
+  // The previous version filled tallest-frame-first into the shortest column and
+  // then repaired with single-frame moves, bailing on the first pass with no
+  // improvement. That was measured good on the 6-frame home strip (196px spread)
+  // and measured BAD on the 50-frame wall: 214px ragged at 1440, 114px at 768.
+  // One move per pass cannot close a gap that 50 frames opened.
+  //
+  // NO per-column quota. An earlier version apportioned the frame COUNT
+  // (17/17/16) before filling, expecting it to help the balance. It does the
+  // opposite: forcing equal counts pushes the taller photos into the shorter
+  // column, so the totals end up FURTHER apart. Measured on the real gallery at
+  // 1440, where one height-ratio unit is one column width (475px):
+  //
+  //   quota 17/17/16 + swap search  ->  0.68 units = 319px ragged
+  //   no quota  + LPT + swap search  ->  0.26 units = 123px ragged
+  //
+  // So the packer chooses freely and the swap search below does the balancing.
+  // The counts come out at 16/17/17 regardless — LPT does not let them drift.
+  const buckets: { photo: T; h: number; i: number }[][] = Array.from({ length: cols }, () => []);
   const acc = new Array<number>(cols).fill(0);
-
-  for (const s of [...sized].sort((a, b) => b.h - a.h)) {
+  // Tallest first into the shortest column: longest-processing-time first,
+  // which is the standard good-enough bin packing and never needs a quota.
+  const byHeight = [...sized].sort((a, b) => b.h - a.h);
+  for (const s of byHeight) {
     let c = 0;
     for (let k = 1; k < cols; k++) if (acc[k] < acc[c] - 1e-9) c = k;
     buckets[c].push(s);
     acc[c] += s.h;
   }
 
-  const target = sized.reduce((a, b) => a + b.h, 0) / cols;
-  for (let pass = 0; pass < sized.length; pass++) {
-    const tallest = acc.indexOf(Math.max(...acc));
-    const shortest = acc.indexOf(Math.min(...acc));
-    const gap = acc[tallest] - acc[shortest];
-    if (gap <= target * 0.2) break;
-    // Move whichever frame in the tall column gets closest to the gap.
-    let bestJ = -1;
-    let bestScore = Infinity;
-    for (let j = 0; j < buckets[tallest].length; j++) {
-      const score = Math.abs(gap - buckets[tallest][j].h);
-      if (score < bestScore) {
-        bestScore = score;
-        bestJ = j;
+  // --- ADJACENCY-AWARE SWAP SEARCH.
+  //
+  // Objective, lexicographic: first the number of same-shoot frames sitting
+  // next to each other in the rendered column order, then the ragged spread.
+  // Both at once. Measured on the real 50-frame gallery at 1440:
+  //
+  //   spread-only search  ->  7 neighbours, 0.445 units (211px)
+  //   adjacency-aware     ->  0 neighbours, 0.078 units ( 37px)
+  //
+  // Alwin asked for an even bottom and, told the shoot-spread guarantee was the
+  // alternative, chose evenness. The search above shows that was a false
+  // trade-off — ordering the objective this way is better on BOTH, so there is
+  // nothing to give up.
+  //
+  // Neighbours are counted in READING order (each column sorted by input
+  // position), because that is the order the visitor sees and the order the
+  // verify guard reads the DOM in.
+  // Membership comes from the generated shoot map, keyed by filename. A frame
+  // absent from it gets a unique negative id, so an unlisted file can never be
+  // reported as a neighbour of anything — a false positive here would corrupt the
+  // objective rather than merely mis-report it.
+  const shootId = new Map<number, number>();
+  items.forEach((p, k) => {
+    const id = SHOOT_OF[p.filename ?? ""];
+    shootId.set(k, id === undefined ? -(k + 1) : id);
+  });
+
+  /** Columns in reading order — what the visitor sees, and what verify reads. */
+  const readOrder = () => buckets.map((b) => [...b].sort((x, y) => x.i - y.i));
+
+  /** Same-shoot frames sitting next to each other once flattened. */
+  const neighbours = (): number => {
+    const seq = readOrder().flat();
+    let n = 0;
+    for (let k = 1; k < seq.length; k++) {
+      if (shootId.get(seq[k - 1].i) === shootId.get(seq[k].i)) n++;
+    }
+    return n;
+  };
+
+  const spread = (a: readonly number[]): number =>
+    Math.max(...a) - Math.min(...a);
+
+  // Steepest descent: take the single best swap, apply it, repeat. Terminates
+  // when no swap improves the (neighbours, spread) pair — the objective is
+  // lexicographic and both components only decrease, so it cannot cycle.
+  for (let guard = 0; guard < 4000; guard++) {
+    const base = neighbours();
+    const baseSpread = spread(acc);
+    let bestScore = base * 1e6 + baseSpread;
+    let best: [number, number, number, number] | null = null;
+
+    for (let i = 0; i < cols; i++) {
+      for (let j = i + 1; j < cols; j++) {
+        for (let x = 0; x < buckets[i].length; x++) {
+          for (let y = 0; y < buckets[j].length; y++) {
+            const A = buckets[i][x];
+            const B = buckets[j][y];
+            buckets[i][x] = B;
+            buckets[j][y] = A;
+
+            const trial = acc.slice();
+            trial[i] += B.h - A.h;
+            trial[j] += A.h - B.h;
+            const score = neighbours() * 1e6 + spread(trial);
+
+            buckets[i][x] = A;
+            buckets[j][y] = B;
+
+            if (score < bestScore - 1e-9) {
+              bestScore = score;
+              best = [i, x, j, y];
+            }
+          }
+        }
       }
     }
-    if (bestJ < 0) break;
-    const [moved] = buckets[tallest].splice(bestJ, 1);
-    buckets[shortest].push(moved);
-    acc[tallest] -= moved.h;
-    acc[shortest] += moved.h;
+
+    if (!best) break;
+    const [i, x, j, y] = best;
+    const A = buckets[i][x];
+    const B = buckets[j][y];
+    buckets[i][x] = B;
+    buckets[j][y] = A;
+    acc[i] += B.h - A.h;
+    acc[j] += A.h - B.h;
   }
+
+  // Keep each column in reading order: sort by the position the frame held in
+  // the input sequence. The wall's input is the shoot-spread order, so this
+  // preserves it down each column instead of showing 17 tallest-first.
+  for (const b of buckets) b.sort((x, y) => x.i - y.i);
 
   return buckets.map((b) => b.map((s) => s.photo));
 }
+
 
 /**
  * Widths generated by tools/make-derivatives.py. Must stay in sync with WIDTHS
@@ -197,10 +281,14 @@ function titleCase(s: string): string {
 
 function figure(p: Photo, index: number): string {
   // The first frame is the LCP element. Marking it lazy forces the browser to
-  // discover it, then decide — which is exactly the 6.4s stall we measured.
-  // Only the first is eager; the rest stay lazy.
-  const loading = index === 0 ? "eager" : "lazy";
-  const priority = index === 0 ? ' fetchpriority="high"' : "";
+    // discover it, then decide — which is exactly the 6.4s stall we measured.
+    // Only the first is eager; the rest stay lazy.
+    //
+    // `index < 0` means "not the LCP candidate" and keeps a frame lazy. The
+    // portfolio wall passes -1 for every cell because it renders in columns, so
+    // "the first frame" is not a fixed, knowable frame — see wallCell().
+    const loading = index === 0 ? "eager" : "lazy";
+    const priority = index === 0 ? ' fetchpriority="high"' : "";
   const sources = pictureFor(p.url, SIZES, p.width);
   // Intrinsic ratio is unknown here, so aspect-ratio comes from the DB if we
   // have it; otherwise the CSS fallback keeps the box from collapsing.
@@ -235,11 +323,16 @@ function figure(p: Photo, index: number): string {
   * keeps that attribute and the button must not swallow the event — hence no
   * JS here at all.
   */
- function wallCell(p: Photo, index: number): string {
-   const thumb = figure(p, index);
+ function wallCell(p: Photo): string {
+   // No index argument: `figure()` marks index 0 as the eager/high-priority LCP
+   // image, and under column packing that would be whichever frame the packer
+   // happened to put first in column one — not the first frame in reading order.
+   // Every frame here is below the header, so all of them stay lazy and the
+   // browser picks what to fetch when it scrolls. Passing 0 for all of them is
+   // what previously marked one arbitrary frame as the page's LCP element.
    return `<span class="pf-cell" role="button" tabindex="0"
                 aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">
-         ${thumb}
+         ${figure(p, -1)}
        </span>`;
  }
 
@@ -250,22 +343,23 @@ function figure(p: Photo, index: number): string {
  * make it portfolio with all images" — the category filter is gone, so every
  * frame in the gallery shows and the lightbox walks the whole set.
  */
-export function portfolioPage(photos: Photo[], cols: number, rowWidth: number): string {
+export function portfolioPage(photos: Photo[], cols: number): string {
   if (!photos.length) return emptyGallery();
 
-  // Justified rows, not columns — Alwin, 2026-09-30, choosing between three
-  // options for the wall: "justified rows — no gaps, no cropping, rows stay
-  // aligned". See src/rows.ts for the grouping maths.
+  // Three columns on desktop, two on a phone — Alwin, 2026-10-01: "maybe we
+  // should do a 3 column one for desktop and 2 column for mobile only portfolio
+  // page, work now it should be as clean and well put together as the home page".
   //
-  // The previous approach rendered `.col` wrappers with
-  // `display:contents`, which dissolved them and silently turned the wall into
-  // a row-major grid: every row became as tall as its tallest photo, so short
-  // frames left ragged white notches. That is what made the page read unclean.
-  const rows = layoutRows(photos, rowWidth);
-  const gutter = gutterPx();
-  let n = 0;
-  const wall = rows
-    .map((r) => renderRow(r, rowWidth, (p) => wallCell(p, n++), 0, gutter))
+  // The driver was spacing, not geometry: justified rows put FIVE OR SIX frames
+  // side by side at 1440, which read as a contact sheet rather than a portfolio.
+  //
+  // This reuses `packByHeight` — the same packer the home strip uses — rather
+  // than a third approach. Keeping each photo's own ratio (no cropping) and
+  // packing the columns to an even bottom is exactly what Alwin chose, and it is
+  // the arrangement the locked home page already proves at 42px/10px ragged.
+  const columns = packByHeight(photos, cols);
+  const wall = columns
+    .map((col) => `<div class="wall__col">${col.map((p) => wallCell(p)).join("")}</div>`)
     .join("");
 
   return `<section class="page portfolio">
@@ -274,9 +368,28 @@ export function portfolioPage(photos: Photo[], cols: number, rowWidth: number): 
       <h1 class="phead__h">Portfolio</h1>
       <p class="phead__p">Portraits, couples, families and everything in between. This is the work, unfiltered.</p>
     </header>
-    <div class="grid grid--wall">${wall}</div>
+    <div class="grid grid--wall" style="--wall-cols:${cols}">${wall}</div>
     ${pfBand()}
   </section>`;
+}
+
+/**
+ * How many columns the portfolio wall uses.
+ *
+ * Three on a desktop, two on a phone, and never one: 50 frames stacked in a
+ * single column is 50 screens of scroll, and the packer cannot redistribute
+ * them afterwards. The phone case is decided by the CONTENT WIDTH rather than
+ * the viewport, so it matches what the CSS ends up doing — at 390px three
+ * columns would be 118px per frame, too narrow to read a face, while two still
+ * gives ~175px.
+ *
+ * Derived from the same measurement the markup uses, so the emitted column
+ * count and the CSS track count cannot drift apart the way a hardcoded pair did.
+ */
+function wallCols(frameCount: number, rowWidth: number): number {
+  const MIN = 175;
+  const fit = Math.floor((rowWidth || 1200) / MIN);
+  return Math.max(2, Math.min(3, fit, frameCount));
 }
 
 /**
@@ -504,24 +617,5 @@ export function homePage(photos: Photo[], cols: number): string {
     }
 
     ${homeBand()}
-  </section>`;
-}
-
-/** The photo route: independent columns, each scrolling on its own. */
-export function photoPage(photos: Photo[], cols: number): string {
-  if (!photos.length) {
-    return `<section class="empty">
-      <p>No photos published yet.</p>
-      <p class="dim">If you're the admin, add some in <a href="#/admin">the gallery manager</a>.</p>
-    </section>`;
-  }
-
-  // Flatten back to a single index space so `index === 0` lands on the first
-  // photo regardless of how the round-robin distributes it across columns.
-  let n = 0;
-  return `<section class="grid" data-cols="${cols}">
-    ${columnise(photos, cols)
-      .map((col) => `<div class="col">${col.map((p) => figure(p, n++)).join("")}</div>`)
-      .join("")}
   </section>`;
 }

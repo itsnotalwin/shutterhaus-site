@@ -103,11 +103,19 @@ for (const w of WIDTHS) {
           }
           // An image slot served as HTML is a path bug (wrong base URL), never a
           // missing derivative. Say so, because the two have opposite fixes.
+          //
+          // Only *declared* non-image types count. `application/octet-stream`
+          // is what Vite's preview server sends for every .webp, and the bytes
+          // decode fine — the browser sniffs them and `complete && naturalWidth`
+          // confirms it below. Asserting `image/` here reported 189 false
+          // failures on a gallery that was loading perfectly. `text/html` is the
+          // signature that actually matters: that is the SPA fallback serving a
+          // route document in place of a file, which is a genuine path bug.
           if (e.method === "Network.responseReceived") {
             const { url = "", mimeType = "" } = e.params.response;
             const type = e.params.response.headers?.["content-type"] ?? mimeType ?? "";
             const looksLikeImage = /gallery\//.test(url);
-            if (looksLikeImage && type && !type.startsWith("image/")) {
+            if (looksLikeImage && type && /^text\/html|^application\/json/.test(type)) {
               bad.push(`NOT-IMAGE ${type} ${url.split("/").slice(-2).join("/")}`);
             }
           }

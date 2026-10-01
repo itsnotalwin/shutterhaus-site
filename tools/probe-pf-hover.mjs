@@ -60,14 +60,17 @@ const box = `(() => {
   const cell = document.querySelector('.pf-cell');
   if (!cell) return null;
   const img = cell.querySelector('.cell img');
-  const row = cell.closest('.pf-row');
+  // The wall is packed COLUMNS now, not justified rows, so the containing
+  // layout box is .wall__col. closest('.pf-row') returns null since the rows
+  // were dropped on 2026-10-01.
+  const row = cell.closest('.wall__col') || cell.closest('.pf-row');
   const r = img.getBoundingClientRect();
   return {
     x: Math.round(r.x), y: Math.round(r.y),
     w: Math.round(r.width), h: Math.round(r.height),
     rowW: Math.round(row.getBoundingClientRect().width),
     rowH: Math.round(row.getBoundingClientRect().height),
-    rowId: Array.from(document.querySelectorAll('.pf-row')).indexOf(row),
+    rowId: Array.from(document.querySelectorAll('.wall__col')).indexOf(row),
     filter: getComputedStyle(img).filter,
     op: getComputedStyle(img).opacity,
     transform: getComputedStyle(img).transform,
@@ -90,7 +93,6 @@ if (!before) {
 // visible extent, and compare the union of what is on screen before vs during.
 const cellBox = `(() => {
   const cell = document.querySelector('.pf-cell');
-  const row = cell.closest('.pf-row');
   const vis = [...cell.querySelectorAll('*')].filter((el) => {
     const s = getComputedStyle(el);
     return s.display !== 'none' && Number(s.opacity) > 0.05 &&

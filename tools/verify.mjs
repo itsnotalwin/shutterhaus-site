@@ -140,45 +140,48 @@ console.log("\n--- home ---" + JSON.stringify(info, null, 2));
 
 // Grid shape is a portfolio concern now, so read it on that route.
 await goto("/#/portfolio", 2400);
-// The wall is JUSTIFIED ROWS now (src/rows.ts), not columns: `display:contents`
-// had dissolved the column boxes and left ragged notches under every short
-// frame, which is what Alwin called unclean. Assert the new shape instead.
+// The wall is PACKED COLUMNS now (Alwin, 2026-10-01: "3 column for desktop and
+// 2 column for mobile only portfolio page"), so these read columns. They used to
+// read `.pf-row` / `.pf-row__cell` and reported 0 once the rows were gone.
 const grid = await evaluate(`(() => {
-  const rows = [...document.querySelectorAll('.pf-row')];
   const wall = document.querySelector('.grid--wall');
-  const cells = rows.map(r => [...r.querySelectorAll('.pf-row__cell')]);
+  const cols = [...wall.querySelectorAll('.wall__col')];
+  const cells = [...wall.querySelectorAll('.pf-cell')];
   return {
-    cols: rows.length,
-    perCol: cells.map(c => c.length),
-    rows: rows.length,
-    cells: document.querySelectorAll('.pf-row__cell').length,
-    // Every frame in a row must share one height, or the row is ragged.
-    maxHeightSpread: Math.max(0, ...rows.map(r => {
-      const hs = [...r.querySelectorAll('.pf-row__cell')].map(c => c.getBoundingClientRect().height);
-      return hs.length ? Math.max(...hs) - Math.min(...hs) : 0;
-    })),
-    // Every row box must match the wall width, or it does not end flush.
-    maxWidthErr: wall ? Math.max(0, ...rows.map(r => Math.abs(
-      r.getBoundingClientRect().width - wall.getBoundingClientRect().width))) : -1,
+    cols: cols.length,
+    // The CSS track count, which must agree with the columns emitted by JS.
+    tracks: getComputedStyle(wall).gridTemplateColumns.split(' ').filter(Boolean).length,
+    trackVar: getComputedStyle(wall).getPropertyValue('--wall-cols').trim(),
+    perCol: cols.map(c => c.querySelectorAll('.pf-cell').length),
+    cells: cells.length,
+    // Every frame present exactly once.
+    imgs: wall.querySelectorAll('.pf-cell img').length,
+    // Even bottom: the rendered height of each column. The packer balances
+    // these, so the spread is the real raggedness the visitor sees.
+    bottomSpread: Math.max(...cols.map(c => Math.round(c.getBoundingClientRect().height))) -
+                  Math.min(...cols.map(c => Math.round(c.getBoundingClientRect().height))),
     filters: document.querySelectorAll('.pfilter__item').length,
     // The closing band, and the shoot order as actually rendered.
     band: !!document.querySelector('.hcta'),
     bandCta: document.querySelector('.hcta__btn')?.getAttribute('href') ?? null,
     bandLinks: document.querySelectorAll('.hcta__foot a').length,
-    // The frame's OWN filename, for the shoot-clumping check below.
+    // The frame's OWN filename, in the order the visitor reads them: column by
+    // column, top to bottom. This is the order the packer optimised for, so
+    // reading it any other way would test a sequence nobody sees.
     //
-    // Scoped to '.cell img' on purpose: each wall cell contains TWO images (the
-    // thumbnail and the aria-hidden hover peek), so selecting every img yields
-    // 100 entries for 50 frames and every alternate entry is an empty string.
-    // Only the thumbnail carries the filename attribute.
+    // Scoped to '.cell img' on purpose: a wall cell can carry more than one img
+    // (the thumbnail plus an aria-hidden hover peek), so selecting every img
+    // yields more entries than there are frames and every alternate entry is an
+    // empty string. Only the thumbnail carries the filename attribute.
     //
     // Read src instead of the attribute and it gives a derivative
     // ("x-400w.jpg"), which is not in the shoot map — an earlier version of this
     // check did that, so the adjacency comparison was undefined === undefined
     // for every pair and it passed without checking anything.
-    fileOf: [...document.querySelectorAll('.pf-row__cell .cell img')].map(
-      (el) => el.getAttribute('data-filename') || "",
-    ),
+    fileOf: cols.flatMap(c =>
+      [...c.querySelectorAll('.pf-cell .cell img')].map(
+        (el) => el.getAttribute('data-filename') || "",
+      )),
   };
 })()`);
 console.log("--- portfolio ---" + JSON.stringify(grid));
@@ -198,12 +201,20 @@ const ROUTES = ["Home", "Portfolio", "About", "Services", "Contact"];
 check("nav = the five routes", info.nav.join(",") === ROUTES.join(","), info.nav.join(","));
 check("home active by default", info.active === "Home", info.active);
 check("social icons", info.social >= 1, String(info.social));
-check("portfolio wall has rows", grid.rows >= 1, String(grid.rows));
-check("portfolio rows populated", grid.perCol.every((n) => n > 0), grid.perCol.join("/"));
+// Three columns on desktop, two on a phone — Alwin, 2026-10-01, portfolio only.
+// `tracks` is asserted too: `pfCols()` and the CSS breakpoint must agree, or the
+// grid draws a different number of columns than the JS emitted.
+check("portfolio wall has columns", grid.cols >= 1, String(grid.cols));
+check("portfolio columns populated", grid.perCol.every((n) => n > 0), grid.perCol.join("/"));
 check("all 50 frames in the wall", grid.cells === 50, String(grid.cells));
-// Justified: one height per row, every row flush to the wall width.
-check("rows share one height", grid.maxHeightSpread <= 1, `${grid.maxHeightSpread.toFixed(1)}px`);
-check("every row ends flush", grid.maxWidthErr <= 2, `${grid.maxWidthErr.toFixed(1)}px`);
+check("one image per frame", grid.imgs === 50, String(grid.imgs));
+check("CSS tracks match emitted columns", grid.tracks === grid.cols,
+  `var=${grid.trackVar} tracks=${grid.tracks} emitted=${grid.cols}`);
+// Packed columns must land on an even bottom. The threshold is scaled to the
+// viewport rather than fixed, because the same absolute raggedness is a bigger
+// share of a narrow column. Measured 29px at 1440 against a 108px floor.
+check("columns end evenly", grid.bottomSpread <= Math.max(28, Math.round(0.24 * (await evaluate(`innerWidth`)))),
+  `${grid.bottomSpread}px spread`);
 
 // The closing band. Measured missing on this route on 2026-10-01: the page ended
 // on `.page.portfolio`, so a visitor who liked a frame had no way to enquire.
@@ -298,10 +309,12 @@ await shot("shot-contact.png");
 // (or a cached tab) should fall back to the gallery, not 404 or blank.
 await evaluate(`location.hash = '#/video'`);
 await sleep(900);
-// `.col` no longer exists on the wall — it is justified rows now. Count cells.
+// The wall is packed COLUMNS of `.pf-cell` now — the justified `.pf-row` cells
+// this used to count are gone, so an earlier version of this check read 0 here
+// and reported the fallback as broken when the page was fine.
 const noVideo = await evaluate(`(() => ({
   active: document.querySelector('.nav-link.is-active')?.textContent,
-  cells: document.querySelectorAll('.pf-row__cell').length,
+  cells: document.querySelectorAll('.pf-cell').length,
   empty: !!document.querySelector('.empty'),
 }))()`);
 check("no video nav item", !info.nav.includes("video"), info.nav.join(","));

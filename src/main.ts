@@ -2,7 +2,7 @@ import "./styles.css";
 import "./editorial.css";
 import { SITE } from "./config";
 import { renderShell } from "./layout";
-import { photoPage, portfolioPage, homePage, emptyGallery } from "./pages";
+import { portfolioPage, homePage, emptyGallery } from "./pages";
 import { contactPage, servicesPage, aboutPage } from "./pages-more";
 import { listPublicPhotos, type AdminPhoto } from "./store";
 import { DEMO_PHOTOS } from "./demo";
@@ -16,6 +16,21 @@ function columnsFor(w: number): number {
   if (w < 640) return 1;
   if (w < 1000) return 2;
   return 3;
+}
+
+/**
+ * How many columns the PORTFOLIO wall gets.
+ *
+ * Alwin, 2026-10-01: "3 column for desktop and 2 column for mobile only
+ * portfolio page". Two, not the `columnsFor()` one, because a phone showing
+ * one frame per row makes 50 frames an absurd scroll.
+ *
+ * The breakpoint is 640px, matching the CSS one below, so the JS column count
+ * and the CSS track count cannot disagree — the same failure the home strip
+ * hit, where 8 frames were emitted as 2 columns and the grid drew 1.
+ */
+function pfCols(w: number): number {
+  return w < 640 ? 2 : 3;
 }
 
 function route(): string {
@@ -141,30 +156,13 @@ function adoptable(live: AdminPhoto[] | null | undefined): AdminPhoto[] | null {
   // if live photos arrive. A visitor never sees a blank page.
   let photos = DEMO_PHOTOS;
 
-  /**
-   * Content width the portfolio wall must fill.
-   *
-   * Read from the `--pad` custom property on :root rather than by measuring
-   * `.main`, because `.main` does not exist on the first synchronous render —
-   * the shell has not been laid out yet — and the fallback guess made every row
-   * too wide. `--pad` is the same number the real content box is built from and
-   * is available immediately.
-   */
-  const wallWidth = (): number => {
-    const pad = parseFloat(
-      getComputedStyle(document.documentElement).getPropertyValue("--pad")
-    );
-    const p = Number.isFinite(pad) ? pad : 18;
-    return Math.max(280, Math.round(window.innerWidth - 2 * p));
-  };
-
   const draw = () => {
     const body =
       r === "home"
         ? photos.length
           ? homePage(photos, cols)
           : emptyGallery()
-        : portfolioPage(photos, cols, r === "portfolio" ? wallWidth() : 0);
+        : portfolioPage(photos, r === "portfolio" ? pfCols(innerWidth) : cols);
     // The home header floats over the hero photograph; portfolio keeps the
     // solid header (its grid starts below the fold anyway).
     app.innerHTML = renderShell(r, body, r === "home");

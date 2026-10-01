@@ -426,44 +426,48 @@
    otherwise a keyboard user can still tab into a photo they can't see. */
 .cell.is-hidden { display: none; }
 
-/* The reference's portfolio is a flat 3-up wall, not the old 3 scrolling
-   columns — the whole page scrolls as one document on every viewport. */
-.grid--wall { display: grid; grid-template-columns: repeat(var(--cols, 3), 1fr); gap: var(--gut); }
-.grid--wall .col { display: contents; }
-
-
-/* Justified rows. The JS in src/rows.ts computes each row's height and each
- * frame's width, so this layer only lays them out in a line. The old
- * `display:contents` grid is gone: it turned the wall row-major and left a
- * ragged notch under every short frame. */
-/* Reset the inherited `.grid` tracks. `.grid` (styles.css) is
- * `display:grid` with `grid-template-columns: repeat(var(--cols,3), 1fr)`; a
- * bare `display:flex` override leaves those three 1fr tracks in place, so each
- * row was laid out inside a third of the container and then overflowed it by
- * exactly one gutter. `grid-template-columns: none` is what actually clears
- * them. */
+/* ------------------------------------------------ portfolio wall: columns
+ *
+ * Alwin, 2026-10-01: "maybe we should do a 3 column one for desktop and 2
+ * column for mobile only portfolio page, work now it should be as clean and
+ * well put together as the home page".
+ *
+ * This was justified rows (src/rows.ts), which packed FIVE OR SIX frames side by
+ * side at 1440. Each row was internally flush and nothing was cropped, but a
+ * contact sheet is not a portfolio, and that was the complaint.
+ *
+ * Now: three columns on a desktop, two on a phone, each frame keeping its own
+ * aspect ratio — so nothing is cropped — with the columns packed to an even
+ * bottom by `packByHeight()`, the same packer the locked home strip uses. The
+ * emitted `--wall-cols` and the grid tracks come from one call to
+ * `wallCols()` in pages.ts, so they cannot disagree.
+ *
+ * `.wall__col` is a real flex column, NOT `display:contents`. That was the bug
+ * in an earlier iteration: `contents` dissolved the column boxes and the grid
+ * turned row-major, so every track became as tall as its tallest frame and each
+ * short frame left a white notch underneath.
+ */
 .grid--wall {
+  display: grid;
+  grid-template-columns: repeat(var(--wall-cols, 3), minmax(0, 1fr));
+  gap: var(--gut);
+  align-items: start;
+}
+.wall__col {
   display: flex;
   flex-direction: column;
   gap: var(--gut);
-  grid-template-columns: none;
-  align-items: stretch;
+  min-width: 0;
 }
-.pf-row { display: flex; align-items: stretch; gap: var(--gut); width: 100%; }
-.pf-row__cell { overflow: hidden; }
-/* Every frame fills its row height exactly — that is what keeps the row's top
- * and bottom edges on one line.
- *
- * No `object-fit: cover` here. The cell width was computed from each photo's
- * own aspect ratio against the same row height, so width/height already match
- * the image exactly and cover has nothing to crop — it is only a guard against
- * a sub-pixel rounding mismatch. Alwin chose justified rows specifically to
- * avoid cropping any frame. */
-.pf-row .cell,
-.pf-row .cell picture,
-.pf-row .cell img { width: 100%; height: 100%; }
-.pf-row .cell img { object-fit: cover; }
-
+/* Each frame fills its column width and keeps its own ratio. `height:auto` is
+ * the load-bearing part: forcing a height here is what cropped frames before. */
+.wall__col .cell,
+.wall__col .cell picture,
+.wall__col .cell img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
 
 /* ------------------------------------------------ portfolio wall behaviour
  *
