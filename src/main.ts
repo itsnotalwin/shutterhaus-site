@@ -110,6 +110,15 @@ function repackWall(): void {
   // rest would silently reshuffle the wall and lose frames.
   if (photos.length !== visible.length) return;
 
+  // Feed the packer in the SAME order the first render did (the photos' own
+  // order), not DOM order. DOM order is column by column, so packing from it
+  // gave a different arrangement every time: click Places, click All, and the
+  // wall came back reshuffled — which also scrambled the frame numbers, because
+  // those are assigned from the first render's layout (data-n, see
+  // portfolioPage()). With this, "All" restores exactly the original wall.
+  const order = new Map(DEMO_PHOTOS.map((p, i) => [p.id, i]));
+  photos.sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
+
   const all = [...wall.querySelectorAll<HTMLElement>(".wall__col")];
   const n = Math.max(1, Math.min(all.length, photos.length));
   const packed = packByHeight(photos, n);

@@ -340,16 +340,20 @@ function figure(p: Photo, index: number): string {
   * keeps that attribute and the button must not swallow the event — hence no
   * JS here at all.
   */
- function wallCell(p: Photo): string {
+ function wallCell(p: Photo, n: number): string {
    // No index argument: `figure()` marks index 0 as the eager/high-priority LCP
    // image, and under column packing that would be whichever frame the packer
    // happened to put first in column one — not the first frame in reading order.
    // Every frame here is below the header, so all of them stay lazy and the
    // browser picks what to fetch when it scrolls. Passing 0 for all of them is
    // what previously marked one arbitrary frame as the page's LCP element.
+   // data-n is the frame's permanent number; the lightbox reads it for its
+   // counter and for stepping order. The visible label is decoration only
+   // (aria-hidden): the accessible name is already the alt text.
    return `<span class="pf-cell" role="button" tabindex="0" data-photo-id="${escapeHtml(p.id)}"
-                aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">
+                data-n="${n}" aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">
          ${figure(p, -1)}
+         <span class="pf-cell__n" aria-hidden="true">${String(n).padStart(2, "0")}</span>
        </span>`;
  }
 
@@ -381,7 +385,10 @@ function filterBar(photos: Photo[]): string {
 
   const label: Record<string, string> = {
     portrait: "Portraits",
-    landscape: "Landscapes",
+    // The data key stays `landscape` (frame_meta.py, demo.ts, the filter handler
+    // all match on it); only the label changed, to echo the page's own copy,
+    // "Portraits and places".
+    landscape: "Places",
   };
   const items = [
     `<button class="pfilter__item is-on" type="button" data-filter="all"
@@ -395,7 +402,10 @@ function filterBar(photos: Photo[]): string {
       ),
   ].join("");
 
-  return `<nav class="pfilter" aria-label="Filter photographs by category">${items}</nav>`;
+  // The cue is for mouse users: the column scrollbars are hidden on purpose, so
+  // nothing else says the three columns move independently. Hidden on phones.
+  const cue = `<span class="pfilter__cue" aria-hidden="true">Scroll any column ↓</span>`;
+  return `<nav class="pfilter" aria-label="Filter photographs by category">${items}${cue}</nav>`;
 }
 
 /**
@@ -420,8 +430,16 @@ export function portfolioPage(photos: Photo[], cols: number): string {
   // packing the columns to an even bottom is exactly what Alwin chose, and it is
   // the arrangement the locked home page already proves at 42px/10px ragged.
   const columns = packByHeight(photos, cols);
+  // Frame numbers are assigned ONCE, here, from the full unfiltered wall, and
+  // travel with the cell (data-n). Filtering must not renumber: "#23" has to
+  // keep meaning the same photograph, or a client quoting a number to Alwin
+  // gets a different frame after clicking a filter. See readingOrder().
+  const order = readingOrder(columns);
   const wall = columns
-    .map((col) => `<div class="wall__col">${col.map((p) => wallCell(p)).join("")}</div>`)
+    .map(
+      (col) =>
+        `<div class="wall__col">${col.map((p) => wallCell(p, order.get(p) ?? 0)).join("")}</div>`,
+    )
     .join("");
 
   return `<section class="page portfolio">

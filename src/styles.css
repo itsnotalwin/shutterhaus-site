@@ -369,6 +369,30 @@ img { display: block; max-width: 100%; }
 .lb__nav--n { right: 14px; }
 .lb__x:hover, .lb__nav:hover { opacity: 1; }
 
+/* Each control holds a glyph AND a word. Glyphs by default (the home page's
+   lightbox, which is locked); words only when opened from the portfolio wall. */
+.lb__t { display: none; }
+.lb--wall .lb__g { display: none; }
+.lb--wall .lb__t { display: inline; }
+.lb--wall .lb__x,
+.lb--wall .lb__nav {
+  font: 11px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.9;
+  min-height: 44px;
+  padding: 0 16px;
+}
+.lb--wall .lb__x { top: 18px; right: 22px; font-size: 11px; }
+/* "02 / 50" counter instead of the alt text, in the same mono voice. */
+.lb--wall .lb__cap {
+  font: 11px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  bottom: 22px;
+}
+
 /* =============================================================
    ADMIN
    ============================================================= */

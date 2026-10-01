@@ -29,10 +29,14 @@ export function initLightbox(): void {
   box.setAttribute("role", "dialog");
   box.setAttribute("aria-modal", "true");
   box.hidden = true;
-  box.innerHTML = `<button class="lb__x" type="button" aria-label="Close">×</button>
-                   <button class="lb__nav lb__nav--p" type="button" aria-label="Previous">‹</button>
+  // Each control carries BOTH a glyph and a word; CSS shows one. The glyphs (×
+  // ‹ ›) are what the home page's lightbox has always shown, and the home page
+  // is locked. The words (CLOSE / PREV / NEXT) appear only under `.lb--wall`,
+  // which is set when the lightbox is opened from the portfolio wall.
+  box.innerHTML = `<button class="lb__x" type="button" aria-label="Close"><span class="lb__g">×</span><span class="lb__t">Close</span></button>
+                   <button class="lb__nav lb__nav--p" type="button" aria-label="Previous"><span class="lb__g">‹</span><span class="lb__t">← Prev</span></button>
                    <img class="lb__img" alt="" />
-                   <button class="lb__nav lb__nav--n" type="button" aria-label="Next">›</button>
+                   <button class="lb__nav lb__nav--n" type="button" aria-label="Next"><span class="lb__g">›</span><span class="lb__t">Next →</span></button>
                    <p class="lb__cap"></p>`;
   document.body.appendChild(box);
 
@@ -41,17 +45,49 @@ export function initLightbox(): void {
   let frames: HTMLImageElement[] = [];
   let at = 0;
 
+  const pad2 = (n: number) => String(n).padStart(2, "0");
+
+  /**
+   * The portfolio wall's frames, in the order the eye reads them (their
+   * permanent number), skipping any the filter has hidden.
+   *
+   * The generic query below returns frames in DOM order, which on the wall is
+   * column by column (everything in column one, then column two), so Next
+   * would walk down one column instead of across the wall — and it includes
+   * cells the filter has hidden, so with Places selected the arrows would step
+   * through 46 frames the visitor cannot see.
+   */
+  function wallFrames(): HTMLImageElement[] {
+    return Array.from(document.querySelectorAll<HTMLElement>(".pf-cell"))
+      .filter((c) => !c.hidden)
+      .sort((a, b) => Number(a.dataset.n) - Number(b.dataset.n))
+      .map((c) => c.querySelector<HTMLImageElement>(".cell img[data-full]"))
+      .filter((x): x is HTMLImageElement => !!x);
+  }
+
   function show(i: number): void {
     if (!frames.length) return;
     at = (i + frames.length) % frames.length;
-    img.src = frames[at].dataset.full ?? "";
-    img.alt = frames[at].dataset.alt ?? "";
-    cap.textContent = frames[at].dataset.alt ?? "";
+    const f = frames[at];
+    img.src = f.dataset.full ?? "";
+    // The alt stays on the <img> for screen readers either way.
+    img.alt = f.dataset.alt ?? "";
+    const cell = f.closest<HTMLElement>(".pf-cell");
+    // Wall: "02 / 50", using the frame's permanent number and the TOTAL wall
+    // size, so it matches the number printed on the tile. Elsewhere (the home
+    // strip) the caption is the alt text, exactly as before.
+    cap.textContent = cell
+      ? `${pad2(Number(cell.dataset.n))} / ${pad2(document.querySelectorAll(".pf-cell").length)}`
+      : (f.dataset.alt ?? "");
   }
 
-  function open(i: number): void {
-    frames = Array.from(document.querySelectorAll<HTMLImageElement>(".cell img[data-full]"));
-    show(i);
+  function open(target: HTMLImageElement): void {
+    const fromWall = !!target.closest(".pf-cell");
+    frames = fromWall
+      ? wallFrames()
+      : Array.from(document.querySelectorAll<HTMLImageElement>(".cell img[data-full]"));
+    box.classList.toggle("lb--wall", fromWall);
+    show(Math.max(0, frames.indexOf(target)));
     box.hidden = false;
     document.body.style.overflow = "hidden";
   }
@@ -65,8 +101,7 @@ export function initLightbox(): void {
   document.addEventListener("click", (e) => {
     const t = e.target as HTMLElement;
     if (t.matches(".cell img[data-full]")) {
-      const framesNow = Array.from(document.querySelectorAll<HTMLImageElement>(".cell img[data-full]"));
-      open(framesNow.indexOf(t as HTMLImageElement));
+      open(t as HTMLImageElement);
     } else if (t.closest(".lb__x") || t === box) {
       close();
     } else if (t.closest(".lb__nav--n")) {
@@ -90,10 +125,9 @@ export function initLightbox(): void {
     const cell = (e.target as HTMLElement | null)?.closest?.(".pf-cell");
     if (!cell) return;
     e.preventDefault();
-    const img = cell.querySelector<HTMLImageElement>(".cell img[data-full]");
-    if (!img) return;
-    const framesNow = Array.from(document.querySelectorAll<HTMLImageElement>(".cell img[data-full]"));
-    open(framesNow.indexOf(img));
+    const target = cell.querySelector<HTMLImageElement>(".cell img[data-full]");
+    if (!target) return;
+    open(target);
   });
 
   document.addEventListener("keydown", (e) => {
