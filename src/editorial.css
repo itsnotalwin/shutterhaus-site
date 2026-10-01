@@ -434,6 +434,48 @@
    otherwise a keyboard user can still tab into a photo they can't see. */
 .cell.is-hidden { display: none; }
 
+/* ------------------------------------------- portfolio header, compact
+ *
+ * Eyebrow, title and filter now stack tightly instead of floating apart: the
+ * old header (eyebrow, 64px title, a lede, then the filter) spent 430px before
+ * the first photograph. The lede ("Portraits and places, shot around Gauteng.")
+ * is hidden, not deleted, because the filter now says "Places" and the eyebrow
+ * already says "Gauteng" — it was repeating both. It is still in the markup;
+ * ask Alwin before removing it.
+ *
+ * `.page` prefixes are deliberate: `.page h1` (0,1,1) sets margin/line-height
+ * and would beat a bare `.phead__h` (0,1,0). Same trap as the home heading,
+ * see HOME-LOCKED.md. */
+.portfolio .phead {
+  max-width: none;
+  padding: 28px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.portfolio .phead .eyebrow { margin: 0; }
+.page.portfolio .phead__h {
+  font-size: clamp(40px, 5.2vw, 72px);
+  line-height: 0.9;
+  margin: 0;
+}
+.portfolio .phead__p { display: none; }
+.portfolio .pfilter { margin-bottom: 18px; padding-top: 6px; align-items: center; }
+.portfolio .pfilter__item { font-family: var(--font-mono); letter-spacing: 0.14em; }
+.pfilter__cue {
+  margin-left: auto;
+  font: 11px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+@media (max-width: 760px) {
+  .pfilter__cue { display: none; }
+  .portfolio .pfilter { gap: 14px; margin-top: 14px; }
+  .portfolio .pfilter__item { min-width: 0; font-size: 9.5px; }
+  .page.portfolio .phead__h { font-size: 44px; }
+}
+
 /* ------------------------------------------------ portfolio wall: columns
  *
  * Alwin, 2026-10-01: "maybe we should do a 3 column one for desktop and 2
@@ -484,6 +526,8 @@
    * paging, and anchoring for free, and it is what the locked home page
    * already does. */
   max-height: calc(100vh - var(--head) - var(--pad));
+  /* dvh tracks the phone's collapsing URL bar; vh above is the fallback. */
+  max-height: calc(100dvh - var(--head) - var(--pad));
   overflow-y: auto;
   /* Not `contain` — that swallowed the gesture at the end of a column and
    * left the visitor unable to reach the closing band from over the wall.
@@ -494,6 +538,15 @@
   scrollbar-width: none;
 }
 .wall__col::-webkit-scrollbar { display: none; }
+/* The scrollbars are hidden, so nothing said a column could scroll. A fade on the
+   bottom edge says "there is more" without adding chrome. The 64px of bottom
+   padding is the matching half: without it the LAST frame of a column would sit
+   permanently inside the fade and look washed out when scrolled to the end. */
+.wall__col {
+  padding-bottom: 64px;
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 64px), transparent 100%);
+  mask-image: linear-gradient(180deg, #000 calc(100% - 64px), transparent 100%);
+}
 
 /* Each frame fills its column width and keeps its own ratio. `height:auto` is
  * the load-bearing part: forcing a height here is what cropped frames before. */
@@ -539,6 +592,28 @@
   overflow: visible;
 }
 .pf-cell > .cell { display: block; }
+
+/* THE FILTER BUG. The filter handler sets the `hidden` attribute on the cells it
+   wants gone, but `.pf-cell { display: block }` above out-ranks the browser's
+   built-in `[hidden] { display: none }`, so every "hidden" frame stayed on screen
+   and clicking Landscapes did nothing visible (46 of 50 cells had `hidden` set and
+   all 46 were still displayed). Re-assert it with higher specificity. Any element
+   that is given `display` AND toggled with `hidden` needs this. */
+.pf-cell[hidden] { display: none; }
+
+/* Frame number, bottom-left of each tile. Same treatment as the home strip's
+   .hstrip__n: mono, blended with `difference` so it reads on dark and pale
+   frames alike without a chip behind it. */
+.pf-cell__n {
+  position: absolute;
+  left: 10px;
+  bottom: 9px;
+  font: 11px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  color: #fff;
+  mix-blend-mode: difference;
+  pointer-events: none;
+}
 @media (max-width: 760px) {
   .pf-cell { cursor: pointer; }
 }

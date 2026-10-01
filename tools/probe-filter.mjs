@@ -136,13 +136,17 @@ const results = await evaluate(`(async () => {
     btn.click();
     await sleep(260);
     const cols = [...document.querySelectorAll('.wall__col')];
-    const vis = [...document.querySelectorAll('.pf-cell')].filter(c => !c.hidden);
+    // Count what is actually RENDERED, not the hidden attribute. The attribute
+    // was set correctly all along while the display:block rule on pf-cell
+    // overrode it, so every frame stayed on screen and this probe still passed.
+    // (No backticks in this comment: it sits inside a template literal.)
+    const vis = [...document.querySelectorAll('.pf-cell')].filter(c => c.getClientRects().length > 0);
     const heights = cols.map(c => Math.round(c.getBoundingClientRect().height));
     out.push({
       filter: btn.dataset.filter,
       visible: vis.length,
       // A column left empty is the signature of hiding-without-repacking.
-      perCol: cols.map(c => [...c.querySelectorAll('.pf-cell')].filter(x => !x.hidden).length),
+      perCol: cols.map(c => [...c.querySelectorAll('.pf-cell')].filter(x => x.getClientRects().length > 0).length),
       spread: heights.length ? Math.max(...heights) - Math.min(...heights) : -1,
       onCount: document.querySelectorAll('.pfilter__item.is-on').length,
     });
@@ -176,7 +180,7 @@ for (const r of results) {
 await evaluate(`document.querySelector('.pfilter__item[data-filter="all"]').click()`);
 await sleep(300);
 const restored = await evaluate(`(() => ({
-  visible: [...document.querySelectorAll('.pf-cell')].filter(c => !c.hidden).length,
+  visible: [...document.querySelectorAll('.pf-cell')].filter(c => c.getClientRects().length > 0).length,
   perCol: [...document.querySelectorAll('.wall__col')].map(c => c.querySelectorAll('.pf-cell').length),
 }))()`);
 check("All restores all 50", restored.visible === 50, String(restored.visible));
