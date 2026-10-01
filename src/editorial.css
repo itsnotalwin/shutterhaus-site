@@ -466,45 +466,35 @@
   flex-direction: column;
   gap: var(--gut);
   min-width: 0;
-  /* Scrolled by JS, not natively. See wireWallScroll() in src/main.ts. */
-  overflow: hidden;
-}
 
-/* ------------------------------------------------------ scrollable wall box
- *
- * Alwin, 2026-10-01: "I THOUGHT WE WERE MAKING THE 3 COLUMS SCROLLABLE INSTEAD
- * OF HAVING A LONG ASS PAGE".
- *
- * The wall is a viewport-height box and the page no longer scrolls through 12.7
- * screens of it. The columns move TOGETHER on one wheel gesture rather than
- * independently, deliberately:
- *
- *  - independent columns scroll whatever is under the cursor, so a visitor
- *    aiming at the middle column scrolls it alone and the two beside it sit
- *    still. It reads as broken, not as a gallery.
- *  - on touch there is no cursor at all, so independent scrolling cannot be
- *    aimed. It is unusable.
- *  - three visible scrollbars means three things to notice, on a design that
- *    currently shows none.
- *
- * One gesture moving one surface is the same mental model as the page it
- * replaces. The cost is that Ctrl+F cannot reach a frame deep in column three,
- * which is a real trade for a portfolio and worth revisiting if Alwin reports
- * it.
- *
- * Height is a clamp, not a fixed number: tall enough to read as a wall on a
- * laptop, never so tall it is the whole screen and traps the page scroll.
- */
-.wall-scroll {
-  /* Leaves room for the sticky filter bar and the closing band, so neither is
-   * pushed off-screen by the box. */
-  max-height: clamp(420px, 78vh, 900px);
-  overflow: hidden;
-  /* Fade the last few pixels so a column that continues reads as continuing
-   * rather than as a hard cut. Purely decorative; pointer-events stays on. */
-  mask-image: linear-gradient(to bottom, #000 calc(100% - 44px), transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 44px), transparent 100%);
+  /* EACH COLUMN SCROLLS ON ITS OWN.
+   *
+   * Alwin, 2026-10-01, twice: "all 3 columns should scroll separately" and "it
+   * should scroll like the first home page we had". This is `.col` from
+   * src/styles.css applied to the wall — the same native scroller, hidden
+   * scrollbar, and `overscroll-behavior: contain` so a gesture that runs out of
+   * column does not chain into the page.
+   *
+   * The first attempt at this drove the columns with one JS wheel handler that
+   * moved all three together. That was my call, not Alwin's, and it is the
+   * thing he pushed back on twice. Do not re-derive that argument: independent
+   * columns are the design.
+   *
+   * No JS is involved. Native scrolling gets momentum on touch, keyboard
+   * paging, and anchoring for free, and it is what the locked home page
+   * already does. */
+  max-height: calc(100vh - var(--head) - var(--pad));
+  overflow-y: auto;
+  /* Not `contain` — that swallowed the gesture at the end of a column and
+   * left the visitor unable to reach the closing band from over the wall.
+   * `auto` lets a spent column hand the gesture to the page, which is the
+   * behaviour `.col` gets by default. The home strip uses `contain` because it
+   * is the last thing on its page; the wall has a band below it. */
+  overscroll-behavior: auto;
+  scrollbar-width: none;
 }
+.wall__col::-webkit-scrollbar { display: none; }
+
 /* Each frame fills its column width and keeps its own ratio. `height:auto` is
  * the load-bearing part: forcing a height here is what cropped frames before. */
 .wall__col .cell,

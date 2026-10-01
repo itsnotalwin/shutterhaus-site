@@ -1,155 +1,159 @@
 /**
- * Does the scrollable wall actually work?
+ * Do the wall's three columns scroll INDEPENDENTLY, and is the page short?
  *
  *   CDP_PORT=9333 node tools/probe-wall-scroll.mjs <baseUrl>
  *
- * A scrollable box has several ways to be quietly wrong, so each is asserted:
+ * THIS ASSERTS INDEPENDENCE EXPLICITLY. The first version of this probe drove
+ * a single JS wheel handler that moved all three columns together, then asserted
+ * "columns move together" — so it passed green while the thing Alwin asked for
+ * twice was absent. A test written from the implementation rather than from the
+ * request cannot catch the implementation being wrong.
  *
- *  - the page must actually get SHORTER (that is the whole point)
- *  - a wheel gesture over the wall must move the columns
- *  - the columns must move TOGETHER, not independently
- *  - a column shorter than the box must stop at 0, not slide up and leave a
- *    gap at the top — the classic bug with per-column clamping
- *  - at the end of the wall the page must scroll again, or the closing band is
- *    unreachable
- *  - filtering must not break the clamp
+ * Native per-column scrolling, no JS, same as the locked home page's `.col`.
  */
+
 const { WebSocket } = await import("ws").catch(() => ({ WebSocket: globalThis.WebSocket }));
 if (!WebSocket) { console.error("FAIL  no WebSocket"); process.exit(1); }
 
 const url = (process.argv[2] || "http://localhost:4173").replace(/\/$/, "");
 const CDP = "http://127.0.0.1:" + (process.env.CDP_PORT || 9222);
-const tabs = await (await fetch(CDP + "/json/list")).json();
-const tab = tabs.find((t) => t.type === "page" && t.webSocketDebuggerUrl);
-if (!tab) { console.error("FAIL  no page target"); process.exit(1); }
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-const ws = new WebSocket(tab.webSocketDebuggerUrl);
+const targets = await (await fetch(CDP + "/json/list")).json();
+const page = targets.find((t) => t.type === "page");
+const ws = new WebSocket(page.webSocketDebuggerUrl);
 let id = 0;
 const waiting = new Map();
 ws.onmessage = (m) => {
-  const j = JSON.parse(m.data);
-  if (j.id && waiting.has(j.id)) { waiting.get(j.id)(j); waiting.delete(j.id); }
+  const msg = JSON.parse(m.data);
+  if (msg.id && waiting.has(msg.id)) { waiting.get(msg.id)(msg); waiting.delete(msg.id); }
 };
-await new Promise((r) => { ws.onopen = r; });
+await new Promise((r) => (ws.onopen = r));
 const send = (method, params = {}) => {
   const i = ++id;
   return new Promise((res) => { waiting.set(i, res); ws.send(JSON.stringify({ id: i, method, params })); });
 };
 const evalJs = async (expression) => {
-  const r = await send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true });
-  if (r.result?.exceptionDetails) return { __err: r.result.exceptionDetails.text };
+  const r = await send("Runtime.evaluate", { expression, returnByValue: true });
+  if (r.result?.exceptionDetails) throw new Error(r.result.exceptionDetails.text || "eval threw");
   return r.result?.result?.value;
 };
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 await send("Page.enable", {});
 await send("Runtime.enable", {});
 await send("Network.enable", {});
 await send("Network.setCacheDisabled", { cacheDisabled: true });
 await send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
-await send("Page.navigate", { url: url + "/?t=" + Date.now() + "/#/portfolio" });
-await sleep(3500);
+await send("Page.navigate", { url: url + "/?nocache=" + Date.now() + "/#/portfolio" });
+await sleep(3000);
 
 let fails = 0;
 const check = (name, pass, detail = "") => {
-  console.log(`${pass ? "ok   " : "FAIL "} ${name}${detail ? "  (" + detail + ")" : ""}`);
-  if (!pass) fails++;
+  if (pass) { console.log("ok    " + name + (detail ? "  (" + detail + ")" : "")); return; }
+  fails++;
+  console.log("FAIL  " + name + (detail ? "  (" + detail + ")" : ""));
 };
 
 const state = () => evalJs(`(() => {
-  const box = document.querySelector('.wall-scroll');
-  if (!box) return { noBox: true };
-  const cols = [...box.querySelectorAll('.wall__col')];
-  const off = cols.map(c => {
-    const m = /translateY\\((-?[\\d.]+)px\\)/.exec(c.style.transform || '');
-    return m ? -parseFloat(m[1]) : 0;
-  });
+  const cols = [...document.querySelectorAll('.wall__col')];
+  const box = cols[0]?.parentElement;
   return {
-    boxH: Math.round(box.clientHeight),
     docH: document.documentElement.scrollHeight,
     vh: innerHeight,
     cols: cols.length,
-    off,
-    // A column must never render above the top of the box.
-    tops: cols.map(c => Math.round(c.getBoundingClientRect().top - box.getBoundingClientRect().top)),
-    limits: cols.map(c => Math.max(0, c.scrollHeight - box.clientHeight)),
+    off: cols.map(c => Math.round(c.scrollTop)),
+    limits: cols.map(c => Math.max(0, c.scrollHeight - c.clientHeight)),
+    boxH: box ? Math.round(box.getBoundingClientRect().height) : -1,
+    cells: document.querySelectorAll('.pf-cell').length,
+    band: !!document.querySelector('.hcta'),
     pageY: Math.round(scrollY),
   };
 })()`);
 
+/** Wheel over one column by its centre x. */
+async function wheelOverCol(i, dy) {
+  const box = await evalJs(`(() => {
+    const c = document.querySelectorAll('.wall__col')[${i}];
+    if (!c) return null;
+    const r = c.getBoundingClientRect();
+    return { x: Math.round(r.x + r.width / 2), y: Math.round(r.y + r.height / 2) };
+  })()`);
+  if (!box) return null;
+  await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: box.x, y: box.y });
+  await sleep(60);
+  await send("Input.dispatchMouseEvent", { type: "mouseWheel", x: box.x, y: box.y, deltaX: 0, deltaY: dy });
+  await sleep(450);
+  return state();
+}
+
 const before = await state();
-if (before.noBox) { console.error("FAIL  no .wall-scroll on the portfolio route"); process.exit(1); }
 console.log("--- initial ---" + JSON.stringify(before));
 
-// 1. The point of the change.
-check("page is far shorter than the old 11400px wall",
-  before.docH < 2600, `${before.docH}px = ${(before.docH / before.vh).toFixed(1)} screens (was 12.7)`);
-check("the box is a sane height", before.boxH > 300 && before.boxH <= before.vh,
-  `${before.boxH}px of ${before.vh}px`);
+check("three columns rendered", before.cols === 3, String(before.cols));
+check("all 50 frames present", before.cells === 50, String(before.cells));
 
-// 2. A wheel over the wall moves it.
-const centre = await evalJs(`(() => {
-  const b = document.querySelector('.wall-scroll').getBoundingClientRect();
-  return { x: Math.round(b.x + b.width / 2), y: Math.round(b.y + b.height / 2) };
-})()`);
-await send("Input.dispatchMouseEvent", { type: "mouseWheel", x: centre.x, y: centre.y, deltaX: 0, deltaY: 400 });
-await sleep(500);
-const afterWheel = await state();
+// 1. THE POINT. The page is short, not 12.7 screens.
+check("page is short, not 12.7 screens", before.docH < 2600,
+  before.docH + "px = " + (before.docH / before.vh).toFixed(1) + " screens (was 12.7)");
 
-check("wheel over the wall scrolls it", afterWheel.off.some((o) => o > 0),
-  afterWheel.off.map((o) => Math.round(o)).join("/"));
-check("wheel did not scroll the page as well", afterWheel.pageY === before.pageY,
-  `pageY ${before.pageY} -> ${afterWheel.pageY}`);
-check("columns move together, not independently",
-  new Set(afterWheel.off.map((o) => Math.round(o))).size === 1,
-  afterWheel.off.map((o) => Math.round(o)).join("/"));
+// 2. Each column is its own scroller.
+const perCol = await evalJs(`[...document.querySelectorAll('.wall__col')].map(c => ({
+  overflowY: getComputedStyle(c).overflowY,
+  scrollable: c.scrollHeight > c.clientHeight,
+  scrollbar: getComputedStyle(c).scrollbarWidth,
+  overscroll: getComputedStyle(c).overscrollBehaviorY,
+}))`);
+console.log("--- per column ---" + JSON.stringify(perCol));
+check("every column scrolls natively", perCol.every(c => c.overflowY === "auto"),
+  perCol.map(c => c.overflowY).join("/"));
+check("every column actually has more to show", perCol.every(c => c.scrollable),
+  perCol.map(c => String(c.scrollable)).join("/"));
+check("scrollbars hidden, like the home strip", perCol.every(c => c.scrollbar === "none"),
+  perCol.map(c => c.scrollbar).join("/"));
+// `contain` here would swallow the gesture at the end of a column and strand
+// the visitor above the closing band. Must be `auto` so a spent column hands
+// the gesture to the page.
+check("a spent column hands the gesture to the page", perCol.every(c => c.overscroll === "auto"),
+  perCol.map(c => c.overscroll).join("/"));
 
-// 3. Clamp: no column may go negative (a gap at the top).
-check("no column slides past its own end", afterWheel.off.every((o) => o >= -0.5),
-  afterWheel.off.map((o) => o.toFixed(1)).join("/"));
+// 3. INDEPENDENCE. Wheel over column 0 must move column 0 ONLY.
+const a = await wheelOverCol(0, 600);
+const onlyFirst = a && a.off[0] > 0 && a.off[1] === 0 && a.off[2] === 0;
+check("wheel over column 1 scrolls column 1 ONLY",
+  !!onlyFirst, a ? a.off.join("/") : "no column");
 
-// 4. Keyboard reaches the rest of the wall.
-await evalJs(`document.querySelector('.wall-scroll').focus()`);
-for (let k = 0; k < 4; k++) {
-  await send("Input.dispatchKeyEvent", { type: "rawKeyDown", key: "PageDown", code: "PageDown", windowsVirtualKeyCode: 34 });
-  await send("Input.dispatchKeyEvent", { type: "keyUp", key: "PageDown", code: "PageDown", windowsVirtualKeyCode: 34 });
-  await sleep(160);
-}
-const afterKeys = await state();
-check("keyboard scrolls the wall", afterKeys.off.some((o) => o > afterWheel.off[0]),
-  `${Math.round(afterWheel.off[0])} -> ${Math.round(Math.max(...afterKeys.off))}`);
+// Wheel over column 2 must move column 2 and not column 1.
+const b = await wheelOverCol(2, 500);
+const thirdMoved = b && b.off[2] > a.off[2];
+const firstStayed = b && b.off[0] === a.off[0];
+check("wheel over column 3 scrolls column 3", !!thirdMoved,
+  b ? b.off[2] + " (was " + (a ? a.off[2] : "?") + ")" : "");
+check("column 1 did not move while column 3 scrolled", !!firstStayed,
+  b ? b.off[0] + " (was " + (a ? a.off[0] : "?") + ")" : "");
+check("the two columns are genuinely independent", !!(thirdMoved && firstStayed));
 
-// 5. At the end, the page must scroll again so the closing band is reachable.
-for (let k = 0; k < 25; k++) {
-  await send("Input.dispatchMouseEvent", { type: "mouseWheel", x: centre.x, y: centre.y, deltaX: 0, deltaY: 600 });
-  await sleep(60);
-}
-await sleep(400);
-const atEnd = await state();
-check("wall stops at its last frame, not past it",
-  atEnd.off.every((o, i) => o <= atEnd.limits[i] + 1),
-  `off ${atEnd.off.map((o) => Math.round(o)).join("/")} vs limits ${atEnd.limits.map((l) => Math.round(l)).join("/")}`);
-check("page scrolls again once the wall is done", atEnd.pageY > afterWheel.pageY,
-  `pageY ${afterWheel.pageY} -> ${atEnd.pageY}`);
+// 4. The page itself does not scroll while a column has room left.
+check("page did not scroll while a column still had content",
+  a && a.pageY === 0, a ? String(a.pageY) : "");
 
-// 6. The closing band must be on the page at all.
-const band = await evalJs(`(() => {
-  const b = document.querySelector('.hcta');
-  if (!b) return { present: false };
-  const r = b.getBoundingClientRect();
-  return { present: true, h: Math.round(r.height), cta: b.querySelector('.hcta__btn')?.getAttribute('href') };
-})()`);
-check("closing band still present with its CTA", band.present && band.cta === "#/contact",
-  JSON.stringify(band));
+// 5. Each column stops at its own end, not past it.
+const ends = [];
+for (let i = 0; i < 3; i++) ends.push(await wheelOverCol(i, 40000));
+await sleep(300);
+const done = await state();
+check("every column reached its own end",
+  done.off.every((o, i) => Math.abs(o - done.limits[i]) <= 2),
+  done.off.map((o, i) => o + "/" + done.limits[i]).join("  "));
 
-// 7. Filtering must not break the clamp.
-await evalJs(`location.hash = '#/home'`); await sleep(400);
-await evalJs(`location.hash = '#/portfolio'`); await sleep(900);
-const afterFilter = await state();
-check("wall survives a route change", afterFilter.cols >= 2, `cols=${afterFilter.cols}`);
+// 6. Once the wall is spent, the page must scroll again or the band is unreachable.
+await evalJs(`scrollTo(0, 0)`);
+await sleep(200);
+const afterEnd = await wheelOverCol(1, 600);
+check("page scrolls again once the columns are spent",
+  afterEnd && afterEnd.pageY > 0, afterEnd ? String(afterEnd.pageY) : "");
 
-console.log("--- after scrolling to the end ---" + JSON.stringify({ off: atEnd.off.map(Math.round), pageY: atEnd.pageY, docH: atEnd.docH }));
+check("closing band still present", done.band);
+console.log("--- after scrolling ---" + JSON.stringify(done));
 
-ws.close();
-console.log(fails ? `\n${fails} check(s) failed` : "\nthe wall is a scrollable box that behaves");
-process.exit(fails ? 1 : 0);
+if (fails) { console.log("\n" + fails + " check(s) failed"); process.exit(1); }
+console.log("\ncolumns scroll independently and the page is short");
