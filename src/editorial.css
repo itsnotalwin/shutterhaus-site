@@ -618,6 +618,21 @@
     top: 100%;
     left: 0;
     right: 0;
+    /* The drawer must sit ABOVE the page on every route.
+     *
+     * It had no z-index, and only `shell--over` (the home page) gave its header
+     * one. So on every other route the open drawer was painted UNDER the page
+     * content. Measured on #/portfolio at 390px with the drawer open: the "About"
+     * link reports the element at its centre as an <img class="is-loaded"> — the
+     * photo grid was covering the menu. Alwin: "when I open the menu in portfolio
+     * it doesnt show same things as home", and correctly so: Home, Portfolio,
+     * About, Services and Contact were ALL in the DOM the whole time, but only
+     * the first two were visible. The rest sat behind photographs.
+     *
+     * The header is the containing block, so raising the header is what carries
+     * the drawer with it. 5 is the value shell--over already used, so the two
+     * routes now stack identically. */
+    z-index: 5;
     flex-direction: column;
     gap: 0;
     background: var(--paper);
@@ -647,6 +662,13 @@
 
      The logo and the burger bars stay white: they sit in the transparent header
      over the photograph, not in the drawer. Only the drawer's links change. */
+  /* Inactive links take the SAME grey as every other route. An earlier version
+     of this rule used --ink, which made the home drawer the only one with black
+     inactive links — measured side by side:
+         home      rgb(17,17,17)   <- too dark, wrong
+         portfolio rgb(107,107,107) <- the site's own inactive grey
+     --grey is what the rest of the site uses, so home follows it rather than the
+     other way round. Active and hover stay --ink, as everywhere else. */
   .shell--over .nav-link { color: var(--grey); }
   .shell--over .nav-link:hover { color: var(--ink); }
   .shell--over .nav-link.is-active,
