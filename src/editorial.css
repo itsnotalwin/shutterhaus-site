@@ -275,20 +275,8 @@
   text-transform: uppercase;
   color: var(--ink);
 }
-/* Each frame sits in an .hstrip__item so the number can be positioned against
-   it. The number is blended with `difference` so it reads on dark and pale
-   frames alike without a chip behind it. aria-hidden: it is decoration. */
-.hstrip__item { position: relative; }
-.hstrip__n {
-  position: absolute;
-  left: 10px;
-  bottom: 9px;
-  font: 11px/1 var(--font-mono);
-  letter-spacing: 0.1em;
-  color: #fff;
-  mix-blend-mode: difference;
-  pointer-events: none;
-}
+
+
 .hstrip__grid {
   display: grid;
   /* Explicit count, set inline as `--strip-cols` from the same value the JS
@@ -641,6 +629,29 @@
     transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s;
   }
   .site-nav.is-open { visibility: visible; opacity: 1; transform: none; }
+
+  /* The home page is the only route with `shell--over`, which paints .nav-link
+     WHITE for the transparent header sitting on the hero photograph. The drawer
+     below it is painted `var(--paper)` — solid white — so those white links land
+     on a white background and all five become invisible.
+
+     Measured before this fix, home only:
+         Home 1:1  Portfolio 1:1  About 1:1  Services 1:1  Contact 1:1
+     and on every other route:
+         5.33:1 inactive, 18.88:1 active
+
+     The intent was already half-stated above the rule (".shell--over .site-nav {
+     color: var(--ink) }") but setting `color` on the PARENT cannot beat a rule
+     that sets `color` on the .nav-link itself at the same specificity. So the
+     child won and the correction never applied. It has to be set on the link.
+
+     The logo and the burger bars stay white: they sit in the transparent header
+     over the photograph, not in the drawer. Only the drawer's links change. */
+  .shell--over .nav-link { color: var(--grey); }
+  .shell--over .nav-link:hover { color: var(--ink); }
+  .shell--over .nav-link.is-active,
+  .shell--over .nav-link.is-active:hover { color: var(--ink); }
+  .shell--over .nav-link.is-active { border-bottom-color: var(--ink); }
   .nav-link {
     display: block;
     padding: 15px 0;

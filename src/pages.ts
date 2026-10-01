@@ -619,29 +619,6 @@ function cheapestTier(): { name: string; price: string } | null {
 }
 
 /**
- * Reading-order numbers for the home strip: 1 for the frame nearest the top,
- * counting down, left column first on ties.
- *
- * Frames are packed into columns by height, so the strip's array order is NOT
- * the order the eye reads them in (column one might hold frames 1, 4 and 6).
- * Numbering by array index would print 01, 04, 06 down the left side. Instead
- * work out where each frame's top edge lands from the same aspect ratios the
- * packer used, and number by that.
- */
-function readingOrder(columns: Photo[][]): Map<Photo, number> {
-  const placed = columns.flatMap((col, ci) => {
-    let y = 0;
-    return col.map((p) => {
-      const at = { p, ci, y };
-      y += p.width && p.height ? p.height / p.width : 1;
-      return at;
-    });
-  });
-  placed.sort((a, b) => a.y - b.y || a.ci - b.ci);
-  return new Map(placed.map((it, i) => [it.p, i + 1]));
-}
-
-/**
  * The home route: full-bleed hero, then a short editorial strip of frames.
  *
  * The hero is a real photograph rather than a flat black block — the reference
@@ -702,15 +679,17 @@ export function homePage(photos: Photo[], cols: number): string {
       strip.length
         ? (() => {
             const columns = packByHeight(strip, stripCols(strip.length));
-            const order = readingOrder(columns);
-            const num = (p: Photo) => String(order.get(p) ?? 0).padStart(2, "0");
             return `<section class="hstrip">
             <div class="hstrip__head"><span>Selected work</span><span>${String(strip.length).padStart(2, "0")} frames</span></div>
             <div class="hstrip__grid" style="--strip-cols:${stripCols(strip.length)}">${columns
               .map(
                 (col) =>
                   `<div class="hstrip__col">${col
-                    .map((p) => `<div class="hstrip__item">${figure(p, 0)}<span class="hstrip__n" aria-hidden="true">${num(p)}</span></div>`)
+                    // No number printed on the frame. Alwin, 2026-10-01: "I dont
+                    // like the number on my photos". The strip does not need
+                    // numbering to read as a curated set, and the digit sitting in
+                    // the corner of every photograph was the thing he objected to.
+                    .map((p) => `<div class="hstrip__item">${figure(p, 0)}</div>`)
                     .join("")}</div>`,
               )
               .join("")}</div>

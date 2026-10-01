@@ -23,7 +23,7 @@ change. Rollback point for the upgrade: `43c1360` (the last commit before it).
 | Hero bottom strip | none | **`.hero__meta`**: `EST. 2019 — GAUTENG, SOUTH AFRICA` · tags · `SCROLL ↓` | Gives the hero a base line and states who/where; text comes from config |
 | Hero scrim | top stop 0.05 | top stop **0.28** | The nav is white type over the palest part of the frame; it was the weakest contrast on the page |
 | Strip header | floating 10px eyebrow | hairline + `SELECTED WORK` / `06 FRAMES` (mono) | Matches the rest of the site's rules-and-labels language |
-| Strip frames | unnumbered | small mono **`01`–`06`** in each frame's corner | Editorial index; blended with `difference` so it reads on dark and pale frames |
+| Strip frames | unnumbered | unnumbered | **CHANGED 2026-10-01 on Alwin's request** — the `01`-`06` index was removed: "I dont like the number on my photos". The markup, the `.hstrip__n` rule and `readingOrder()` are all gone. `check-home-locked.mjs` now asserts the numbers are ABSENT (0), so an agent re-adding them still fails |
 | Closing band | centred, small heading, one link | flush-left three-line heading, **"From R1,200"**, solid white button, **one contact line** | It was the only centred block on a flush-left site and the page ended with no price and no way to reach Alwin |
 
 **Did NOT change** (the hard-won list below still applies verbatim): the hero
@@ -52,11 +52,13 @@ greyscale-at-rest rule, and the hover-to-colour behaviour. Only markup and CSS
    config, and the email/phone/Instagram come from `SITE.contact` / `SITE.social`.
    Change a price on Services and Home follows. Do not paste "R1,200" into the
    markup.
-2. **Strip numbers follow reading order, not array order.** Frames are packed
-   into columns by height, so the array order is not the order the eye reads.
-   `readingOrder()` works out each frame's top edge from the same
-   `height/width` ratios the packer used and numbers by that. Numbering by
-   index prints `01, 04, 06` down the left column.
+2. **The strip is unnumbered (CHANGED 2026-10-01, on Alwin's request).** The
+   `01`-`06` index was removed at his request, along with the `.hstrip__n` rule
+   and the `readingOrder()` helper that existed only to compute it. The note
+   below is kept for history: numbering HAD to follow reading order rather than
+   array order, because frames are packed by height and index numbering printed
+   `01, 04, 06` down the left column. If numbers ever come back, that trap comes
+   back with them — do not number by array index.
 3. **The band's contact line is one line, not a footer.** An earlier site-wide
    footer was reverted by Alwin. Do not grow this into a footer without asking.
 4. **The band heading wraps by `max-width: 9ch`, not by `<br>`**, so the heading

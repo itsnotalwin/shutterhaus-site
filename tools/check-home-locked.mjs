@@ -150,7 +150,13 @@ const checks = [
 // longer has them. They were dropped once already; keep them.
 checks.push(
   ["hero meta strip present", Boolean(got.heroMeta), true],
-  ["every strip frame is numbered", got.stripNumbers, LOCKED.stripFrames],
+  // CHANGED 2026-10-01 ON PURPOSE, at Alwin's request: "I dont like the number
+  // on my photos". The check INVERTS rather than being deleted — the old
+  // assertion was added specifically to stop an agent quietly removing the
+  // numbers, so simply dropping the line would have removed the guard as well as
+  // the feature. It now asserts the numbers are GONE, which still catches an
+  // agent re-adding them, and still fails if the strip markup changes shape.
+  ["strip frames carry NO number", got.stripNumbers, 0],
   ["band quotes an entry price", Boolean(got.bandPrice), true],
   ["band has contact links (email, phone, instagram)", got.bandFoot >= 3, true],
 );
