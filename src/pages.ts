@@ -27,7 +27,17 @@ export function columnise<T>(items: T[], cols: number): T[][] {
  * the leftmost column, which keeps the result stable across renders.
  */
 export function packByHeight<T extends Photo>(items: T[], cols: number): T[][] {
-  if (cols < 2 || items.length <= cols) return columnise(items, cols);
+  // Never more columns than frames. `columnise` below allocates exactly `cols`
+  // buckets and round-robins into them, so any trailing bucket with no frame is
+  // an empty column — a tall blank gap beside a crowded one. That is the same
+  // defect the swap-search guard at the bottom of this function fixes; this is
+  // the second path into it, reached whenever there are fewer frames than
+  // columns. Measured: 2 frames into 3 columns returned [1,1,0].
+  //
+  // `Math.max(1, ...)` keeps the empty-gallery case (0 frames) returning one
+  // column rather than none, so callers always get something to query.
+  const n = Math.max(1, Math.min(cols, items.length || 1));
+  if (n < 2 || items.length <= n) return columnise(items, n);
 
   // Height of each frame at a fixed column width, relative to that width.
   const sized = items.map((it, i) => ({
@@ -55,14 +65,14 @@ export function packByHeight<T extends Photo>(items: T[], cols: number): T[][] {
   //
   // So the packer chooses freely and the swap search below does the balancing.
   // The counts come out at 16/17/17 regardless — LPT does not let them drift.
-  const buckets: { photo: T; h: number; i: number }[][] = Array.from({ length: cols }, () => []);
-  const acc = new Array<number>(cols).fill(0);
+  const buckets: { photo: T; h: number; i: number }[][] = Array.from({ length: n }, () => []);
+  const acc = new Array<number>(n).fill(0);
   // Tallest first into the shortest column: longest-processing-time first,
   // which is the standard good-enough bin packing and never needs a quota.
   const byHeight = [...sized].sort((a, b) => b.h - a.h);
   for (const s of byHeight) {
     let c = 0;
-    for (let k = 1; k < cols; k++) if (acc[k] < acc[c] - 1e-9) c = k;
+    for (let k = 1; k < n; k++) if (acc[k] < acc[c] - 1e-9) c = k;
     buckets[c].push(s);
     acc[c] += s.h;
   }
@@ -119,8 +129,8 @@ export function packByHeight<T extends Photo>(items: T[], cols: number): T[][] {
     let bestScore = base * 1e6 + baseSpread;
     let best: [number, number, number, number] | null = null;
 
-    for (let i = 0; i < cols; i++) {
-      for (let j = i + 1; j < cols; j++) {
+    for (let i = 0; i < n; i++) {
+      for (let j = i + 1; j < n; j++) {
         for (let x = 0; x < buckets[i].length; x++) {
           for (let y = 0; y < buckets[j].length; y++) {
             const A = buckets[i][x];
