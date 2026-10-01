@@ -144,6 +144,17 @@ const checks = [
   ["--strip-cols", got.stripColsProp, String(LOCKED.stripColumns)],
 ];
 
+// Added 2026-10-01. Each of these is something an agent could plausibly delete
+// while "tidying" and not notice, because nothing else fails when it goes —
+// and deleting them turns this guard into a rubber stamp on a page that no
+// longer has them. They were dropped once already; keep them.
+checks.push(
+  ["hero meta strip present", Boolean(got.heroMeta), true],
+  ["every strip frame is numbered", got.stripNumbers, LOCKED.stripFrames],
+  ["band quotes an entry price", Boolean(got.bandPrice), true],
+  ["band has contact links (email, phone, instagram)", got.bandFoot >= 3, true],
+);
+
 
 let bad = 0;
 for (const [name, actual, want] of checks) {

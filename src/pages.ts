@@ -310,6 +310,83 @@ function stripCols(frameCount: number): number {
 }
 
 /**
+ * The closing band: services pitch, the entry price, and one contact line.
+ *
+ * Replaces the centred "Capture what matters" strip, which was the only
+ * centred block on a site that is otherwise flush-left, and which left the home
+ * page ending on a dead end — no price and no way to reach Alwin without going
+ * back up to the nav. The contact row is deliberately ONE line inside the band,
+ * not a site-wide footer (an earlier footer was reverted).
+ */
+function homeBand(): string {
+  const from = cheapestTier();
+  const insta = SITE.social.find((x) => x.id === "instagram");
+  const names = SITE.pricing.tiers.map((t) => t.name).join(" · ");
+  return `<section class="hcta">
+      <div class="hcta__grid">
+        <div class="hcta__main">
+          <p class="eyebrow">${escapeHtml(SITE.services.eyebrow)}</p>
+          <h2 class="hcta__h">${escapeHtml(SITE.services.heading)}</h2>
+        </div>
+        <div class="hcta__side">
+          ${
+            from
+              ? `<p class="hcta__k">From</p>
+          <p class="hcta__price">${escapeHtml(from.price)}</p>`
+              : ""
+          }
+          <p class="hcta__note">${escapeHtml(names)}<br>${escapeHtml(SITE.pricing.depositNote)}</p>
+          <a class="hcta__btn" href="#/services">${escapeHtml(SITE.services.cta)} →</a>
+        </div>
+      </div>
+      <div class="hcta__foot">
+        <a href="mailto:${escapeHtml(SITE.contact.email)}">${escapeHtml(SITE.contact.email)}</a>
+        <a href="tel:${escapeHtml(SITE.contact.phone.replace(/[^+0-9]/g, ""))}">${escapeHtml(SITE.contact.phone)}</a>
+        ${insta ? `<a href="${escapeHtml(insta.url)}" target="_blank" rel="noopener">Instagram</a>` : ""}
+        <span>© ${escapeHtml(SITE.home.est)}–${new Date().getFullYear()} ${escapeHtml(SITE.nameTop)} ${escapeHtml(SITE.nameBig2)}</span>
+      </div>
+    </section>`;
+}
+
+/**
+ * The cheapest package, for the "From R1,200" line on the home band.
+ *
+ * Read from the pricing config rather than typed in, so changing a tier price
+ * on the Services page can never leave the home page quoting a stale figure.
+ * Prices are display strings ("R1,200"); the digits decide which is cheapest
+ * and the original string is what gets shown.
+ */
+function cheapestTier(): { name: string; price: string } | null {
+  const tiers = SITE.pricing.tiers.filter((t) => /\d/.test(t.price));
+  if (!tiers.length) return null;
+  const n = (t: { price: string }) => parseInt(t.price.replace(/[^0-9]/g, ""), 10);
+  return [...tiers].sort((a, b) => n(a) - n(b))[0]!;
+}
+
+/**
+ * Reading-order numbers for the home strip: 1 for the frame nearest the top,
+ * counting down, left column first on ties.
+ *
+ * Frames are packed into columns by height, so the strip's array order is NOT
+ * the order the eye reads them in (column one might hold frames 1, 4 and 6).
+ * Numbering by array index would print 01, 04, 06 down the left side. Instead
+ * work out where each frame's top edge lands from the same aspect ratios the
+ * packer used, and number by that.
+ */
+function readingOrder(columns: Photo[][]): Map<Photo, number> {
+  const placed = columns.flatMap((col, ci) => {
+    let y = 0;
+    return col.map((p) => {
+      const at = { p, ci, y };
+      y += p.width && p.height ? p.height / p.width : 1;
+      return at;
+    });
+  });
+  placed.sort((a, b) => a.y - b.y || a.ci - b.ci);
+  return new Map(placed.map((it, i) => [it.p, i + 1]));
+}
+
+/**
  * The home route: full-bleed hero, then a short editorial strip of frames.
  *
  * The hero is a real photograph rather than a flat black block — the reference
@@ -359,25 +436,36 @@ export function homePage(photos: Photo[], cols: number): string {
         <p class="hero__lede">${escapeHtml(h.lede)}</p>
         <a class="cta" href="#/portfolio">${escapeHtml(h.cta)}</a>
       </div>
+      <div class="hero__meta">
+        <span>Est. ${escapeHtml(h.est)} — ${escapeHtml(SITE.contact.location)}</span>
+        <span class="hero__meta-tags">${h.tags.map(escapeHtml).join(" / ")}</span>
+        <span class="hero__meta-cue" aria-hidden="true">Scroll ↓</span>
+      </div>
     </div>
 
     ${
       strip.length
-        ? `<section class="hstrip">
-            <p class="eyebrow">Selected work</p>
-            <div class="hstrip__grid" style="--strip-cols:${stripCols(strip.length)}">${packByHeight(strip, stripCols(strip.length))
-              .map((col) => `<div class="hstrip__col">${col.map((p) => figure(p, 0)).join("")}</div>`)
+        ? (() => {
+            const columns = packByHeight(strip, stripCols(strip.length));
+            const order = readingOrder(columns);
+            const num = (p: Photo) => String(order.get(p) ?? 0).padStart(2, "0");
+            return `<section class="hstrip">
+            <div class="hstrip__head"><span>Selected work</span><span>${String(strip.length).padStart(2, "0")} frames</span></div>
+            <div class="hstrip__grid" style="--strip-cols:${stripCols(strip.length)}">${columns
+              .map(
+                (col) =>
+                  `<div class="hstrip__col">${col
+                    .map((p) => `<div class="hstrip__item">${figure(p, 0)}<span class="hstrip__n" aria-hidden="true">${num(p)}</span></div>`)
+                    .join("")}</div>`,
+              )
               .join("")}</div>
             <a class="cta cta--line" href="#/portfolio">See the full portfolio</a>
-          </section>`
+          </section>`;
+          })()
         : ""
     }
 
-    <section class="hcta">
-      <p class="eyebrow">${escapeHtml(SITE.services.eyebrow)}</p>
-      <h2 class="hcta__h">${escapeHtml(SITE.services.heading)}</h2>
-      <a class="cta" href="#/services">${escapeHtml(SITE.services.cta)}</a>
-    </section>
+    ${homeBand()}
   </section>`;
 }
 

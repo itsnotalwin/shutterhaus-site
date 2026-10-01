@@ -155,32 +155,57 @@
 .hero__scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.15) 45%, rgba(0,0,0,0.72) 100%);
+  /* Top stop raised from .05 to .28: the nav is white type over the palest part
+     of the frame (sky), and was the weakest contrast on the page. */
+  background: linear-gradient(180deg, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.12) 38%, rgba(0,0,0,0.78) 100%);
   pointer-events: none;
 }
 .hero__body {
   position: relative;
   z-index: 1;
-  padding: 0 var(--pad) 54px;
-  /* Wide enough for the 86px display heading. "TIMELESS PORTRAITURE" measures
-     668px at that size, so the old 640px cap is what the audit reported as
-     clipped text (scrollWidth 668 vs clientWidth 588). */
-  max-width: min(100%, 720px);
+  /* 96px of bottom padding clears the .hero__meta strip pinned underneath. */
+  padding: 0 var(--pad) 96px;
+  /* No width cap: the heading is now up to 132px and "PORTRAITURE" measures
+     ~810px there, far past the old 720px (and before that 640px) caps, each of
+     which the audit reported as clipped text. The lede keeps its own 40ch. */
+  max-width: 100%;
   color: #fff;
   width: 100%;
 }
-.hero__body .eyebrow { color: #fff; opacity: 0.9; }
-.hero__h { font-size: clamp(42px, 7.4vw, 86px); margin-bottom: 24px; }
+.hero__body .eyebrow {
+  color: #fff;
+  opacity: 0.9;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  margin-bottom: 18px;
+}
+/* 86px -> up to 132px, tighter leading and tracking. The old size was polite for
+   a brutalist site, and the lede sat almost on top of the last line; the 34px
+   margin is what separates them now. */
+.hero__h { font-size: clamp(48px, 9.6vw, 132px); }
+/* Specificity matters here: `.page h1` (0,1,1) sets margin:0, line-height and
+   letter-spacing and beats a bare `.hero__h` (0,1,0). That is why the old
+   `margin-bottom: 24px` never applied and the lede sat flush under the heading.
+   `.page .hero__h` (0,2,0) wins. */
+.page .hero__h {
+  line-height: 0.88;
+  letter-spacing: -0.035em;
+  margin-bottom: 34px;
+}
 /* The negative tracking pulls the final glyph past the text box, so
    "PORTRAITURE" reports scrollWidth > clientWidth and reads as clipped.
    Absorb it with padding on the heading itself rather than losing the
    tracking — padding on .hero__body would not widen the h1's own box. */
-.hero__h { padding-right: 0.05em; }
+.hero__h { padding-right: 0.06em; } /* was .05em; tracking is tighter now */
 /* Same overflow on the HERO heading, where the box is capped by max-width on
    the parent. Let the heading size to its own text so the negative tracking
    has no box to exceed: `width: max-content` + wrapping for narrow screens. */
 @media (min-width: 900px) {
-  .hero__h { width: max-content; max-width: 100%; }
+  /* 7.5em forces "Timeless / Portraiture" onto two lines now the body has no
+     width cap: "Portraiture" is ~6.3em wide, the full title ~10.6em. */
+  .hero__h { width: max-content; max-width: min(100%, 7.5em); }
 }
 /* On a phone the longest word is wider than the column, so it has to be
    allowed to break rather than overflow. `overflow-wrap: anywhere` is the
@@ -189,6 +214,26 @@
 @media (max-width: 640px) {
   .hero__h { overflow-wrap: anywhere; }
 }
+
+/* Bottom strip: founding year + place, the three subjects, a scroll cue.
+   Real text from config (home.est, home.tags, contact.location), not decoration. */
+.hero__meta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px var(--pad) 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.45);
+  color: #fff;
+  font: 11px/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.hero__meta span { white-space: nowrap; }
 
 .hero__lede {
   margin: 0 0 30px;
@@ -217,6 +262,33 @@
  * portfolio wall uses, so both agree at every viewport.
  */
 .hstrip { padding: 72px 0 0; }
+/* Header row: hairline, label left, count right. Replaces the 10px floating
+   eyebrow. The packed columns below are NOT touched. */
+.hstrip__head {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--ink);
+  padding-top: 12px;
+  margin-bottom: 22px;
+  font: 11px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+/* Each frame sits in an .hstrip__item so the number can be positioned against
+   it. The number is blended with `difference` so it reads on dark and pale
+   frames alike without a chip behind it. aria-hidden: it is decoration. */
+.hstrip__item { position: relative; }
+.hstrip__n {
+  position: absolute;
+  left: 10px;
+  bottom: 9px;
+  font: 11px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  color: #fff;
+  mix-blend-mode: difference;
+  pointer-events: none;
+}
 .hstrip__grid {
   display: grid;
   /* Explicit count, set inline as `--strip-cols` from the same value the JS
@@ -229,17 +301,81 @@
 }
 .hstrip__col { display: flex; flex-direction: column; gap: var(--gut); }
 .hstrip__col .cell { margin: 0; }
+/* Closing band — flush-left like the rest of the site, with the entry price
+   and one contact line. See homeBand() in pages.ts for why. */
 .hcta {
   margin: 88px calc(-1 * var(--pad)) 0;
-  padding: 72px var(--pad) 76px;
+  padding: 72px var(--pad) 0;
   background: #0d0d0d;
   color: #fff;
-  text-align: center;
+  text-align: left;
 }
-.hcta .eyebrow { color: #fff; opacity: 0.75; }
-.hcta__h { font-size: clamp(30px, 4.6vw, 52px); margin-bottom: 26px; }
-.hcta .cta { color: #fff; justify-content: center; }
-.hcta .cta::before { background: #fff; }
+.hcta__grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 48px;
+  align-items: end;
+  padding-bottom: 64px;
+}
+.hcta .eyebrow {
+  color: #fff;
+  opacity: 0.7;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  margin-bottom: 20px;
+}
+/* max-width in ch makes "Capture What Matters." break onto three lines at any
+   viewport instead of relying on a hard <br>, so the heading stays editable. */
+.hcta__h { font-size: clamp(48px, 8.4vw, 118px); max-width: 9ch; }
+.page .hcta__h { line-height: 0.9; letter-spacing: -0.035em; margin: 0; } /* beats `.page h2` */
+.hcta__k {
+  margin: 0 0 12px;
+  font: 11px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.hcta__price {
+  margin: 0 0 14px;
+  font-family: var(--font-display);
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.hcta__note {
+  margin: 0 0 28px;
+  font: 12px/1.7 var(--font-mono);
+  opacity: 0.75;
+}
+/* Solid white block: the one filled button on the home page, so the eye lands
+   on it. 44px min-height keeps it a real tap target. */
+.hcta__btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 22px;
+  background: #fff;
+  color: #0d0d0d;
+  font: 11px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.hcta__btn:hover { background: #e6e6e6; }
+.hcta__foot {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 16px 0 22px;
+  font: 11px/1.4 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
+.hcta__foot a { color: inherit; min-height: 44px; display: inline-flex; align-items: center; margin: -14px 0; }
+.hcta__foot a:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
 
 /* ----------------------------------------------------- portfolio page */
 
@@ -668,10 +804,14 @@
   .site-header { height: auto; min-height: var(--head); padding: 10px var(--pad); }
 
   .hero { min-height: 72vh; }
-  .hero__body { padding-bottom: 40px; }
+  .hero__body { padding-bottom: 80px; }
   .hero__lede { font-size: 14px; }
+  /* Phone width fits one line of meta: keep the year and place, drop the rest. */
+  .hero__meta-tags, .hero__meta-cue { display: none; }
   .phead { padding: 28px 0 32px; }
-  .hcta { padding: 54px var(--pad) 58px; }
+  .hcta { padding: 54px var(--pad) 0; }
+  .hcta__grid { grid-template-columns: 1fr; gap: 36px; padding-bottom: 48px; }
+  .hcta__foot span { display: none; }
   .invest { padding: 40px var(--pad) 44px; }
   .pfilter { gap: 16px; }
   .about__body, .ct__col { padding-top: 28px; }
