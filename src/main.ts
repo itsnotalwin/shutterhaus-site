@@ -269,10 +269,35 @@ function wireContact(): void {
   });
 }
 
-let rt: ReturnType<typeof setTimeout> | undefined;
-addEventListener("resize", () => {
-  clearTimeout(rt);
-  rt = setTimeout(() => void paint(), 200);
+/**
+ * Repaint on a real orientation change, NOT on every `resize`.
+ *
+ * Alwin, 2026-10-01, on an iPhone 16 / iOS 27 / Safari: "when I'm scrolling
+ * through the website on any page it will flash white and take me back to top".
+ *
+ * The cause was this listener. On iOS Safari the address bar is attached to the
+ * scroll, so every flick that moves the page also collapses or expands that bar
+ * and Safari fires `resize`. That ran `paint()`, which replaces `app.innerHTML`
+ * with freshly built markup — the white flash, the DOM being torn down mid-scroll
+ * — and then calls `scrollTo(0, 0)`, which is the jump back to the top. One
+ * listener, both symptoms, on every route, because it sits on `window` rather
+ * than inside the router.
+ *
+ * Desktop Chrome has no address bar, so it never fired there. That is why this
+ * passed every automated check in this repo, all of which run in headless Chrome.
+ * It cannot be verified from here; it has to be checked on the device.
+ *
+ * `orientationchange` is the event that means "the device physically turned".
+ * It does not fire during an ordinary scroll, which is the whole point.
+ *
+ * Note the portfolio does not depend on viewport width at all any more (three
+ * per row, fixed), and the home page's column count only changes across 640/1000
+ * px — both of which an orientation change still covers.
+ */
+addEventListener("orientationchange", () => {
+  // A beat, because iOS reports the new dimensions a frame or two after the
+  // event. Repainting synchronously here would read the old innerWidth.
+  setTimeout(() => void paint(), 250);
 });
 addEventListener("hashchange", () => void paint());
 
