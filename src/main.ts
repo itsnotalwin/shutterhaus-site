@@ -135,6 +135,136 @@ function repackWall(): void {
 
   for (let i = 0; i < all.length; i++) all[i].hidden = i >= n;
   wall.style.setProperty("--wall-cols", String(n));
+
+  // The scrollable box clamps each column against its OWN height, so a repack
+  // invalidates those limits. Tell it, or a short column sits past its end and
+  // leaves a gap at the top of the box.
+  document
+    .querySelector(".wall-scroll")
+    ?.dispatchEvent(new CustomEvent("shutterhaus:repacked"));
+}
+
+/**
+ * Make the portfolio wall a scrollable box instead of a 12.7-screen page.
+ *
+ * Alwin, 2026-10-01. The wall markup is `.wall-scroll > .grid--wall > .wall__col`
+ * (see portfolioPage() in src/pages.ts). This moves the columns with
+ * translateY, one gesture moving all of them together.
+ *
+ * Deliberately NOT three independent scroll areas: see the `.wall-scroll` note
+ * in src/editorial.css.
+ */
+function wireWallScroll(): void {
+  const box = document.querySelector<HTMLElement>(".wall-scroll");
+  if (!box) return;
+  const grid = box.querySelector<HTMLElement>(".grid--wall");
+  if (!grid) return;
+  const cols = [...box.querySelectorAll<HTMLElement>(".wall__col")];
+  if (cols.length < 2) return;
+
+  // Per-column travel limit, recomputed whenever the layout changes. Each
+  // column has its own, because the packer gives them near-equal but not equal
+  // heights — a short column must stop rather than slide up and show a gap.
+  const limits = () => {
+    const h = box.clientHeight;
+    return cols.map((c) => Math.max(0, c.scrollHeight - h));
+  };
+
+  let max = limits();
+
+  // Only translate a column while it has room; that is what stops short columns
+  // from floating. `settled` is true when every column is at its end.
+  const apply = (offsets: number[]): boolean => {
+    let settled = true;
+    cols.forEach((c, i) => {
+      const o = Math.max(0, Math.min(max[i], offsets[i]));
+      c.style.transform = `translateY(${-o}px)`;
+      if (o < max[i] - 0.5) settled = false;
+    });
+    return settled;
+  };
+
+  const remeasure = () => {
+    max = limits();
+    const at = cols.map((c) => -parseFloat(c.style.transform.replace(/[^-\d.]/g, "") || "0"));
+    apply(at);
+  };
+
+  let offsets = [0, 0, 0];
+
+  const move = (delta: number) => {
+    const next = offsets.map((o, i) => o + delta);
+    const settled = apply(next);
+    offsets = next;
+    return settled;
+  };
+
+  // Wheel: one gesture, all columns. `passive: false` so preventDefault works.
+  box.addEventListener(
+    "wheel",
+    (ev) => {
+      if (max.every((m) => m <= 0)) return;           // nothing to scroll
+      const settled = move(ev.deltaY);
+      // Only eat the event while the wall can still move. Once it is at the
+      // end, let the page scroll so the closing band is reachable.
+      if (!settled) ev.preventDefault();
+    },
+    { passive: false },
+  );
+
+  // Touch: drag the wall vertically. One finger, no horizontal intent.
+  let touchY: number | null = null;
+  box.addEventListener(
+    "touchstart",
+    (ev) => {
+      if (max.every((m) => m <= 0)) return;
+      touchY = ev.touches[0]?.clientY ?? null;
+    },
+    { passive: true },
+  );
+  box.addEventListener(
+    "touchmove",
+    (ev) => {
+      if (touchY === null) return;
+      const y = ev.touches[0]?.clientY;
+      if (y === undefined) return;
+      const delta = touchY - y;      // finger up = content up = scroll down
+      touchY = y;
+      if (move(delta)) touchY = null; // hit the end; stop claiming the gesture
+      ev.preventDefault();
+    },
+    { passive: false },
+  );
+  box.addEventListener("touchend", () => { touchY = null; }, { passive: true });
+
+  // Keyboard: the box is focusable, and arrows/page keys move the wall. Without
+  // this a keyboard visitor cannot see past the first row at all.
+  box.tabIndex = 0;
+  box.setAttribute("role", "region");
+  box.setAttribute("aria-label", "Photograph wall, scrollable");
+  box.addEventListener("keydown", (ev) => {
+    const step = box.clientHeight * 0.85;
+    const map: Record<string, number> = {
+      ArrowDown: step * 0.3, ArrowUp: -step * 0.3,
+      PageDown: step, PageUp: -step,
+      " ": step, Home: -Infinity, End: Infinity,
+    };
+    const d = map[ev.key];
+    if (d === undefined) return;
+    ev.preventDefault();
+    if (d === -Infinity) { apply([0, 0, 0]); offsets = [0, 0, 0]; return; }
+    if (d === Infinity) { apply(max); offsets = max.slice(); return; }
+    move(d);
+  });
+
+  // Images decode after layout, and the filter repacks, so the limits are stale
+  // until both settle. Re-measure on load, on resize, and via rAF after paint.
+  window.addEventListener("resize", remeasure);
+  window.addEventListener("load", remeasure);
+  requestAnimationFrame(remeasure);
+  // The filter bar repacks the wall, which changes the column heights, so the
+  // clamp has to be recomputed afterwards or a short column drifts off its end.
+  box.addEventListener("shutterhaus:repacked", remeasure);
 }
 
 function route(): string {
@@ -274,6 +404,8 @@ function adoptable(live: AdminPhoto[] | null | undefined): AdminPhoto[] | null {
     wireBurger();
     // Only the portfolio route emits `.pfilter`; the function no-ops elsewhere.
     wireFilterBar();
+    // Same: only the portfolio wall is scrollable.
+    wireWallScroll();
     scrollTo(0, 0);
   };
   draw();

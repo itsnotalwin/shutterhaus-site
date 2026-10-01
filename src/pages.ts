@@ -431,7 +431,9 @@ export function portfolioPage(photos: Photo[], cols: number): string {
       <p class="phead__p">Portraits and places, shot around Gauteng.</p>
     </header>
     ${filterBar(photos)}
-    <div class="grid grid--wall" style="--wall-cols:${cols}">${wall}</div>
+    <div class="wall-scroll">
+      <div class="grid grid--wall" style="--wall-cols:${cols}">${wall}</div>
+    </div>
     ${pfBand()}
   </section>`;
 }
