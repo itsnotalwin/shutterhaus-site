@@ -46,8 +46,20 @@ def derivatives(src: Path, out_dir: Path) -> tuple[int, int]:
         if im.mode not in ("RGB", "L"):
             im = im.convert("RGB")
 
-        # Never upscale: a 1200px source can't honestly fill a 1600w slot.
-        usable = [w for w in WIDTHS if w < im.width]
+        # Cap at the source width — never upscale. A 1200px source cannot
+        # honestly fill a 1600w slot.
+        #
+        # INCLUSIVE, deliberately. src/pages.ts builds the srcset with
+        # `w <= sourceWidth`, so a 1600px source advertises a 1600w candidate.
+        # This used to be `w < im.width`, which skipped exactly-equal widths and
+        # left 16 of the 50 frames advertising a file that was never written.
+        # The browser believed the srcset, requested -1600w.webp, got a 404, and
+        # fell back to the full-size original. Measured on production: 10+ 404s
+        # on the first screen and 604kB fetched for 3 visible frames.
+        #
+        # Equal width is a resize to the same pixel count, not an upscale, so
+        # this stays honest.
+        usable = [w for w in WIDTHS if w <= im.width]
         if not usable:
             return 0, 0
 

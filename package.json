@@ -6,7 +6,7 @@
   "description": "Shutterhaus Visuals — photography portfolio with a Google-auth admin gallery",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && python tools/check-srcset.py && vite build",
     "verify": "node tools/verify.mjs",
     "preview": "vite preview --host 127.0.0.1 --port 4173 --strictPort",
     "typecheck": "tsc --noEmit",
