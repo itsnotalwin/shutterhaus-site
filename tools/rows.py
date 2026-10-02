@@ -94,8 +94,12 @@ ROWS = [
     ["50-img-0143.jpg", "15-img-0025.jpg"],                       # 0.6667
     ["45-img-0118.jpg", "30-img-0396.jpg"],                       # 0.8
     ["41-img-0094.jpg", "20-img-0202.jpg"],                       # 0.5625
-    ["40-img-0092.jpg", "35-img-0482.jpg"],                       # 0.8
-    ["48-img-0128.jpg", "16-img-0030.jpg"],                       # 0.6667
+    # 42-img-0095 reinstated over 35-img-0482, on the same grounds.
+    ["40-img-0092.jpg", "42-img-0095.jpg"],                       # 0.8
+    # 12-img-0019 reinstated over 16-img-0030: the former is a sharp city
+    # B&W with light on the face, the latter a murky night frame that reads
+    # as noise at 184px. Judged by eye, not by variance metric.
+    ["48-img-0128.jpg", "12-img-0019.jpg"],                       # 0.6667
     ["37-img-0124.jpg", "14-img-0026.jpg"],                       # 0.6667
     ["46-img-0119.jpg", "26-img-0253.jpg"],                       # 0.8
     # Runs out on two monochrome city frames.
