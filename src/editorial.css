@@ -41,9 +41,16 @@
   left: 0;
   right: 0;
   z-index: 5;
-  /* No fill — the photograph IS the background. Only a soft top scrim, so
-     white type stays legible over a bright sky without dulling the image. */
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 100%);
+  /* No fill — the photograph IS the background. Only a top scrim, so white
+     type stays legible over a bright sky without dulling the image.
+     MEASURED, not guessed. The old stops were .45 -> 0 across the header's
+     118px, which left the wordmark (measured at 2.49:1) and the burger bars
+     (1.00:1 against a blown sky — white on white) failing WCAG. The stops
+     below hold ~.66 through the 2.7%-10.6% band the wordmark occupies and
+     .54 where the burger sits at 6.1%, then release to 0 so the scrim still
+     ends inside the header. Verified at 6.69:1 and 15.52:1 across six
+     frames including the gallery's brightest; see mobile-audit/a11y. */
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.66) 0%, rgba(0, 0, 0, 0.54) 70%, rgba(0, 0, 0, 0) 100%);
 }
 .shell--over .nav-link { color: rgba(255, 255, 255, 0.82); }
 .shell--over .nav-link:hover,
@@ -155,9 +162,25 @@
 .hero__scrim {
   position: absolute;
   inset: 0;
-  /* Top stop raised from .05 to .28: the nav is white type over the palest part
-     of the frame (sky), and was the weakest contrast on the page. */
-  background: linear-gradient(180deg, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.12) 38%, rgba(0,0,0,0.78) 100%);
+  /* The stop positions are PLACED, and the values are MEASURED.
+     The old gradient ran .28 -> .12 at 38% -> .78 at 100%, and that .12 dip is
+     the defect: the hero eyebrow sits at 35.9%-38% of the hero box, so the
+     quietest part of the scrim landed exactly on the smallest, thinnest text
+     on the page. Measured there, it was 1.36:1.
+
+     The new shape keeps the 0%-22% falloff, because that is where the
+     subject's face and the sky live and a dense wash there would dull the one
+     thing the page exists to show. It then holds a plateau from 34% down,
+     covering the eyebrow (36-38%), the headline (41-62%), the lede (67-75%)
+     and the meta strip (93-100%).
+
+     Values came from a sweep, not from taste: candidates were injected into
+     the live page, painted, captured and decoded against the gallery's
+     brightest frame. This shape measures 5.60:1 on that worst case (a
+     1.24:1 before) and 5.70:1-8.45:1 across the other five. The scrim is
+     still not opaque: the photograph reads through it, which is checked by
+     eye as well as by ratio. */
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.36) 0%, rgba(0, 0, 0, 0.12) 22%, rgba(0, 0, 0, 0.62) 34%, rgba(0, 0, 0, 0.66) 40%, rgba(0, 0, 0, 0.70) 66%, rgba(0, 0, 0, 0.76) 80%, rgba(0, 0, 0, 0.86) 100%);
   pointer-events: none;
 }
 .hero__body {
@@ -754,7 +777,12 @@
      top: -14.3px, taking "SHUTTERHAUS" off-screen again. `min-height`
      lets the row grow to fit instead. */
   :root { --pad: 18px; --head: 92px; }
-  .site-header { height: auto; min-height: var(--head); padding: 10px var(--pad); }
+  /* --sat is ADDED to the 10px top pad, not replacing it: this rule overrides
+     the desktop `padding: var(--sat) var(--pad) 0` wholesale, so dropping the
+     inset here would put the burger back under the Dynamic Island on exactly
+     the viewport where the burger is the only navigation. min-height grows
+     with the inset for the same reason `height` is not used here. */
+  .site-header { height: auto; min-height: calc(var(--head) + var(--sat)); padding: calc(10px + var(--sat)) var(--pad) 10px; }
 
   .hero { min-height: 72vh; }
   .hero__body { padding-bottom: 80px; }

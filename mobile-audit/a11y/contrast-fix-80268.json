@@ -1,0 +1,122 @@
+[
+ {
+  "key": "eyebrow",
+  "label": "8-img-0268.jpg",
+  "fontSize": "11px",
+  "fontFamily": "ui-monospace",
+  "cssBox": "357x13 css px",
+  "deviceBox": "1071x39 device px",
+  "declaredColor": "rgb(255, 255, 255)",
+  "textFrom": "rendered glyph pixels",
+  "textRGB": [
+   238,
+   237,
+   237
+  ],
+  "textLum": 0.85163,
+  "worstBgRGB": [
+   85,
+   82,
+   79
+  ],
+  "worstBgLum": 0.0853,
+  "medianBgLum": 0.0772,
+  "bgPixels": 38204,
+  "glyphPixels": 3565,
+  "ratio_worst": 6.66,
+  "ratio_median": 7.09,
+  "ratio_best": 7.55,
+  "threshold": 4.5,
+  "pass_worst": true
+ },
+ {
+  "key": "wordmark",
+  "label": "8-img-0268.jpg",
+  "fontSize": "16px",
+  "fontFamily": "Inter",
+  "cssBox": "128x48.6 css px",
+  "deviceBox": "384x146 device px",
+  "declaredColor": "rgb(255, 255, 255)",
+  "textFrom": "rendered glyph pixels",
+  "textRGB": [
+   255,
+   255,
+   255
+  ],
+  "textLum": 1.0,
+  "worstBgRGB": [
+   83,
+   83,
+   82
+  ],
+  "worstBgLum": 0.08635,
+  "medianBgLum": 0.05613,
+  "bgPixels": 43752,
+  "glyphPixels": 12312,
+  "ratio_worst": 7.7,
+  "ratio_median": 9.89,
+  "ratio_best": 11.76,
+  "threshold": 3.0,
+  "pass_worst": true
+ },
+ {
+  "key": "burger",
+  "label": "8-img-0268.jpg",
+  "fontSize": "13.3333px",
+  "fontFamily": "Arial",
+  "cssBox": "20x1 css px",
+  "deviceBox": "78x21 device px",
+  "declaredColor": "rgb(0, 0, 0)",
+  "textFrom": "rendered glyph pixels",
+  "textRGB": [
+   255,
+   255,
+   255
+  ],
+  "textLum": 1.0,
+  "worstBgRGB": [
+   67,
+   67,
+   67
+  ],
+  "worstBgLum": 0.05613,
+  "medianBgLum": 0.05286,
+  "bgPixels": 1458,
+  "glyphPixels": 180,
+  "ratio_worst": 9.89,
+  "ratio_median": 10.21,
+  "ratio_best": 10.53,
+  "threshold": 3.0,
+  "pass_worst": true
+ },
+ {
+  "key": "lede",
+  "label": "8-img-0268.jpg",
+  "fontSize": "14px",
+  "fontFamily": "Inter",
+  "cssBox": "353.3x47.6 css px",
+  "deviceBox": "1060x143 device px",
+  "declaredColor": "rgb(255, 255, 255)",
+  "textFrom": "rendered glyph pixels",
+  "textRGB": [
+   239,
+   239,
+   239
+  ],
+  "textLum": 0.8635,
+  "worstBgRGB": [
+   70,
+   71,
+   71
+  ],
+  "worstBgLum": 0.06263,
+  "medianBgLum": 0.02227,
+  "bgPixels": 135960,
+  "glyphPixels": 15620,
+  "ratio_worst": 8.11,
+  "ratio_median": 12.64,
+  "ratio_best": 16.95,
+  "threshold": 4.5,
+  "pass_worst": true
+ }
+]

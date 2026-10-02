@@ -2,7 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- viewport-fit=cover lets the page draw under the notch, the Dynamic
+         Island and the home indicator. Without it iOS letterboxes the viewport
+         to the safe area and `env(safe-area-inset-*)` resolves to 0 forever, so
+         every inset below would be dead code. With it, the header grows a top
+         pad, the gutters grow left/right, and the page bottom clears the home
+         bar. The env() calls are all wrapped in max() against 0px so a
+         desktop browser, where these resolve to nothing, is unaffected. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Shutterhaus Visuals — photography in Gauteng</title>
     <meta name="description" content="Portraits, couples, families and social content, shot on location across Gauteng by Alwin Newman. Shutterhaus Visuals." />
 

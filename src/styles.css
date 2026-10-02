@@ -17,6 +17,21 @@
   --gut: 14px;          /* gap between columns/images */
   --head: 118px;        /* header height */
 
+  /* iPhone safe-area insets, aliased once so no rule has to spell out the
+     max() fallback itself. `env(safe-area-inset-*)` is 0 on every browser
+     that does not understand it and on every desktop, so wrapping it in
+     max(<fallback>, env(...)) means these are a plain 0 on the machines
+     this was written on and grow to 59px/34px/0px only on a notched
+     device. A bare `env()` is technically valid CSS but invalid in
+     browsers without support, which drops the whole declaration; max()
+     keeps the fallback and the inset in one property.
+     Values are read from the iPhone 16: 59px top (Dynamic Island band),
+     34px bottom (home indicator), 0 left/right in portrait. */
+  --sat: max(0px, env(safe-area-inset-top));
+  --sab: max(0px, env(safe-area-inset-bottom));
+  --sal: max(0px, env(safe-area-inset-left));
+  --sar: max(0px, env(safe-area-inset-right));
+
   --font-display: "Archivo Black", "Helvetica Neue", Arial, sans-serif;
   --font-body: "Inter", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
   /* System monospace on purpose: no extra font request, and it reads as
@@ -28,8 +43,23 @@
 
 html, body {
   margin: 0;
-  padding: 0;
+  /* Kept, because .shell { min-height: 100% } and the sticky header both
+     resolve their percentages against it. Dropping it in the process of
+     adding the insets was a regression, not a simplification. */
   height: 100%;
+  /* Left/right insets live here, once, rather than on .main and every full-bleed
+     section. A body inset shrinks the ICB, so `position: fixed` chrome and any
+     `100vw` element are already clamped to the safe width, and the
+     full-bleed rules that cancel `var(--pad)` with a negative margin
+     (.hero, .hcta, .invest) only cancel the gutter — not the inset — which is
+     exactly the intent: those sections are meant to reach the screen edge but
+     never under a rounded corner in landscape. Bottom inset likewise keeps the
+     last row of a page clear of the home indicator; `height: 100%` above is
+     left alone because the box-sizing below makes it content height, and the
+     padding-bottom is what actually reserves the space. */
+  padding-left: var(--sal);
+  padding-right: var(--sar);
+  padding-bottom: var(--sab);
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-body);
@@ -61,8 +91,15 @@ img { display: block; max-width: 100%; }
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  height: var(--head);
-  padding: 0 var(--pad);
+  /* The top inset is added to --head, not swapped for it, so the bar keeps
+     its designed height AND gains clearance for the Dynamic Island. With a
+     fixed `height` and a padding-top the content would just be squeezed
+     upward and the burger would sit at the very top of the box, which is
+     precisely the y=18px defect. box-sizing is border-box (set above), so
+     the total is --head + --sat and the 20px row of content lands below
+     the island. */
+  height: calc(var(--head) + var(--sat));
+  padding: var(--sat) var(--pad) 0;
   gap: 20px;
   /* Opaque, because it now sits over scrolling content and a transparent
      header would let photos run under the wordmark. The home route overrides
@@ -442,7 +479,10 @@ img { display: block; max-width: 100%; }
 .lb__img { max-width: 92vw; max-height: 86vh; object-fit: contain; }
 .lb__cap {
   position: absolute;
-  bottom: 18px;
+  /* 18px + the home-indicator inset. The caption was measured at 18px from
+     the bottom of the viewport, which on an iPhone 16 is inside the 34px
+     home-indicator band — the swipe target sits on top of the caption. */
+  bottom: calc(18px + var(--sab));
   left: 0;
   right: 0;
   text-align: center;
@@ -464,9 +504,14 @@ img { display: block; max-width: 100%; }
   opacity: 0.7;
   padding: 10px 16px;
 }
-.lb__x { top: 12px; right: 18px; font-size: 34px; }
-.lb__nav--p { left: 14px; }
-.lb__nav--n { right: 14px; }
+/* The audit measured this close button at y=18px on an iPhone 16, which is
+   inside the 59px Dynamic Island band: the pill is drawn over the island and
+   part of the tap target is unreachable. top is 12px + the top inset, and the
+   side insets join it so the control stays inside the rounded corners in
+   landscape, where the island moves to a left or right inset. */
+.lb__x { top: calc(12px + var(--sat)); right: calc(18px + var(--sar)); font-size: 34px; }
+.lb__nav--p { left: calc(14px + var(--sal)); }
+.lb__nav--n { right: calc(14px + var(--sar)); }
 .lb__x:hover, .lb__nav:hover { opacity: 1; }
 
 /* Each control holds a glyph AND a word. Glyphs by default (the home page's
@@ -882,3 +927,59 @@ code {
      photo a little more air than the 10px mobile gutter. */
   .grid { gap: 12px; }
 }
+
+/* ------------------------------------------------- reduced motion */
+
+/* The site animated 11 transitions and honoured none of them as optional.
+ * None of it is decorative in the vestibular sense — no parallax, no large
+ * translation, no autoplay — but that is not the test. prefers-reduced-motion
+ * is set by people whose OS-level "reduce motion" is on, commonly for
+ * migraine or vestibular disorder, and the polite reading is that a site
+ * should still work if it stops moving.
+ *
+ * The blanket `*` is deliberate and is NOT a shortcut. These transitions are
+ * declared at (0,1,0) and (0,2,0) across two files, and enumerating the
+ * eleven elements would be a list that rots on the next edit — a new
+ * transition would silently ship animated. `transition-duration: 0.01ms`
+ * rather than `0s` is the standard incantation: 0s would also cancel
+ * transition-delay, and a delayed transition is still a transition.
+ *
+ * Nothing here hides content or changes layout. The nav drawer and the burger
+ * still open, the gallery still swaps, the upload progress bar still grows —
+ * they just arrive at their final state immediately, which is what the
+ * preference asks for. animation-duration is included so any future
+ * @keyframes inherits the same guarantee. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* The one place where a duration is load-bearing rather than decorative.
+     .cell img fades in on load (opacity 0 -> 1); with the transition cut the
+     frame appears at full opacity the moment it decodes, which is the desired
+     outcome. The B&W reveal on hover is gated behind (hover: hover) already,
+     so a touch device was never going to see it animate. */
+  .shell.is-bw .cell img { filter: grayscale(1) contrast(1.06); }
+}
+
+/* --------------------------------------------------------- dark mode
+   NOT IMPLEMENTED, on purpose. Recording the reasoning so it is not
+   re-litigated every audit: this is a photography site, and the palette is
+   --ink #111 on --paper #fff with photographs as the only colour in the
+   document. Inverting that to a dark theme does not just swap two tokens —
+   the hero scrim, the lightbox backdrop (#0c0c0c), the .cell placeholder
+   grey and the white-on-photo header type are all tuned against a white
+   page, and every ratio measured in this file was measured on it. Shipping
+   a dark mode means re-deriving that whole set, and a plausible-looking
+   inversion with unverified ratios is a worse outcome than a site that is
+   honestly light-only. The monochrome brand carries over to a dark UI almost
+   unchanged, so the design case is weak as well as the verification case.
+   If it is ever wanted, the work is: re-run mobile-audit/a11y/contrast.py
+   with a prefers-color-scheme: dark capture and hold the same thresholds. */

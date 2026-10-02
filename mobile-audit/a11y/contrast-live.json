@@ -1,0 +1,122 @@
+[
+ {
+  "key": "eyebrow",
+  "label": "hero eyebrow (11px mono, opacity .9)",
+  "fontSize": "11px",
+  "fontFamily": "ui-monospace",
+  "cssBox": "357x13 css px",
+  "deviceBox": "1071x39 device px",
+  "declaredColor": "rgb(255, 255, 255)",
+  "textFrom": "rendered glyph pixels",
+  "textRGB": [
+   244,
+   245,
+   244
+  ],
+  "textLum": 0.91319,
+  "worstBgRGB": [
+   21,
+   21,
+   21
+  ],
+  "worstBgLum": 0.6376,
+  "medianBgLum": 0.04231,
+  "bgPixels": 38204,
+  "glyphPixels": 3565,
+  "ratio_worst": 1.4,
+  "ratio_median": 10.43,
+  "ratio_best": 17.71,
+  "threshold": 4.5,
+  "pass_worst": false
+ },
+ {
+  "key": "wordmark",
+  "label": "header wordmark (Archivo Black, white)",
+  "fontSize": "16px",
+  "fontFamily": "Inter",
+  "cssBox": "128x48.6 css px",
+  "deviceBox": "384x146 device px",
+  "declaredColor": "rgb(255, 255, 255)",
+  "textFrom": "rendered glyph pixels",
+  "textRGB": [
+   255,
+   255,
+   255
+  ],
+  "textLum": 1.0,
+  "worstBgRGB": [
+   162,
+   162,
+   162
+  ],
+  "worstBgLum": 0.37124,
+  "medianBgLum": 0.2384,
+  "bgPixels": 43799,
+  "glyphPixels": 12265,
+  "ratio_worst": 2.49,
+  "ratio_median": 3.64,
+  "ratio_best": 5.49,
+  "threshold": 3.0,
+  "pass_worst": false
+ },
+ {
+  "key": "burger",
+  "label": "burger bars (white, 20x1px)",
+  "fontSize": "13.3333px",
+  "fontFamily": "Arial",
+  "cssBox": "20x1 css px",
+  "deviceBox": "102x45 device px",
+  "declaredColor": "rgb(0, 0, 0)",
+  "textFrom": "rendered glyph pixels",
+  "textRGB": [
+   255,
+   255,
+   255
+  ],
+  "textLum": 1.0,
+  "worstBgRGB": [
+   141,
+   141,
+   141
+  ],
+  "worstBgLum": 1.0,
+  "medianBgLum": 0.2384,
+  "bgPixels": 4410,
+  "glyphPixels": 180,
+  "ratio_worst": 1.0,
+  "ratio_median": 3.64,
+  "ratio_best": 4.17,
+  "threshold": 3.0,
+  "pass_worst": false
+ },
+ {
+  "key": "lede",
+  "label": "hero lede (14px, opacity .92)",
+  "fontSize": "14px",
+  "fontFamily": "Inter",
+  "cssBox": "353.3x47.6 css px",
+  "deviceBox": "1060x143 device px",
+  "declaredColor": "rgb(255, 255, 255)",
+  "textFrom": "rendered glyph pixels",
+  "textRGB": [
+   240,
+   240,
+   238
+  ],
+  "textLum": 0.87672,
+  "worstBgRGB": [
+   62,
+   62,
+   62
+  ],
+  "worstBgLum": 0.12744,
+  "medianBgLum": 0.00273,
+  "bgPixels": 135960,
+  "glyphPixels": 15620,
+  "ratio_worst": 5.22,
+  "ratio_median": 17.57,
+  "ratio_best": 18.2,
+  "threshold": 4.5,
+  "pass_worst": true
+ }
+]
