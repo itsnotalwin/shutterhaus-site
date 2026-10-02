@@ -129,7 +129,7 @@ export const SITE: SiteConfig = {
 
   blurb:
     "Portraits, couples, families and social content — shot on location across Gauteng. " +
-    "Mini sessions, full galleries and prints available on request.",
+    "Mini sessions and full galleries, with prints as add-ons.",
 
   // ---- pricing (source: Shutterhaus_Pricing_Packages.pdf) ----
   pricing: {

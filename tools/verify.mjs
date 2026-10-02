@@ -480,6 +480,22 @@ const reelsGone = (() => {
   return !/reel|9:16|\b4:5\b/i.test(copy);
 })();
 check("no reels or vertical crops promised anywhere", reelsGone);
+
+// Two copies can contradict each other and both render perfectly. The contact
+// blurb promised "prints available on request" while every tier had dropped
+// prints to a paid add-on — correct individually, contradictory together. This
+// asserts the specific promise rather than the whole file, so it stays useful.
+const printsConsistent = (() => {
+  const copy = readFileSync(new URL("../src/config.ts", import.meta.url), "utf8")
+    .replace(/\/\*[\s\S]*?\*\//g, " ")
+    .replace(/\/\/.*$/gm, " ");
+  // Only the CONTRADICTION matters. Listing a 5x7 print as a PAID ADD-ON is
+  // correct and must not trip this; what is wrong is prose that tells a client
+  // prints come with the session while every tier dropped them to an add-on.
+  const claimsPrintsIncluded = /prints?\s+available on request|print\s+release\s*\+/i.test(copy);
+  return !claimsPrintsIncluded;
+})();
+check("print copy does not contradict the packages", printsConsistent);
 check("every package links to contact", pr.ctas.length > 0 && pr.ctas.every(h => /(^|\/)contact(\.html)?$/.test(h)), pr.ctas.join(","));
 // The editorial package cards carry no fill — they sit on the white page
 // separated by whitespace, not by a card background. The old check asserted
