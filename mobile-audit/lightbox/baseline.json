@@ -1,0 +1,111 @@
+{
+  "base": "http://127.0.0.1:4174",
+  "viewport": "393x852@3",
+  "lightboxImageUrl": "http://127.0.0.1:4174/gallery/49-img-0131.jpg",
+  "lightboxImageBytes": 415513,
+  "bytesForWholeOpen": 415513,
+  "pageBytesBeforeTap": 0,
+  "frames": 28,
+  "results": [
+    {
+      "name": "portfolio wall rendered",
+      "pass": true,
+      "detail": "28 frames"
+    },
+    {
+      "name": "lightbox opened and its image decoded",
+      "pass": true,
+      "detail": "01 / 28"
+    },
+    {
+      "name": "lightbox loads a bounded derivative, not the original",
+      "pass": false,
+      "detail": "http://127.0.0.1:4174/gallery/49-img-0131.jpg"
+    },
+    {
+      "name": "lightbox image was fetched",
+      "pass": true,
+      "detail": "415513 bytes"
+    },
+    {
+      "name": "swipe path is clear of the prev/next buttons",
+      "pass": true,
+      "detail": "y=239 x=307->79; next button x 301-379, y 404-448"
+    },
+    {
+      "name": "a horizontal touch drag does not navigate the tab away",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "horizontal touch swipe advances the lightbox",
+      "pass": false,
+      "detail": "\"01 / 28\" -> \"01 / 28\""
+    },
+    {
+      "name": "swiped-to image is also a bounded derivative",
+      "pass": false,
+      "detail": "http://127.0.0.1:4174/gallery/49-img-0131.jpg"
+    },
+    {
+      "name": "swipe right goes back",
+      "pass": false,
+      "detail": "\"01 / 28\" -> \"\""
+    },
+    {
+      "name": "vertical drag down dismisses the lightbox",
+      "pass": false,
+      "detail": "INCONCLUSIVE: the lightbox was not open when the drag began"
+    },
+    {
+      "name": "reopened for the keyboard test",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "ArrowRight advances",
+      "pass": true,
+      "detail": "\"01 / 28\" -> \"02 / 28\""
+    },
+    {
+      "name": "ArrowLeft goes back",
+      "pass": true,
+      "detail": "\"02 / 28\" -> \"01 / 28\""
+    },
+    {
+      "name": "Escape closes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "backdrop click still closes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "a tap on the image does not close or advance",
+      "pass": true,
+      "detail": "\"01 / 28\" -> \"01 / 28\" open=true"
+    },
+    {
+      "name": "close button >= 44x44 and inside the viewport",
+      "pass": true,
+      "detail": "70x44 at top:18 right:371 (vw 393 vh 852)"
+    },
+    {
+      "name": "prev/next >= 44x44",
+      "pass": true,
+      "detail": "prev 78x44, next 78x44"
+    },
+    {
+      "name": "lightbox image keeps its alt text",
+      "pass": true,
+      "detail": "Portrait of a woman in a black top and pale skirt, stan"
+    },
+    {
+      "name": "0 console errors",
+      "pass": true,
+      "detail": ""
+    }
+  ]
+}
