@@ -3,6 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "description": "Shutterhaus Visuals — photography portfolio with a Google-auth admin gallery",
   "scripts": {
     "dev": "python tools/build-pages.py && vite",
