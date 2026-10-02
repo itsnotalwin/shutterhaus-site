@@ -53,16 +53,37 @@
   left: 0;
   right: 0;
   z-index: 5;
-  /* No fill — the photograph IS the background. Only a top scrim, so white
-     type stays legible over a bright sky without dulling the image.
-     MEASURED, not guessed. The old stops were .45 -> 0 across the header's
-     118px, which left the wordmark (measured at 2.49:1) and the burger bars
-     (1.00:1 against a blown sky — white on white) failing WCAG. The stops
-     below hold ~.66 through the 2.7%-10.6% band the wordmark occupies and
-     .54 where the burger sits at 6.1%, then release to 0 so the scrim still
-     ends inside the header. Verified at 6.69:1 and 15.52:1 across six
-     frames including the gallery's brightest; see mobile-audit/a11y. */
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.66) 0%, rgba(0, 0, 0, 0.54) 70%, rgba(0, 0, 0, 0) 100%);
+  /* NO SCIM. Alwin: "the home page on mobile still has a grey translucent bar on
+     the home screen, I want that removed." A full-width translucent band with a
+     visible bottom edge is exactly what a minimal editorial hero should not
+     have — it reads as chrome laid over the picture rather than as one image.
+
+     The band existed for one reason: white type over a bright sky. Measured,
+     removing it takes the wordmark's worst-case contrast from 11.90:1 to
+     2.96:1 — legible on today's hero, unreadable on a brighter one. So the
+     legibility moves onto the glyphs themselves, where it is invisible as a
+     band and travels with the text rather than with the photograph.
+     See the text-shadow on .logo and the controls below. */
+  background: none;
+}
+
+/* Legibility without a band. A tight, soft shadow hugs the letterforms, so it
+   never reads as a rectangle over the image the way a gradient did. Two shadows
+   — a tight one for edge definition and a wider one for a readable core —
+   which is the standard way to hold white type over an unpredictable
+   photograph. Colour comes from the shadow, not from a filter: the greyscale
+   treatment was removed from this site in 2026-10-02. */
+.shell--over .logo,
+.shell--over .nav-link,
+.shell--over .social {
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.55),
+    0 0 10px rgba(0, 0, 0, 0.38);
+}
+/* The burger is three 2px bars of ink, not glyphs, so a text-shadow does
+   nothing for it — it gets a drop-shadow on the bars themselves. */
+.shell--over .burger__bars i {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 0 8px rgba(0, 0, 0, 0.45);
 }
 .shell--over .nav-link { color: rgba(255, 255, 255, 0.82); }
 .shell--over .nav-link:hover,
