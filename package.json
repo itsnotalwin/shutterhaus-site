@@ -5,8 +5,9 @@
   "type": "module",
   "description": "Shutterhaus Visuals — photography portfolio with a Google-auth admin gallery",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && python tools/check-srcset.py && vite build",
+    "dev": "python tools/build-pages.py && vite",
+    "build": "tsc --noEmit && python tools/build-pages.py && python tools/check-srcset.py && vite build",
+    "pages": "python tools/build-pages.py",
     "verify": "node tools/verify.mjs",
     "preview": "vite preview --host 127.0.0.1 --port 4173 --strictPort",
     "typecheck": "tsc --noEmit",

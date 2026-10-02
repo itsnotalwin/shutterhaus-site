@@ -569,8 +569,8 @@ function pfBand(): string {
       `<h2 class="hcta__h">Like what you see?</h2>`,
     )
     .replace(
-      `<a class="hcta__btn" href="#/services">${escapeHtml(SITE.services.cta)} →</a>`,
-      `<a class="hcta__btn" href="#/contact">Get a quote →</a>`,
+      `<a class="hcta__btn" href="./services.html">${escapeHtml(SITE.services.cta)} →</a>`,
+      `<a class="hcta__btn" href="./contact.html">Get a quote →</a>`,
     );
 }
 
@@ -578,7 +578,7 @@ function pfBand(): string {
 export function emptyGallery(): string {
   return `<section class="empty">
       <p>No photos published yet.</p>
-      <p class="dim">If you're the admin, add some in <a href="#/admin">the gallery manager</a>.</p>
+      <p class="dim">If you're the admin, add some in <a href="./admin.html">the gallery manager</a>.</p>
     </section>`;
 }
 
@@ -634,7 +634,7 @@ function homeBand(): string {
               : ""
           }
           <p class="hcta__note">${escapeHtml(names)}<br>${escapeHtml(SITE.pricing.depositNote)}</p>
-          <a class="hcta__btn" href="#/services">${escapeHtml(SITE.services.cta)} →</a>
+          <a class="hcta__btn" href="./services.html">${escapeHtml(SITE.services.cta)} →</a>
         </div>
       </div>
       <div class="hcta__foot">
@@ -716,7 +716,7 @@ export function homePage(photos: Photo[], cols: number): string {
         <p class="eyebrow">${escapeHtml(h.eyebrow)}</p>
         <h1 class="hero__h">${escapeHtml(h.heading)}</h1>
         <p class="hero__lede">${escapeHtml(h.lede)}</p>
-        <a class="cta" href="#/portfolio">${escapeHtml(h.cta)}</a>
+        <a class="cta" href="./portfolio.html">${escapeHtml(h.cta)}</a>
       </div>
       <div class="hero__meta">
         <span>Est. ${escapeHtml(h.est)} — ${escapeHtml(SITE.contact.location)}</span>
@@ -743,7 +743,7 @@ export function homePage(photos: Photo[], cols: number): string {
                     .join("")}</div>`,
               )
               .join("")}</div>
-            <a class="cta cta--line" href="#/portfolio">See the full portfolio</a>
+            <a class="cta cta--line" href="./portfolio.html">See the full portfolio</a>
           </section>`;
           })()
         : ""

@@ -36,12 +36,28 @@ export function escapeHtml(s: string): string {
 }
 
 /**
+ * The href that serves a route as a real document.
+ *
+ * Every route is its own file now (see tools/build-pages.py), so links point at
+ * `portfolio.html` rather than `#/portfolio`. That is the point of the split: a
+ * crawler and a scraper get a document, and the browser gets a real URL it can
+ * bookmark, share and go Back to.
+ *
+ * `home` maps to `./` rather than `index.html` so the homepage keeps its clean
+ * apex URL — `index.html` and `/` are the same document, and the apex is what
+ * is canonical.
+ */
+function pageHref(id: string): string {
+  return id === "home" ? "./" : `./${id}.html`;
+}
+
+/**
  * The site chrome, matching the reference: a small word inlined before two big
  * stacked words, nav offset from the left, socials pinned right.
  */
 export function header(active: string): string {
   const wordmark = `
-    <a class="logo" href="#/home" aria-label="${escapeHtml(SITE.nameTop)} — home">
+    <a class="logo" href="${pageHref("home")}" aria-label="${escapeHtml(SITE.nameTop)} — home">
       <span class="logo-row">
         <span class="logo-sm">${escapeHtml(SITE.nameTop)}</span>
         <span class="logo-lg">${escapeHtml(SITE.nameBig1)}</span>
@@ -52,7 +68,7 @@ export function header(active: string): string {
   const nav = SITE.nav
     .map(
       (n) =>
-        `<a class="nav-link${n.id === active ? " is-active" : ""}" href="#/${n.id}"${
+        `<a class="nav-link${n.id === active ? " is-active" : ""}" href="${pageHref(n.id)}"${
           n.id === active ? ' aria-current="page"' : ""
         }>${escapeHtml(n.label)}</a>`,
     )

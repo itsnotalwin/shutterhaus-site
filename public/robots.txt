@@ -1,0 +1,10 @@
+# Referencing the sitemap. Google finds it at the conventional path anyway;
+# the link makes it explicit and is what some crawlers look for.
+User-agent: *
+Allow: /
+
+# The admin bundle must never be indexed — it is a login-gated tool and has no
+# business in search results.
+Disallow: /admin.html
+
+Sitemap: https://shutterhausvisuals.co.za/sitemap.xml

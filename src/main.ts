@@ -27,10 +27,31 @@ const WALL_MIN_FRAME_PX = 175;
 
 
 
+/**
+ * Which page is this?
+ *
+ * The FILENAME wins, then the hash. That order is what makes the split work:
+ * each route is now a real document (`portfolio.html`, `about.html`, …) so a
+ * crawler and a social scraper get a real file with its own title, description
+ * and canonical, while the hash is still read so an old `/#/portfolio` link —
+ * and every bookmark, and anything already indexed — keeps working.
+ *
+ * Reading the hash FIRST would have been the bug: on `portfolio.html` the hash
+ * is empty, so the route would fall back to "home" and render the homepage
+ * under the portfolio's URL.
+ */
 function route(): string {
-  const h = location.hash.replace(/^#\/?/, "").split("?")[0];
+  // admin.html is its own bundle and never routes through here.
+  const file = location.pathname.split("/").pop() || "";
+  const stem = file.replace(/\.html?$/i, "").toLowerCase();
+  if (stem && KNOWN_ROUTES.has(stem)) return stem;
+
+  const h = location.hash.replace(/^#\/?/, "").split("?")[0].toLowerCase();
   return h || "home";
 }
+
+/** Routes with a real document, keyed by filename stem. Keep in step with tools/build-pages.py. */
+const KNOWN_ROUTES = new Set(["index", "home", "portfolio", "about", "services", "contact"]);
 
 /** `photo` is the old single-page route — keep it as an alias for /portfolio. */
 const ALIASES: Record<string, string> = {
@@ -321,16 +342,31 @@ function wireContact(): void {
  * `orientationchange` is the event that means "the device physically turned".
  * It does not fire during an ordinary scroll, which is the whole point.
  *
- * Note the portfolio does not depend on viewport width at all any more (three
- * per row, fixed), and the home page's column count only changes across 640/1000
- * px — both of which an orientation change still covers.
+ * Note the portfolio no longer depends on the viewport at all — its track
+ * count comes from the row length in rows.ts, so it renders identically at
+ * every width. Only the home strip's column count still changes, across
+ * 640/1000 px, which an orientation change covers.
  */
 addEventListener("orientationchange", () => {
   // A beat, because iOS reports the new dimensions a frame or two after the
   // event. Repainting synchronously here would read the old innerWidth.
   setTimeout(() => void paint(), 250);
 });
+
+// Re-paint when the URL changes WITHOUT a document load.
+//
+// Two kinds of navigation reach this. A hash link (`/#/portfolio`) fires
+// hashchange and swaps the page in place. A real link to `portfolio.html` does
+// NOT fire anything here — the browser loads a new document and the whole
+// script starts again — so `paint()` at the bottom of the file is what renders
+// it. Both paths exist on purpose: the hash route is what keeps old bookmarks
+// and already-indexed `/#/…` links working.
+//
+// popstate is included because Back/Forward across a real page load restores a
+// document from bfcache WITHOUT re-running the script, so nothing would
+// otherwise repaint.
 addEventListener("hashchange", () => void paint());
+addEventListener("popstate", () => void paint());
 
 initLightbox();
 void paint();

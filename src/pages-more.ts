@@ -31,7 +31,7 @@ export function aboutPage(photos: Photo[]): string {
       <div class="prose about__prose">
         ${a.body.map((para) => `<p class="about__p">${escapeHtml(para)}</p>`).join("")}
       </div>
-      <a class="cta about__cta" href="#/contact">${escapeHtml(a.cta)}</a>
+      <a class="cta about__cta" href="./contact.html">${escapeHtml(a.cta)}</a>
     </div>
     ${fig}
   </section>`;
@@ -66,7 +66,7 @@ export function servicesPage(photos: Photo[] = []): string {
       ${t.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}
     </ul>
     <p class="pkg__price">${escapeHtml(t.price)}</p>
-    <a class="cta cta--sm" href="#/contact">Book now</a>
+    <a class="cta cta--sm" href="./contact.html">Book now</a>
   </article>`;
   };
 
@@ -127,7 +127,7 @@ export function pricingPage(): string {
     <ul class="tier__list">
       ${t.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}
     </ul>
-    <a class="tier__cta" href="#/contact">Book this</a>
+    <a class="tier__cta" href="./contact.html">Book this</a>
   </article>`;
 
   return `<section class="pricing">
