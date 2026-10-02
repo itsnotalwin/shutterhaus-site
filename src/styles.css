@@ -482,6 +482,24 @@ img { display: block; max-width: 100%; }
   opacity: 0;
   pointer-events: none;
 }
+/* The input itself, not just the label: `.cform input` sizing was still
+   applying inside the trap, leaving a 26x44 box that a strict tap-target audit
+   flags. Unreachable in practice, but a clean report matters. */
+.cform .hp input {
+  /* Not `!important` after all: the base rule here is
+     `.cform input, .cform select, .cform textarea`, which matches this input too
+     (specificity 0,1,1). `.cform .hp input` is 0,2,1 and beats it cleanly, so
+     the size is pinned without an override escape hatch.
+     `min-height: 0` is the one that mattered: `.cform input` sets
+     `min-height: 44px`, and min-height wins over `height`, which is why the
+     trap was still reporting 44px tall. */
+  width: 1px;
+  height: 1px;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+}
 .cform__note { font-size: 12px; min-height: 1em; margin: 0; }
 
 .empty { padding: 60px 0; }
@@ -877,22 +895,27 @@ code {
 
 .pricing__addons, .pricing__terms { margin-top: 60px; }
 .addons { list-style: none; margin: 0; padding: 0; }
+/* 13px -> 14px. The add-ons are the upsell list on the money page; a client
+   reads them on a phone to decide what to add. The price keeps the display face
+   so it still reads as a figure rather than as body copy. */
 .addons li {
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  font-size: 13px;
-  padding: 11px 0;
+  font-size: 14px;
+  padding: 12px 0;
   border-bottom: 1px solid var(--line);
 }
-.addons__p { font-family: var(--font-display); font-size: 13px; white-space: nowrap; }
+.addons__p { font-family: var(--font-display); font-size: 14px; white-space: nowrap; }
 
 .terms { list-style: none; margin: 0 0 18px; padding: 0; max-width: 78ch; }
+/* 12.5px -> 14px. These are the booking terms: the copy a client reads last,
+   immediately before committing money, and the smallest body text on the site. */
 .terms li {
-  font-size: 12.5px;
-  line-height: 1.65;
+  font-size: 14px;
+  line-height: 1.62;
   color: var(--dim);
-  margin-bottom: 9px;
+  margin-bottom: 10px;
 }
 .pricing__note {
   font-size: 12.5px;

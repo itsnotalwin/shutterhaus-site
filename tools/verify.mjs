@@ -179,6 +179,19 @@ const grid = await evaluate(`(() => {
     band: !!document.querySelector('.hcta'),
     bandCta: document.querySelector('.hcta__btn')?.getAttribute('href') ?? null,
     bandLinks: document.querySelectorAll('.hcta__foot a').length,
+    // Every heading, for the mid-word-break check. The homepage H1 broke
+    // "PORTRAITURE" across two lines for months and nothing caught it: this
+    // suite had no typography assertion at all.
+    headings: [...document.querySelectorAll('h1, h2, h3')]
+      .map((e) => ({
+        tag: e.tagName,
+        text: (e.textContent || '').trim().slice(0, 44),
+        // scrollWidth exceeding clientWidth means the glyphs need more room
+        // than the box gives them — the signature of a word being split or
+        // clipped mid-character.
+        overflowing: e.scrollWidth > e.clientWidth + 1,
+        size: Math.round(parseFloat(getComputedStyle(e).fontSize) * 10) / 10,
+      })),
   };
 })()`);
 console.log("--- portfolio ---" + JSON.stringify(grid));
@@ -300,6 +313,13 @@ check("white page bg", info.bodyBg === "rgb(255, 255, 255)", info.bodyBg);
 check("inactive nav is muted", info.navColor !== info.activeColor, `muted ${info.navColor} vs active ${info.activeColor}`);
 check("nav text size", parseFloat(info.navSize) >= 11, info.navSize);
 check("no broken images", info.broken === 0, String(info.broken));
+// Typography guard. "Timeless Portraiture" shipped for months rendering as
+// "TIMELESS PORTRAITUR / E" — the H1 split a word mid-character on every phone
+// and this suite, with 69 assertions, had no typography check at all. Asserted
+// at the same breakpoint the split was measured at.
+const splitHeadings = grid.headings.filter((h) => h.overflowing);
+check("no heading splits or clips a word", splitHeadings.length === 0,
+  splitHeadings.map((h) => `${h.tag} "${h.text}" @${h.size}px`).join("; ") || `${grid.headings.length} headings clean`);
 await shot("shot-home.png");
 
 // ============================================== lightbox
