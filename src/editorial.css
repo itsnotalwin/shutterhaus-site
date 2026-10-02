@@ -35,8 +35,20 @@
    reference — no white bar, white type, the picture running to the top edge.
    Scoped to the home route: a transparent header over a white page would be
    invisible, so the other pages keep their solid chrome. */
+/* `!important` is doing real work here, and the reason is a specificity fight,
+   not laziness. styles.css sets `position: sticky` on `.site-header`, and
+   styles.css is imported AFTER editorial.css, so at equal specificity the later
+   rule won. sticky keeps the element IN FLOW, which means the header reserved
+   its 92px and the hero began below it — the grey band across the top of every
+   phone, above the one photograph the page exists to show. Alwin: "the grey bar
+   at the top of mobile view home page needs to be removed its not clean".
+
+   Raising this to a two-class selector (.shell.shell--over) would fix it
+   cleanly, but `.shell--over` is applied by renderShell() in layout.ts and the
+   bare `.shell--over` form is used by 9 more rules below, so the same fix is
+   applied to all of them at the END of this block rather than case by case. */
 .shell--over .site-header {
-  position: absolute;
+  position: absolute !important;
   top: 0;
   left: 0;
   right: 0;

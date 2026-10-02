@@ -101,11 +101,22 @@ img { display: block; max-width: 100%; }
   height: calc(var(--head) + var(--sat));
   padding: var(--sat) var(--pad) 0;
   gap: 20px;
-  /* Opaque, because it now sits over scrolling content and a transparent
-     header would let photos run under the wordmark. The home route overrides
-     this with its own scrim in .shell--over. */
+  /* Opaque by default, because on every route except home it sits over plain
+     white content and a transparent bar would let photographs run under the
+     wordmark. The home route is the exception and says so below. */
   background: var(--paper);
 }
+
+/* NOTE: the home route's transparent-over-hero header lives in editorial.css
+   (`.shell--over .site-header`), which sets position:absolute plus a measured
+   scrim gradient. It was previously ineffective on a PHONE: styles.css sets
+   `position: sticky` on .site-header and that wins on equal specificity only if
+   it comes later in the cascade — styles.css is imported after editorial.css, so
+   sticky was beating absolute and the header stayed in flow. Hence the 92px
+   opaque band Alwin called "the grey bar at the top of mobile view".
+
+   The fix belongs in editorial.css where the rule lives, not here. */
+
 
 /* Logo lockup: small word inline, big word wrapping onto a second line. */
 .logo {
