@@ -3,6 +3,20 @@ import type { AdminPhoto } from "./types";
 
 const TABLE = "photos";
 
+/**
+ * An empty array is NOT the same as "there is nothing to show".
+ *
+ * `listPublicPhotos` returns [] when Supabase is unconfigured, when the query
+ * errors, and when the table is genuinely empty — and main.ts cannot tell them
+ * apart, so it replaces the local demo frames with NOTHING. That is how /about
+ * ended up rendering a model instead of the pinned metal-detector frame: the
+ * lookup by filename found no match in an empty list and fell through to
+ * `photos[0]`.
+ *
+ * Callers that care should use `publicPhotosOrNull`, which returns null for
+ * "no live data" and only an array when there really are rows.
+ */
+
 export type { AdminPhoto } from "./types";
 
 function guard(): void {
@@ -30,6 +44,20 @@ export async function listPublicPhotos(): Promise<AdminPhoto[]> {
     .order("sort_order", { ascending: true });
   if (error) throw new Error(error.message);
   return (data ?? []) as AdminPhoto[];
+}
+
+/**
+ * Live photos, or null when there is no live data to show — unconfigured,
+ * unreachable, or genuinely empty. Never returns an empty array.
+ */
+export async function publicPhotosOrNull(): Promise<AdminPhoto[] | null> {
+  if (!isSupabaseConfigured) return null;
+  try {
+    const rows = await listPublicPhotos();
+    return rows.length ? rows : null;
+  } catch {
+    return null;
+  }
 }
 
 export interface PhotoPatch {

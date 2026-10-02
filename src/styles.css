@@ -300,10 +300,14 @@ img { display: block; max-width: 100%; }
 
 .contact {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
+  /* ONE column, not two. This was `1fr 1fr` with the right-hand track holding
+     the photograph; with no image (Alwin, 2026-10-02) a second column would just
+     split the form from the details with a 60px gutter and halve the measure
+     both are readable at. Single column, capped for measure. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
   padding: 40px 0 80px;
-  max-width: 1100px;
+  max-width: 720px;
 }
 /* On a large monitor the 1100px cap left 41% of a 1920px screen empty to the
    right of the page — measured, and it reads as an unfinished layout rather
@@ -312,43 +316,9 @@ img { display: block; max-width: 100%; }
    photograph takes the reclaimed width: form fields stay at a readable ~560px
    while the page actually fills the screen. */
 @media (min-width: 1400px) {
-  .contact {
-    max-width: none;
-    grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
-    gap: 72px;
-  }
+  .contact { max-width: 820px; }
 }
-/* The reference photograph beside the form.
- *
- * `.contact__fig` had NO rule anywhere — the same class of omission as .cico.
- * The markup sets an inline `aspect-ratio` on the <img>, so the figure reserved
- * a box, but nothing constrained the image itself, and on a phone — where
- * `.contact` collapses to one column and the figure drops BELOW the form — it
- * reserved ~411px and often painted blank, being `loading="lazy"` and not yet in
- * the viewport. Measured at 390px: 531px of blank space below the last line of
- * the contact details.
- *
- * On desktop it is a deliberate half-width column and keeps its own ratio. On a
- * phone it sits below the form and must not push the page from 1.8 screens to 3
- * — the natural 2:3 photo is short enough that it no longer needs clipping. */
-.contact__fig {
-  position: relative;
-}
-.contact__fig picture { display: block; width: 100%; }
-/* No object-fit: cover. Alwin rejected crop-to-fill on his photographs, and
- * this figure was the last public one still doing it — a 2:3 portrait squeezed
- * into a 4:5 band. The natural ratio is used instead, and the img carries an
- * inline aspect-ratio from contactPage(), so the space is reserved before the
- * bytes arrive and removing the crop costs no layout stability.
- *
- * The `max-height: 38vh` cap that used to sit on the phone breakpoint is gone
- * with it: it existed only to clip the cover crop, and keeping it would either
- * re-crop or letterbox. */
-.contact__fig img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
+
 
 .contact__h {
   font-family: var(--font-display);

@@ -35,6 +35,15 @@ CATEGORIES = {
 }
 
 FRAMES: dict[str, dict[str, str]] = {
+    # --- Alwin himself, at work, black and white ---
+    # Not a model. The About page is the only place on the site where a visitor
+    # can see WHO is taking the photographs, and it was showing a model from the
+    # gallery — which is a portfolio shot, not a portrait of the photographer.
+    # This frame is him on a beach with a metal detector: same discipline, same
+    # eye for a subject in a landscape. Ratio 0.8 (4:5), and the figure sits
+    # right-of-centre and small in a lot of empty sky, so anything that frames
+    # this must NOT crop it hard — see the About figure note in editorial.css.
+    "55-metal-detector.jpg": {"alt": "A man walking a beach with a metal detector, seen in black and white against an empty sky", "cat": "about"},
     # --- family, outdoor, six people --
     # The first group frame in the gallery. It is pinned to the Signature tier
     # on /services, whose positioning line is "Families, maternity, engagements

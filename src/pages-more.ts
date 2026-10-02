@@ -12,7 +12,15 @@ import type { PricingTier } from "./config";
  */
 export function aboutPage(photos: Photo[]): string {
   const a = SITE.about;
-  const shot = photos[0];
+  // The photograph of the PHOTOGRAPHER, not one of his models. `photos[0]` is
+  // whatever the gallery happens to lead with — currently a studio portrait of a
+  // subject — which put a stock-looking headshot beside his name on the one page
+  // whose entire job is to answer "who is this person". A.PINNED picks the frame
+  // of Alwin on a beach with a metal detector; if the gallery is missing it the
+  // page still renders with the old fallback rather than an empty column.
+  const shot = photos.find((p) => p.filename === a.photo)
+    ?? photos.find((p) => p.album === "about")
+    ?? photos[0];
 
   const fig = shot
     ? `<figure class="about__fig">
@@ -167,33 +175,11 @@ const HONEYPOT_FIELD =
   `<label class="hp" aria-hidden="true">Leave this field empty` +
   `<input name="_website" type="text" tabindex="-1" autocomplete="off" /></label>`;
 
-export function contactPage(photos: Photo[] = []): string {
+export function contactPage(_photos: Photo[] = []): string {
   const c = SITE.contact;
   const wa = `https://wa.me/${c.phone.replace(/\D/g, "")}`;
-  const shot = photos[0];
   const tel = c.phone.replace(/\s/g, "");
 
-  // `sizes` describes the BOX the browser lays out, not the file — get it
-  // wrong in the small direction and the picture paints soft. `.contact` is a
-  // two-column grid capped at 1100px with a 60px gap, so the figure column is
-  // never wider than (1100 - 60) / 2 = 520px however large the window gets;
-  // below 900px it collapses to one column and goes full-bleed. Clamping to
-  // 520px stops a wide desktop from asking for the 1600w derivative for a box
-  // that is 440 CSS px wide, while 50vw keeps it honest on narrow windows.
-  //
-  // `display:block` on the <picture> is load-bearing, not decoration:
-  // <picture> is an inline box by default, so inside this `overflow:hidden`
-  // figure it would add a line-box descender gap under the photo. That is why
-  // `.about__fig picture` and `.pkg__fig picture` both set it in the
-  // stylesheet — `.contact__fig` has no such rule yet, so it is set inline to
-  // keep the figure correct without depending on a CSS change landing.
-  const fig = shot
-    ? `<figure class="contact__fig"><picture style="display:block">${pictureFor(shot.url, "(max-width: 900px) 100vw, min(50vw, 520px)", shot.width)}
-         <img src="${escapeHtml(bestDerivative(shot.url, "webp", shot.width))}" alt="${escapeHtml(shot.alt || shot.filename || "")}"
-              loading="lazy" decoding="async"
-              style="aspect-ratio:${shot.width ?? 1600}/${shot.height ?? 1067}" /></picture>
-       </figure>`
-    : "";
 
   return `<section class="page contact">
     <div class="contact__col">
@@ -227,7 +213,6 @@ export function contactPage(photos: Photo[] = []): string {
       </ul>
       <p class="contact__hours dim">${escapeHtml(c.hours)}</p>
     </div>
-    ${fig}
   </section>`;
 }
 

@@ -549,6 +549,11 @@
 .about__cta { margin-top: 34px; }
 .about__fig { margin: 0; }
 .about__fig picture { display: block; }
+/* The figure is Alwin himself now, not a model: 55-metal-detector, portrait
+   4:5, him small and right-of-centre in a lot of empty sky. `object-fit: cover`
+   here would cut him out of the frame or slice the sky in half, and it is the
+   whole reason the frame works — the emptiness is the composition. So it keeps
+   its natural ratio and is only ever scaled down, never cropped. */
 .about__fig img { width: 100%; height: auto; }
 /* On a large monitor the prose column is ~500px tall while the uncropped 2:3
    photograph is ~1200px, so the grid left roughly 700px of dead white under the
@@ -557,7 +562,7 @@
    brings the two columns back toward balance without touching the type, the
    colour or the flush-left system. */
 @media (min-width: 1400px) {
-  .about__fig { max-width: 520px; }
+  .about__fig { max-width: 560px; }
 }
 
 /* ----------------------------------------------------- services page */

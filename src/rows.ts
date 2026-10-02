@@ -20,22 +20,22 @@ import type { PhotoRow } from "./types";
  * line with nothing cut and nothing stretched. tools/check-rows.py fails if a
  * row ever mixes ratios.
  *
- * Gallery fingerprint: 1b1c1d9e00e6f4ea
+ * Gallery fingerprint: 8fab5af8eabf9427
  */
 export const PHOTO_ROWS: PhotoRow[] = [
-  ["c46", "c34"] as PhotoRow,
-  ["c21", "c47"] as PhotoRow,
-  ["c23", "c37"] as PhotoRow,
-  ["c18", "c1"] as PhotoRow,
-  ["c8", "c36"] as PhotoRow,
-  ["c4", "c15"] as PhotoRow,
-  ["c32", "c41"] as PhotoRow,
-  ["c12", "c10"] as PhotoRow,
-  ["c0", "c35"] as PhotoRow,
-  ["c48", "c45"] as PhotoRow,
-  ["c7", "c31"] as PhotoRow,
-  ["c30", "c25"] as PhotoRow,
-  ["c19", "c42"] as PhotoRow,
-  ["c11", "c44"] as PhotoRow,
-  ["c40", "c6"] as PhotoRow,
+  ["c47", "c9"] as PhotoRow,
+  ["c34", "c32"] as PhotoRow,
+  ["c10", "c42"] as PhotoRow,
+  ["c30", "c51"] as PhotoRow,
+  ["c31", "c35"] as PhotoRow,
+  ["c33", "c5"] as PhotoRow,
+  ["c0", "c49"] as PhotoRow,
+  ["c48", "c21"] as PhotoRow,
+  ["c39", "c3"] as PhotoRow,
+  ["c28", "c12"] as PhotoRow,
+  ["c8", "c46"] as PhotoRow,
+  ["c45", "c18"] as PhotoRow,
+  ["c15", "c38"] as PhotoRow,
+  ["c19", "c13"] as PhotoRow,
+  ["c43", "c23"] as PhotoRow,
 ];

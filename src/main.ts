@@ -4,10 +4,9 @@ import { SITE } from "./config";
 import { renderShell } from "./layout";
 import { portfolioPage, homePage, emptyGallery } from "./pages";
 import { contactPage, servicesPage, aboutPage } from "./pages-more";
-import { listPublicPhotos, type AdminPhoto } from "./store";
+import { publicPhotosOrNull, type AdminPhoto } from "./store";
 import { DEMO_PHOTOS } from "./demo";
 import { initLightbox, markLoadedImages } from "./lightbox";
-import { isSupabaseConfigured } from "./supabase";
 
 const app = document.getElementById("app")!;
 
@@ -142,8 +141,8 @@ async function paint(): Promise<void> {
     };
     draw();
     setTitle("contact");
-    if (isSupabaseConfigured) {
-      const live = adoptable(await listPublicPhotos().catch(() => null));
+    {
+      const live = adoptable(await publicPhotosOrNull());
       if (myPaint !== paintSeq) return; // a newer route won
       if (live) {
         photos = live;
@@ -164,8 +163,8 @@ async function paint(): Promise<void> {
     };
     draw();
     setTitle("services");
-    if (isSupabaseConfigured) {
-      const live = adoptable(await listPublicPhotos().catch(() => null));
+    {
+      const live = adoptable(await publicPhotosOrNull());
       if (myPaint !== paintSeq) return; // a newer route won
       if (live) {
         photos = live;
@@ -187,8 +186,8 @@ async function paint(): Promise<void> {
     };
     draw();
     setTitle("about");
-    if (isSupabaseConfigured) {
-      const live = adoptable(await listPublicPhotos().catch(() => null));
+    {
+      const live = adoptable(await publicPhotosOrNull());
       if (myPaint !== paintSeq) return; // a newer route won
       if (live) {
         photos = live;
@@ -241,14 +240,14 @@ function adoptable(live: AdminPhoto[] | null | undefined): AdminPhoto[] | null {
   draw();
   setTitle(r);
 
-  if (isSupabaseConfigured) {
+  {
     const TIMEOUT_MS = 2500;
     let t: ReturnType<typeof setTimeout> | undefined;
     const timeout = new Promise<null>((res) => {
       t = setTimeout(() => res(null), TIMEOUT_MS);
     });
     try {
-      const live = await Promise.race([listPublicPhotos(), timeout]);
+      const live = await Promise.race([publicPhotosOrNull(), timeout]);
       if (myPaint !== paintSeq) return; // a newer route won
       if (live === null) {
         console.warn("[gallery] timed out, keeping bundled set");

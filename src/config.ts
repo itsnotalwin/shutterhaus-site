@@ -29,7 +29,13 @@ export interface SiteConfig {
     /** the three subjects named in the hero's bottom strip */
     tags: string[];
   };
-  about: { eyebrow: string; heading: string; body: string[]; cta: string };
+  /**
+   * The About figure is the PHOTOGRAPHER, not one of his models — it is the only
+   * place on the site where a visitor can see who is taking the photographs.
+   * Pinned by gallery filename so it can never fall back to `photos[0]`, which is
+   * whatever the gallery happens to lead with.
+   */
+  about: { eyebrow: string; heading: string; body: string[]; cta: string; photo: string };
   /** portfolio filter keys; each must match a `cat-` prefix the store sets */
   categories: string[];
   /** how many frames the home page features under its hero */
@@ -136,91 +142,77 @@ export const SITE: SiteConfig = {
     tiers: [
       {
         name: "Starter",
-        price: "R1,200",
+        price: "R800",
         fit: "Headshots, matric farewells, quick portraits.",
         spec: "30 min · 1 outfit · 1 location",
-        // Pinned, so a package card can never be handed a seascape. This tier
-        // used to rotate onto 8-img-0268 — an empty pier — on the page whose job
-        // is selling.
-        //
-        // Chosen for headshots and matric farewells, where the client wants a
-        // clean direct portrait: 50-img-0143 is "warm low light, looking directly
-        // at the camera" in the gallery's own alt text. It replaced 16-img-0030,
-        // a genuinely greyscale file (mean saturation 0.0000 — no colour data in
-        // it at all), and then 26-img-0253, whose backlit lens flare washed
-        // across the subject's face. Measured mean saturation of the four cards
-        // now: 0.35 / 0.23 / 0.26 / 0.20.
         photo: "50-img-0143.jpg",
         focal: "50% 26%",
         bullets: [
-          "15 professionally edited high-res images",
-          "Private online gallery (90-day access)",
-          "High-res + web-optimised downloads",
+          "15 professionally edited photos",
+          "Private online gallery",
           "Clothing guide & location suggestions",
           "Print release for personal use",
+          "High-res and web-optimised downloads",
         ],
       },
       {
         name: "Essential",
-        price: "R2,200",
+        price: "R2,000",
         fit: "Our go-to for couples, individuals and small families.",
         spec: "60 min · 2 outfits · 1–2 locations",
         photo: "19-img-0198-3.jpg",
         focal: "50% 24%",
         bullets: [
-          "40 professionally edited high-res images",
-          "Reels-ready vertical crops",
-          "Print release + 5×7\" fine art print",
+          "40 professionally edited photos",
           "Private online gallery (90-day access)",
+          "Print release for personal use",
           "Clothing guide, location scouting, shot list",
         ],
         popular: true,
       },
       {
         name: "Signature",
-        price: "R3,500",
+        price: "R2,500",
         fit: "Families, maternity, engagements — the full experience.",
         spec: "90 min · 2–3 outfits · multiple locations",
-        // Pinned, not rotated. This tier sells families and the rotation was
-        // handing it another solo portrait, which is the one image that cannot
-        // demonstrate a family session. 54-img-0164 is landscape (2400x1499)
-        // with the six faces across the upper half — hence the focal point.
         photo: "54-img-0164.jpg",
         focal: "50% 32%",
         bullets: [
-          "70 professionally edited high-res images",
-          "B&W timeless set + Reels crops",
-          "Print release + two 5×7\" fine art prints",
+          "40 professionally edited photos",
           "Private online gallery (90-day access)",
+          "Print release for personal use",
           "Full prep: clothing guide, shot list, scouting",
         ],
       },
       {
         name: "Social",
-        price: "R1,800",
-        fit: "Built for creators — vertical-first, quick turnaround.",
+        price: "R1,500",
+        fit: "Built for creators — quick turnaround, same-day previews.",
         spec: "45 min · 2 outfits · 1 location",
-        // The one genuinely vertical frame in the gallery, which is the honest
-        // picture for a tier whose promise is Reels-ready vertical crops.
         photo: "20-img-0202.jpg",
         focal: "50% 22%",
         bullets: [
-          "30 edited images + 15 Reels-ready vertical crops",
+          "20 professionally edited photos",
+          "Private online gallery (90-day access)",
+          "Print release for personal use",
           "48hr sneak peek — 10 images, not the full set",
-          "Vertical (4:5, 9:16) + high-res + web",
-          "Content calendar template",
-          "Pose coaching for video & content",
+          "High-res and web-optimised downloads",
         ],
       },
     ],
 
     addonsTitle: "Add-ons",
+    // Add-ons only. Prints and albums are NOT included in any tier since
+    // 2026-10-02, so they belong here as paid extras rather than as a promise
+    // buried in a package bullet. "Rush delivery" only ever applied to Social's
+    // 48hr sneak peek, which it now qualifies instead of duplicating.
     addons: [
-      { label: "Extra 30 minutes", price: "+R600" },
+      { label: "Extra 30 minutes on the shoot", price: "+R300" },
       { label: "Extra location", price: "+R400" },
-      { label: "Rush delivery — full gallery in 48hr", price: "+R400" },
-      { label: "Extra 5×7\" print", price: "+R150" },
-      { label: "Fine art album (20pg)", price: "+R1,200" },
+      { label: "Extra outfit change", price: "+R300" },
+      { label: "Full gallery within 48hr", price: "+R400" },
+      { label: "5×7\" fine art print", price: "+R150" },
+      { label: "Fine art album (20 pages)", price: "+R1,200" },
       { label: "Travel beyond 25km", price: "+R5/km" },
     ],
 
@@ -228,7 +220,7 @@ export const SITE: SiteConfig = {
       "50% non-refundable deposit secures your date; balance before gallery delivery.",
       "Rescheduling ≥7 days notice is free. Under 7 days: R500 fee, deposit transfers.",
       "Outdoor shoots include a backup indoor location. Severe weather = free reschedule.",
-      "Delivery: Starter, Essential and Social in 5 business days; Signature in 7.",
+      "Delivery: Starter and Social in 5 business days; Essential and Signature in 7.",
       "Personal use licence included. Commercial use needs a separate licence, +50–200% of the package fee.",
     ],
 
@@ -260,6 +252,9 @@ export const SITE: SiteConfig = {
       "This is my way of telling your story — honestly, creatively, and with intention.",
     ],
     cta: "Let's create together",
+    // A man walking a beach with a metal detector, black and white. Ratio 4:5
+    // (portrait) -- and nothing may crop it hard, see the About figure note.
+    photo: "55-metal-detector.jpg",
   },
   /**
    * Category filter labels on the portfolio. `key` matches the `cat-` prefix
