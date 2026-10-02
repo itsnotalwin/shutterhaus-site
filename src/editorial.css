@@ -492,7 +492,17 @@
 
 .about { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr); gap: 64px; align-items: start; }
 .about__body { padding-top: 40px; }
-.about__h { font-size: clamp(34px, 5vw, 58px); margin-bottom: 32px; }
+/* The `.page` prefix is required, not decoration.
+ *
+ * `.page h1` (0,1,1) sets `margin: 0`, and that beats a bare `.about__h`
+ * (0,1,0) — the same trap as the home heading documented in HOME-LOCKED.md and
+ * in the `.portfolio .phead` note below. Without the prefix, the computed
+ * margin-bottom was 0px at BOTH 390 and 1440, so the 58px heading sat flush
+ * against the first line of copy with zero gap:
+ *     gapH1ToFirstP: 0    (measured, 1440 and 390)
+ * The rule above this comment already declared `margin-bottom: 32px`; it was
+ * simply never winning. */
+.page .about__h { font-size: clamp(34px, 5vw, 58px); margin-bottom: 32px; }
 .about__prose { max-width: 46ch; }
 .about__cta { margin-top: 34px; }
 .about__fig { margin: 0; }
@@ -775,3 +785,26 @@
   .pf-row { gap: 12px; }
   .pf-rows { gap: 12px; }
 }
+
+/* Booking-terms block headings.
+ *
+ * `.sterms`, `.sterms__h` and `.sterms--terms` had NO rule anywhere, so the
+ * headings inherited `.page h2`'s `margin: 0` and sat flush against the lines
+ * beneath them. Measured on #/services before this change:
+ *     "Add-ons"       margin-bottom 0px, gap to next element 0px
+ *     "Booking terms"  margin-bottom 0px, gap to next element 0px
+ * A 24px display heading with zero gap below it reads as a mis-typed line.
+ *
+ * ONLY the margin is set here. An earlier attempt at this also shrank the
+ * heading to 11px and swapped it out of the display face — a restyle nobody
+ * asked for, and the heading was not broken, only tight. Typography is left
+ * exactly as `.page h2` defines it.
+ *
+ * The `.page` prefix is required: `.page h2` (0,1,1) sets margin: 0 and would
+ * beat a bare `.sterms__h` (0,1,0) — the same trap as `.about__h`. */
+.page .sterms__h { margin-bottom: 16px; }
+.sterms + .sterms { margin-top: 28px; }
+
+/* Same story on the contact page: `.contact__h` had no margin-bottom, so the
+ * 40px title sat 14px above the first paragraph. */
+.page .contact__h { margin-bottom: 20px; }
