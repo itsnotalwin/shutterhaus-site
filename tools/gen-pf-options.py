@@ -6,7 +6,10 @@ justified rows sum to exactly the panel width (no 1px seams, no raggedness)."""
 import os
 from html import escape
 
-REPO = "C:/Users/Operations 3/Documents/HERMES/01_Projects/shutterhaus-site"
+# Derived from this file's own location (tools/ -> repo root) so the script
+# survives the site being moved out of the vault on 2026-10-02. A hardcoded
+# absolute path here silently regenerated pf-options.html into a dead tree.
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GAL = os.path.join(REPO, "public/gallery")
 OUT = os.path.join(REPO, "shots/pf-options.html")
 

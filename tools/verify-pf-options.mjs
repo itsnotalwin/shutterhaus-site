@@ -4,10 +4,19 @@
  * edges in A/B, voids present in C) instead of trusting the generator.
  */
 import { writeFileSync, mkdirSync } from 'node:fs';
+import nodePath from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const PORT = process.env.CDP_PORT || 9333;
-const FILE_URL =
-  'file:///C:/Users/Operations%203/Documents/HERMES/01_Projects/shutterhaus-site/shots/pf-options.html';
+// Derived from this file's own location (tools/ -> repo root -> shots/) rather
+// than a hardcoded absolute path, which broke when the site moved out of the
+// vault on 2026-10-02. pathToFileURL handles the space in "Operations 3".
+// Imported as nodePath: a local `const path` below (a screenshot output path)
+// already owns the bare `path` name in this file.
+const { resolve, dirname } = nodePath;
+const FILE_URL = pathToFileURL(
+  resolve(dirname(fileURLToPath(import.meta.url)), '../shots/pf-options.html'),
+).href;
 const SHOT_DIR =
   'C:/Users/Operations 3/AppData/Local/hermes/cache/scratch/shots-pf';
 
