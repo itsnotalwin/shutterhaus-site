@@ -18,13 +18,6 @@ function columnsFor(w: number): number {
   return 3;
 }
 
-/**
- * Column count for the portfolio WALL — see portfolioPage() for why this is
- * NOT derived from the viewport.
- */
-const WALL_MIN_FRAME_PX = 175;
-
-
 
 
 /**
@@ -44,23 +37,77 @@ function route(): string {
   // admin.html is its own bundle and never routes through here.
   const file = location.pathname.split("/").pop() || "";
   const stem = file.replace(/\.html?$/i, "").toLowerCase();
-  if (stem && KNOWN_ROUTES.has(stem)) return stem;
+
+  // `index` is the home document — the same url as the apex `/` — so it must
+  // NOT win over the hash the way a NAMED document does. It did: the stem
+  // "index" is listed in KNOWN_ROUTES, so this returned "index" on every
+  // `/index.html` load and the hash below was never read. Measured in headless
+  // Chrome: `/#/contact` rendered the contact form, `/index.html#/contact`
+  // rendered the HOMEPAGE instead — silently, no 404. Every bookmark and every
+  // already-indexed `/index.html#/…` link landed on the homepage.
+  if (stem && stem !== "index" && KNOWN_ROUTES.has(stem)) return stem;
 
   const h = location.hash.replace(/^#\/?/, "").split("?")[0].toLowerCase();
+  // An unrecognised hash is passed through unchanged and lands in paint()'s
+  // home+portfolio tail, which is why `#/video` falls back to the gallery —
+  // tools/verify.mjs asserts exactly that. Do not "tidy" this into a whitelist
+  // without checking that check: it is load-bearing.
   return h || "home";
 }
 
 /** Routes with a real document, keyed by filename stem. Keep in step with tools/build-pages.py. */
 const KNOWN_ROUTES = new Set(["index", "home", "portfolio", "about", "services", "contact"]);
 
-/** `photo` is the old single-page route — keep it as an alias for /portfolio. */
+/**
+ * `photo` is the old single-page route — keep it as an alias for /portfolio.
+ *
+ * `index` is the other half of the same idea, and it was NOT here: `/index.html`
+ * matched KNOWN_ROUTES (the stem "index" is listed), so `route()` returned
+ * "index", no alias matched, and `paint()` fell through every route branch to
+ * the home+portfolio tail where `r === "home"` is false — rendering the
+ * PORTFOLIO wall under the HOMEPAGE url, with document.title "Index —
+ * SHUTTERHAUS VISUALS". Measured in headless Chrome: `/` gave hasHero=true,
+ * cells=0; `/index.html` gave hasHero=false, cells=30. The homepage is the most
+ * linked and most crawled url on the site, and it is the one that broke.
+ */
 const ALIASES: Record<string, string> = {
+  index: "home",
   photo: "portfolio",
   pricing: "services",
 };
 
 /** Routes that need the photo set rather than just static copy. */
 const GALLERY_ROUTES = new Set(["home", "portfolio", "about"]);
+
+/**
+ * Close the live burger drawer, if there is one.
+ *
+ * `wireBurger()` runs inside `draw()`, which runs inside `paint()`, and `paint()`
+ * runs on every route change AND every orientation change. It used to register
+ * its own `keydown` + `hashchange` pair on `window` each time and never removed
+ * them, so every navigation leaked two more listeners — each closing over a
+ * `btn`, `nav` and `scrim` that `innerHTML` had already thrown away. A visitor
+ * browsing for a few minutes accumulated dozens of dead handlers, every one of
+ * which still ran on each Escape press and each hashchange.
+ *
+ * One registration, one live target. The hashchange case is why this had to keep
+ * working: the header is re-rendered per route, so an open drawer's `nav-open` /
+ * `nav-locked` classes live on `body`, which `innerHTML` does NOT touch, and
+ * would otherwise lock scrolling on a page whose drawer no longer exists.
+ */
+let closeNav: (() => void) | null = null;
+
+/**
+ * Paint generation counter.
+ *
+ * `paint()` is async: four of its five routes await the Supabase fetch before
+ * upgrading the bundled photos in place. Two paints can therefore overlap — a
+ * slow fetch on route A while the visitor navigates to route B — and whichever
+ * `draw()` ran LAST won, not whichever was newest. A's late `draw()` replaced
+ * B's markup while the URL still said B. Every await re-checks this token and
+ * abandons the paint if a newer one has started.
+ */
+let paintSeq = 0;
 
 function setTitle(r: string): void {
   const label = r.charAt(0).toUpperCase() + r.slice(1);
@@ -73,6 +120,8 @@ function setTitle(r: string): void {
 async function paint(): Promise<void> {
   const r = ALIASES[route()] ?? route();
   const cols = columnsFor(innerWidth);
+  // Abandon this paint the moment a newer one starts — see `paintSeq`.
+  const myPaint = ++paintSeq;
 
   if (r === "admin") {
     // The admin is a separate bundle (admin.html) — bounce across.
@@ -95,6 +144,7 @@ async function paint(): Promise<void> {
     setTitle("contact");
     if (isSupabaseConfigured) {
       const live = adoptable(await listPublicPhotos().catch(() => null));
+      if (myPaint !== paintSeq) return; // a newer route won
       if (live) {
         photos = live;
         draw();
@@ -116,6 +166,7 @@ async function paint(): Promise<void> {
     setTitle("services");
     if (isSupabaseConfigured) {
       const live = adoptable(await listPublicPhotos().catch(() => null));
+      if (myPaint !== paintSeq) return; // a newer route won
       if (live) {
         photos = live;
         draw();
@@ -138,6 +189,7 @@ async function paint(): Promise<void> {
     setTitle("about");
     if (isSupabaseConfigured) {
       const live = adoptable(await listPublicPhotos().catch(() => null));
+      if (myPaint !== paintSeq) return; // a newer route won
       if (live) {
         photos = live;
         draw();
@@ -197,6 +249,7 @@ function adoptable(live: AdminPhoto[] | null | undefined): AdminPhoto[] | null {
     });
     try {
       const live = await Promise.race([listPublicPhotos(), timeout]);
+      if (myPaint !== paintSeq) return; // a newer route won
       if (live === null) {
         console.warn("[gallery] timed out, keeping bundled set");
         return; // bundled set already on screen
@@ -225,6 +278,11 @@ function adoptable(live: AdminPhoto[] | null | undefined): AdminPhoto[] | null {
 function wireBurger(): void {
   const btn = document.querySelector<HTMLButtonElement>(".burger");
   const nav = document.getElementById("site-nav");
+  // Drop the stale closer BEFORE bailing. Without this, a route that renders no
+  // burger (or one whose header failed to build) leaves `closeNav` pointing at
+  // the PREVIOUS page's `set()`, which would close an element that is no longer
+  // in the document.
+  closeNav = null;
   if (!btn || !nav) return;
 
   // A scrim behind the drawer, added on open and removed on close. Without it
@@ -260,13 +318,11 @@ function wireBurger(): void {
   nav.addEventListener("click", (e) => {
     if ((e.target as HTMLElement).closest("a")) set(false);
   });
-  addEventListener("keydown", (e) => {
-    if (e.key === "Escape") set(false);
-  });
-  // The header is re-rendered on every route change, so the old burger and its
-  // scrim go with it. Leaving the body class set would lock scrolling on a page
-  // whose drawer no longer exists.
-  addEventListener("hashchange", () => set(false));
+  // Escape and hashchange are handled by the ONE pair of window listeners
+  // registered at the bottom of this file. They call `closeNav`, which always
+  // points at the CURRENT drawer — see its note for why registering them here
+  // was a leak.
+  closeNav = () => set(false);
 }
 
 /** Contact form: posts to Formspree if configured, else opens the mail client. */
@@ -367,6 +423,14 @@ addEventListener("orientationchange", () => {
 // otherwise repaint.
 addEventListener("hashchange", () => void paint());
 addEventListener("popstate", () => void paint());
+
+// The burger drawer's global listeners — registered ONCE, here, and pointed at
+// whatever drawer is currently on screen. See `closeNav` for why these are not
+// registered inside wireBurger(), which runs once per paint().
+addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeNav?.();
+});
+addEventListener("hashchange", () => closeNav?.());
 
 initLightbox();
 void paint();

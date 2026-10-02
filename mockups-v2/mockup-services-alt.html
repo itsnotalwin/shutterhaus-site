@@ -1,0 +1,1460 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Shutterhaus Visuals — Services page upgrade · mockup v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* =============================================================
+   MOCKUP DOCUMENT CHROME  —  not part of the site.
+   The "spec sheet" wrapper: white paper, hairline rules, a mono
+   metadata layer. Everything inside a .screen is the actual page.
+   ============================================================= */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --ink:    #111;
+  --grey:   #6b6b6b;
+  --dim:    #6d6d6d;
+  --line:   #e6e6e6;
+  --line-2: #d4d4d4;
+  --paper:  #fff;
+  --shell:  #f2f1ef;
+  --font-display: "Archivo Black", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Inter", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+
+body.doc {
+  margin: 0;
+  background: var(--shell);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.doc-wrap { max-width: 1460px; margin: 0 auto; padding: 0 32px 120px; }
+
+/* ---- document type ---- */
+.mono {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.mono--lg { font-size: 11.5px; letter-spacing: 0.2em; }
+.mono--dim { color: var(--grey); }
+
+.doc__head { padding: 72px 0 0; }
+.doc__kicker { display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap; margin: 0 0 26px; }
+.doc h1 {
+  font-family: var(--font-display); font-weight: 400; font-size: clamp(34px, 4.4vw, 60px);
+  line-height: 0.94; letter-spacing: -0.025em; text-transform: uppercase; margin: 0 0 24px; max-width: 18ch;
+}
+.doc__lede { font-size: 16.5px; line-height: 1.66; color: #333; max-width: 68ch; margin: 0 0 30px; }
+.doc__lede strong { font-weight: 600; }
+
+.doc__meta {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0; border-top: 1px solid var(--ink); margin: 0 0 18px;
+}
+.doc__meta div { padding: 12px 20px 12px 0; border-bottom: 1px solid var(--line); }
+.doc__meta dt { color: var(--grey); margin: 0 0 4px; }
+.doc__meta dd { margin: 0; color: var(--ink); }
+
+/* ---- stages ---- */
+.stage { padding: 74px 0 0; }
+.stage__head { border-top: 1px solid var(--ink); padding: 14px 0 0; margin-bottom: 40px; }
+.stage__tag { display: inline-block; margin-bottom: 18px; }
+.stage h2 {
+  font-family: var(--font-display); font-weight: 400; font-size: clamp(26px, 3.1vw, 40px);
+  line-height: 0.98; letter-spacing: -0.022em; text-transform: uppercase; margin: 0 0 16px; max-width: 24ch;
+}
+.stage__sub { font-size: 15px; line-height: 1.66; color: #3a3a3a; max-width: 74ch; margin: 0 0 12px; }
+.stage__sub code { font-family: var(--font-mono); font-size: 12.5px; background: #e7e5e1; padding: 1px 5px; }
+
+/* ---- phone frame ---- */
+.phones { display: flex; gap: 72px; flex-wrap: wrap; align-items: flex-start; }
+.phone { margin: 0; }
+.phone__frame {
+  position: relative; width: 417px; height: 876px; border-radius: 60px;
+  background: linear-gradient(160deg, #34343a 0%, #17171a 42%, #26262b 100%);
+  padding: 12px; box-shadow: 0 2px 0 rgba(255,255,255,.16) inset, 0 30px 60px -24px rgba(0,0,0,.5);
+}
+.phone__island {
+  position: absolute; top: 26px; left: 50%; transform: translateX(-50%);
+  width: 124px; height: 36px; border-radius: 20px; background: #000; z-index: 6; pointer-events: none;
+}
+.phone__screen {
+  position: relative; width: 393px; height: 852px; border-radius: 48px; overflow: hidden;
+  background: var(--paper); isolation: isolate;
+}
+.phone__home {
+  position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%);
+  width: 140px; height: 5px; border-radius: 3px; background: rgba(17,17,17,.32); z-index: 7; pointer-events: none;
+}
+.phone figcaption { margin: 22px 0 0; max-width: 393px; }
+.phone__chrome { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+.phone__chrome button {
+  font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase;
+  background: var(--paper); color: var(--ink); border: 1px solid var(--line-2); padding: 8px 11px; cursor: pointer;
+}
+.phone__chrome button:hover { border-color: var(--ink); }
+
+/* ---- annotation pins ---- */
+.pin {
+  position: absolute; z-index: 8; width: 25px; height: 25px; border-radius: 50%;
+  background: var(--ink); color: #fff; font-family: var(--font-mono); font-size: 11px;
+  display: grid; place-items: center; letter-spacing: 0; pointer-events: none;
+  box-shadow: 0 0 0 3px rgba(255,255,255,.85);
+}
+.pin--a { top: 26px; right: 34px; }
+.pin--b { top: 300px; right: 34px; }
+.pin--c { top: 560px; right: 34px; }
+.pin--d { top: 300px; left: 26px; }
+.pin--e { top: 250px; right: 34px; }
+.pin--f { top: 520px; right: 34px; }
+
+/* ---- finding list beside a phone ---- */
+.findings { flex: 1 1 420px; min-width: 360px; margin: 0; padding: 0; list-style: none; }
+.findings li {
+  display: grid; grid-template-columns: 30px 1fr; gap: 16px;
+  padding: 16px 0; border-top: 1px solid var(--line-2);
+}
+.findings li:last-child { border-bottom: 1px solid var(--line-2); }
+.findings .n {
+  font-family: var(--font-mono); font-size: 11px; width: 25px; height: 25px; border-radius: 50%;
+  border: 1px solid var(--ink); display: grid; place-items: center;
+}
+.findings h4 {
+  font-family: var(--font-body); font-size: 14px; font-weight: 600; margin: 0 0 5px; letter-spacing: -.01em;
+}
+.findings p { margin: 0 0 6px; font-size: 13.5px; line-height: 1.6; color: #3d3d3d; }
+.findings .fix { font-family: var(--font-mono); font-size: 11px; line-height: 1.7; color: var(--ink); }
+.findings .fix b { font-weight: 500; background: #e7e5e1; padding: 0 4px; }
+.flag { display: inline-block; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .14em;
+  text-transform: uppercase; background: var(--ink); color: #fff; padding: 2px 6px; margin-bottom: 7px; }
+.flag--fix { background: #fff; color: var(--ink); border: 1px solid var(--ink); }
+
+/* ---- desktop frame ---- */
+.desk { border: 1px solid var(--line-2); background: var(--paper); }
+.desk__bar { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--line-2); background: #f6f5f3; }
+.desk__url { font-family: var(--font-mono); font-size: 11px; color: #555; background: #fff; border: 1px solid var(--line); padding: 4px 10px; flex: 1; }
+.desk__vp { width: 1280px; max-width: 100%; height: 1240px; overflow: auto; background: #fff; margin: 0 auto; }
+.desk__note { margin: 12px 0 0; color: var(--grey); }
+
+/* ---- change list ---- */
+.changes { border-top: 1px solid var(--ink); }
+.change { display: grid; grid-template-columns: 46px 1fr; gap: 0 22px; padding: 26px 0; border-bottom: 1px solid var(--line-2); }
+.change__n { font-family: var(--font-mono); font-size: 12px; color: var(--grey); }
+.change__body h3 { font-family: var(--font-display); font-size: 17px; font-weight: 400; text-transform: uppercase;
+  letter-spacing: -.015em; margin: 0 0 9px; line-height: 1.14; }
+.change__body p { margin: 0 0 8px; font-size: 14px; line-height: 1.62; color: #3d3d3d; max-width: 82ch; }
+.change__body p b { color: var(--ink); font-weight: 600; }
+.change__meta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.eff { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase;
+  border: 1px solid var(--ink); padding: 3px 8px; }
+.eff--L { background: var(--ink); color: #fff; }
+.eff--M { background: #fff; color: var(--ink); }
+.eff--S { border-style: dashed; color: var(--grey); border-color: var(--line-2); }
+.change code { font-family: var(--font-mono); font-size: 12.5px; background: #e7e5e1; padding: 1px 5px; }
+
+/* ---- verdict ---- */
+.verdict { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 0; border-top: 1px solid var(--ink); }
+.verdict article { padding: 24px 26px 26px 0; border-bottom: 1px solid var(--line-2); }
+.verdict h3 { font-family: var(--font-display); font-size: 15px; font-weight: 400; text-transform: uppercase;
+  letter-spacing: -.01em; margin: 0 0 12px; }
+.verdict p { margin: 0 0 10px; font-size: 13.5px; line-height: 1.62; color: #3d3d3d; }
+.verdict p:last-child { margin-bottom: 0; }
+.verdict .score { font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--grey); display: block; margin-bottom: 9px; }
+
+.swatchbar { display: flex; gap: 0; margin: 0 0 40px; border: 1px solid var(--line-2); }
+.swatchbar div { flex: 1; height: 40px; position: relative; }
+.swatchbar span { position: absolute; left: 8px; bottom: -18px; font-family: var(--font-mono); font-size: 9px; letter-spacing: .1em; color: var(--grey); }
+
+/* =============================================================
+   ↓↓↓ THE PAGE.  Everything below this line is the real
+   services page markup + CSS, reproduced or proposed.
+   Class names are the SHIPPED ones from src/editorial.css so the
+   mockup can be diffed against the source line for line.
+   ============================================================= */
+
+.screen {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+}
+.screen * { box-sizing: border-box; }
+
+.shell { min-height: 100%; display: flex; flex-direction: column; }
+.main  { padding: 0 var(--pad) var(--pad); }
+.page  { padding: 0 0 var(--pad); }
+
+/* --- tokens, as they behave at the two widths --- */
+.screen {
+  --pad: 18px;         /* styles.css @media (max-width:640px) */
+  --gut: 14px;
+  --head: 92px;
+}
+
+/* --- site chrome (header) --- */
+.site-header {
+  display: grid; grid-template-columns: 1fr auto 1fr; grid-template-areas: "logo burger social" "nav nav nav";
+  align-items: center; min-height: var(--head); padding: 10px var(--pad);
+  border-bottom: 1px solid var(--line); background: var(--paper);
+  position: relative; z-index: 5;
+}
+.logo { grid-area: logo; text-decoration: none; color: var(--ink); display: inline-block; line-height: .86; }
+.logo-row { display: flex; align-items: baseline; gap: 6px; }
+.logo-sm { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; }
+.logo-lg { font-family: var(--font-display); font-size: 21px; letter-spacing: -.03em; text-transform: uppercase; }
+.logo-lg--b { display: block; }
+.burger { grid-area: burger; justify-self: center; display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; background: none; border: 0; cursor: pointer; }
+.burger__bars { display: grid; gap: 5px; width: 22px; }
+.burger__bars i { display: block; height: 1.5px; background: var(--ink); }
+.site-social { grid-area: social; justify-self: end; display: flex; gap: 12px; }
+.site-social a { display: grid; place-items: center; width: 20px; height: 20px; color: var(--ink); opacity: .78; }
+.site-social svg { width: 17px; height: 17px; }
+.site-nav { grid-area: nav; display: none; }
+
+/* --- shared type (editorial.css 14-26, 68-83) --- */
+.eyebrow {
+  font-family: var(--font-body); font-size: 10.5px; font-weight: 500; letter-spacing: .19em;
+  text-transform: uppercase; color: var(--ink); margin: 0 0 22px;
+}
+.page h1, .page h2, .invest__h, .pkg__name, .cmp__h {
+  font-family: var(--font-display); font-weight: 400; line-height: .95; letter-spacing: -.025em;
+  text-transform: uppercase; margin: 0;
+}
+.cta {
+  display: inline-flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 500;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--ink); padding: 14px 0; min-height: 44px;
+  text-decoration: none; background: none; border: 0; cursor: pointer;
+}
+.cta::before { content: ""; width: 26px; height: 1px; background: var(--ink); }
+.cta--sm { font-size: 10.5px; }
+.cta--btn { border: 1px solid var(--ink); padding: 0 22px; min-height: 44px; background: var(--ink); color: #fff; }
+.cta--btn::before { display: none; }
+
+/* --- add-ons / terms (styles.css 850-868) --- */
+.sterms { margin-top: 44px; }
+.sterms + .sterms { margin-top: 28px; }
+.page .sterms__h { font-size: 24px; margin-bottom: 16px; }
+.addons { list-style: none; margin: 0; padding: 0; }
+.addons li { display: flex; justify-content: space-between; gap: 20px; font-size: 13px;
+  padding: 11px 0; border-bottom: 1px solid var(--line); }
+.addons__p { font-family: var(--font-display); font-size: 13px; white-space: nowrap; }
+.terms { list-style: none; margin: 0 0 18px; padding: 0; max-width: 78ch; }
+.terms li { font-size: 12.5px; line-height: 1.65; color: var(--dim); margin-bottom: 9px; }
+
+/* =============================================================
+   ██  NOW  —  current build, reproduced bug-for-bug
+   ============================================================= */
+.now .shead { display: grid; grid-template-columns: 1fr; gap: 26px; padding: 40px 0 0; }
+.now .shead__h { font-size: clamp(36px, 5.4vw, 62px); }
+.now .shead__p { font-size: 14.5px; line-height: 1.72; color: var(--dim); margin: 0; max-width: 46ch; }
+
+.now .pkgrow { display: grid; grid-template-columns: 1fr; gap: 44px; padding: 52px 0 0; }
+.now .pkg { display: flex; flex-direction: column; }
+.now .pkg__fig { margin: 0 0 22px; aspect-ratio: 4 / 3; overflow: hidden; }
+.now .pkg__fig img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.now .pkg__num { font-size: 11px; font-weight: 500; letter-spacing: .14em; color: var(--grey); margin: 0 0 10px; }
+.now .pkg__name { font-size: 19px; line-height: 1.1; letter-spacing: -.01em; margin: 0 0 12px; }
+.now .pkg__desc { font-size: 13.5px; line-height: 1.66; color: var(--dim); margin: 0 0 16px; }
+.now .pkg__list { list-style: none; margin: 0 0 18px; padding: 0; font-size: 13px; color: var(--dim); flex: none; }
+.now .pkg__list li { padding: 5px 0; border-top: 1px solid var(--line); }
+.now .pkg__price { font-family: var(--font-display); font-size: 20px; margin: 0 0 18px; letter-spacing: -.01em; }
+.now .pkg .cta { margin-top: auto; align-self: flex-start; }
+/* !! `.pkg--pop` has NO RULE ANYWHERE. Nothing below this line. !! */
+
+.now .invest {
+  margin: 76px calc(-1 * var(--pad)) 0; padding: 54px var(--pad) 58px;
+  background: #0d0d0d; color: #fff; display: grid; grid-template-columns: 1fr; gap: 24px; align-items: center;
+}
+.now .invest__h { font-size: clamp(24px, 3.4vw, 38px); line-height: 1.05; }
+/* `.invest__label` is defined at editorial.css:599 and used by nothing. */
+/* `.eyebrow--inv` is defined by nothing, so `.eyebrow` wins → color:#111 on #0d0d0d. */
+/* `.cta` re-sets color:var(--ink) and ::before background:var(--ink) → also black on black. */
+.now .invest__p { margin: 18px 0 0; font-size: 14px; line-height: 1.7; opacity: .82; max-width: 44ch; }
+
+/* =============================================================
+   ██  PROPOSED
+   ============================================================= */
+
+/* --- 0. the one-line fix, shown as the rule it produces --- */
+.fixrule { color: #fff; opacity: .72; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500;
+  letter-spacing: .19em; text-transform: uppercase; margin: 0 0 16px; display: block; }
+
+/* --- 1. page head --- */
+.new .shead { display: grid; grid-template-columns: 1fr; gap: 22px; padding: 34px 0 0; }
+.new .shead__h { font-size: clamp(34px, 11vw, 44px); }
+.new .shead__p { font-size: 14.5px; line-height: 1.7; color: var(--dim); margin: 0; max-width: 46ch; }
+.new .shead__meta { display: flex; gap: 8px 16px; flex-wrap: wrap; margin: 4px 0 0;
+  font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .15em; text-transform: uppercase; color: var(--grey); }
+.new .shead__meta b { font-weight: 500; color: var(--ink); }
+
+/* --- 2. THE PRICE INDEX.  4 tiers, 4 hairline rows, scannable in one pass --- */
+.idx { margin: 34px 0 0; border-top: 1.5px solid var(--ink); }
+.idx__cap { display: flex; justify-content: space-between; align-items: baseline; padding: 9px 0 0;
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--grey); }
+.idx__row {
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 14px;
+  width: 100%; text-align: left; background: none; border: 0; border-top: 1px solid var(--line-2);
+  padding: 12px 0 13px; cursor: pointer; font: inherit; color: inherit; min-height: 56px;
+}
+.idx__name { display: block; font-family: var(--font-display); font-size: 15px; letter-spacing: -.01em;
+  text-transform: uppercase; line-height: 1.1; }
+.idx__spec { display: block; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--grey); margin-top: 5px; }
+.idx__right { text-align: right; }
+.idx__price { display: block; font-family: var(--font-display); font-size: 16px; letter-spacing: -.015em; }
+.idx__img { display: block; font-family: var(--font-mono); font-size: 9px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--grey); margin-top: 4px; }
+.idx__row--pop { background: var(--ink); border-top-color: var(--ink); padding-left: 12px; padding-right: 12px; }
+.idx__row--pop .idx__name { color: #fff; }
+.idx__row--pop .idx__spec,
+.idx__row--pop .idx__img { color: rgba(255,255,255,.62); }
+.idx__row--pop .idx__price { color: #fff; }
+.idx__row--pop .idx__price::after { content: " ★"; font-size: 10px; vertical-align: 3px; }
+.idx__row--pop { margin: 0 -12px; width: calc(100% + 24px); }
+.idx__foot { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0 0;
+  border-top: 1.5px solid var(--ink); font-family: var(--font-mono); font-size: 9.5px;
+  letter-spacing: .11em; text-transform: uppercase; color: var(--grey); }
+.idx__foot b { color: var(--ink); font-weight: 500; }
+
+/* --- 3. tier cards --- */
+.new .pkgrow { display: grid; grid-template-columns: 1fr; gap: 40px; padding: 46px 0 0; }
+.new .pkg { display: grid; grid-template-columns: 96px 1fr; gap: 0 16px; align-content: start;
+  border-top: 1px solid var(--line-2); padding-top: 16px; }
+.new .pkg__fig { grid-row: 1 / span 2; margin: 0; }
+.new .pkg__fig img { display: block; width: 100%; height: auto; }   /* natural 2:3 — NO object-fit */
+.new .pkg__num { font-family: var(--font-mono); font-size: 9.5px; font-weight: 500; letter-spacing: .17em;
+  text-transform: uppercase; color: var(--grey); margin: 0 0 7px; display: flex; gap: 8px; align-items: center; }
+.new .pkg__name { font-size: 18px; line-height: 1.05; letter-spacing: -.012em; margin: 0 0 8px; }
+.new .pkg__desc { grid-column: 2; font-size: 12.5px; line-height: 1.6; color: var(--dim); margin: 0 0 12px; }
+.new .pkg__spec { grid-column: 2; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink); margin: 0 0 14px; padding: 5px 0;
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.new .pkg__list { grid-column: 2; list-style: none; margin: 0 0 14px; padding: 0; font-size: 12.5px;
+  line-height: 1.5; color: var(--dim); }
+.new .pkg__list li { padding: 7px 0 7px 20px; border-top: 1px solid var(--line); position: relative; }
+.new .pkg__list li::before { content: ""; position: absolute; left: 0; top: 14px; width: 9px; height: 1px; background: var(--ink); }
+.new .pkg__foot { grid-column: 2; display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.new .pkg__price { font-family: var(--font-display); font-size: 21px; margin: 0; letter-spacing: -.018em; }
+.new .pkg__dep { display: block; font-family: var(--font-mono); font-size: 9px; letter-spacing: .11em;
+  text-transform: uppercase; color: var(--grey); margin-top: 4px; }
+.new .pkg .cta { align-self: center; }
+
+/* THE FIX for bug 2 — recommended tier, in black and white only. */
+.new .pkg--pop { background: var(--ink); border-top-color: var(--ink); margin: 0 -16px; padding: 16px 16px 18px;
+  border-radius: 0; }
+.new .pkg--pop .pkg__num { color: rgba(255,255,255,.66); }
+.new .pkg--pop .pkg__name { color: #fff; }
+.new .pkg--pop .pkg__desc { color: rgba(255,255,255,.74); }
+.new .pkg--pop .pkg__spec { color: #fff; border-color: rgba(255,255,255,.28); }
+.new .pkg--pop .pkg__list { color: rgba(255,255,255,.8); }
+.new .pkg--pop .pkg__list li { border-color: rgba(255,255,255,.2); }
+.new .pkg--pop .pkg__list li::before { background: #fff; }
+.new .pkg--pop .pkg__price { color: #fff; }
+.new .pkg--pop .pkg__dep { color: rgba(255,255,255,.6); }
+.new .pkg--pop .cta { color: #fff; border-color: #fff; }
+.new .pkg--pop .cta::before { background: #fff; }
+.new .pkg__flag {
+  display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 9px;
+  letter-spacing: .18em; text-transform: uppercase; background: #fff; color: var(--ink);
+  padding: 3px 7px; margin-left: auto;
+}
+
+/* --- 4. the dark investment band, fixed --- */
+.new .invest {
+  margin: 60px calc(-1 * var(--pad)) 0; padding: 40px var(--pad) 44px; background: #0d0d0d; color: #fff;
+  display: grid; grid-template-columns: 1fr; gap: 26px; align-items: end;
+}
+.new .invest__label { color: #fff; opacity: .7; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500;
+  letter-spacing: .19em; text-transform: uppercase; margin: 0 0 16px; display: block;
+  border-top: 1px solid rgba(255,255,255,.34); padding-top: 14px; }   /* ← the rule that already existed */
+.new .invest__h { font-size: clamp(26px, 8vw, 34px); line-height: 1.02; }
+.new .invest__from { font-family: var(--font-display); font-size: 30px; letter-spacing: -.022em;
+  line-height: 1; margin: 0 0 14px; }
+.new .invest__from small { display: block; font-family: var(--font-mono); font-size: 9.5px; font-weight: 500;
+  letter-spacing: .17em; text-transform: uppercase; color: rgba(255,255,255,.62); margin-bottom: 8px; }
+.new .invest__p { margin: 0 0 18px; font-size: 13.5px; line-height: 1.62; color: rgba(255,255,255,.88); max-width: 44ch; }
+.new .invest .cta { color: #fff; min-height: 46px; padding: 0 20px; border: 1px solid #fff; width: 100%;
+  justify-content: center; font-size: 11px; }
+.new .invest .cta::before { background: #fff; }
+
+/* --- 5. add-ons, two-up --- */
+.new .addons { display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px; }
+.new .addons li { display: flex; flex-direction: column; gap: 2px; padding: 9px 0 10px;
+  border-bottom: 1px solid var(--line); font-size: 12.5px; }
+.new .addons__p { font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; color: var(--ink); }
+
+/* --- 6. terms collapsed so the page ends on the CTA --- */
+.new .termsbox { border-top: 1px solid var(--line-2); }
+.new .termsbox > summary {
+  list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; min-height: 52px; font-family: var(--font-mono); font-size: 10px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--ink);
+}
+.new .termsbox > summary::-webkit-details-marker { display: none; }
+.new .termsbox__pm { font-family: var(--font-mono); font-size: 14px; }
+.new .terms { padding-top: 4px; }
+
+/* --- 7. sticky thumb bar --- */
+.thumbbar {
+  position: sticky; bottom: 0; z-index: 4; display: flex; align-items: center; gap: 12px;
+  padding: 10px var(--pad) calc(10px + 20px); background: var(--paper);
+  border-top: 1.5px solid var(--ink);
+}
+.thumbbar__p { flex: 1; }
+.thumbbar__p b { display: block; font-family: var(--font-display); font-size: 15px; letter-spacing: -.015em; }
+.thumbbar__p span { display: block; font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--grey); margin-top: 3px; }
+.thumbbar .cta--btn { flex: none; }
+
+/* --- 8. closing CTA --- */
+.new .closer { margin: 44px 0 0; border-top: 1.5px solid var(--ink); padding: 22px 0 0; }
+.new .closer h3 { font-family: var(--font-display); font-size: 22px; line-height: 1.02; letter-spacing: -.02em;
+  text-transform: uppercase; margin: 0 0 12px; }
+.new .closer p { font-size: 13.5px; line-height: 1.62; color: var(--dim); margin: 0 0 18px; }
+
+/* --- scroll helper, mockup only --- */
+.scroller { height: 852px; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
+.scroller::-webkit-scrollbar { width: 0; }
+.desk__vp::-webkit-scrollbar { width: 10px; height: 10px; }
+.desk__vp::-webkit-scrollbar-thumb { background: #c9c6c1; }
+
+/* =============================================================
+   ██  DESKTOP  —  the same page at 1280px
+   ============================================================= */
+.d1280 .screen { --pad: 48px; --head: 118px; }
+.d1280 .site-header { grid-template-columns: auto 1fr auto; grid-template-areas: "logo nav social"; padding: 16px 48px; }
+.d1280 .site-nav { display: flex; gap: 26px; }
+.d1280 .burger { display: none; }
+.d1280 .nav-link { font-size: 11.5px; font-weight: 500; letter-spacing: .15em; text-transform: uppercase;
+  text-decoration: none; color: var(--grey); padding: 4px 0 5px; border-bottom: 1px solid transparent; }
+.d1280 .nav-link.is-active { color: var(--ink); border-bottom-color: var(--ink); }
+.d1280 .logo-lg { font-size: 26px; }
+.d1280 .logo-sm { font-size: 10.5px; }
+
+.d1280 .new .shead { grid-template-columns: minmax(0,1fr) minmax(0,.85fr); gap: 48px; align-items: end; padding: 56px 0 0; }
+.d1280 .new .shead__h { font-size: clamp(44px, 5.2vw, 66px); }
+.d1280 .new .shead__p { font-size: 15.5px; }
+
+.d1280 .idx { margin-top: 46px; border-top-width: 2px; }
+.d1280 .idx__row { grid-template-columns: 210px minmax(0,1fr) 210px 130px; padding: 15px 0; min-height: 0; }
+.d1280 .idx__name { font-size: 17px; }
+.d1280 .idx__cell { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--dim); }
+.d1280 .idx__right { text-align: left; display: flex; align-items: baseline; gap: 12px; }
+.d1280 .idx__price { font-size: 20px; }
+.d1280 .idx__img { margin-top: 0; }
+.d1280 .idx__row--pop { margin: 0; width: 100%; padding-left: 16px; padding-right: 16px; }
+.d1280 .idx__row--pop .idx__cell { color: rgba(255,255,255,.72); }
+
+.d1280 .new .pkgrow { grid-template-columns: repeat(4, minmax(0,1fr)); gap: 26px; padding: 54px 0 0; }
+.d1280 .new .pkg { display: flex; flex-direction: column; border-top: 1.5px solid var(--line-2); padding-top: 0; }
+.d1280 .new .pkg__fig { margin: 0 0 18px; }
+.d1280 .new .pkg__num { margin: 0 0 9px; padding-top: 14px; }
+.d1280 .new .pkg__name { font-size: 20px; }
+.d1280 .new .pkg__desc { grid-column: auto; min-height: 62px; }
+.d1280 .new .pkg__spec { grid-column: auto; }
+.d1280 .new .pkg__list { grid-column: auto; flex: 1; }
+.d1280 .new .pkg__foot { grid-column: auto; margin-top: auto; padding-top: 6px; flex-direction: column;
+  align-items: flex-start; gap: 12px; }
+.d1280 .new .pkg--pop { margin: 0; padding: 0 18px 20px; }
+.d1280 .new .pkg--pop .pkg__num { padding-top: 14px; }
+.d1280 .new .pkg--pop .pkg__foot .cta { width: 100%; justify-content: center; }
+
+.d1280 .new .invest { grid-template-columns: minmax(0,1fr) minmax(0,.9fr); margin: 70px -48px 0;
+  padding: 54px 48px 58px; gap: 48px; align-items: end; }
+.d1280 .new .invest__h { font-size: 40px; }
+.d1280 .new .invest__from { font-size: 40px; }
+.d1280 .new .invest .cta { width: auto; padding: 0 28px; }
+
+.d1280 .new .addons { grid-template-columns: repeat(3, minmax(0,1fr)); column-gap: 32px; }
+.d1280 .new .termsbox { margin-top: 40px; }
+.d1280 .new .terms { columns: 2; column-gap: 40px; max-width: none; }
+.d1280 .new .closer { display: flex; align-items: end; gap: 40px; margin-top: 52px; }
+.d1280 .new .closer h3 { font-size: 30px; max-width: 16ch; }
+.d1280 .new .closer p { max-width: 52ch; margin-bottom: 0; }
+.d1280 .thumbbar { display: none; }
+.d1280 .new .sterms { margin-top: 48px; }
+
+@media (prefers-reduced-motion: reduce) { .scroller { scroll-behavior: auto; } }
+</style>
+</head>
+
+<body class="doc">
+<div class="doc-wrap">
+
+  <!-- ============================ DOC HEAD ============================ -->
+  <header class="doc__head">
+    <div class="doc__kicker">
+      <span class="mono">Shutterhaus Visuals</span>
+      <span class="mono mono--dim">/ Services</span>
+      <span class="mono mono--dim">/ Mockup v2</span>
+    </div>
+    <h1>The services page, rebuilt</h1>
+    <p class="doc__lede">
+      This is a design artefact, not a diff. It renders the <strong>live services page</strong> and a
+      <strong>proposed rebuild</strong> side by side at iPhone&nbsp;16 width (393&nbsp;px), plus the proposal at
+      1280&nbsp;px. All copy, all prices, all image files are the real ones from
+      <code style="font-family:var(--font-mono);font-size:12.5px">src/config.ts</code> and
+      <code style="font-family:var(--font-mono);font-size:12.5px">public/gallery/</code> — nothing here is filler.
+      Colour is black and white only; photography is never cropped.
+    </p>
+
+    <dl class="doc__meta mono">
+      <div><dt>Target</dt><dd>iPhone 16 · iOS 27 · Safari · 393 × 852</dd></div>
+      <div><dt>Baseline measured</dt><dd>839 KB · 3976 px tall · 5 images</dd></div>
+      <div><dt>Source of truth</dt><dd>config.ts · pages-more.ts · editorial.css</dd></div>
+      <div><dt>Palette</dt><dd>#fff · #111 · #0d0d0d · 0 saturated</dd></div>
+      <div><dt>Critical bugs fixed</dt><dd>3 invisible-text · 1 no-op class</dd></div>
+    </dl>
+
+    <div class="swatchbar">
+      <div style="background:#fff;border-right:1px solid var(--line-2)"><span style="color:#111">PAPER #FFF</span></div>
+      <div style="background:#111"><span style="color:#fff">INK #111</span></div>
+      <div style="background:#0d0d0d"><span style="color:#fff">BAND #0D0D0D</span></div>
+      <div style="background:#e6e6e6"><span>LINE #E6E6E6</span></div>
+      <div style="background:#6d6d6d"><span style="color:#fff">DIM #6D6D6D</span></div>
+    </div>
+  </header>
+
+  <!-- ============================ 01 · NOW ============================ -->
+  <section class="stage" id="now">
+    <div class="stage__head">
+      <span class="stage__tag mono">01 — Now · as shipped</span>
+      <h2>What the client actually sees today</h2>
+      <p class="stage__sub">
+        Reproduced from <code>src/pages-more.ts</code> with the shipped cascade intact, at 393&nbsp;px
+        (<code>--pad: 18px</code>, <code>--head: 92px</code>, <code>.pkgrow</code> single column).
+        <b>The bugs below are rendered faithfully, not corrected</b> — the invisible type is genuinely
+        near-black on near-black. Scroll the screen; the numbered pins are anchored to what they point at.
+      </p>
+    </div>
+
+    <div class="phones">
+      <figure class="phone">
+        <div class="phone__frame">
+          <div class="phone__island"></div>
+          <div class="phone__screen">
+            <div class="scroller" id="nowScreen">
+              <div class="shell screen now">
+                <header class="site-header">
+                  <a class="logo" href="#"><span class="logo-row"><span class="logo-sm">Shutterhaus</span><span class="logo-lg">Visuals</span></span><span class="logo-lg logo-lg--b"></span></a>
+                  <button class="burger" type="button" aria-label="Menu"><span class="burger__bars"><i></i><i></i></span></button>
+                  <nav class="site-nav"></nav>
+                  <div class="site-social">
+                    <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg></a>
+                    <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M14.5 8.5H17V5.6h-2.6c-2.2 0-3.6 1.5-3.6 3.7v1.9H8.4v2.9h2.4V21h3.1v-6.9h2.4l.4-2.9h-2.8V9.7c0-.8.3-1.2.9-1.2z"/></svg></a>
+                  </div>
+                </header>
+
+                <main class="main">
+                  <section class="page services">
+                    <header class="shead">
+                      <div class="shead__col">
+                        <p class="eyebrow">Services</p>
+                        <h1 class="shead__h">Capture What Matters.</h1>
+                      </div>
+                      <p class="shead__p">Every session is directed start to finish — you don't need to know how to pose. 50% deposit secures your date.</p>
+                    </header>
+
+                    <div class="pkgrow">
+                      <article class="pkg">
+                        <figure class="pkg__fig"><img src="img/starter.jpg" alt="Black and white portrait of a woman facing the camera"></figure>
+                        <p class="pkg__num">Package 01</p>
+                        <h2 class="pkg__name">Starter</h2>
+                        <p class="pkg__desc">Headshots, matric farewells, quick portraits.</p>
+                        <ul class="pkg__list">
+                          <li>15 professionally edited high-res images</li>
+                          <li>Private online gallery (90-day access)</li>
+                          <li>High-res + web-optimised downloads</li>
+                          <li>Clothing guide &amp; location suggestions</li>
+                          <li>Print release for personal use</li>
+                        </ul>
+                        <p class="pkg__price">R1,200</p>
+                        <a class="cta cta--sm" href="#">Book now</a>
+                      </article>
+
+                      <article class="pkg pkg--pop">
+                        <figure class="pkg__fig"><img src="img/essential.jpg" alt="Portrait of a woman in soft low light"></figure>
+                        <p class="pkg__num">Package 02</p>
+                        <h2 class="pkg__name">Essential</h2>
+                        <p class="pkg__desc">Our go-to for couples, individuals and small families.</p>
+                        <ul class="pkg__list">
+                          <li>40 professionally edited high-res images</li>
+                          <li>Reels-ready vertical crops</li>
+                          <li>Print release + 5×7" fine art print</li>
+                          <li>Private online gallery (90-day access)</li>
+                          <li>Clothing guide, location scouting, shot list</li>
+                        </ul>
+                        <p class="pkg__price">R2,200</p>
+                        <a class="cta cta--sm" href="#">Book now</a>
+                      </article>
+
+                      <article class="pkg">
+                        <figure class="pkg__fig"><img src="img/signature.jpg" alt="Woman in a white top photographed outdoors"></figure>
+                        <p class="pkg__num">Package 03</p>
+                        <h2 class="pkg__name">Signature</h2>
+                        <p class="pkg__desc">Families, maternity, engagements — the full experience.</p>
+                        <ul class="pkg__list">
+                          <li>70 professionally edited high-res images</li>
+                          <li>B&amp;W timeless set + Reels crops</li>
+                          <li>Print release + 2× 5×7" fine art prints</li>
+                          <li>Private online gallery (90-day access)</li>
+                          <li>Full prep: clothing guide, shot list, scouting</li>
+                        </ul>
+                        <p class="pkg__price">R3,500</p>
+                        <a class="cta cta--sm" href="#">Book now</a>
+                      </article>
+
+                      <article class="pkg">
+                        <figure class="pkg__fig"><img src="img/social.jpg" alt="Full-length portrait of a woman walking beside water"></figure>
+                        <p class="pkg__num">Package 04</p>
+                        <h2 class="pkg__name">Social</h2>
+                        <p class="pkg__desc">Built for creators — vertical-first, quick turnaround.</p>
+                        <ul class="pkg__list">
+                          <li>30 edited images + 15 Reels-ready vertical crops</li>
+                          <li>48hr sneak peek</li>
+                          <li>Vertical (4:5, 9:16) + high-res + web</li>
+                          <li>Content calendar template</li>
+                          <li>Pose coaching for video &amp; content</li>
+                        </ul>
+                        <p class="pkg__price">R1,800</p>
+                        <a class="cta cta--sm" href="#">Book now</a>
+                      </article>
+                    </div>
+
+                    <section class="invest">
+                      <div class="invest__col">
+                        <p class="eyebrow eyebrow--inv">Investment</p>
+                        <h2 class="invest__h">Quality over quantity.</h2>
+                      </div>
+                      <a class="cta" href="#">Let's create together</a>
+                      <p class="invest__p">50% deposit to book · EFT accepted</p>
+                    </section>
+
+                    <div class="sterms">
+                      <h2 class="sterms__h">Add-ons</h2>
+                      <ul class="addons">
+                        <li><span>Extra 30 minutes</span><span class="addons__p">+R600</span></li>
+                        <li><span>Extra location</span><span class="addons__p">+R400</span></li>
+                        <li><span>Rush delivery (48hr)</span><span class="addons__p">+R400</span></li>
+                        <li><span>Extra 5×7" print</span><span class="addons__p">+R150</span></li>
+                        <li><span>Fine art album (20pg)</span><span class="addons__p">+R1,200</span></li>
+                        <li><span>Travel beyond 25km</span><span class="addons__p">+R5/km</span></li>
+                      </ul>
+                    </div>
+
+                    <div class="sterms sterms--terms">
+                      <h2 class="sterms__h">Booking terms</h2>
+                      <ul class="terms">
+                        <li>50% non-refundable deposit secures your date; balance before gallery delivery.</li>
+                        <li>Rescheduling ≥7 days notice is free. Under 7 days: R500 fee, deposit transfers.</li>
+                        <li>Outdoor shoots include a backup indoor location. Severe weather = free reschedule.</li>
+                        <li>Delivery: Starter, Essential and Social in 5 business days; Signature in 7.</li>
+                        <li>Personal use licence included. Commercial use needs a separate licence (+50–200%).</li>
+                      </ul>
+                    </div>
+                  </section>
+                </main>
+              </div>
+            </div>
+            <div class="phone__home"></div>
+          </div>
+          <div class="pin pin--a" title="Invisible label">1</div>
+          <div class="pin pin--b" title="No rule for .pkg--pop">2</div>
+          <div class="pin pin--c" title="Cover crop">3</div>
+        </div>
+
+        <div class="phone__chrome">
+          <button type="button" data-jump="#nowScreen" data-to="0">Top</button>
+          <button type="button" data-jump="#nowScreen" data-to="1150">Packages</button>
+          <button type="button" data-jump="#nowScreen" data-to="3450">Dark band</button>
+          <button type="button" data-jump="#nowScreen" data-to="99999">End</button>
+        </div>
+        <figcaption class="mono mono--dim">Live build · 839 KB · 3976 px · 5 images · drag to scroll</figcaption>
+      </figure>
+
+      <ul class="findings">
+        <li>
+          <span class="n">1</span>
+          <div>
+            <span class="flag">Critical · 1.05:1</span>
+            <h4>The word “Investment” is invisible, and so are the CTA and its rule</h4>
+            <p>
+              <code style="font-family:var(--font-mono);font-size:12px">.invest</code> is <code style="font-family:var(--font-mono);font-size:12px">#0d0d0d</code> with
+              <code style="font-family:var(--font-mono);font-size:12px">color:#fff</code>. But
+              <code style="font-family:var(--font-mono);font-size:12px">.eyebrow--inv</code> has <b>no rule anywhere in the stylesheet</b>, so
+              <code style="font-family:var(--font-mono);font-size:12px">.eyebrow</code> (editorial.css:18) applies and paints
+              <code style="font-family:var(--font-mono);font-size:12px">color: var(--ink)</code> = #111 on #0d0d0d.
+            </p>
+            <p>
+              The same cascade reaches further than the reported bug. <code style="font-family:var(--font-mono);font-size:12px">.cta</code>
+              (editorial.css:89) also sets <code style="font-family:var(--font-mono);font-size:12px">color: var(--ink)</code> and
+              <code style="font-family:var(--font-mono);font-size:12px">.cta::before { background: var(--ink) }</code>, and
+              <b>neither has a <code style="font-family:var(--font-mono);font-size:12px">.invest</code> override</b> — the hero gets
+              one (editorial.css:268–269), the band does not. So “Let’s create together” <em>and</em> its em-dash are also black on black.
+              Three invisible elements, one cause: a class name that was never written.
+            </p>
+            <p class="fix">Root cause: <b>editorial.css:599 already defines .invest__label</b> for this exact slot and nothing uses it.</p>
+          </div>
+        </li>
+
+        <li>
+          <span class="n">2</span>
+          <div>
+            <span class="flag">Critical · 0 treatment</span>
+            <h4><code style="font-family:var(--font-mono);font-size:12.5px">.pkg--pop</code> is a no-op. The recommended tier is identical to the other three.</h4>
+            <p>
+              <code style="font-family:var(--font-mono);font-size:12px">pages-more.ts:58</code> emits
+              <code style="font-family:var(--font-mono);font-size:12px">pkg pkg--pop</code> for <b>Essential</b>
+              (<code style="font-family:var(--font-mono);font-size:12px">popular: true</code>, config.ts:149), and
+              <code style="font-family:var(--font-mono);font-size:12px">.pkg--pop</code> has no rule in editorial.css or styles.css.
+              No border, no badge, no lift, no weight change. The client is asked to choose between four identical-looking
+              cards on the one page built to make a decision. The pricing route already solved this —
+              <code style="font-family:var(--font-mono);font-size:12px">.tier--pop</code> inverts to
+              <code style="font-family:var(--font-mono);font-size:12px">background: var(--ink); color: #fff</code> (styles.css:847).
+              The services route simply never got it.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <span class="n">3</span>
+          <div>
+            <span class="flag">Brand violation</span>
+            <h4>Every package photo is centre-cropped by <code style="font-family:var(--font-mono);font-size:12.5px">object-fit: cover</code> into a 4:3 box</h4>
+            <p>
+              <code style="font-family:var(--font-mono);font-size:12px">.pkg__fig</code> is <code style="font-family:var(--font-mono);font-size:12px">aspect-ratio: 4/3</code>
+              with <code style="font-family:var(--font-mono);font-size:12px">img { height:100%; object-fit:cover }</code> (editorial.css:556–558).
+              Every source frame is portrait 2:3, so a 4:3 window throws away roughly <b>55% of the picture</b> and
+              re-frames every face the same way, blind. Alwin's rule is explicit: never
+              <code style="font-family:var(--font-mono);font-size:12px">object-fit: cover</code> on photographs — focal point and
+              object-position only. Contact page does the same thing (<code style="font-family:var(--font-mono);font-size:12px">.ct__fig</code>, editorial.css:620).
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <span class="n">4</span>
+          <div>
+            <span class="flag">Structure</span>
+            <h4>No price index. Four vertical cards is 2100 px of scrolling to answer “what does it cost?”</h4>
+            <p>
+              <code style="font-family:var(--font-mono);font-size:12px">.pkgrow</code> collapses to one column at 760 px, so name,
+              description, five bullets, price and CTA stack four times over. The price — the only number the
+              client came for — is buried ~600 px down, below two paragraphs of feature copy, and appears four
+              separate times at four different scroll depths. Compare-then-choose is impossible in one pass.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <span class="n">5</span>
+          <div>
+            <span class="flag">Conversion</span>
+            <h4>The page ends on legal text, and the last CTA above the fold is 2000 px up</h4>
+            <p>
+              Order today: four “Book now” links → dark band → <b>add-ons (6 rows)</b> → <b>booking terms (5 paragraphs)</b> → end.
+              The one real commitment moment, the deposit line, is the only visible thing in the band, at
+              12–14 px under a display heading that says nothing about money. After the band the client is asked to
+              keep reading; nothing brings them back.
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================ 02 · PROPOSED ============================ -->
+  <section class="stage" id="proposed">
+    <div class="stage__head">
+      <span class="stage__tag mono">02 — Proposed · 393 px</span>
+      <h2>Compare first. Then choose.</h2>
+      <p class="stage__sub">
+        Same frame, same viewport, same brand. Four changes of substance: a <b>price index</b> above the cards so
+        all four tiers are comparable in one screen, the <b>recommended tier inverted to solid black</b> (no colour,
+        only value), the <b>investment band rebuilt around the actual numbers</b>, and a <b>sticky thumb bar</b>
+        that keeps “Book now” in the bottom third of the screen for the whole page. Photographs sit at their
+        natural 2:3 ratio — no crop, no <code>object-fit</code>.
+      </p>
+    </div>
+
+    <div class="phones">
+      <figure class="phone">
+        <div class="phone__frame">
+          <div class="phone__island"></div>
+          <div class="phone__screen">
+            <div class="scroller" id="newScreen">
+              <div class="shell screen new">
+                <header class="site-header">
+                  <a class="logo" href="#"><span class="logo-row"><span class="logo-sm">Shutterhaus</span><span class="logo-lg">Visuals</span></span><span class="logo-lg logo-lg--b"></span></a>
+                  <button class="burger" type="button" aria-label="Menu"><span class="burger__bars"><i></i><i></i></span></button>
+                  <nav class="site-nav"></nav>
+                  <div class="site-social">
+                    <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg></a>
+                    <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M14.5 8.5H17V5.6h-2.6c-2.2 0-3.6 1.5-3.6 3.7v1.9H8.4v2.9h2.4V21h3.1v-6.9h2.4l.4-2.9h-2.8V9.7c0-.8.3-1.2.9-1.2z"/></svg></a>
+                  </div>
+                </header>
+
+                <main class="main">
+                  <section class="page services">
+
+                    <header class="shead">
+                      <div class="shead__col">
+                        <p class="eyebrow">Services</p>
+                        <h1 class="shead__h">Capture What Matters.</h1>
+                      </div>
+                      <p class="shead__p">Every session is directed start to finish — you don't need to know how to pose. 50% deposit secures your date.</p>
+                      <div class="shead__meta">
+                        <span><b>04</b> packages</span><span><b>R1,200</b> entry</span><span>Gauteng · on location</span><span>90-day gallery</span>
+                      </div>
+                    </header>
+
+                    <!-- ============ THE PRICE INDEX ============ -->
+                    <div class="idx" role="list" aria-label="Package price index">
+                      <div class="idx__cap"><span>Package</span><span>Session · edited · from</span></div>
+
+                      <a class="idx__row" href="#t-starter" role="listitem">
+                        <span><span class="idx__name">Starter</span><span class="idx__spec">30 min · 1 outfit · 1 location</span></span>
+                        <span class="idx__right"><span class="idx__price">R1,200</span><span class="idx__img">15 edited</span></span>
+                      </a>
+
+                      <a class="idx__row idx__row--pop" href="#t-essential" role="listitem" aria-label="Essential, most popular, R2,200">
+                        <span><span class="idx__name">Essential</span><span class="idx__spec">60 min · 2 outfits · 1–2 locations</span></span>
+                        <span class="idx__right"><span class="idx__price">R2,200</span><span class="idx__img">40 edited</span></span>
+                      </a>
+
+                      <a class="idx__row" href="#t-signature" role="listitem">
+                        <span><span class="idx__name">Signature</span><span class="idx__spec">90 min · 2–3 outfits · multiple</span></span>
+                        <span class="idx__right"><span class="idx__price">R3,500</span><span class="idx__img">70 edited</span></span>
+                      </a>
+
+                      <a class="idx__row" href="#t-social" role="listitem">
+                        <span><span class="idx__name">Social</span><span class="idx__spec">45 min · 2 outfits · 1 location</span></span>
+                        <span class="idx__right"><span class="idx__price">R1,800</span><span class="idx__img">30 + 15 crops</span></span>
+                      </a>
+
+                      <div class="idx__foot"><span>50% deposit · EFT</span><span>Delivery <b>5–7 days</b></span></div>
+                    </div>
+
+                    <!-- ============ TIER CARDS ============ -->
+                    <div class="pkgrow">
+                      <article class="pkg" id="t-starter">
+                        <figure class="pkg__fig"><img src="img/starter.jpg" alt="Black and white portrait of a woman facing the camera" width="800" height="1200"></figure>
+                        <p class="pkg__num">Package 01</p>
+                        <h2 class="pkg__name">Starter</h2>
+                        <p class="pkg__desc">Headshots, matric farewells, quick portraits.</p>
+                        <p class="pkg__spec">30 min · 1 outfit · 1 location</p>
+                        <ul class="pkg__list">
+                          <li>15 professionally edited high-res images</li>
+                          <li>Private online gallery (90-day access)</li>
+                          <li>High-res + web-optimised downloads</li>
+                          <li>Clothing guide &amp; location suggestions</li>
+                          <li>Print release for personal use</li>
+                        </ul>
+                        <div class="pkg__foot">
+                          <p class="pkg__price">R1,200<span class="pkg__dep">R600 to book</span></p>
+                          <a class="cta" href="#">Book now</a>
+                        </div>
+                      </article>
+
+                      <article class="pkg pkg--pop" id="t-essential">
+                        <figure class="pkg__fig"><img src="img/essential.jpg" alt="Portrait of a woman in soft low light" width="800" height="1200"></figure>
+                        <p class="pkg__num">Package 02 <span class="pkg__flag">Most booked</span></p>
+                        <h2 class="pkg__name">Essential</h2>
+                        <p class="pkg__desc">Our go-to for couples, individuals and small families.</p>
+                        <p class="pkg__spec">60 min · 2 outfits · 1–2 locations</p>
+                        <ul class="pkg__list">
+                          <li>40 professionally edited high-res images</li>
+                          <li>Reels-ready vertical crops</li>
+                          <li>Print release + 5×7" fine art print</li>
+                          <li>Private online gallery (90-day access)</li>
+                          <li>Clothing guide, location scouting, shot list</li>
+                        </ul>
+                        <div class="pkg__foot">
+                          <p class="pkg__price">R2,200<span class="pkg__dep">R1,100 to book</span></p>
+                          <a class="cta cta--btn" href="#">Book Essential</a>
+                        </div>
+                      </article>
+
+                      <article class="pkg" id="t-signature">
+                        <figure class="pkg__fig"><img src="img/signature.jpg" alt="Woman in a white top photographed outdoors" width="800" height="1200"></figure>
+                        <p class="pkg__num">Package 03</p>
+                        <h2 class="pkg__name">Signature</h2>
+                        <p class="pkg__desc">Families, maternity, engagements — the full experience.</p>
+                        <p class="pkg__spec">90 min · 2–3 outfits · multiple locations</p>
+                        <ul class="pkg__list">
+                          <li>70 professionally edited high-res images</li>
+                          <li>B&amp;W timeless set + Reels crops</li>
+                          <li>Print release + 2× 5×7" fine art prints</li>
+                          <li>Private online gallery (90-day access)</li>
+                          <li>Full prep: clothing guide, shot list, scouting</li>
+                        </ul>
+                        <div class="pkg__foot">
+                          <p class="pkg__price">R3,500<span class="pkg__dep">R1,750 to book</span></p>
+                          <a class="cta" href="#">Book now</a>
+                        </div>
+                      </article>
+
+                      <article class="pkg" id="t-social">
+                        <figure class="pkg__fig"><img src="img/social.jpg" alt="Full-length portrait of a woman walking beside water" width="800" height="1200"></figure>
+                        <p class="pkg__num">Package 04</p>
+                        <h2 class="pkg__name">Social</h2>
+                        <p class="pkg__desc">Built for creators — vertical-first, quick turnaround.</p>
+                        <p class="pkg__spec">45 min · 2 outfits · 1 location</p>
+                        <ul class="pkg__list">
+                          <li>30 edited images + 15 Reels-ready vertical crops</li>
+                          <li>48hr sneak peek</li>
+                          <li>Vertical (4:5, 9:16) + high-res + web</li>
+                          <li>Content calendar template</li>
+                          <li>Pose coaching for video &amp; content</li>
+                        </ul>
+                        <div class="pkg__foot">
+                          <p class="pkg__price">R1,800<span class="pkg__dep">R900 to book</span></p>
+                          <a class="cta" href="#">Book now</a>
+                        </div>
+                      </article>
+                    </div>
+
+                    <!-- ============ INVESTMENT BAND ============ -->
+                    <section class="invest">
+                      <div class="invest__col">
+                        <span class="invest__label">Investment</span>
+                        <h2 class="invest__h">Quality over quantity.</h2>
+                        <p class="invest__from"><small>Entry from</small>R1,200</p>
+                      </div>
+                      <div>
+                        <p class="invest__p">50% deposit to book · EFT accepted. Deposit is non-refundable and secures your date; balance due before gallery delivery.</p>
+                        <a class="cta" href="#">Let’s create together</a>
+                      </div>
+                    </section>
+
+                    <!-- ============ ADD-ONS ============ -->
+                    <div class="sterms">
+                      <h2 class="sterms__h">Add-ons</h2>
+                      <ul class="addons">
+                        <li><span>Extra 30 minutes</span><span class="addons__p">+R600</span></li>
+                        <li><span>Extra location</span><span class="addons__p">+R400</span></li>
+                        <li><span>Rush delivery (48hr)</span><span class="addons__p">+R400</span></li>
+                        <li><span>Extra 5×7" print</span><span class="addons__p">+R150</span></li>
+                        <li><span>Fine art album (20pg)</span><span class="addons__p">+R1,200</span></li>
+                        <li><span>Travel beyond 25km</span><span class="addons__p">+R5/km</span></li>
+                      </ul>
+                    </div>
+
+                    <!-- ============ TERMS, COLLAPSED ============ -->
+                    <div class="sterms sterms--terms">
+                      <details class="termsbox">
+                        <summary>Booking terms &amp; licensing <span class="termsbox__pm">+</span></summary>
+                        <ul class="terms">
+                          <li>50% non-refundable deposit secures your date; balance before gallery delivery.</li>
+                          <li>Rescheduling ≥7 days notice is free. Under 7 days: R500 fee, deposit transfers.</li>
+                          <li>Outdoor shoots include a backup indoor location. Severe weather = free reschedule.</li>
+                          <li>Delivery: Starter, Essential and Social in 5 business days; Signature in 7.</li>
+                          <li>Personal use licence included. Commercial use needs a separate licence (+50–200%).</li>
+                        </ul>
+                      </details>
+                    </div>
+
+                    <!-- ============ CLOSER ============ -->
+                    <div class="closer">
+                      <h3>Ready to book your date?</h3>
+                      <p>Send your preferred date and package. 50% deposit confirms it, EFT or card, and you'll have a shot list and location options within 24 hours.</p>
+                      <a class="cta cta--btn" href="#">Book now</a>
+                    </div>
+                  </section>
+                </main>
+
+                <!-- ============ STICKY THUMB BAR ============ -->
+                <div class="thumbbar">
+                  <p class="thumbbar__p"><b>From R1,200</b><span>50% deposit · EFT</span></p>
+                  <a class="cta cta--btn" href="#">Book now</a>
+                </div>
+              </div>
+            </div>
+            <div class="phone__home"></div>
+          </div>
+          <div class="pin pin--a" title="Visible label">1</div>
+          <div class="pin pin--e" title="Black recommended tier">2</div>
+          <div class="pin pin--f" title="Sticky bar">3</div>
+        </div>
+
+        <div class="phone__chrome">
+          <button type="button" data-jump="#newScreen" data-to="0">Top</button>
+          <button type="button" data-jump="#newScreen" data-to="520">Price index</button>
+          <button type="button" data-jump="#newScreen" data-to="1150">Packages</button>
+          <button type="button" data-jump="#newScreen" data-to="2350">Band</button>
+          <button type="button" data-jump="#newScreen" data-to="99999">End</button>
+        </div>
+        <figcaption class="mono mono--dim">Proposed · drag to scroll · the thumb bar is pinned to the bottom of the viewport</figcaption>
+      </figure>
+
+      <ul class="findings">
+        <li>
+          <span class="n">1</span>
+          <div>
+            <span class="flag flag--fix">Fixed</span>
+            <h4>The label is visible because the class name now matches the rule that already existed</h4>
+            <p>
+              <code style="font-family:var(--font-mono);font-size:12px">.invest__label</code> (editorial.css:599) is not a
+              recommendation — it is the correct rule, written and never used. Applying it is a one-token markup change, and
+              white type is what it was always going to paint. The hairline above it is the only addition: the label needs
+              a boundary, because on a black field a 10.5 px tracked-out word has nothing to align to.
+            </p>
+            <p class="fix">One line in pages-more.ts: <b>class="eyebrow eyebrow--inv"</b> → <b>class="invest__label"</b><br>
+              One rule for the CTA the band never had: <b>.invest .cta, .invest .cta::before { color: #fff; background: #fff }</b></p>
+          </div>
+        </li>
+
+        <li>
+          <span class="n">2</span>
+          <div>
+            <span class="flag flag--fix">Fixed</span>
+            <h4>“Most booked” reads in a quarter of a second — because the card inverts, not because it is coloured</h4>
+            <p>
+              Black and white has one strong move available and it is value, so it is used once. The Essential card is solid
+              <code style="font-family:var(--font-mono);font-size:12px">#111</code> with white type, a white <b>“MOST BOOKED”</b>
+              chip in the mono metadata position, and a filled white “Book Essential” button. Everything else stays hairline.
+              The same treatment already exists on the pricing route, so this is consistency rather than novelty — the
+              recommended tier now looks the same on both pages that sell the same four tiers.
+            </p>
+            <p>
+              A <b>★</b> in the price index carries the signal upward to the one place the client actually decides.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <span class="n">3</span>
+          <div>
+            <span class="flag flag--fix">Fixed</span>
+            <h4>The dark band now carries the number it exists to carry</h4>
+            <p>
+              It says <b>“Quality over quantity.”</b> — a slogan — on the band where a client is deciding, with the price
+              in no larger type than the add-on list. Now the band opens on a labelled <b>ENTRY FROM R1,200</b> in the
+              display face, and the deposit line is expanded to say what it covers: non-refundable, secures the date,
+              balance before delivery. The CTA is a full-width white button, not a hairline link — it is the primary
+              action of the page and it finally looks like one. The inversion itself is kept: it is the only black
+              moment in the site and it earns its place by arriving exactly where the commitment happens.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <span class="n">4</span>
+          <div>
+            <span class="flag flag--fix">Structure</span>
+            <h4>Price index above the cards; photographs at their natural ratio</h4>
+            <p>
+              Four hairline rows, 56 px each, carrying name, session length, edited count and price — the whole
+              comparison in 224 px, one screen, no scrolling. The recommended row is inverted in the index too, so the
+              eye is caught before it starts reading. The cards below then answer “what do I get”, not “what does it cost”.
+              Photography drops the 4:3 cover crop entirely: 96 px thumbnail at natural 2:3 on mobile, full column at
+              natural 2:3 on desktop. Nothing is reframed, and four centre-cropped portraits stop pretending to be
+              different photographs.
+            </p>
+          </div>
+        </li>
+
+        <li>
+          <span class="n">5</span>
+          <div>
+            <span class="flag flag--fix">Structure</span>
+            <h4>Add-ons two-up, terms behind a disclosure, page ends on the ask</h4>
+            <p>
+              Six add-on rows go from ~230 px to ~100 px as a two-column list with the prices in mono. Booking terms —
+              five paragraphs, all of it conditional — collapse into a 52 px disclosure, so the page no longer ends on
+              a R500 rescheduling fee. It ends on a closing CTA. And a <b>sticky thumb bar</b> holds the price and
+              “Book now” in the bottom third for the entire page, so the client can act from wherever they are.
+            </p>
+            <p class="fix">Sticky bar is <b>position: sticky; bottom: 0</b> with <b>padding-bottom: env(safe-area-inset-bottom)</b>. No <b>resize</b> listener anywhere — it never repaints on address-bar collapse, and orientation change is handled by the breakpoint alone.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================ 03 · DESKTOP ============================ -->
+  <section class="stage" id="desktop">
+    <div class="stage__head">
+      <span class="stage__tag mono">03 — Proposed · 1280 px</span>
+      <h2>The same page on a desktop</h2>
+      <p class="stage__sub">
+        Not the mobile page stretched. The price index becomes a true <b>five-column matrix</b> — package, session,
+        edited count, delivery, price — with the numbers on a shared baseline so they can be read as a column
+        rather than as a list. The four cards sit on one row, and the recommended card is the only solid black
+        object on the page. The terms disclosure opens into two columns.
+      </p>
+    </div>
+
+    <div class="desk">
+      <div class="desk__bar">
+        <span class="mono">◀ ▌▌ ▶</span>
+        <span class="desk__url">shutterhausvisuals.co.za/services</span>
+        <span class="mono mono--dim">1280 × 1240</span>
+      </div>
+      <div class="desk__vp">
+        <div class="d1280">
+          <div class="shell screen new">
+            <header class="site-header">
+              <a class="logo" href="#"><span class="logo-row"><span class="logo-sm">Shutterhaus</span><span class="logo-lg">Visuals</span></span><span class="logo-lg logo-lg--b"></span></a>
+              <button class="burger" type="button" aria-label="Menu"><span class="burger__bars"><i></i><i></i></span></button>
+              <nav class="site-nav">
+                <a class="nav-link" href="#">Home</a><a class="nav-link" href="#">Portfolio</a><a class="nav-link" href="#">About</a><a class="nav-link is-active" href="#">Services</a><a class="nav-link" href="#">Contact</a>
+              </nav>
+              <div class="site-social">
+                <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg></a>
+                <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M14.5 8.5H17V5.6h-2.6c-2.2 0-3.6 1.5-3.6 3.7v1.9H8.4v2.9h2.4V21h3.1v-6.9h2.4l.4-2.9h-2.8V9.7c0-.8.3-1.2.9-1.2z"/></svg></a>
+              </div>
+            </header>
+
+            <main class="main">
+              <section class="page services">
+                <header class="shead">
+                  <div class="shead__col">
+                    <p class="eyebrow">Services</p>
+                    <h1 class="shead__h">Capture What Matters.</h1>
+                  </div>
+                  <p class="shead__p">Every session is directed start to finish — you don't need to know how to pose. 50% deposit secures your date.</p>
+                  <div class="shead__meta">
+                    <span><b>04</b> packages</span><span><b>R1,200</b> entry</span><span>Gauteng · on location</span><span>90-day gallery</span>
+                  </div>
+                </header>
+
+                <div class="idx" role="list" aria-label="Package comparison">
+                  <div class="idx__cap"><span>Package</span><span>Session</span><span>Edited</span><span>Delivery</span><span>From</span></div>
+
+                  <a class="idx__row" href="#" role="listitem">
+                    <span class="idx__name">Starter</span>
+                    <span class="idx__cell">30 min · 1 outfit · 1 loc</span>
+                    <span class="idx__cell">15 high-res</span>
+                    <span class="idx__cell">5 days</span>
+                    <span class="idx__right"><span class="idx__price">R1,200</span></span>
+                  </a>
+
+                  <a class="idx__row idx__row--pop" href="#" role="listitem" aria-label="Essential, most booked, R2,200">
+                    <span class="idx__name">Essential ★</span>
+                    <span class="idx__cell">60 min · 2 outfits · 1–2 loc</span>
+                    <span class="idx__cell">40 high-res + vertical</span>
+                    <span class="idx__cell">5 days</span>
+                    <span class="idx__right"><span class="idx__price">R2,200</span><span class="idx__img">Most booked</span></span>
+                  </a>
+
+                  <a class="idx__row" href="#" role="listitem">
+                    <span class="idx__name">Signature</span>
+                    <span class="idx__cell">90 min · 2–3 outfits · multi</span>
+                    <span class="idx__cell">70 high-res + B&amp;W set</span>
+                    <span class="idx__cell">7 days</span>
+                    <span class="idx__right"><span class="idx__price">R3,500</span></span>
+                  </a>
+
+                  <a class="idx__row" href="#" role="listitem">
+                    <span class="idx__name">Social</span>
+                    <span class="idx__cell">45 min · 2 outfits · 1 loc</span>
+                    <span class="idx__cell">30 + 15 vertical</span>
+                    <span class="idx__cell">5 days · 48hr peek</span>
+                    <span class="idx__right"><span class="idx__price">R1,800</span></span>
+                  </a>
+
+                  <div class="idx__foot"><span>50% deposit · EFT accepted</span><span>Personal use licence included · Commercial +50–200%</span></div>
+                </div>
+
+                <div class="pkgrow">
+                  <article class="pkg">
+                    <figure class="pkg__fig"><img src="img/starter.jpg" alt="Black and white portrait of a woman facing the camera" width="800" height="1200"></figure>
+                    <p class="pkg__num">Package 01</p>
+                    <h2 class="pkg__name">Starter</h2>
+                    <p class="pkg__desc">Headshots, matric farewells, quick portraits.</p>
+                    <p class="pkg__spec">30 min · 1 outfit · 1 location</p>
+                    <ul class="pkg__list">
+                      <li>15 professionally edited high-res images</li>
+                      <li>Private online gallery (90-day access)</li>
+                      <li>High-res + web-optimised downloads</li>
+                      <li>Clothing guide &amp; location suggestions</li>
+                      <li>Print release for personal use</li>
+                    </ul>
+                    <div class="pkg__foot">
+                      <p class="pkg__price">R1,200<span class="pkg__dep">R600 to book</span></p>
+                      <a class="cta cta--btn" href="#">Book now</a>
+                    </div>
+                  </article>
+
+                  <article class="pkg pkg--pop">
+                    <figure class="pkg__fig"><img src="img/essential.jpg" alt="Portrait of a woman in soft low light" width="800" height="1200"></figure>
+                    <p class="pkg__num">Package 02 <span class="pkg__flag">Most booked</span></p>
+                    <h2 class="pkg__name">Essential</h2>
+                    <p class="pkg__desc">Our go-to for couples, individuals and small families.</p>
+                    <p class="pkg__spec">60 min · 2 outfits · 1–2 locations</p>
+                    <ul class="pkg__list">
+                      <li>40 professionally edited high-res images</li>
+                      <li>Reels-ready vertical crops</li>
+                      <li>Print release + 5×7" fine art print</li>
+                      <li>Private online gallery (90-day access)</li>
+                      <li>Clothing guide, location scouting, shot list</li>
+                    </ul>
+                    <div class="pkg__foot">
+                      <p class="pkg__price">R2,200<span class="pkg__dep">R1,100 to book</span></p>
+                      <a class="cta cta--btn" href="#">Book Essential</a>
+                    </div>
+                  </article>
+
+                  <article class="pkg">
+                    <figure class="pkg__fig"><img src="img/signature.jpg" alt="Woman in a white top photographed outdoors" width="800" height="1200"></figure>
+                    <p class="pkg__num">Package 03</p>
+                    <h2 class="pkg__name">Signature</h2>
+                    <p class="pkg__desc">Families, maternity, engagements — the full experience.</p>
+                    <p class="pkg__spec">90 min · 2–3 outfits · multiple locations</p>
+                    <ul class="pkg__list">
+                      <li>70 professionally edited high-res images</li>
+                      <li>B&amp;W timeless set + Reels crops</li>
+                      <li>Print release + 2× 5×7" fine art prints</li>
+                      <li>Private online gallery (90-day access)</li>
+                      <li>Full prep: clothing guide, shot list, scouting</li>
+                    </ul>
+                    <div class="pkg__foot">
+                      <p class="pkg__price">R3,500<span class="pkg__dep">R1,750 to book</span></p>
+                      <a class="cta cta--btn" href="#">Book now</a>
+                    </div>
+                  </article>
+
+                  <article class="pkg">
+                    <figure class="pkg__fig"><img src="img/social.jpg" alt="Full-length portrait of a woman walking beside water" width="800" height="1200"></figure>
+                    <p class="pkg__num">Package 04</p>
+                    <h2 class="pkg__name">Social</h2>
+                    <p class="pkg__desc">Built for creators — vertical-first, quick turnaround.</p>
+                    <p class="pkg__spec">45 min · 2 outfits · 1 location</p>
+                    <ul class="pkg__list">
+                      <li>30 edited images + 15 Reels-ready vertical crops</li>
+                      <li>48hr sneak peek</li>
+                      <li>Vertical (4:5, 9:16) + high-res + web</li>
+                      <li>Content calendar template</li>
+                      <li>Pose coaching for video &amp; content</li>
+                    </ul>
+                    <div class="pkg__foot">
+                      <p class="pkg__price">R1,800<span class="pkg__dep">R900 to book</span></p>
+                      <a class="cta cta--btn" href="#">Book now</a>
+                    </div>
+                  </article>
+                </div>
+
+                <section class="invest">
+                  <div class="invest__col">
+                    <span class="invest__label">Investment</span>
+                    <h2 class="invest__h">Quality over quantity.</h2>
+                    <p class="invest__from"><small>Entry from</small>R1,200</p>
+                  </div>
+                  <div>
+                    <p class="invest__p">50% deposit to book · EFT accepted. Deposit is non-refundable and secures your date; balance due before gallery delivery.</p>
+                    <a class="cta" href="#">Let’s create together</a>
+                  </div>
+                </section>
+
+                <div class="sterms">
+                  <h2 class="sterms__h">Add-ons</h2>
+                  <ul class="addons">
+                    <li><span>Extra 30 minutes</span><span class="addons__p">+R600</span></li>
+                    <li><span>Extra location</span><span class="addons__p">+R400</span></li>
+                    <li><span>Rush delivery (48hr)</span><span class="addons__p">+R400</span></li>
+                    <li><span>Extra 5×7" print</span><span class="addons__p">+R150</span></li>
+                    <li><span>Fine art album (20pg)</span><span class="addons__p">+R1,200</span></li>
+                    <li><span>Travel beyond 25km</span><span class="addons__p">+R5/km</span></li>
+                  </ul>
+                </div>
+
+                <div class="sterms sterms--terms">
+                  <details class="termsbox" open>
+                    <summary>Booking terms &amp; licensing <span class="termsbox__pm">−</span></summary>
+                    <ul class="terms">
+                      <li>50% non-refundable deposit secures your date; balance before gallery delivery.</li>
+                      <li>Rescheduling ≥7 days notice is free. Under 7 days: R500 fee, deposit transfers.</li>
+                      <li>Outdoor shoots include a backup indoor location. Severe weather = free reschedule.</li>
+                      <li>Delivery: Starter, Essential and Social in 5 business days; Signature in 7.</li>
+                      <li>Personal use licence included. Commercial use needs a separate licence (+50–200%).</li>
+                    </ul>
+                  </details>
+                </div>
+
+                <div class="closer">
+                  <h3>Ready to book your date?</h3>
+                  <p>Send your preferred date and package. 50% deposit confirms it, EFT or card, and you'll have a shot list and location options within 24 hours.</p>
+                  <a class="cta cta--btn" href="#">Book now</a>
+                </div>
+              </section>
+            </main>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="desk__note mono mono--dim">Above the fold at 1440: the full four-tier comparison, prices and the recommended tier. The dark band is the only inversion in the site.</p>
+  </section>
+
+  <!-- ============================ 04 · CHANGES ============================ -->
+  <section class="stage" id="changes">
+    <div class="stage__head">
+      <span class="stage__tag mono">04 — Change list</span>
+      <h2>What ships, and what it costs</h2>
+      <p class="stage__sub">
+        Effort is one developer-day-scale judgement: <b>S</b> = a selector and a value, <b>M</b> = a new block of
+        markup plus CSS, <b>L</b> = a component that needs content, JS and QA across breakpoints.
+      </p>
+    </div>
+
+    <div class="changes">
+      <div class="change">
+        <div class="change__n">01</div>
+        <div class="change__body">
+          <h3>Use the label class that already exists</h3>
+          <p>One token in <code>pages-more.ts:86</code>: <b>“eyebrow eyebrow--inv” → “invest__label”</b>. The rule is at <code>editorial.css:599</code> and has been correct since it was written; nothing has ever selected it. This is the whole fix for the reported critical bug and it is not a new line of CSS.</p>
+          <p><b>Add</b> <code>.invest .cta, .invest .cta::before { color: #fff }</code> and <code>.invest .cta::before { background: #fff }</code>. The band’s CTA is black-on-black for the same reason the label is, and the brief did not catch it because the text is genuinely unreadable rather than merely quiet.</p>
+          <div class="change__meta"><span class="eff eff--S">S</span><span class="eff">2 selectors</span><span class="eff">0 new deps</span></div>
+        </div>
+      </div>
+
+      <div class="change">
+        <div class="change__n">02</div>
+        <div class="change__body">
+          <h3>Give <code>.pkg--pop</code> the treatment the pricing route already has</h3>
+          <p>Copy the inversion from <code>styles.css:847</code> — <b>solid #111 card, white type, white filled CTA</b> — plus a <b>“MOST BOOKED”</b> chip in the mono metadata slot. Black and white, no colour, no lift, no shadow. Consistency argument: the same four tiers are sold on <code>/pricing</code> and <code>/services</code>, and today those two pages recommend the same package in two different visual languages, one of which is “nothing”.</p>
+          <div class="change__meta"><span class="eff eff--M">M</span><span class="eff">1 CSS block</span><span class="eff">1 chip element</span></div>
+        </div>
+      </div>
+
+      <div class="change">
+        <div class="change__n">03</div>
+        <div class="change__body">
+          <h3>Insert the price index above the cards</h3>
+          <p>A new <code>.idx</code> block between <code>.shead</code> and <code>.pkgrow</code>: four hairline rows, 56&nbsp;px min, each an anchor to its card. Carries name, session length, edited count and price — the four facts that decide the purchase. The recommended row is inverted. On desktop the same markup becomes a five-column matrix with a shared baseline. <b>This is the answer to “can I compare three tiers in ten seconds”</b> — currently no, and it is not a typography problem.</p>
+          <div class="change__meta"><span class="eff eff--M">M</span><span class="eff">1 template loop</span><span class="eff">1 breakpoint</span></div>
+        </div>
+      </div>
+
+      <div class="change">
+        <div class="change__n">04</div>
+        <div class="change__body">
+          <h3>Drop the 4:3 cover crop; let the photograph be its own ratio</h3>
+          <p>Replace <code>.pkg__fig { aspect-ratio: 4/3 } + img { height:100%; object-fit:cover }</code> with the source ratio and <b><code>width:100%; height:auto</code></b>, plus <b><code>width</code>/<code>height</code> attributes</b> on every <code>&lt;img&gt;</code> so the space is reserved before decode. All four sources are portrait 2:3; the mobile thumbnail is 96&nbsp;px wide at that ratio, the desktop card is full column. No focal-point data needed, because nothing is cropped. <b>Same change belongs on <code>.ct__fig</code></b> (editorial.css:620) — it crops 4:5 the same way.</p>
+          <p class="eff" style="font-family:var(--font-mono);font-size:11px;color:var(--ink);line-height:1.7">Also worth noting: five images for the whole page today. Four uncropped portraits plus the band is the same count — this costs no extra weight.</p>
+          <div class="change__meta"><span class="eff eff--S">S</span><span class="eff">1 CSS change ×2 routes</span></div>
+        </div>
+      </div>
+
+      <div class="change">
+        <div class="change__n">05</div>
+        <div class="change__body">
+          <h3>Rebuild the investment band around the number</h3>
+          <p>Add an <b>“ENTRY FROM R1,200”</b> display line in the mono-label slot, expand the deposit note to say what it covers (non-refundable, secures the date, balance before delivery), and promote the CTA to a full-width white button. Keep the <code>#0d0d0d</code> inversion — it is the only black moment in the site and it arrives exactly where the commitment happens, which is the right place to spend it. The hairline above the label gives the small type a boundary to align to.</p>
+          <div class="change__meta"><span class="eff eff--M">M</span><span class="eff">copy in config.ts</span></div>
+        </div>
+      </div>
+
+      <div class="change">
+        <div class="change__n">06</div>
+        <div class="change__body">
+          <h3>Sticky thumb bar with price and “Book now”</h3>
+          <p><b><code>position: sticky; bottom: 0</code></b> inside the normal flow, <code>padding-bottom: env(safe-area-inset-bottom)</code> so it clears the home indicator. Shown only after the price index scrolls out of view (<code>IntersectionObserver</code>), so it never covers the comparison it sits under. <b>No <code>resize</code> listener is involved</b> — a fixed/sticky element does not repaint when iOS collapses the address bar, which is the exact failure the “orientationchange, never resize” rule exists to prevent. Show/hide is a class toggle on <code>scroll</code> and <code>orientationchange</code> only.</p>
+          <p>Net effect: <b>“Book now” is reachable from 100% of the page</b> on a 393&nbsp;px screen — today it is reachable from the top ~2000&nbsp;px and then never again, because the page ends on a licensing paragraph.</p>
+          <div class="change__meta"><span class="eff eff--L">L</span><span class="eff">1 IO + scroll handler</span><span class="eff">iOS QA</span></div>
+        </div>
+      </div>
+
+      <div class="change">
+        <div class="change__n">07</div>
+        <div class="change__body">
+          <h3>Two-up add-ons, terms in a disclosure, page ends on the ask</h3>
+          <p>Add-ons to a two-column list (mobile) / three-column (desktop) with prices in the mono layer — <b>~230&nbsp;px → ~100&nbsp;px</b>. Booking terms become a <b><code>&lt;details&gt;</code></b> with a 52&nbsp;px summary row, so five paragraphs of conditional fine print stop being the last thing on the page. A closing CTA block ends the page on the ask rather than on a rescheduling fee. <b>The terms are not hidden</b> — one tap, and they are fully in the DOM for screen readers and crawlers.</p>
+          <div class="change__meta"><span class="eff eff--M">M</span><span class="eff">no JS required</span></div>
+        </div>
+      </div>
+
+      <div class="change">
+        <div class="change__n">08</div>
+        <div class="change__body">
+          <h3>Per-card deposit figure</h3>
+          <p>Each price now carries <b>“R600 to book”</b> in mono beneath it. A client deciding between R1,200 and R2,200 is partly deciding between R600 and R1,100 of money leaving their account this week, and today that number appears once, in 14&nbsp;px body copy, in the middle of the page. Static text derived from the price — no new config field, no logic worth a build.</p>
+          <div class="change__meta"><span class="eff eff--S">S</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ 05 · VERDICT ============================ -->
+  <section class="stage" id="verdict">
+    <div class="stage__head">
+      <span class="stage__tag mono">05 — Judgement</span>
+      <h2>The four questions, answered</h2>
+    </div>
+
+    <div class="verdict">
+      <article>
+        <span class="score">Can three — four — tiers be scanned in 10 seconds?</span>
+        <h3>No. Not today.</h3>
+        <p>Four cards, one column, ~525&nbsp;px each. The name appears at four different scroll depths, the price at four more, and nothing aligns across cards, so the eye cannot compare down a column. The recommended tier is styled identically to the others, so the strongest signal the business has is not being sent at all.</p>
+        <p>After: the index puts all four decisions — duration, output, price — in 224&nbsp;px on one screen, with the recommendation inverted. Ten seconds is generous; it is about four.</p>
+      </article>
+
+      <article>
+        <span class="score">Does the dark band land, and is the deposit note clear?</span>
+        <h3>It does not land. Two of its four elements are invisible.</h3>
+        <p>The band is the right idea at the right place — the only inversion in the site, arriving at the commitment. But it currently says “Quality over quantity” in 24&nbsp;px, shows the label and the CTA in #111 on #0d0d0d, and leaves one 14&nbsp;px line as the only readable content. <b>Nothing in it is about money.</b></p>
+        <p>After: it opens on “Entry from R1,200”, states what the deposit covers, and ends on a full-width button. The inversion now means “this is where you commit” instead of “this section is broken”.</p>
+      </article>
+
+      <article>
+        <span class="score">Are add-ons and terms burying the CTA?</span>
+        <h3>Yes — and the terms are the reason the page has no ending.</h3>
+        <p>After the dark band, a client reads six add-on rows, five paragraphs of terms, and then the page ends. A R500 rescheduling fee is the last sentence they see. The only CTA in that stretch is 2,000&nbsp;px higher up.</p>
+        <p>After: add-ons compress to ~100&nbsp;px, terms sit behind one disclosure, the page ends on a CTA, and the sticky bar means the ask is never more than one thumb away regardless of where they are.</p>
+      </article>
+
+      <article>
+        <span class="score">Is “Book now” repeated and thumb-reachable?</span>
+        <h3>Repeated yes, reachable no.</h3>
+        <p>Four <code>cta--sm</code> links plus the band link, all flush-left, all 44&nbsp;px tall. They are reachable in the <em>upper</em> part of the screen only. The bottom third of the viewport — the natural thumb arc on a 852&nbsp;px phone — contains a hairline link or nothing at all.</p>
+        <p>After: the bar sits in the bottom third for the whole page, carrying the entry price and a 44&nbsp;px button, with <code>env(safe-area-inset-bottom)</code> clearance so the home indicator never covers it.</p>
+      </article>
+    </div>
+  </section>
+
+  <footer class="stage" style="padding-top:70px">
+    <div class="mono mono--dim" style="border-top:1px solid var(--ink);padding-top:14px">
+      Shutterhaus Visuals · services page mockup v2 · content from src/config.ts (SITE.pricing) ·
+      class names from src/pages-more.ts + src/editorial.css · photographs copied from public/gallery at 800w ·
+      no colour, no crops, no build step
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // Mockup-only: the little jump buttons under each phone. No build step, no deps.
+  document.querySelectorAll('[data-jump]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var el = document.querySelector(btn.getAttribute('data-jump'));
+      if (el) el.scrollTop = Number(btn.getAttribute('data-to'));
+    });
+  });
+  // Keep the +/− glyph honest in the <details> disclosure.
+  document.querySelectorAll('.termsbox').forEach(function (d) {
+    var sync = function () { d.querySelector('.termsbox__pm').textContent = d.open ? '−' : '+'; };
+    d.addEventListener('toggle', sync); sync();
+  });
+</script>
+</body>
+</html>

@@ -142,18 +142,17 @@
   background: #0d0d0d;
 }
 .hero__fig { position: absolute; inset: 0; margin: 0; }
-/* `cover` fills the box, so a portrait source gets centre-cropped — which
-   zooms into the middle of the frame and slices the subject's head off. Bias
-   the crop to the upper third, where faces actually are, and let the scrim
-   carry the bottom. */
+/* `cover` is kept HERE and only here. This is the one frame that is genuinely a
+   crop: the hero is a full-bleed background behind a scrim, so it must fill its
+   box at every viewport or the page shows a seam. The bias is the crop, not the
+   filter — 0%, not 20%. The subject's head sits hard against the top of the
+   SOURCE frame, so any downward bias clips her hair; measured across
+   0/6/12/20%, only 0% keeps the whole head with air above it. The cost is more
+   sky and less floor; the scrim handles the bottom where the headline goes. */
 .hero__fig img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* 0%, not 20%. The subject's head sits hard against the top of the SOURCE
-     frame, so any downward bias clips her hair — measured across 0/6/12/20%,
-     only 0% keeps the whole head with air above it. The cost is more sky and
-     less floor; the scrim handles the bottom where the headline goes. */
   object-position: 50% 0%;
 }
 /* The headline sits on the photograph, so it needs a scrim to stay legible
@@ -207,7 +206,24 @@
 /* 86px -> up to 132px, tighter leading and tracking. The old size was polite for
    a brutalist site, and the lede sat almost on top of the last line; the 34px
    margin is what separates them now. */
-.hero__h { font-size: clamp(48px, 9.6vw, 132px); }
+/* The floor is 30px, not 48px. "PORTRAITURE" is 368px wide at 48px and the
+   48px floor won at EVERY phone width, so the word had 354px at 393px and 281px
+   at 320px and broke as "PORTRAITUR / E". Measured fit: 46.2px at 393px, 36.7px
+   at 320px. Lowering the floor lets the 9.6vw term do the shrinking it was
+   always meant to do, and the cap of 132px on desktop is untouched.
+
+   Then the word can never split again, whatever the font metrics turn out to
+   be: `overflow-wrap: normal` (was `anywhere`) forbids breaking inside a word,
+   `word-break: keep-all` forbids it independently of wrapping, and `hyphens:
+   none` rules out a hyphen being inserted as a last resort. The negative
+   tracking below is kept — it is deliberate and looks right — as is the
+   padding-right that absorbs its overflow. */
+.hero__h {
+  font-size: clamp(30px, 9.6vw, 132px);
+  overflow-wrap: normal;
+  word-break: keep-all;
+  hyphens: none;
+}
 /* Specificity matters here: `.page h1` (0,1,1) sets margin:0, line-height and
    letter-spacing and beats a bare `.hero__h` (0,1,0). That is why the old
    `margin-bottom: 24px` never applied and the lede sat flush under the heading.
@@ -230,13 +246,12 @@
      width cap: "Portraiture" is ~6.3em wide, the full title ~10.6em. */
   .hero__h { width: max-content; max-width: min(100%, 7.5em); }
 }
-/* On a phone the longest word is wider than the column, so it has to be
-   allowed to break rather than overflow. `overflow-wrap: anywhere` is the
-   only value that breaks INSIDE a word; `break-word` still lets a single
-   long word exceed the box. */
-@media (max-width: 640px) {
-  .hero__h { overflow-wrap: anywhere; }
-}
+/* No phone override: `overflow-wrap: anywhere` used to be set at max-width 640px
+   so "PORTRAITURE" could break rather than overflow, and that is what split it
+   into "PORTRAITUR / E". The heading now sizes to fit (see the clamp above) and
+   carries `overflow-wrap: normal`, so the word is never broken. Do not
+   reintroduce a breaking value here — an overflowing word is a far better
+   failure than a mangled one. */
 
 /* Bottom strip: founding year + place, the three subjects, a scroll cue.
    Real text from config (home.est, home.tags, contact.location), not decoration. */
@@ -476,10 +491,9 @@
  * it. No amount of toning the scale down fixes that, because the row was built
  * around the crop it was given.
  *
- * So the wall uses the home page's treatment, which needs no element of its
- * own — `.shell.is-bw .cell img` in styles.css already renders every frame
- * monochrome at rest and returns it to full colour on hover. Nothing about the
- * layout moves, because nothing about the layout changes.
+ * So the wall carries no treatment of its own: every frame renders exactly as
+  * uploaded, in full colour and at its natural ratio. Nothing about the layout
+  * moves, because nothing about the layout changes.
  *
  * Removing the markup also halves the images on this page: each cell used to
  * carry a thumbnail AND a separate 1200w preview, so 50 frames meant 100 <img>.
@@ -552,10 +566,61 @@
   padding: 52px 0 0;
 }
 .pkg { display: flex; flex-direction: column; }
-/* Each package card opens with a 4:3 frame, per the reference. */
-.pkg__fig { margin: 0 0 22px; aspect-ratio: 4 / 3; overflow: hidden; }
-.pkg__fig picture { display: block; width: 100%; height: 100%; }
-.pkg__fig img { width: 100%; height: 100%; object-fit: cover; }
+/* Each package card opens with the photograph at its OWN ratio — no `cover`, no
+   fixed 4:3 box. `cover` sliced a 2:3 portrait into a landscape band, which is
+   the same crop Alwin rejected on the wall ("when i hover it destroys the
+   crop"). `height: auto` lets the frame keep its natural proportions. */
+.pkg__fig { margin: 0 0 22px; }
+.pkg__fig picture { display: block; width: 100%; }
+.pkg__fig img { width: 100%; height: auto; }
+/* The tier's one-line spec ("30 min · 1 outfit · 1 location"). It is the only
+   place a client can see Starter and Signature differ by anything other than
+   prose. Styled as quiet metadata beside `.pkg__num` so the two read as one
+   layer — same size, same wide tracking, same grey. */
+.pkg__spec {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--grey);
+  margin: 0 0 10px;
+}
+/* The recommended tier, marked in the markup by `popular: true` in config.ts
+   (rendered as `.pkg--pop` in pages-more.ts). It had NO rule anywhere, so the
+   card the site asks visitors to book measured identical to the other two.
+
+   The brand inverts to black in exactly one place — `.invest` below — so this
+   reuses that same inversion and needs no new colour token. Monochrome only:
+   no accent, no gradient, no badge. The label is the mono metadata layer used
+   throughout the site, at the same wide tracking, and the ::before sits above
+   the number so it reads before the price. */
+.pkg--pop {
+  background: #0d0d0d;
+  color: #fff;
+  padding: 26px 24px 28px;
+}
+.pkg--pop::before {
+  content: "Most popular";
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  color: #fff;
+  opacity: 0.7;
+  margin: 0 0 16px;
+}
+/* The muted layers are grey-on-white, which is unreadable on black. Lift them
+   to the same 0.7/0.78 opacity the inverted `.invest` band already uses rather
+   than introducing lighter grey tokens. */
+.pkg--pop .pkg__num,
+.pkg--pop .pkg__spec { color: #fff; opacity: 0.6; }
+.pkg--pop .pkg__desc,
+.pkg--pop .pkg__list { color: #fff; opacity: 0.78; }
+.pkg--pop .pkg__list li { border-top-color: rgba(255, 255, 255, 0.22); }
+.pkg--pop .cta { color: #fff; }
+.pkg--pop .cta::before { background: #fff; }
+
 .pkg__num {
   font-size: 11px;
   font-weight: 500;
@@ -617,7 +682,10 @@
 .ct { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.72fr); gap: 64px; align-items: start; }
 .ct__col { padding-top: 40px; }
 .ct__fig { margin: 0; }
-.ct__fig img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; }
+/* No `cover`: the frame keeps its own ratio rather than being cropped into a
+   4:5 band. `contain` is the same principle the lightbox uses at styles.css:479
+   — show the whole photograph, letterboxing if the box disagrees. */
+.ct__fig img { width: 100%; height: auto; object-fit: contain; }
 .ct .cform { gap: 18px; }
 .ct .cform label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--grey); }
 
@@ -818,19 +886,34 @@
  * whitespace) instead of leaving a visible gap, which hides the fault. `start`
  * surfaces it.
  */
+/* Two tracks at every width, and the wall is capped so a wide monitor does not
+   stretch them to half-metre portraits.
+
+   Why not three tracks on desktop: a row holds exactly TWO frames (src/rows.ts
+   is generated 15 rows of 2, because a row can only pair frames of the same
+   aspect ratio and the ratio groups pack that way). Three tracks would render
+   two cells and leave a third of the row empty — measured at 1440px, 467px of
+   dead space at the right edge. So the column count cannot be a viewport
+   concern in either direction; two tracks is what the data supports.
+
+   That leaves the real problem: uncapped, two tracks at 1440px gave 687x1031px
+   tiles and a 15,817px-tall page. Capping the wall at 900px puts the cells at
+   ~420px, which is a sensible size to judge a photograph, and cuts the page to
+   roughly a third of its height. The phone is untouched: below 761px the wall
+   is already narrower than the cap, so the cell stays at the ~173px that the
+   2026-10-02 fix chose over the ~111px three columns would have given. */
 .pf-rows {
   display: flex;
   flex-direction: column;
   gap: var(--gut);
+  max-width: 900px;
+}
+@media (max-width: 760px) {
+  .pf-rows { max-width: none; }   /* the phone wall is full-bleed, not capped */
 }
 .pf-row {
   display: grid;
-  /* Follows the inline --row-cols that pages.ts already computes from the
-     measured row width. This was hardcoded to repeat(3, …) at every viewport
-     while a comment said the variable was "deliberately NOT used" — the
-     variable was dead, and the wall rendered 111px tiles on a 393px phone, too
-     narrow to read a face. wallCols() emits 2 there and the CSS now obeys. */
-  grid-template-columns: repeat(var(--row-cols, 2), minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--gut);
   align-items: start;
 }

@@ -1,0 +1,305 @@
+{
+  "portfolio-320": {
+    "wall": {
+      "rows": 15,
+      "cols": 2,
+      "frames": 30,
+      "tileW": 136,
+      "tileH": 204,
+      "rowSpreadPx": 0,
+      "docH": 3938,
+      "sizesAdvertised": "42vw",
+      "dpr": 3,
+      "cellCssPx": 136,
+      "devicePxNeeded": 408,
+      "chosenSrc": "49-img-0131-560w.webp",
+      "srcset": [
+        "gallery/49-img-0131-400w.webp",
+        "gallery/49-img-0131-560w.webp",
+        "gallery/49-img-0131-800w.webp",
+        "gallery/49-img-0131-1200w.webp",
+        "gallery/49-img-0131-1600w.webp"
+      ]
+    },
+    "overflow": {
+      "vw": 320,
+      "count": 0,
+      "worst": []
+    },
+    "overflowX": 0,
+    "docHeight": 3938,
+    "filtered": [],
+    "covered": [],
+    "wallRequested": [
+      "49-img-0131-560w.webp",
+      "48-img-0128-560w.webp",
+      "21-img-0234-560w.webp",
+      "5-img-0086-560w.webp"
+    ],
+    "wallCount": 30,
+    "brokenImgs": 0,
+    "investLabel": null,
+    "h1": {
+      "text": "Portfolio",
+      "fontPx": 44,
+      "longestWord": "Portfolio",
+      "needs": 273,
+      "has": 284,
+      "splitsMidWord": false,
+      "wrap": "normal/normal"
+    },
+    "pkgs": []
+  },
+  "portfolio-393": {
+    "wall": {
+      "rows": 15,
+      "cols": 2,
+      "frames": 30,
+      "tileW": 173,
+      "tileH": 259,
+      "rowSpreadPx": 0,
+      "docH": 4725,
+      "sizesAdvertised": "42vw",
+      "dpr": 3,
+      "cellCssPx": 173,
+      "devicePxNeeded": 518,
+      "chosenSrc": "49-img-0131-560w.webp",
+      "srcset": [
+        "gallery/49-img-0131-400w.webp",
+        "gallery/49-img-0131-560w.webp",
+        "gallery/49-img-0131-800w.webp",
+        "gallery/49-img-0131-1200w.webp",
+        "gallery/49-img-0131-1600w.webp"
+      ]
+    },
+    "overflow": {
+      "vw": 393,
+      "count": 0,
+      "worst": []
+    },
+    "overflowX": 0,
+    "docHeight": 4725,
+    "filtered": [],
+    "covered": [],
+    "wallRequested": [
+      "49-img-0131-560w.webp",
+      "48-img-0128-560w.webp",
+      "21-img-0234-560w.webp",
+      "5-img-0086-560w.webp"
+    ],
+    "wallCount": 30,
+    "brokenImgs": 0,
+    "investLabel": null,
+    "h1": {
+      "text": "Portfolio",
+      "fontPx": 44,
+      "longestWord": "Portfolio",
+      "needs": 273,
+      "has": 357,
+      "splitsMidWord": false,
+      "wrap": "normal/normal"
+    },
+    "pkgs": []
+  },
+  "portfolio-768": {
+    "wall": {
+      "rows": 15,
+      "cols": 2,
+      "frames": 30,
+      "tileW": 351,
+      "tileH": 527,
+      "rowSpreadPx": 0,
+      "docH": 8490,
+      "sizesAdvertised": "42vw",
+      "dpr": 1,
+      "cellCssPx": 351,
+      "devicePxNeeded": 351,
+      "chosenSrc": "49-img-0131-560w.webp",
+      "srcset": [
+        "gallery/49-img-0131-400w.webp",
+        "gallery/49-img-0131-560w.webp",
+        "gallery/49-img-0131-800w.webp",
+        "gallery/49-img-0131-1200w.webp",
+        "gallery/49-img-0131-1600w.webp"
+      ]
+    },
+    "overflow": {
+      "vw": 768,
+      "count": 0,
+      "worst": []
+    },
+    "overflowX": 0,
+    "docHeight": 8490,
+    "filtered": [],
+    "covered": [],
+    "wallRequested": [
+      "49-img-0131-560w.webp",
+      "48-img-0128-560w.webp",
+      "21-img-0234-560w.webp",
+      "5-img-0086-560w.webp"
+    ],
+    "wallCount": 30,
+    "brokenImgs": 0,
+    "investLabel": null,
+    "h1": {
+      "text": "Portfolio",
+      "fontPx": 40,
+      "longestWord": "Portfolio",
+      "needs": 248,
+      "has": 716,
+      "splitsMidWord": false,
+      "wrap": "normal/normal"
+    },
+    "pkgs": []
+  },
+  "portfolio-1440": {
+    "wall": {
+      "rows": 15,
+      "cols": 2,
+      "frames": 30,
+      "tileW": 443,
+      "tileH": 665,
+      "rowSpreadPx": 0,
+      "docH": 10557,
+      "sizesAdvertised": "42vw",
+      "dpr": 1,
+      "cellCssPx": 443,
+      "devicePxNeeded": 443,
+      "chosenSrc": "49-img-0131-800w.webp",
+      "srcset": [
+        "gallery/49-img-0131-400w.webp",
+        "gallery/49-img-0131-560w.webp",
+        "gallery/49-img-0131-800w.webp",
+        "gallery/49-img-0131-1200w.webp",
+        "gallery/49-img-0131-1600w.webp"
+      ]
+    },
+    "overflow": {
+      "vw": 1440,
+      "count": 0,
+      "worst": []
+    },
+    "overflowX": 0,
+    "docHeight": 10557,
+    "filtered": [],
+    "covered": [],
+    "wallRequested": [
+      "49-img-0131-800w.webp",
+      "48-img-0128-800w.webp",
+      "21-img-0234-800w.webp",
+      "5-img-0086-800w.webp"
+    ],
+    "wallCount": 30,
+    "brokenImgs": 0,
+    "investLabel": null,
+    "h1": {
+      "text": "Portfolio",
+      "fontPx": 72,
+      "longestWord": "Portfolio",
+      "needs": 447,
+      "has": 1388,
+      "splitsMidWord": false,
+      "wrap": "normal/normal"
+    },
+    "pkgs": []
+  },
+  "home-393": {
+    "overflowX": 0,
+    "docHeight": 2201,
+    "filtered": [],
+    "covered": [
+      {
+        "src": "27-img-0297-1600w.webp",
+        "cls": "hero__fig",
+        "nat": 1600,
+        "box": 393,
+        "ar": 1.286
+      }
+    ],
+    "wallRequested": [],
+    "wallCount": 0,
+    "brokenImgs": 0,
+    "investLabel": null,
+    "h1": {
+      "text": "Timeless Portraiture",
+      "fontPx": 37.728,
+      "longestWord": "Portraiture",
+      "needs": 289,
+      "has": 357,
+      "splitsMidWord": false,
+      "wrap": "normal/keep-all"
+    },
+    "pkgs": []
+  },
+  "services-393": {
+    "overflowX": 0,
+    "docHeight": 4987,
+    "filtered": [],
+    "covered": [],
+    "wallRequested": [],
+    "wallCount": 0,
+    "brokenImgs": 0,
+    "investLabel": {
+      "text": "Investment",
+      "color": "rgb(255, 255, 255)",
+      "bg": "rgb(13, 13, 13)",
+      "contrast": 19.44,
+      "legible": true
+    },
+    "h1": {
+      "text": "Capture What Matters.",
+      "fontPx": 36,
+      "longestWord": "Matters.",
+      "needs": 196,
+      "has": 357,
+      "splitsMidWord": false,
+      "wrap": "normal/normal"
+    },
+    "pkgs": [
+      {
+        "name": "Starter",
+        "popular": false,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(17, 17, 17)",
+        "spec": "30 min · 1 outfit · 1 location",
+        "specFont": "10.5px"
+      },
+      {
+        "name": "Essential",
+        "popular": true,
+        "bg": "rgb(13, 13, 13)",
+        "color": "rgb(255, 255, 255)",
+        "spec": "60 min · 2 outfits · 1–2 locat",
+        "specFont": "10.5px"
+      },
+      {
+        "name": "Signature",
+        "popular": false,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(17, 17, 17)",
+        "spec": "90 min · 2–3 outfits · multipl",
+        "specFont": "10.5px"
+      },
+      {
+        "name": "Social",
+        "popular": false,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(17, 17, 17)",
+        "spec": "45 min · 2 outfits · 1 locatio",
+        "specFont": "10.5px"
+      }
+    ]
+  },
+  "contact-393": {
+    "overflowX": 0,
+    "docHeight": 1558,
+    "filtered": [],
+    "covered": [],
+    "wallRequested": [],
+    "wallCount": 0,
+    "brokenImgs": 0,
+    "investLabel": null,
+    "h1": null,
+    "pkgs": []
+  }
+}

@@ -130,6 +130,15 @@ const info = await evaluate(`(() => {
     navSize: cs('.nav-link')?.fontSize,
     activeColor: cs('.nav-link.is-active')?.color,
     bw: !!document.querySelector('.shell.is-bw'),
+    // 2026-10-02: the greyscale filter is GONE at Alwin's instruction — the
+    // photographs render exactly as uploaded. This used to be a black & white
+    // shell; recording any surviving filter means a future edit cannot quietly
+    // put a grade back over his work.
+    imageFilters: [...document.querySelectorAll('img')]
+      .map(i => getComputedStyle(i).filter).filter(f => f && f !== 'none'),
+    coverCrops: [...document.querySelectorAll('img')]
+      .filter(i => getComputedStyle(i).objectFit === 'cover')
+      .map(i => (i.closest('[class]')?.className || i.className || '?').split(' ')[0]),
     colScroll: [...document.querySelectorAll('.col')].map(c => c.scrollHeight > c.clientHeight),
     // Scope to gallery images: the lightbox holds an <img> with src="" until
     // first use, which reports as a "broken" image by design.
@@ -189,12 +198,30 @@ const ROUTES = ["Home", "Portfolio", "About", "Services", "Contact"];
 check("nav = the five routes", info.nav.join(",") === ROUTES.join(","), info.nav.join(","));
 check("home active by default", info.active === "Home", info.active);
 check("social icons", info.social >= 1, String(info.social));
-// The curated static wall: 30 frames, 10 rows of 3, nothing scrolls, no numbers.
-check("ten rows of three", grid.rows === 10 && grid.perRow.every(n => n === 3),
+
+// `/index.html` must render the HOMEPAGE, exactly like `/`. It did not: the
+// stem "index" is in KNOWN_ROUTES, so route() returned "index", no ALIASES
+// entry matched, and paint() fell through to the portfolio tail — the
+// homepage URL served the 30-cell wall under the title "Index — …". Asserted
+// here because the homepage is the most linked and most crawled url there is.
+await goto("/index.html", 2400);
+const viaIndex = await evaluate(`JSON.stringify({
+  hero: !!document.querySelector('.hero'),
+  cells: document.querySelectorAll('.pf-cell').length,
+  title: document.title
+})`);
+const ix = JSON.parse(viaIndex);
+check("index.html serves the homepage, not the wall", ix.hero && ix.cells === 0, viaIndex);
+check("index.html has the homepage title", !/^Index/i.test(ix.title), ix.title);
+await goto("/#/portfolio", 2400);
+// The curated static wall: 30 frames, 15 rows of 2, nothing scrolls, no numbers.
+// Two per row, not three, since 2026-10-02 (41baf55): three columns at a 393px
+// phone gave 111px tiles, too small to read a face. rows.ts owns the count.
+check("fifteen rows of two", grid.rows === 15 && grid.perRow.every(n => n === 2),
   grid.rows + " rows, " + grid.perRow.join("/"));
 check("30 frames in the wall", grid.cells === 30, String(grid.cells));
 check("one image per frame", grid.imgs === 30, String(grid.imgs));
-check("three CSS tracks per row", grid.tracks === 3, String(grid.tracks));
+check("two CSS tracks per row", grid.tracks === 2, String(grid.tracks));
 // "No spacing issues at all" — measured, not eyeballed. 1px of tolerance is
 // fractional layout rounding; a photo at a different ratio would show as more.
 check("every row is exactly one height (no gap under any photo)", grid.rowSpread <= 1,
@@ -210,7 +237,10 @@ check("data-n kept for the lightbox counter", grid.dataN === 30, String(grid.dat
 // SILENTLY into unchanged markup if that function's wording moves — so the
 // assertions below are what actually notice.
 check("portfolio ends with the band", grid.band);
-check("band CTA goes to contact", grid.bandCta === "#/contact", String(grid.bandCta));
+// `pageHref` emits the REAL document since the per-page split (414812d), so the
+// band CTA is "./contact.html" and not the old "#/contact" hash. Assert it still
+// lands on the contact document either way, so a regression to a dead hash fails.
+check("band CTA goes to contact", /(^|\/)contact(\.html)?$/.test(grid.bandCta ?? ""), String(grid.bandCta));
 check("band carries contact links", grid.bandLinks >= 2, String(grid.bandLinks));
 
 // No two frames from the same shoot may be adjacent on the wall. Read from the
@@ -253,7 +283,19 @@ check("band carries contact links", grid.bandLinks >= 2, String(grid.bandLinks))
   check("longest same-shoot run stays short", worstRun <= 2, `${worstRun} in a row`);
 }
 check("no horizontal overflow", info.overflow <= 0, `${info.overflow}px`);
-check("black & white shell", info.bw);
+// Alwin's instruction, 2026-10-02: the photographs stay as they were uploaded.
+// The whole monochrome look was `.shell.is-bw .cell img { filter: grayscale(1)
+// contrast(1.06) }` — the JPEGs on disk were always colour. That filter is gone
+// and no replacement was put in its place, so this asserts no grade at all is
+// sitting over his photographs.
+check("no filter over the photographs", info.imageFilters.length === 0,
+  info.imageFilters.join(" | ") || "none");
+// object-fit: cover is a crop, and Alwin rejected cropping his work outright.
+// The hero is the one deliberate exception: it is a full-bleed background behind
+// a scrim, where `contain` would letterbox and expose the page behind it. Every
+// other figure must stay uncropped.
+check("only the hero crops", info.coverCrops.every(c => c === "hero__fig"),
+  info.coverCrops.join(", ") || "none");
 check("white page bg", info.bodyBg === "rgb(255, 255, 255)", info.bodyBg);
 check("inactive nav is muted", info.navColor !== info.activeColor, `muted ${info.navColor} vs active ${info.activeColor}`);
 check("nav text size", parseFloat(info.navSize) >= 11, info.navSize);
@@ -382,6 +424,14 @@ const pr = await evaluate(`(() => ({
   ctas: [...document.querySelectorAll('.pkg .cta')].map(a=>a.getAttribute('href')),
   overflow: document.documentElement.scrollWidth - window.innerWidth,
   bg: document.querySelector('.pkg') ? getComputedStyle(document.querySelector('.pkg')).backgroundColor : null,
+  // Which cards actually carry a fill, and is the popular one among them?
+  filled: [...document.querySelectorAll('.pkg')].map(p => getComputedStyle(p).backgroundColor)
+            .filter(b => b !== 'rgba(0, 0, 0, 0)').length,
+  popularFilled: (() => {
+    const p = document.querySelector('.pkg--pop');
+    return p ? getComputedStyle(p).backgroundColor !== 'rgba(0, 0, 0, 0)' : false;
+  })(),
+  specs: [...document.querySelectorAll('.pkg__spec')].map(e => e.textContent.trim()),
 }))()`);
 console.log("\\n--- services ---\\n" + JSON.stringify(pr, null, 2));
 check("services route renders", pr.tiers >= 3, String(pr.tiers));
@@ -393,12 +443,25 @@ check("exactly one 'most popular'", pr.popular === 1, String(pr.popular));
 check("each package has a photo", pr.figs === pr.tiers, `${pr.figs}/${pr.tiers}`);
 check("add-ons listed", pr.addons === 6, String(pr.addons));
 check("booking terms listed", pr.terms >= 4, String(pr.terms));
-check("every package links to contact", pr.ctas.every(h => h === "#/contact"), pr.ctas.join(","));
+check("every package links to contact", pr.ctas.length > 0 && pr.ctas.every(h => /(^|\/)contact(\.html)?$/.test(h)), pr.ctas.join(","));
 // The editorial package cards carry no fill — they sit on the white page
 // separated by whitespace, not by a card background. The old check asserted
 // rgb(255,255,255); the meaningful assertion now is that they are NOT a
 // filled/tinted box, which is what would fight the photography.
 check("package cards are unfilled", pr.bg === "rgba(0, 0, 0, 0)", pr.bg);
+// ...with exactly one deliberate exception: the recommended tier inverts to the
+// site's black, the same move `.invest` already makes. `.pkg--pop` shipped
+// with NO css rule at all for months, so the "most popular" package was
+// pixel-identical to the other three on the page that exists to make a sale.
+// Assert both halves: the popular card IS filled, and no OTHER card is, so a
+// future change can neither drop the treatment nor spread it to every tier.
+check("the popular tier is visually distinct", pr.popularFilled === true, String(pr.popularFilled));
+check("only the popular tier is filled", pr.filled === 1, `${pr.filled} filled of ${pr.tiers}`);
+// Every tier carries its config `spec` line ("30 min · 1 outfit · 1 location"),
+// which used to be defined in config.ts and rendered only by pricingPage() — a
+// function nothing routed, so the content was never actually shown to anyone.
+check("every tier shows its spec line", pr.specs.length === pr.tiers && pr.specs.every(Boolean),
+  pr.specs.join(" | "));
 check("services no overflow", pr.overflow <= 0, `${pr.overflow}px`);
 await shot("shot-services.png");
 

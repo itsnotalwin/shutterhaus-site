@@ -13,3 +13,21 @@ __pycache__/
 *.pyc
 # verify.mjs screenshots, if SHOT_DIR is ever pointed back at the root
 shot-*.png
+# Headless Chrome profiles created by the audit tools (tools/audit2-*.mjs).
+# These are real browser profiles: they contain Cookies and "Account Web Data".
+# They must never be committed or pushed anywhere.
+audit2*-chrome-profile*/
+audit-v2chrome-profile/
+*.chrome-profile/
+
+# Audit scratch. The reports themselves are committed (AUDIT.md, RESOLVED.md,
+# the .json measurements); the screenshots they point at are not. mobile-audit
+# alone is 172MB of a11y before/after captures from a previous pass.
+audit-v2/**/*.png
+audit-v2/**/*.jpg
+mobile-audit/**/*.png
+mobile-audit/**/*.jpg
+shot-*.png
+
+# verify.mjs screenshots, if SHOT_DIR is ever pointed back at the root
+shot-*.png

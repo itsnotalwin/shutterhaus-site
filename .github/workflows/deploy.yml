@@ -15,7 +15,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  verify:
+    # The gate the build never ran. On 2026-10-02 `npm run verify` was sitting
+    # at 59/67 — eight assertions still describing the pre-split hash-routed
+    # SPA — and nothing executed it, so the portfolio wall silently went 2-up on
+    # desktop (a 14,582px-tall page) with a green deploy behind it. A gate nobody
+    # runs is worse than no gate, because it still looks like it passes.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,6 +28,51 @@ jobs:
         with:
           node-version: 20
           cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci
+      - run: npm run build
+        env:
+          BASE_PATH: ./
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+      # verify.mjs drives a real Chrome over CDP on 9222 and renders the built
+      # site. Start Chrome and the preview server, then assert on the real
+      # rendered output rather than on the source.
+      - name: Start headless Chrome on 9222
+        run: |
+          google-chrome --headless=new --remote-debugging-port=9222 \
+            --hide-scrollbars --disable-gpu --no-first-run \
+            --user-data-dir=/tmp/ci-chrome about:blank &
+          for i in $(seq 1 40); do
+            curl -sf http://127.0.0.1:9222/json/version >/dev/null && break
+            sleep 0.5
+          done
+          curl -sf http://127.0.0.1:9222/json/version
+      - name: Serve the built site
+        run: |
+          npx vite preview --host 127.0.0.1 --port 4173 --strictPort &
+          for i in $(seq 1 40); do
+            curl -sf http://127.0.0.1:4173/ >/dev/null && break
+            sleep 0.5
+          done
+          curl -sf -o /dev/null -w 'preview %{http_code}\n' http://127.0.0.1:4173/
+      - name: Rendered-design gate
+        run: node tools/verify.mjs http://127.0.0.1:4173
+
+  build:
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - run: npm ci
       - run: npm run build
         env:

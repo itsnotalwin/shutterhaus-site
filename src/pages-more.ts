@@ -53,7 +53,11 @@ export function servicesPage(photos: Photo[] = []): string {
   // so the three cards never show the same frame; short galleries just repeat.
   const shot = (i: number): Photo | undefined => (photos.length ? photos[i % photos.length] : undefined);
 
-  const card = (t: PricingTier, i: number) => {
+  // `spec` is the compact "30 min · 1 outfit · 1 location" line in config.ts.
+  // It is the only place a client can see Starter and Signature differ by
+  // anything other than prose, so it belongs on the card next to the name —
+  // not behind a separate pricing route (there isn't one).
+  const card = (t: PricingTier, i: number): string => {
     const ph = shot(i + 1);
     return `<article class="pkg${t.popular ? " pkg--pop" : ""}">
     ${ph ? `<figure class="pkg__fig"><picture>${pictureFor(ph.url, "(max-width: 760px) 100vw, 33vw", ph.width)}
@@ -61,6 +65,7 @@ export function servicesPage(photos: Photo[] = []): string {
              loading="lazy" decoding="async" /></picture></figure>` : ""}
     <p class="pkg__num">${String(i + 1).padStart(2, "0")}.</p>
     <h3 class="pkg__name">${escapeHtml(t.name)}</h3>
+    <p class="pkg__spec">${escapeHtml(t.spec)}</p>
     <p class="pkg__desc">${escapeHtml(t.fit)}</p>
     <ul class="pkg__list">
       ${t.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}
@@ -83,7 +88,7 @@ export function servicesPage(photos: Photo[] = []): string {
 
     <section class="invest">
       <div class="invest__col">
-        <p class="eyebrow eyebrow--inv">Investment</p>
+        <p class="invest__label">Investment</p>
         <h2 class="invest__h">Quality over quantity.</h2>
       </div>
       <p class="invest__p">${escapeHtml(p.depositNote)}</p>
@@ -111,56 +116,6 @@ export function servicesPage(photos: Photo[] = []): string {
 }
 
 /**
- * The pricing route. Same chrome as the rest of the site: white, heavy
- * wordmark-scale type, hairline rules, no colour except the "popular" flag.
- */
-export function pricingPage(): string {
-  const p = SITE.pricing;
-  if (!p.show) return `<section class="empty"><p>Packages coming soon.</p></section>`;
-
-  const tier = (t: PricingTier) => `<article class="tier${t.popular ? " tier--pop" : ""}">
-    ${t.popular ? `<span class="tier__flag">Most popular</span>` : ""}
-    <h3 class="tier__name">${escapeHtml(t.name)}</h3>
-    <p class="tier__price">${escapeHtml(t.price)}</p>
-    <p class="tier__spec">${escapeHtml(t.spec)}</p>
-    <p class="tier__fit">${escapeHtml(t.fit)}</p>
-    <ul class="tier__list">
-      ${t.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}
-    </ul>
-    <a class="tier__cta" href="./contact.html">Book this</a>
-  </article>`;
-
-  return `<section class="pricing">
-    <header class="pricing__head">
-      <h1 class="pricing__h">${escapeHtml(p.heading)}</h1>
-      <p class="pricing__intro">${escapeHtml(p.intro)}</p>
-    </header>
-
-    <div class="pricing__grid">${p.tiers.map(tier).join("")}</div>
-
-    <div class="pricing__addons">
-      <h2 class="pricing__sub">${escapeHtml(p.addonsTitle)}</h2>
-      <ul class="addons">
-        ${p.addons
-          .map(
-            (a) =>
-              `<li><span>${escapeHtml(a.label)}</span><span class="addons__p">${escapeHtml(a.price)}</span></li>`,
-          )
-          .join("")}
-      </ul>
-    </div>
-
-    <div class="pricing__terms">
-      <h2 class="pricing__sub">Booking terms</h2>
-      <ul class="terms">
-        ${p.terms.map((t) => `<li>${escapeHtml(t)}</li>`).join("")}
-      </ul>
-      <p class="pricing__note">${escapeHtml(p.depositNote)}</p>
-    </div>
-  </section>`;
-}
-
-/**
  * The contact route.
  *
  * Reference layout: heading + invitation on the left, the form below it, a
@@ -174,11 +129,25 @@ export function contactPage(photos: Photo[] = []): string {
   const shot = photos[0];
   const tel = c.phone.replace(/\s/g, "");
 
+  // `sizes` describes the BOX the browser lays out, not the file — get it
+  // wrong in the small direction and the picture paints soft. `.contact` is a
+  // two-column grid capped at 1100px with a 60px gap, so the figure column is
+  // never wider than (1100 - 60) / 2 = 520px however large the window gets;
+  // below 900px it collapses to one column and goes full-bleed. Clamping to
+  // 520px stops a wide desktop from asking for the 1600w derivative for a box
+  // that is 440 CSS px wide, while 50vw keeps it honest on narrow windows.
+  //
+  // `display:block` on the <picture> is load-bearing, not decoration:
+  // <picture> is an inline box by default, so inside this `overflow:hidden`
+  // figure it would add a line-box descender gap under the photo. That is why
+  // `.about__fig picture` and `.pkg__fig picture` both set it in the
+  // stylesheet — `.contact__fig` has no such rule yet, so it is set inline to
+  // keep the figure correct without depending on a CSS change landing.
   const fig = shot
-    ? `<figure class="contact__fig">
-         <img src="${escapeHtml(shot.url)}" alt="${escapeHtml(shot.alt || shot.filename || "")}"
+    ? `<figure class="contact__fig"><picture style="display:block">${pictureFor(shot.url, "(max-width: 900px) 100vw, min(50vw, 520px)", shot.width)}
+         <img src="${escapeHtml(bestDerivative(shot.url, "webp", shot.width))}" alt="${escapeHtml(shot.alt || shot.filename || "")}"
               loading="lazy" decoding="async"
-              style="aspect-ratio:${shot.width ?? 1600}/${shot.height ?? 1067}" />
+              style="aspect-ratio:${shot.width ?? 1600}/${shot.height ?? 1067}" /></picture>
        </figure>`
     : "";
 

@@ -1,0 +1,1802 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shutterhaus Visuals — Home Page Upgrade · Mockup v2</title>
+<!--
+  ============================================================================
+  SHUTTERHAUS VISUALS — HOME PAGE, VISUAL UPGRADE MOCKUP (v2)
+  ============================================================================
+  This is a DESIGN DOCUMENT, not a deployable build. It is one self-contained
+  HTML file with no build step and no external requests: no webfonts, no CDNs,
+  no network at all. Open it in any browser and it renders.
+
+  It contains three renders of the same page:
+    1. NOW        — the live home page as captured on 2026-10-02 (iPhone 16,
+                    393 x 852), reconstructed.
+    2. PROPOSED   — the same page as proposed, in the same device frame.
+    3. DESKTOP    — the proposed page at 1280px, full height.
+
+  ...then a numbered change list with a reason and an effort estimate for each
+  change, and a type-measurement table showing the arithmetic behind the one
+  critical fix.
+
+  MEASUREMENTS IN THIS DOCUMENT COME FROM audit-v2/ (baseline screenshots and
+  the CDP measurement pass) and from reading the source:
+    src/config.ts, src/pages.ts, src/layout.ts, src/styles.css,
+    src/editorial.css, src/rows.ts
+  Numbers quoted as "measured" were measured, not estimated. Numbers quoted as
+  "in this document" are properties of the reconstruction, not of the live site
+  — the reconstruction uses a system font where the live site uses Archivo
+  Black, which is materially wider. The difference is called out where it
+  matters.
+
+  BRAND CONSTRAINTS HONOURED THROUGHOUT (Alwin's decisions, not negotiable):
+    · Black and white photography studio. ZERO saturated colour anywhere —
+      including in this document's own chrome.
+    · The mono metadata layer (uppercase, letterspaced mono) is the site's
+      strongest brand decision. It is extended here, never normalised.
+    · No object-fit: cover on photographs. Focal points and object-position
+      instead. The strip shows whole frames; the hero is the only crop on the
+      page and its focal point is named.
+    · Flush-left layout, hairline rules, heavy display type, minimal
+      brutalist line icons.
+    · Nothing repaints on resize. There is no resize listener in this file
+      and the proposed H1 is sized in CSS, so rotating a phone repaints
+      nothing and cannot white-flash or jump to top. Only orientationchange
+      is ever needed, and the proposed version does not need even that.
+  ============================================================================
+-->
+
+<style>
+/* ==========================================================================
+   0. DOCUMENT CHROME
+   Deliberately austere, so the artefact reads as a spec sheet rather than a
+   sales deck: one ink, five greys, hairlines only, no rounded corners on the
+   page furniture, no colour of any kind.
+   ========================================================================== */
+:root{
+  --d-paper:#ffffff;
+  --d-wash:#f5f5f5;
+  --d-wash2:#ededed;
+  --d-ink:#111111;
+  --d-mid:#4a4a4a;
+  --d-dim:#767676;
+  --d-faint:#9a9a9a;
+  --d-hair:#e2e2e2;
+  --d-hair2:#cccccc;
+
+  --font-display:"Helvetica Neue",Helvetica,"Arial Black",Arial,sans-serif;
+  --font-body:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+
+  --gutter:clamp(20px,4vw,56px);
+  --measure:1180px;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0;
+  background:var(--d-wash);
+  color:var(--d-ink);
+  font-family:var(--font-body);
+  font-size:15px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* --- shared atoms ------------------------------------------------------- */
+.mono{
+  font-family:var(--font-mono);
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+}
+.mono--sm{ font-size:9px; letter-spacing:.2em; }
+.dim{ color:var(--d-dim); }
+.rule{ height:1px; background:var(--d-hair); border:0; margin:0; }
+.rule--ink{ background:var(--d-ink); }
+
+.shell{ max-width:var(--measure); margin:0 auto; padding:0 var(--gutter); }
+
+/* ==========================================================================
+   1. DOCUMENT HEADER
+   ========================================================================== */
+.doc-head{
+  border-bottom:1px solid var(--d-ink);
+  background:var(--d-paper);
+}
+.doc-head__in{ padding-top:44px; padding-bottom:30px; }
+.doc-head__eyebrow{
+  display:flex; flex-wrap:wrap; gap:8px 22px; align-items:baseline;
+  color:var(--d-dim);
+  margin-bottom:26px;
+}
+.doc-head__eyebrow b{ color:var(--d-ink); font-weight:600; }
+
+.doc-head h1{
+  font-family:var(--font-display);
+  font-weight:800;
+  font-size:clamp(34px,6.4vw,66px);
+  line-height:.92;
+  letter-spacing:-.035em;
+  text-transform:uppercase;
+  margin:0 0 20px;
+  max-width:16ch;
+}
+.doc-head__lede{
+  font-size:16px;
+  line-height:1.5;
+  color:var(--d-mid);
+  max-width:62ch;
+  margin:0 0 26px;
+}
+.doc-head__lede strong{ color:var(--d-ink); font-weight:600; }
+
+/* Contents rail */
+.toc{
+  display:flex; flex-wrap:wrap; gap:0;
+  border-top:1px solid var(--d-hair);
+}
+.toc a{
+  flex:1 1 auto; min-width:150px;
+  padding:11px 16px 11px 0;
+  margin-right:16px;
+  color:var(--d-ink);
+  text-decoration:none;
+  border-bottom:2px solid transparent;
+}
+.toc a:hover{ border-bottom-color:var(--d-ink); }
+.toc a span{ color:var(--d-faint); margin-right:8px; }
+
+/* ==========================================================================
+   2. SECTION SCAFFOLD
+   ========================================================================== */
+.sec{ padding:64px 0 0; }
+.sec__head{
+  display:flex; align-items:baseline; gap:16px; flex-wrap:wrap;
+  border-top:1px solid var(--d-ink);
+  padding-top:13px;
+  margin-bottom:22px;
+}
+.sec__num{ color:var(--d-faint); }
+.sec__title{
+  font-family:var(--font-display);
+  font-weight:800;
+  font-size:15px;
+  letter-spacing:.01em;
+  text-transform:uppercase;
+  margin:0;
+  flex:1 1 auto;
+}
+.sec__meta{ color:var(--d-dim); white-space:nowrap; }
+.sec__body{ padding-bottom:64px; }
+.sec__note{
+  font-size:13.5px; line-height:1.6; color:var(--d-mid);
+  max-width:70ch; margin:0 0 18px;
+}
+.sec__note code{
+  font-family:var(--font-mono); font-size:11.5px;
+  background:var(--d-wash2); padding:1px 5px; color:var(--d-ink);
+}
+
+/* ==========================================================================
+   3. THE PHONE FRAME
+   A 393 x 852 iPhone 16: 54px bezel, Dynamic Island, status bar, home
+   indicator. The device frame is chrome for this document only — the page
+   inside is the artefact being judged.
+   ========================================================================== */
+.stage{
+  display:flex; flex-wrap:wrap; gap:36px;
+  align-items:flex-start;
+}
+
+.phone{
+  --bezel:13px;
+  position:relative;
+  flex:0 0 auto;
+  padding:var(--bezel);
+  border-radius:62px;
+  background:#0c0c0c;
+  background-image:linear-gradient(150deg,#2b2b2b 0%,#0c0c0c 32%,#0c0c0c 68%,#232323 100%);
+  box-shadow:
+    0 0 0 1px #333,
+    0 1px 0 1px #444 inset,
+    0 28px 56px -22px rgba(0,0,0,.55),
+    0 6px 14px -6px rgba(0,0,0,.4);
+}
+.phone::after{            /* titanium rim highlight */
+  content:""; position:absolute; inset:0; border-radius:62px;
+  pointer-events:none;
+  box-shadow:0 0 0 1px rgba(255,255,255,.09) inset;
+}
+/* side buttons */
+.phone__btn{ position:absolute; background:#1b1b1b; border-radius:2px; }
+.phone__btn--v1{ left:-3px; top:186px; width:3px; height:30px; }
+.phone__btn--v2{ left:-3px; top:230px; width:3px; height:58px; }
+.phone__btn--v3{ left:-3px; top:300px; width:3px; height:58px; }
+.phone__btn--p{ right:-3px; top:250px; width:3px; height:86px; }
+
+.screen{
+  position:relative;
+  width:393px; height:852px;
+  border-radius:48px;
+  overflow:hidden;
+  background:#fff;
+  isolation:isolate;
+}
+/* Dynamic Island */
+.screen__island{
+  position:absolute; z-index:60;
+  top:11px; left:50%; transform:translateX(-50%);
+  width:125px; height:37px; border-radius:19px;
+  background:#000;
+}
+.screen__island::after{         /* camera lens glint */
+  content:""; position:absolute; right:11px; top:50%;
+  width:9px; height:9px; margin-top:-4.5px; border-radius:50%;
+  background:radial-gradient(circle at 34% 30%,#2b3540 0%,#0d1216 62%,#050708 100%);
+}
+/* status bar */
+.screen__status{
+  position:absolute; z-index:60; top:0; left:0; right:0;
+  height:54px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 30px 0 34px;
+  color:#fff; font-family:var(--font-display); font-weight:700;
+  font-size:15px; letter-spacing:.01em;
+  pointer-events:none;
+  mix-blend-mode:difference;   /* legible over both the photo and white type */
+}
+.screen__status .mono-st{
+  font-family:var(--font-mono); font-weight:600; font-size:15px;
+  letter-spacing:0; text-transform:none;
+}
+.screen__ind{ display:flex; align-items:center; gap:6px; }
+/* home indicator */
+.screen__bar{
+  position:absolute; z-index:60; bottom:8px; left:50%;
+  transform:translateX(-50%);
+  width:140px; height:5px; border-radius:3px;
+  background:rgba(0,0,0,.34);
+  pointer-events:none;
+}
+.screen--light .screen__bar{ background:rgba(0,0,0,.3); }
+
+/* the scrollable page viewport */
+.viewport{
+  position:absolute; inset:0;
+  overflow-y:auto; overflow-x:hidden;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.viewport::-webkit-scrollbar{ display:none; }
+
+/* measurement pins drawn over the frame */
+.pins{ position:absolute; inset:0; pointer-events:none; z-index:70; }
+.pin{
+  position:absolute; transform:translate(-50%,-50%);
+  width:23px; height:23px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-mono); font-size:10px; font-weight:700;
+  color:#fff; background:#111;
+  box-shadow:0 0 0 2px #fff, 0 0 0 3px #111;
+}
+.pin--b{ background:#fff; color:#111; }
+
+/* legend beside the phone */
+.legend{ flex:1 1 300px; min-width:280px; max-width:420px; }
+.legend__row{
+  display:grid; grid-template-columns:26px 1fr; gap:0 12px;
+  padding:13px 0;
+  border-bottom:1px solid var(--d-hair);
+}
+.legend__row:first-child{ border-top:1px solid var(--d-hair); }
+.legend__n{
+  grid-row:1 / span 2;
+  width:22px; height:22px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--d-ink); color:#fff;
+  font-family:var(--font-mono); font-size:10px; font-weight:700;
+}
+.legend__n--o{ background:#fff; color:var(--d-ink); box-shadow:inset 0 0 0 1px var(--d-ink); }
+.legend__t{ font-size:13.5px; font-weight:600; line-height:1.35; }
+.legend__d{ font-size:12.5px; line-height:1.5; color:var(--d-dim); margin-top:3px; }
+.legend__d b{ color:var(--d-ink); font-weight:600; }
+.legend__d .m{ font-family:var(--font-mono); font-size:11px; letter-spacing:.04em; }
+
+/* ==========================================================================
+   4. DESKTOP FRAME
+   1280px wide, full page height, so the whole proposed page is visible.
+   ========================================================================== */
+.desk{
+  width:1280px; max-width:100%;
+  background:#fff;
+  border:1px solid var(--d-hair2);
+  box-shadow:0 18px 40px -26px rgba(0,0,0,.4);
+}
+.desk__bar{
+  display:flex; align-items:center; gap:10px;
+  padding:0 14px; height:38px;
+  border-bottom:1px solid var(--d-hair);
+  background:var(--d-wash);
+}
+.desk__dots{ display:flex; gap:6px; }
+.desk__dots i{ width:10px; height:10px; border-radius:50%; background:var(--d-hair2); }
+.desk__url{
+  flex:1 1 auto; text-align:center;
+  font-family:var(--font-mono); font-size:10px; letter-spacing:.1em;
+  color:var(--d-faint); text-transform:uppercase;
+}
+.desk__tag{ font-family:var(--font-mono); font-size:9px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--d-faint); }
+
+/* ==========================================================================
+   ==========================================================================
+   5. THE PAGE ITSELF  —  shared tokens for both renders
+   Scoped under .pg so nothing leaks into the document chrome.
+   ========================================================================== */
+.pg{
+  --pad:18px;
+  --gut:10px;
+  --head:92px;
+  --sat:59px;        /* iPhone 16 safe-area top  */
+  --sab:34px;        /* iPhone 16 safe-area bottom */
+  --vh:852px;        /* device viewport height, so vh-dependent layout is
+                        reproducible inside a frame */
+  --paper:#fff;
+  --ink:#111;
+  --dim:#6d6d6d;
+  --grey:#6b6b6b;
+  --line:#e6e6e6;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --disp:"Helvetica Neue",Helvetica,"Arial Black",Arial,sans-serif;
+
+  position:relative;
+  container-type:inline-size;         /* the H1 sizes from the container, not
+                                         from the viewport — see §5.1 */
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.55;
+  overflow:hidden;
+}
+.pg--desk{
+  --pad:56px;
+  --gut:14px;
+  --head:118px;
+  --sat:0px;
+  --sab:0px;
+  --vh:1000px;
+  --ink:#141414;
+  --line:#e8e8e8;
+}
+.pg a{ color:inherit; }
+
+.eyebrow{
+  font-family:var(--mono);
+  font-size:11px; font-weight:600;
+  letter-spacing:.18em; text-transform:uppercase;
+  margin:0;
+}
+.dimmed{ color:var(--dim); }
+
+/* the cta: a long em-dash rule, a word, an arrow. Site vocabulary. */
+.cta{
+  display:inline-flex; align-items:baseline; gap:10px;
+  font-family:var(--mono); font-size:12px; font-weight:600;
+  letter-spacing:.12em; text-transform:uppercase;
+  text-decoration:none; color:var(--ink);
+  padding:0 0 2px;
+}
+.cta::before{ content:""; width:28px; height:1px; background:currentColor; }
+.cta__ar{ transition:transform .18s ease; }
+.cta:hover .cta__ar{ transform:translateX(4px); }
+
+/* --- 5.0 header ---------------------------------------------------------- */
+.hdr{
+  position:absolute; inset:0 0 auto 0; z-index:5;
+  padding:calc(10px + var(--sat)) var(--pad) 10px;
+  min-height:calc(var(--head) + var(--sat));
+  display:flex; align-items:center; justify-content:space-between;
+  gap:14px;
+}
+.hdr--over{
+  background:linear-gradient(180deg,rgba(0,0,0,.66) 0%,rgba(0,0,0,.54) 70%,rgba(0,0,0,0) 100%);
+  color:#fff;
+}
+.wm{ display:block; text-decoration:none; line-height:1.05; }
+.wm__top{
+  display:block;
+  font-family:var(--mono); font-size:11px; font-weight:700;
+  letter-spacing:.2em; text-transform:uppercase;
+}
+.wm__big{
+  display:block;
+  font-family:var(--disp); font-weight:800;
+  font-size:21px; line-height:1.05;
+  letter-spacing:.01em; text-transform:uppercase;
+}
+.hdr__ctl{ display:flex; align-items:center; gap:14px; }
+.hdr__sep{ width:1px; height:20px; background:currentColor; opacity:.34; }
+.soc{ display:flex; color:currentColor; opacity:.88; }
+.soc svg{ display:block; width:18px; height:18px; }
+.soc:hover{ opacity:1; }
+.burger{
+  display:flex; flex-direction:column; justify-content:center; gap:5px;
+  width:40px; height:40px; margin-right:-10px;
+  border:1px solid currentColor; background:transparent;
+  color:inherit; cursor:pointer;
+  align-items:center;
+}
+.burger i{ display:block; width:18px; height:1.5px; background:currentColor; }
+.burger--plain{ border:0; width:32px; }
+.hdr__nav{ display:none; }
+.hdr__nav a{
+  font-family:var(--mono); font-size:11px; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase;
+  text-decoration:none; color:currentColor; opacity:.8;
+  padding-bottom:2px; border-bottom:1px solid transparent;
+}
+.hdr__nav a.is-on{ opacity:1; border-bottom-color:currentColor; }
+
+/* --- 5.1 THE CRITICAL FIX ------------------------------------------------
+   .hero__h is a designed two-line lockup. Two mechanisms, both required:
+
+   (a) A MEASURE-DERIVED CAP. The longest line is "PORTRAITURE", measured at
+       7.7em wide in Archivo Black at this tracking. The heading may therefore
+       never exceed (container width - 2 * gutter) / 7.7, or that line would
+       not fit. That divisor is a measured constant, not a guess.
+   (b) HARD ANTI-BREAK. overflow-wrap / word-break / hyphens are all set to
+       the no-break values, so even if a future font swap is wider than the
+       measurement, the failure mode becomes a clipped word, never
+       "PORTRAITUR / E".
+
+   At 393px: (393 - 36) / 7.7 = 46.4px   (live site currently: 48px, breaks)
+   At 320px: (320 - 36) / 7.7 = 36.9px   (live site currently: 48px, breaks)
+   At 1280px: (1280 - 112) / 7.7 = 151.7px, so the vw clamp wins at 132px.
+
+   This is CSS only. No resize listener, no JS, nothing to repaint on rotate.
+   ------------------------------------------------------------------------ */
+.hero__h{
+  font-family:var(--disp);
+  font-weight:800;
+  font-size:clamp(34px,9.6vw,132px);
+  font-size:min(clamp(34px,9.6vw,132px), calc((100cqi - 2 * var(--pad)) / 7.7));
+  line-height:.9;
+  letter-spacing:-.03em;
+  text-transform:uppercase;
+  margin:14px 0 0;
+  overflow-wrap:normal;
+  word-break:keep-all;
+  hyphens:none;
+}
+.hero__h span{ display:block; white-space:nowrap; }
+
+/* --- 5.2 hero ------------------------------------------------------------ */
+.hero{
+  position:relative;
+  margin:0 calc(-1 * var(--pad));
+  min-height:calc(var(--vh) * .72);
+  display:flex; flex-direction:column; justify-content:flex-end;
+  overflow:hidden;
+  background:#0d0d0d;
+}
+.pg--desk .hero{ min-height:min(calc(var(--vh) * .78),720px); }
+.hero__fig{ position:absolute; inset:0; margin:0; }
+.hero__fig img{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  /* Focal point, not a default centre crop. 27-img-0297.jpg is 2400 x 1866
+     with the subject's face at roughly 68% across and 15% down. object-position
+     68% / 22% keeps the face in the frame on a 0.64 aspect box; a centred
+     crop cuts her off. cover is unavoidable on a full-bleed hero — the brand
+     rule is honoured by naming the focal point rather than accepting whatever
+     the browser picks. */
+  object-fit:cover;
+  object-position:68% 22%;
+}
+.hero__scrim{
+  position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(180deg,
+    rgba(0,0,0,.36) 0%, rgba(0,0,0,.12) 22%,
+    rgba(0,0,0,.62) 34%, rgba(0,0,0,.66) 40%,
+    rgba(0,0,0,.70) 66%, rgba(0,0,0,.76) 80%, rgba(0,0,0,.86) 100%);
+}
+.hero__body{
+  position:relative; z-index:1;
+  padding:0 var(--pad) 26px;
+  max-width:100%;
+  color:#fff;
+}
+.hero__body .eyebrow{ color:#fff; opacity:.9; }
+.hero__lede{
+  margin:18px 0 26px;
+  font-size:15px; line-height:1.55;
+  color:#fff; opacity:.92;
+  max-width:34ch;
+}
+.pg--desk .hero__lede{ font-size:16px; max-width:40ch; }
+.hero__body .cta{ color:#fff; }
+
+/* --- 5.3 the register: one ruled header, reused everywhere -------------- */
+.reg{
+  display:flex; align-items:baseline; gap:14px;
+  border-top:1px solid currentColor;
+  padding-top:11px;
+  color:#fff;
+}
+.reg__l{ flex:1 1 auto; min-width:0; }
+.reg__l b{ font-weight:600; }
+.reg__l .reg__l2{ display:block; }
+.reg__r{ flex:0 0 auto; text-align:right; opacity:.7; }
+.reg--ink{ color:var(--ink); opacity:1; }
+.reg--ink .reg__r{ opacity:.55; }
+
+/* hero bottom register */
+.hero__reg{ position:relative; z-index:1; margin:0 calc(-1 * var(--pad));
+  padding:0 var(--pad) 0; color:#fff; }
+.hero__reg .reg{ border-top-color:rgba(255,255,255,.28); }
+.reg__cue{ display:flex; align-items:center; gap:7px; }
+.reg__cue svg{ width:9px; height:9px; }
+
+/* --- 5.4 the strip ------------------------------------------------------- */
+.strip{ padding:calc(var(--pad) * 3.2) 0 0; }
+.strip__grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:var(--gut);
+}
+.strip__col{ display:flex; flex-direction:column; gap:var(--gut); }
+.cell{ margin:0; display:block; background:var(--d-wash2); }
+.cell img{ display:block; width:100%; height:auto; }   /* WHOLE FRAME. No crop. */
+.pg--desk .strip__grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+
+.strip__foot{
+  display:flex; align-items:center; justify-content:flex-end;
+  border-top:1px solid var(--ink);
+  margin-top:calc(var(--pad) * 2.2);
+  padding-top:13px;
+}
+.strip__foot .cta{ text-decoration:none; }
+
+/* --- 5.5 the closing band, rebuilt --------------------------------------- */
+.band{
+  margin:calc(var(--pad) * 4.4) calc(-1 * var(--pad)) 0;
+  padding:0 var(--pad) 0;
+  background:#0d0d0d; color:#fff;
+}
+.band__reg{ border-top:1px solid rgba(255,255,255,.3); padding-top:12px; }
+.band__grid{
+  display:grid; grid-template-columns:1fr; gap:30px;
+  padding:26px 0 0;
+}
+.band__h{
+  font-family:var(--disp); font-weight:800;
+  /* The band is a closing statement, not a second hero. Its display type is
+     held a full step below the hero's so the page has exactly ONE moment of
+     maximum scale. Same clamp maths as the hero, same no-break guarantee. */
+  font-size:clamp(28px,7.4vw,64px);
+  font-size:min(clamp(28px,7.4vw,64px), calc((100cqi - 2 * var(--pad)) / 11));
+  line-height:.94; letter-spacing:-.028em; text-transform:uppercase;
+  margin:11px 0 0; max-width:13ch;
+  overflow-wrap:normal; word-break:keep-all; hyphens:none;
+}
+.band__from{ margin:0; color:rgba(255,255,255,.62); }
+.band__price{
+  font-family:var(--disp); font-weight:800;
+  font-size:clamp(30px,7.6vw,58px);
+  font-size:min(clamp(30px,7.6vw,58px), calc((100cqi - 2 * var(--pad)) / 3.6));
+  line-height:1; letter-spacing:-.03em;
+  margin:6px 0 12px;
+}
+.band__lines{ margin:0 0 24px; padding:0; list-style:none;
+  font-family:var(--mono); font-size:11px; font-weight:500;
+  letter-spacing:.1em; text-transform:uppercase;
+  color:rgba(255,255,255,.66); line-height:1.75; }
+.btn{
+  display:inline-block;
+  border:1px solid #fff; color:#fff; background:transparent;
+  font-family:var(--mono); font-size:11px; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase;
+  padding:14px 22px; text-decoration:none; min-height:44px;
+}
+.btn__ar{ display:inline-block; margin-left:9px; transition:transform .18s ease; }
+.btn:hover .btn__ar{ transform:translateX(4px); }
+
+/* contact register: real rows, real tap targets */
+.contact{ margin-top:34px; border-top:1px solid rgba(255,255,255,.3); }
+.crow{
+  display:grid; grid-template-columns:82px 1fr; gap:0 14px;
+  align-items:center;
+  min-height:46px;
+  border-bottom:1px solid rgba(255,255,255,.14);
+  text-decoration:none; color:#fff;
+}
+.crow__k{ color:rgba(255,255,255,.5); }
+.crow__v{ font-family:var(--mono); font-size:12px; font-weight:500;
+  letter-spacing:.02em; overflow-wrap:anywhere; }
+.crow:hover .crow__v{ text-decoration:underline; text-underline-offset:3px; }
+.crow--stat .crow__v{ color:rgba(255,255,255,.55); }
+.band__end{ height:calc(var(--sab) + 22px); }
+
+/* desktop band: two columns + a four-up contact register */
+.pg--desk .band__grid{ grid-template-columns:1.45fr 1fr; gap:56px; align-items:end;
+  padding:44px 0 0; }
+.pg--desk .contact{ display:grid; grid-template-columns:repeat(4,1fr); gap:0 40px; }
+.pg--desk .crow{ grid-template-columns:96px 1fr; }
+.pg--desk .band__h{ font-size:clamp(44px,4.2vw,64px); max-width:11ch; }
+.pg--desk .band__price{ font-size:58px; }
+
+/* desktop header: nav row replaces the burger */
+.pg--desk .hdr{ min-height:var(--head); padding:var(--sat) var(--pad) 0; }
+.pg--desk .burger{ display:none; }
+.pg--desk .hdr__nav{ display:flex; gap:30px; }
+.pg--desk .hdr__sep{ display:none; }
+.pg--desk .hero__reg{ display:none; }
+.pg--desk .hero__regwide{
+  position:relative; z-index:1; margin:0 calc(-1 * var(--pad));
+  padding:0 var(--pad); color:#fff;
+}
+.pg:not(.pg--desk) .hero__regwide{ display:none; }
+.pg--desk .hero__body{ padding-bottom:26px; }
+.reg--3{ display:grid; grid-template-columns:1fr auto 1fr; gap:24px; }
+.reg--3 .reg__c{ text-align:center; }
+.reg--3 .reg__r{ text-align:right; }
+.reg--3 .reg__sep{ display:flex; align-items:center; justify-content:flex-end; gap:8px; }
+
+/* ==========================================================================
+   6. THE "NOW" RENDER — the live page, reconstructed
+   Same stylesheet, .pg--now overrides that restore the measured defects.
+   Reconstructing the defects in CSS rather than in a second hand-written
+   stylesheet keeps the comparison honest: one stylesheet, two states.
+   ========================================================================== */
+.pg--now .hdr__sep,
+.pg--now .burger{ display:none; }
+.pg--now .burger{ display:flex; border:0; width:32px; margin:0; }
+.pg--now .hdr{ gap:0; }
+.pg--now .hdr__ctl{ gap:16px; }
+
+/* DEFECT: burger floats between the wordmark and the social icons, with a
+   dead gap to its left and no anchor on either side. */
+.pg--now .hdr__mid{ display:flex; align-items:center; flex:0 0 auto; margin-right:auto; margin-left:auto; }
+.pg--now .hdr{ justify-content:space-between; }
+
+/* DEFECT: the critical one. 48px fixed floor, `overflow-wrap:anywhere`, so
+   "PORTRAITURE" is broken mid-word rather than the type being sized. */
+.pg--now .hero__h{
+  font-size:48px;
+  font-size:48px;                    /* clamp(48px, 9.6vw, 132px) at 393px */
+  overflow-wrap:anywhere;
+  word-break:normal;
+  line-height:.94;
+  letter-spacing:-.035em;
+  margin:18px 0 0;
+}
+.pg--now .hero__h span{ display:inline; white-space:normal; }
+
+/* the current mobile hero: only year + place survive in the meta strip; the
+   subject tags and the scroll cue are display:none at <=640px */
+.pg--now .hero__meta{
+  position:absolute; left:0; right:0; bottom:0; z-index:2;
+  display:flex; align-items:center; justify-content:space-between; gap:14px;
+  padding:12px var(--pad);
+  border-top:1px solid rgba(255,255,255,.28);
+  color:#fff;
+}
+.pg--now .hero__meta-tags,
+.pg--now .hero__meta-cue{ display:none; }
+.pg--now .hero__body{ padding-bottom:80px; }
+
+/* the current strip: same hairline head, then a centred cta floating in
+   14px of white under the last frame, then 88px of nothing before the band. */
+.pg--now .strip{ padding:72px 0 0; }
+.pg--now .strip__foot{
+  justify-content:center; border-top:0; margin-top:14px; padding-top:0;
+}
+.pg--now .band{ margin-top:88px; }
+
+/* the current band: a bordered full-width button and a cramped link cluster
+   of 10px type at the very bottom. */
+.pg--now .band__grid{ padding:54px 0 0; }
+.pg--now .band__h{
+  font-size:48px; font-size:min(48px,12.2vw);
+  line-height:.9; margin:14px 0 0; max-width:9ch;
+}
+.pg--now .band__price{ font-size:34px; margin:10px 0 8px; }
+.pg--now .btn{ display:block; width:100%; text-align:center; }
+.pg--now .contact{ display:flex; flex-wrap:wrap; gap:8px 14px;
+  border-top:1px solid rgba(255,255,255,.3); padding:14px 0 0; margin-top:20px; }
+.pg--now .crow{ display:block; min-height:0; border:0; }
+.pg--now .crow__k{ display:none; }
+.pg--now .crow__v{ font-size:10px; letter-spacing:.06em; color:rgba(255,255,255,.72); }
+.pg--now .band__end{ height:16px; }
+.pg--now .hero__fig img{ object-position:68% 22%; }
+</style>
+
+/* The live site renders every photograph through a grayscale filter
+   (src/styles.css:301 — .shell.is-bw .cell img { filter: grayscale(1) contrast(1.06) }).
+   The source JPEGs are actually in colour; the monochrome brand is a CSS filter,
+   not baked into the files. Apply the same here so this mockup matches the site. */
+img { filter: grayscale(1) contrast(1.06); }
+</head>
+<body>
+
+<!-- ==========================================================================
+     DOCUMENT HEADER
+     ========================================================================== -->
+<header class="doc-head">
+  <div class="shell doc-head__in">
+    <div class="doc-head__eyebrow mono">
+      <span>Shutterhaus Visuals</span>
+      <span><b>Home page</b> — visual upgrade</span>
+      <span>Mockup v2</span>
+      <span>2026-10-02</span>
+      <span>Reference device: iPhone 16 · 393 × 852</span>
+    </div>
+
+    <h1>A home page that<br/>does not break</h1>
+
+    <p class="doc-head__lede">
+      The live home page is close. Its bones are right: a full-bleed hero, a
+      ruled mono metadata layer, a packed six-frame strip, one black band to
+      close on. <strong>It has one critical defect and two structural ones.</strong>
+      The H1 breaks <em>PORTRAITUR / E</em> on a phone because
+      <code>overflow-wrap:anywhere</code> was used to cure horizontal scroll by
+      letting any word break anywhere. The right fix is to size the type to the
+      measure, not to license the break. This document shows the defect, the
+      fix, and eight more changes that give the page a section rhythm and a
+      closing band worth the scroll.
+    </p>
+
+    <nav class="toc mono">
+      <a href="#now"><span>01</span>Now</a>
+      <a href="#proposed"><span>02</span>Proposed</a>
+      <a href="#desktop"><span>03</span>Desktop 1280</a>
+      <a href="#measure"><span>04</span>Type &amp; measure</a>
+      <a href="#changes"><span>05</span>Change list</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ==========================================================================
+     01 — NOW
+     ========================================================================== -->
+<section class="sec shell" id="now">
+  <div class="sec__head mono">
+    <span class="sec__num">01</span>
+    <h2 class="sec__title">Now — the live page, reconstructed</h2>
+    <span class="sec__meta">393 × 852 · measured 2026-10-02</span>
+  </div>
+
+  <p class="sec__note">
+    Faithful to <code>audit-v2/baseline/home-viewport.png</code> and to the
+    source: <code>src/editorial.css:237-239</code> for the word break,
+    <code>src/editorial.css:787</code> for <code>min-height:72vh</code>,
+    <code>src/editorial.css:791</code> for the tags and scroll cue being
+    <code>display:none</code> below 640px, and <code>src/pages.ts:619</code>
+    for the band. Same photograph, same copy, same six frames.
+  </p>
+
+  <div class="stage">
+    <div class="phone">
+      <span class="phone__btn phone__btn--v1"></span>
+      <span class="phone__btn phone__btn--v2"></span>
+      <span class="phone__btn phone__btn--v3"></span>
+      <span class="phone__btn phone__btn--p"></span>
+
+      <div class="screen">
+        <div class="screen__island"></div>
+        <div class="screen__status">
+          <span class="mono-st">9:41</span>
+          <span class="screen__ind">
+            <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor" aria-hidden="true">
+              <rect x="0"  y="7.5" width="3" height="4.5" rx="1"/>
+              <rect x="5"  y="5.5" width="3" height="6.5" rx="1"/>
+              <rect x="10" y="3"   width="3" height="9"   rx="1"/>
+              <rect x="15" y="0"   width="3" height="12"  rx="1" opacity=".4"/>
+            </svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor" aria-hidden="true">
+              <path d="M8 10.6 6.1 8.7a2.7 2.7 0 0 1 3.8 0L8 10.6Z"/>
+              <path d="M8 6.6c-1.3 0-2.5.5-3.4 1.4L3.2 6.6A6.8 6.8 0 0 1 8 4.6c1.8 0 3.5.7 4.8 2l-1.4 1.4A4.8 4.8 0 0 0 8 6.6Z" opacity=".92"/>
+              <path d="M8 2.6c-2.3 0-4.4.9-6 2.5L.6 3.7A10.8 10.8 0 0 1 8 .6c3 0 5.6 1.2 7.6 3.1L14.2 5A8.8 8.8 0 0 0 8 2.6Z" opacity=".92"/>
+            </svg>
+            <svg width="25" height="12" viewBox="0 0 25 12" aria-hidden="true">
+              <rect x="0.5" y="0.5" width="21" height="11" rx="3.2" fill="none" stroke="currentColor" opacity=".45"/>
+              <rect x="2"  y="2" width="15" height="8" rx="2" fill="currentColor"/>
+              <path d="M23 4.2v3.6a2 2 0 0 0 0-3.6Z" fill="currentColor" opacity=".45"/>
+            </svg>
+          </span>
+        </div>
+
+        <div class="viewport">
+          <!-- ==================================================================
+               THE PAGE — NOW
+               ================================================================== -->
+          <div class="pg pg--now">
+            <header class="hdr hdr--over">
+              <a class="wm" href="#"><span class="wm__top">Shutterhaus</span><span class="wm__big">Visuals</span></a>
+              <div class="hdr__mid">
+                <button class="burger" aria-label="Menu"><i></i><i></i></button>
+              </div>
+              <div class="hdr__ctl">
+                <a class="soc" href="#" aria-label="Instagram">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                    <rect x="3" y="3" width="18" height="18" rx="5.2"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/>
+                  </svg>
+                </a>
+                <a class="soc" href="#" aria-label="WhatsApp">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.02h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.36c0-4.53 3.7-8.22 8.23-8.22a8.17 8.17 0 0 1 5.81 2.42 8.15 8.15 0 0 1 2.41 5.81c0 4.54-3.69 8.21-8.22 8.21Zm4.51-6.16c-.25-.13-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.15.16-.29.19-.53.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.37-1.72-.15-.24-.02-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.09-.16.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.47c-.16 0-.42.06-.64.31-.22.25-.84.83-.84 2.02 0 1.19.86 2.35.98 2.51.12.16 1.7 2.59 4.11 3.63.57.25 1.02.39 1.37.5.58.19 1.1.16 1.52.1.46-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.14-1.18-.06-.11-.22-.17-.47-.29Z"/>
+                  </svg>
+                </a>
+              </div>
+            </header>
+
+            <section class="hero">
+              <figure class="hero__fig">
+                <img src="../public/gallery/27-img-0297-1600w.jpg" alt="Portrait on a rooftop ledge, hair moving in the wind" />
+              </figure>
+              <div class="hero__scrim"></div>
+
+              <div class="hero__body">
+                <p class="eyebrow">Photography is poetry.</p>
+                <h1 class="hero__h"><span>Timeless</span><span>Portraiture</span></h1>
+                <p class="hero__lede">Real people. Honest moments. Portraits that look beyond the now.</p>
+                <a class="cta" href="#">View portfolio <span class="cta__ar">→</span></a>
+              </div>
+
+              <div class="hero__meta mono">
+                <span>Est. 2019 — Gauteng, South Africa</span>
+                <span class="hero__meta-tags">Portraits · Couples · Families</span>
+                <span class="hero__meta-cue">Scroll ↓</span>
+              </div>
+            </section>
+
+            <div class="strip">
+              <div class="reg reg--ink" style="margin-bottom:22px">
+                <span class="reg__l">Selected work</span>
+                <span class="reg__r">06 frames</span>
+              </div>
+              <div class="strip__grid">
+                <div class="strip__col">
+                  <figure class="cell"><img src="../public/gallery/49-img-0131-800w.jpg" alt="" /></figure>
+                  <figure class="cell"><img src="../public/gallery/14-img-0026-800w.jpg" alt="" /></figure>
+                  <figure class="cell"><img src="../public/gallery/4-img-0068-800w.jpg" alt="" /></figure>
+                </div>
+                <div class="strip__col">
+                  <figure class="cell"><img src="../public/gallery/32-img-0404-800w.jpg" alt="" /></figure>
+                  <figure class="cell"><img src="../public/gallery/26-img-0253-800w.jpg" alt="" /></figure>
+                  <figure class="cell"><img src="../public/gallery/40-img-0092-800w.jpg" alt="" /></figure>
+                </div>
+              </div>
+              <div class="strip__foot">
+                <a class="cta" href="#">See the full portfolio <span class="cta__ar">→</span></a>
+              </div>
+            </div>
+
+            <section class="band">
+              <div class="reg band__reg">
+                <span class="reg__l">Services</span>
+              </div>
+              <div class="band__grid">
+                <div>
+                  <h2 class="band__h">Capture What Matters.</h2>
+                </div>
+                <div>
+                  <p class="band__from mono">From</p>
+                  <p class="band__price">R1,200</p>
+                  <ul class="band__lines">
+                    <li>Starter · Essential · Signature · Social</li>
+                    <li>50% deposit to book · EFT accepted</li>
+                  </ul>
+                  <a class="btn" href="#">View packages <span class="btn__ar">→</span></a>
+                </div>
+              </div>
+              <div class="contact">
+                <a class="crow" href="#"><span class="crow__v">itsnotalwin@gmail.com</span></a>
+                <a class="crow" href="#"><span class="crow__v">+27 73 095 8363</span></a>
+                <a class="crow" href="#"><span class="crow__v">Instagram</span></a>
+              </div>
+              <div class="band__end"></div>
+            </section>
+          </div>
+        </div>
+
+        <div class="screen__bar"></div>
+        <div class="pins">
+          <span class="pin" style="left:50%;top:44.5%">1</span>
+          <span class="pin" style="left:24.5%;top:4.6%">2</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend__row">
+        <span class="legend__n">1</span>
+        <span class="legend__t">The H1 breaks mid-word</span>
+        <span class="legend__d">
+          <b>PORTRAITUR / E.</b> <code>overflow-wrap:anywhere</code> at
+          <code>editorial.css:238</code> lets a word break anywhere, which cured
+          horizontal scroll by destroying the word instead of sizing the type.
+          Measured: the word needs <b>368px</b> at 48px and the column gives it
+          <b>354px</b>. <b>14px short.</b>
+        </span>
+      </div>
+      <div class="legend__row">
+        <span class="legend__n">2</span>
+        <span class="legend__t">The burger is homeless</span>
+        <span class="legend__d">
+          It sits between the wordmark and the social icons with a dead gap
+          either side, so it reads as a stray glyph rather than a control. On a
+          phone it is the <b>only</b> navigation.
+        </span>
+      </div>
+      <div class="legend__row">
+        <span class="legend__n legend__n--o">·</span>
+        <span class="legend__t">Two further observations</span>
+        <span class="legend__d">
+          The hero's mono register keeps only the year and the place at this
+          width — the three subject tags are <span class="m">display:none</span>
+          below 640px, so the brand's strongest layer is thinnest exactly where
+          the page is weakest. And the closing band repeats the hero's gesture
+          (a huge stacked display line) as its first move, so the page has two
+          moments competing for maximum scale instead of one.
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     02 — PROPOSED
+     ========================================================================== -->
+<section class="sec shell" id="proposed">
+  <div class="sec__head mono">
+    <span class="sec__num">02</span>
+    <h2 class="sec__title">Proposed — the same page, re-cut</h2>
+    <span class="sec__meta">393 × 852 · 11 changes</span>
+  </div>
+
+  <p class="sec__note">
+    Same words, same photograph, same six frames, same black band. What
+    changes is the bones: the heading is a designed two-line lockup sized to
+    its own measure, the header's controls become one right-hand group, the
+    mono register that already exists becomes the page's only section pattern,
+    and the band stops trying to be a second hero.
+  </p>
+
+  <div class="stage">
+    <div class="phone">
+      <span class="phone__btn phone__btn--v1"></span>
+      <span class="phone__btn phone__btn--v2"></span>
+      <span class="phone__btn phone__btn--v3"></span>
+      <span class="phone__btn phone__btn--p"></span>
+
+      <div class="screen">
+        <div class="screen__island"></div>
+        <div class="screen__status">
+          <span class="mono-st">9:41</span>
+          <span class="screen__ind">
+            <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor" aria-hidden="true">
+              <rect x="0"  y="7.5" width="3" height="4.5" rx="1"/>
+              <rect x="5"  y="5.5" width="3" height="6.5" rx="1"/>
+              <rect x="10" y="3"   width="3" height="9"   rx="1"/>
+              <rect x="15" y="0"   width="3" height="12"  rx="1" opacity=".4"/>
+            </svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor" aria-hidden="true">
+              <path d="M8 10.6 6.1 8.7a2.7 2.7 0 0 1 3.8 0L8 10.6Z"/>
+              <path d="M8 6.6c-1.3 0-2.5.5-3.4 1.4L3.2 6.6A6.8 6.8 0 0 1 8 4.6c1.8 0 3.5.7 4.8 2l-1.4 1.4A4.8 4.8 0 0 0 8 6.6Z" opacity=".92"/>
+              <path d="M8 2.6c-2.3 0-4.4.9-6 2.5L.6 3.7A10.8 10.8 0 0 1 8 .6c3 0 5.6 1.2 7.6 3.1L14.2 5A8.8 8.8 0 0 0 8 2.6Z" opacity=".92"/>
+            </svg>
+            <svg width="25" height="12" viewBox="0 0 25 12" aria-hidden="true">
+              <rect x="0.5" y="0.5" width="21" height="11" rx="3.2" fill="none" stroke="currentColor" opacity=".45"/>
+              <rect x="2"  y="2" width="15" height="8" rx="2" fill="currentColor"/>
+              <path d="M23 4.2v3.6a2 2 0 0 0 0-3.6Z" fill="currentColor" opacity=".45"/>
+            </svg>
+          </span>
+        </div>
+
+        <div class="viewport">
+          <!-- ==================================================================
+               THE PAGE — PROPOSED
+               ================================================================== -->
+          <div class="pg pg--new">
+            <header class="hdr hdr--over">
+              <a class="wm" href="#"><span class="wm__top">Shutterhaus</span><span class="wm__big">Visuals</span></a>
+              <div class="hdr__ctl">
+                <a class="soc" href="#" aria-label="Instagram">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                    <rect x="3" y="3" width="18" height="18" rx="5.2"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/>
+                  </svg>
+                </a>
+                <a class="soc" href="#" aria-label="WhatsApp">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.02h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.36c0-4.53 3.7-8.22 8.23-8.22a8.17 8.17 0 0 1 5.81 2.42 8.15 8.15 0 0 1 2.41 5.81c0 4.54-3.69 8.21-8.22 8.21Zm4.51-6.16c-.25-.13-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.15.16-.29.19-.53.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.37-1.72-.15-.24-.02-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.09-.16.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.47c-.16 0-.42.06-.64.31-.22.25-.84.83-.84 2.02 0 1.19.86 2.35.98 2.51.12.16 1.7 2.59 4.11 3.63.57.25 1.02.39 1.37.5.58.19 1.1.16 1.52.1.46-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.14-1.18-.06-.11-.22-.17-.47-.29Z"/>
+                  </svg>
+                </a>
+                <span class="hdr__sep"></span>
+                <button class="burger" aria-label="Menu"><i></i><i></i></button>
+              </div>
+            </header>
+
+            <section class="hero">
+              <figure class="hero__fig">
+                <img src="../public/gallery/27-img-0297-1600w.jpg" alt="Portrait on a rooftop ledge, hair moving in the wind" />
+              </figure>
+              <div class="hero__scrim"></div>
+
+              <div class="hero__body">
+                <p class="eyebrow">Photography is poetry.</p>
+                <h1 class="hero__h"><span>Timeless</span><span>Portraiture</span></h1>
+                <p class="hero__lede">Real people. Honest moments. Portraits that look beyond the now.</p>
+                <a class="cta" href="#">View portfolio <span class="cta__ar">→</span></a>
+              </div>
+
+              <div class="hero__reg">
+                <div class="reg">
+                  <span class="reg__l mono">
+                    <b>Est. 2019</b>
+                    <span class="reg__l2">Gauteng, South Africa</span>
+                  </span>
+                  <span class="reg__r mono">Portraits · Couples · Families</span>
+                </div>
+              </div>
+            </section>
+
+            <div class="strip">
+              <div class="reg reg--ink" style="margin-bottom:22px">
+                <span class="reg__l">Selected work</span>
+                <span class="reg__r">06 frames</span>
+              </div>
+              <div class="strip__grid">
+                <div class="strip__col">
+                  <figure class="cell"><img src="../public/gallery/49-img-0131-800w.jpg" alt="" /></figure>
+                  <figure class="cell"><img src="../public/gallery/14-img-0026-800w.jpg" alt="" /></figure>
+                  <figure class="cell"><img src="../public/gallery/4-img-0068-800w.jpg" alt="" /></figure>
+                </div>
+                <div class="strip__col">
+                  <figure class="cell"><img src="../public/gallery/32-img-0404-800w.jpg" alt="" /></figure>
+                  <figure class="cell"><img src="../public/gallery/26-img-0253-800w.jpg" alt="" /></figure>
+                  <figure class="cell"><img src="../public/gallery/40-img-0092-800w.jpg" alt="" /></figure>
+                </div>
+              </div>
+              <div class="strip__foot">
+                <a class="cta" href="#">See the full portfolio <span class="cta__ar">→</span></a>
+              </div>
+            </div>
+
+            <section class="band">
+              <div class="reg band__reg">
+                <span class="reg__l">Book a shoot</span>
+                <span class="reg__r">Est. 2019</span>
+              </div>
+              <div class="band__grid">
+                <div>
+                  <h2 class="band__h">Capture What Matters.</h2>
+                </div>
+                <div>
+                  <p class="band__from mono">From</p>
+                  <p class="band__price">R1,200</p>
+                  <ul class="band__lines">
+                    <li>Starter · Essential · Signature · Social</li>
+                    <li>50% deposit to book · EFT accepted</li>
+                  </ul>
+                  <a class="btn" href="#">View packages <span class="btn__ar">→</span></a>
+                </div>
+              </div>
+              <div class="contact">
+                <a class="crow" href="#"><span class="crow__k mono">Email</span><span class="crow__v">itsnotalwin@gmail.com</span></a>
+                <a class="crow" href="#"><span class="crow__k mono">Phone</span><span class="crow__v">+27 73 095 8363</span></a>
+                <a class="crow" href="#"><span class="crow__k mono">Instagram</span><span class="crow__v">@shutterhausvisuals</span></a>
+                <a class="crow crow--stat" href="#"><span class="crow__k mono">Hours</span><span class="crow__v">Evenings &amp; weekends, by appointment</span></a>
+              </div>
+              <div class="band__end"></div>
+            </section>
+          </div>
+        </div>
+
+        <div class="screen__bar"></div>
+        <div class="pins">
+          <span class="pin pin--b" style="left:50%;top:45.2%">1</span>
+          <span class="pin pin--b" style="left:88%;top:4.6%">2</span>
+          <span class="pin pin--b" style="left:50%;top:60.3%">3</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend__row">
+        <span class="legend__n legend__n--o">1</span>
+        <span class="legend__t">A heading that cannot break</span>
+        <span class="legend__d">
+          Two spans, so the break after <b>TIMELESS</b> is designed rather than
+          accidental. The size is capped by the measure —
+          <span class="m">min(clamp(34px, 9.6vw, 132px), (100cqi − 2·pad) / 7.7)</span> —
+          where 7.7em is the measured width of <b>PORTRAITURE</b> in Archivo
+          Black. At 393px that yields <b>46.4px</b> instead of 48px, and the
+          word holds. <code>overflow-wrap</code>,
+          <code>word-break</code> and <code>hyphens</code> are all pinned to
+          their no-break values, so a wider font can clip the word but can
+          never split it.
+        </span>
+      </div>
+      <div class="legend__row">
+        <span class="legend__n legend__n--o">2</span>
+        <span class="legend__t">One control group, anchored right</span>
+        <span class="legend__d">
+          Social icons, a hairline, then the burger — flush right, in that
+          order. The burger is the only navigation on a phone, so it takes the
+          thumb end and a 40px bordered target instead of floating bare in the
+          middle of the wordmark. The hairline is the site's own vocabulary
+          doing the work of separating secondary from primary.
+        </span>
+      </div>
+      <div class="legend__row">
+        <span class="legend__n legend__n--o">3</span>
+        <span class="legend__t">The register comes back</span>
+        <span class="legend__d">
+          The year, the place and the three subjects were on the page and were
+          <span class="m">display:none</span> at this width. They are now the
+          hero's own ruled register — a two-line mono block over the darkest
+          part of the photograph, with the subject list promoted to the right.
+          Nothing new was written; it is the existing metadata layer given
+          somewhere to live.
+        </span>
+      </div>
+      <div class="legend__row">
+        <span class="legend__n legend__n--o">·</span>
+        <span class="legend__t">Below the fold</span>
+        <span class="legend__d">
+          The strip keeps its hairline header and its six whole, uncropped
+          frames, and the orphaned centred link becomes a right-aligned action
+          on a closing rule — which removes 88px of dead white above the band.
+          The band then gets the same ruled header every other section has, a
+          display line held a full step below the hero's, and a contact block
+          of real 46px rows instead of a 10px link cluster. Scroll the frame
+          to see it.
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     03 — DESKTOP
+     ========================================================================== -->
+<section class="sec shell" id="desktop">
+  <div class="sec__head mono">
+    <span class="sec__num">03</span>
+    <h2 class="sec__title">Proposed at 1280px</h2>
+    <span class="sec__meta">Full page, no scroll</span>
+  </div>
+
+  <p class="sec__note">
+    The whole proposed page. Two things change at this width: the header grows
+    a real nav row and the burger retires, and the band splits into two columns
+    with a four-up contact register along the bottom. The hero register becomes
+    a three-cell row across the full bleed. The strip stays at
+    <b>two columns of three</b> — <code>HOME-LOCKED.md</code> locks that
+    count and the column count, and this proposal does not touch it.
+  </p>
+
+  <div class="desk">
+    <div class="desk__bar">
+      <span class="desk__dots"><i></i><i></i><i></i></span>
+      <span class="desk__url">shutterhausvisuals.co.za</span>
+      <span class="desk__tag">1280 × auto · proposed</span>
+    </div>
+    <div class="pg pg--new pg--desk">
+      <header class="hdr hdr--over">
+        <a class="wm" href="#"><span class="wm__top">Shutterhaus</span><span class="wm__big">Visuals</span></a>
+        <nav class="hdr__nav mono">
+          <a href="#" class="is-on">Home</a>
+          <a href="#">Portfolio</a>
+          <a href="#">Services</a>
+          <a href="#">About</a>
+          <a href="#">Contact</a>
+        </nav>
+        <div class="hdr__ctl">
+          <a class="soc" href="#" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="5.2"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/>
+            </svg>
+          </a>
+          <a class="soc" href="#" aria-label="WhatsApp">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.02h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.36c0-4.53 3.7-8.22 8.23-8.22a8.17 8.17 0 0 1 5.81 2.42 8.15 8.15 0 0 1 2.41 5.81c0 4.54-3.69 8.21-8.22 8.21Zm4.51-6.16c-.25-.13-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.15.16-.29.19-.53.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.37-1.72-.15-.24-.02-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.09-.16.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.47c-.16 0-.42.06-.64.31-.22.25-.84.83-.84 2.02 0 1.19.86 2.35.98 2.51.12.16 1.7 2.59 4.11 3.63.57.25 1.02.39 1.37.5.58.19 1.1.16 1.52.1.46-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.14-1.18-.06-.11-.22-.17-.47-.29Z"/>
+            </svg>
+          </a>
+        </div>
+      </header>
+
+      <section class="hero">
+        <figure class="hero__fig">
+          <img src="../public/gallery/27-img-0297-1600w.jpg" alt="Portrait on a rooftop ledge, hair moving in the wind" />
+        </figure>
+        <div class="hero__scrim"></div>
+        <div class="hero__body">
+          <p class="eyebrow">Photography is poetry.</p>
+          <h1 class="hero__h"><span>Timeless</span><span>Portraiture</span></h1>
+          <p class="hero__lede">Real people. Honest moments. Portraits that look beyond the now.</p>
+          <a class="cta" href="#">View portfolio <span class="cta__ar">→</span></a>
+        </div>
+      </section>
+
+      <div class="hero__regwide">
+        <div class="reg reg--3">
+          <span class="reg__l mono"><b>Est. 2019</b> <span style="opacity:.6">—</span> Gauteng, South Africa</span>
+          <span class="reg__c mono" style="opacity:.7">Portraits · Couples · Families</span>
+          <span class="reg__sep mono reg__r">
+            Scroll
+            <svg viewBox="0 0 9 9" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
+              <path d="M4.5 0v8M1 5l3.5 3.5L8 5"/>
+            </svg>
+          </span>
+        </div>
+      </div>
+
+      <div class="strip">
+        <div class="reg reg--ink" style="margin-bottom:22px">
+          <span class="reg__l">Selected work</span>
+          <span class="reg__r">06 frames</span>
+        </div>
+        <div class="strip__grid">
+          <div class="strip__col">
+            <figure class="cell"><img src="../public/gallery/49-img-0131-800w.jpg" alt="" /></figure>
+            <figure class="cell"><img src="../public/gallery/14-img-0026-800w.jpg" alt="" /></figure>
+            <figure class="cell"><img src="../public/gallery/4-img-0068-800w.jpg" alt="" /></figure>
+          </div>
+          <div class="strip__col">
+            <figure class="cell"><img src="../public/gallery/32-img-0404-800w.jpg" alt="" /></figure>
+            <figure class="cell"><img src="../public/gallery/26-img-0253-800w.jpg" alt="" /></figure>
+            <figure class="cell"><img src="../public/gallery/40-img-0092-800w.jpg" alt="" /></figure>
+          </div>
+        </div>
+        <div class="strip__foot">
+          <a class="cta" href="#">See the full portfolio <span class="cta__ar">→</span></a>
+        </div>
+      </div>
+
+      <section class="band">
+        <div class="reg band__reg">
+          <span class="reg__l">Book a shoot</span>
+          <span class="reg__r">Est. 2019</span>
+        </div>
+        <div class="band__grid">
+          <div>
+            <h2 class="band__h">Capture What Matters.</h2>
+          </div>
+          <div>
+            <p class="band__from mono">From</p>
+            <p class="band__price">R1,200</p>
+            <ul class="band__lines">
+              <li>Starter · Essential · Signature · Social</li>
+              <li>50% deposit to book · EFT accepted</li>
+            </ul>
+            <a class="btn" href="#">View packages <span class="btn__ar">→</span></a>
+          </div>
+        </div>
+        <div class="contact">
+          <a class="crow" href="#"><span class="crow__k mono">Email</span><span class="crow__v">itsnotalwin@gmail.com</span></a>
+          <a class="crow" href="#"><span class="crow__k mono">Phone</span><span class="crow__v">+27 73 095 8363</span></a>
+          <a class="crow" href="#"><span class="crow__k mono">Instagram</span><span class="crow__v">@shutterhausvisuals</span></a>
+          <a class="crow crow--stat" href="#"><span class="crow__k mono">Hours</span><span class="crow__v">Evenings &amp; weekends, by appointment</span></a>
+        </div>
+        <div class="band__end"></div>
+      </section>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     04 — TYPE & MEASURE
+     ========================================================================== -->
+<section class="sec shell" id="measure">
+  <div class="sec__head mono">
+    <span class="sec__num">04</span>
+    <h2 class="sec__title">The arithmetic behind change 01</h2>
+    <span class="sec__meta">measured, not estimated</span>
+  </div>
+
+  <p class="sec__note">
+    Every number in this table came out of the CDP measurement pass in
+    <code>audit-v2/</code>, not out of a stylesheet guess. The live H1 is
+    <code>clamp(48px, 9.6vw, 132px)</code>, so on any phone narrower than
+    500px the <b>48px floor wins</b> and the <code>vw</code> term is inert —
+    which is why the type never shrinks on small screens and the word always
+    breaks.
+  </p>
+
+  <div class="tbl">
+    <div class="tbl__head mono">
+      <span>Viewport</span><span>Gutter</span><span>Column</span>
+      <span>Needs</span><span>Live size</span><span>Max size</span><span>Result</span>
+    </div>
+    <div class="tbl__row">
+      <span>320px</span><span>18px</span><span>281px</span>
+      <span>368px</span><span>48px</span><span><b>36.9px</b></span>
+      <span class="tbl__bad">breaks · 87px short</span>
+    </div>
+    <div class="tbl__row">
+      <span>375px</span><span>18px</span><span>336px</span>
+      <span>368px</span><span>48px</span><span><b>42.1px</b></span>
+      <span class="tbl__bad">breaks · 32px short</span>
+    </div>
+    <div class="tbl__row">
+      <span>393px <em>(iPhone 16)</em></span><span>18px</span><span>354px</span>
+      <span>368px</span><span>48px</span><span><b>46.4px</b></span>
+      <span class="tbl__bad">breaks · 14px short</span>
+    </div>
+    <div class="tbl__row">
+      <span>430px</span><span>18px</span><span>391px</span>
+      <span>368px</span><span>48px</span><span><b>50.8px</b></span>
+      <span class="tbl__ok">fits by 23px</span>
+    </div>
+    <div class="tbl__row tbl__row--last">
+      <span>1280px</span><span>56px</span><span>1168px</span>
+      <span>811px</span><span>132px</span><span>132px</span>
+      <span class="tbl__ok">fits · clamp wins</span>
+    </div>
+  </div>
+
+  <div class="notes3">
+    <div class="notes3__c">
+      <p class="mono dim">The constant</p>
+      <p>
+        <b>7.7em</b> is the measured width of "PORTRAITURE" in Archivo Black at
+        the site's own tracking. That single number is what makes the cap
+        correct rather than a fudge factor — and it is already written down in
+        <code>editorial.css:230</code>, where a different measurement (6.3em,
+        taken before the tracking changed) is used for the desktop cap. Both
+        numbers are load-bearing and should live in one place.
+      </p>
+    </div>
+    <div class="notes3__c">
+      <p class="mono dim">Why not just shrink it</p>
+      <p>
+        Setting a smaller fixed <code>font-size</code> fixes 393px and breaks
+        320px and 430px, because the relationship between the word and the
+        column is not linear in viewport width. Sizing from the
+        <b>measure</b> is the only version that is right at every width
+        without a breakpoint per device.
+      </p>
+    </div>
+    <div class="notes3__c">
+      <p class="mono dim">The honest limitation</p>
+      <p>
+        This document renders in a system grotesque, which is roughly 15%
+        narrower than Archivo Black — so the line you see here is not quite
+        full. That is a property of the mockup, not of the fix. On the live
+        site with Archivo Black the 46.4px line fills the 354px column almost
+        exactly, which is the intent.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     05 — CHANGE LIST
+     ========================================================================== -->
+<section class="sec shell" id="changes">
+  <div class="sec__head mono">
+    <span class="sec__num">05</span>
+    <h2 class="sec__title">Change list</h2>
+    <span class="sec__meta">11 changes · S / M / L</span>
+  </div>
+
+  <p class="sec__note">
+    <b>S</b> = a few CSS lines, no structural change.
+    <b>M</b> = a markup change in <code>src/pages.ts</code> plus CSS.
+    <b>L</b> = a change that touches layout logic or data.
+    Total for items 1–11 excluding item 6: <b>one small half-day</b>, most of
+    it in the stylesheet.
+  </p>
+
+  <ol class="chg">
+
+    <li class="chg__i chg__i--crit">
+      <div class="chg__hd">
+        <span class="chg__n mono">01</span>
+        <h3 class="chg__t">Size the H1 to its measure, not to the viewport</h3>
+        <span class="chg__e mono">S</span>
+      </div>
+      <p class="chg__b">
+        Replace the <code>clamp(48px, 9.6vw, 132px)</code> floor with
+        <code>min(clamp(34px, 9.6vw, 132px), (100cqi - 2 * var(--pad)) / 7.7)</code>
+        on a container-query context, and give the heading two explicit line
+        spans so the break after TIMELESS is designed.
+      </p>
+      <p class="chg__w">
+        <b>Why:</b> the 48px floor is the whole bug. It overrides the
+        <code>vw</code> term on every phone, so the word is always 14–87px too
+        wide. Sizing from the measure makes the type correct at every width
+        with no breakpoint, and the two spans turn an accident into a decision.
+        Yields 46.4px at 393px, 36.9px at 320px, and 132px unchanged on
+        desktop.
+      </p>
+    </li>
+
+    <li class="chg__i chg__i--crit">
+      <div class="chg__hd">
+        <span class="chg__n mono">02</span>
+        <h3 class="chg__t">Delete <code>overflow-wrap: anywhere</code> and pin the no-break values</h3>
+        <span class="chg__e mono">S</span>
+      </div>
+      <p class="chg__b">
+        Remove <code>editorial.css:237-239</code>. Set
+        <code>overflow-wrap:normal; word-break:keep-all; hyphens:none</code>
+        on the hero heading so the failure mode for any future font swap is a
+        clipped word rather than a split one. Add one assertion to the existing
+        harness: at 320 / 375 / 393 / 430px, the H1's longest line must not
+        exceed the column.
+      </p>
+      <p class="chg__w">
+        <b>Why:</b> <code>anywhere</code> was a band-aid — it cured horizontal
+        scroll by licensing a break <em>anywhere in the page</em>, not just in
+        this one heading. It is the wrong tool at every scale, and while it is
+        in place the same trick will eventually reappear somewhere else. The
+        assertion means the bug cannot come back silently on a new device.
+      </p>
+    </li>
+
+    <li class="chg__i">
+      <div class="chg__hd">
+        <span class="chg__n mono">03</span>
+        <h3 class="chg__t">One control group in the header, anchored right</h3>
+        <span class="chg__e mono">S</span>
+      </div>
+      <p class="chg__b">
+        Below 900px: wordmark flush left; then Instagram, WhatsApp, a 1px
+        hairline, and a 40px bordered burger — flush right, in that order.
+        The burger stops being a centred grid cell.
+      </p>
+      <p class="chg__w">
+        <b>Why:</b> the burger is the only navigation on a phone, so it belongs
+        at the thumb end and should be a visible 44px target, not three bare
+        bars stranded between two other things. The hairline between it and
+        the socials is the site's own visual vocabulary separating secondary
+        from primary — no new device, no new colour.
+      </p>
+    </li>
+
+    <li class="chg__i">
+      <div class="chg__hd">
+        <span class="chg__n mono">04</span>
+        <h3 class="chg__t">Give the mono register one pattern and reuse it</h3>
+        <span class="chg__e mono">M</span>
+      </div>
+      <p class="chg__b">
+        The hairline + label-left + meta-right row that already exists as
+        <code>.hstrip__head</code> becomes <code>.reg</code>, and every section
+        on the page uses it: the hero register, the strip header, and the band
+        header.
+      </p>
+      <p class="chg__w">
+        <b>Why:</b> right now the strip announces itself one way and the black
+        band another, so the page reads as a stack of unrelated blocks instead
+        of a document. One repeated pattern, applied three times, is what makes
+        a single-column page feel designed — and it is the mono layer doing
+        structural work rather than decorating.
+      </p>
+    </li>
+
+    <li class="chg__i">
+      <div class="chg__hd">
+        <span class="chg__n mono">05</span>
+        <h3 class="chg__t">Bring the subject tags back on phones</h3>
+        <span class="chg__e mono">S</span>
+      </div>
+      <p class="chg__b">
+        <code>.hero__meta-tags</code> and <code>.hero__meta-cue</code> are
+        currently <code>display:none</code> below 640px. Move the tags into the
+        hero's right-hand register cell and stack the year above the place.
+      </p>
+      <p class="chg__w">
+        <b>Why:</b> "Portraits · Couples · Families" is the fastest possible
+        answer to "what does this person do", and it is being hidden on exactly
+        the devices with the least room for persuasion. The two-line register
+        fits the width and gives the hero a proper bottom edge instead of a
+        single thin strip of text.
+      </p>
+    </li>
+
+    <li class="chg__i">
+      <div class="chg__hd">
+        <span class="chg__n mono">06</span>
+        <h3 class="chg__t">Name the hero's focal point</h3>
+        <span class="chg__e mono">S</span>
+      </div>
+      <p class="chg__b">
+        <code>object-position: 68% 22%</code> on the hero image, replacing the
+        default centre. Document the face coordinates of every future hero
+        photo next to its <code>heroPhoto</code> pin in
+        <code>config.ts</code>.
+      </p>
+      <p class="chg__w">
+        <b>Why:</b> 27-img-0297 has the subject's face at roughly 68% across and
+        15% down. Cropped to a 0.64 aspect box from the centre, the frame is
+        fine; cropped the wrong way it is a leg. <code>heroPhoto</code> is a
+        pin anyone can change, so the focal point has to travel with the pin.
+        A full-bleed hero must crop; the rule is that we choose where, not that
+        we don't.
+      </p>
+    </li>
+
+    <li class="chg__i">
+      <div class="chg__hd">
+        <span class="chg__n mono">07</span>
+        <h3 class="chg__t">Kill the orphan link and the 88px of nothing</h3>
+        <span class="chg__e mono">S</span>
+      </div>
+      <p class="chg__b">
+        Move "See the full portfolio" from a centred line floating 14px under
+        the last frame to a right-aligned action on a closing hairline, and
+        tighten the strip-to-band gap.
+      </p>
+      <p class="chg__w">
+        <b>Why:</b> as it stands the strip has no bottom edge — a caption-sized
+        link, then 88px of white, then a hard black block. Giving the link a
+        rule to sit on closes the section and lets the band arrive as a change
+        of pace rather than a jump cut.
+      </p>
+    </li>
+
+    <li class="chg__i">
+      <div class="chg__hd">
+        <span class="chg__n mono">08</span>
+        <h3 class="chg__t">Rebuild the band as a contact bar, not a second hero</h3>
+        <span class="chg__e mono">M</span>
+      </div>
+      <p class="chg__b">
+        Same words, same price, same data. Three changes of emphasis: the
+        display line drops to <code>clamp(28px, 7.4vw, 64px)</code> with the
+        same no-break guarantee; the price gets its own step in the scale below
+        the heading instead of sitting directly under it; and the band's
+        header becomes a <code>.reg</code> like every other section.
+      </p>
+      <p class="chg__w">
+        <b>Why:</b> the band currently opens with a 48px stacked display line
+        that is nearly as large as the hero's, so the page has two moments
+        competing for maximum scale and the first one loses. Holding the band a
+        full step down gives the hero back its job and makes the band read as a
+        closing statement. Same content, better hierarchy — no copy invented.
+      </p>
+    </li>
+
+    <li class="chg__i">
+      <div class="chg__hd">
+        <span class="chg__n mono">09</span>
+        <h3 class="chg__t">Make the contact lines real tap targets</h3>
+        <span class="chg__e mono">S</span>
+      </div>
+      <p class="chg__b">
+        Replace the <code>.hcta__foot</code> link cluster with labelled rows:
+        a 82px mono key column, the value beside it, <code>min-height:46px</code>
+        each, hairlines between. Add the studio's hours as a fourth, non-link
+        row, and pad the band's bottom by <code>var(--sab)</code> so the home
+        indicator does not sit on the last row.
+      </p>
+      <p class="chg__w">
+        <b>Why:</b> 10px letterspaced mono links at the bottom of a black band
+        are the smallest and least tappable thing on the page, and they carry the
+        two conversions the whole site exists to produce. On a phone they are
+        also the only affordance — the burger menu has to be opened to get
+        anywhere else. Labeled rows also make the block scannable instead of
+        reading as an anonymous string of links.
+      </p>
+    </li>
+
+    <li class="chg__i">
+      <div class="chg__hd">
+        <span class="chg__n mono">10</span>
+        <h3 class="chg__t">Whole frames everywhere except the hero</h3>
+        <span class="chg__e mono">S</span>
+      </div>
+      <p class="chg__b">
+        Strip cells keep <code>width:100%; height:auto</code> with the aspect
+        ratio from data. No <code>object-fit</code> on any of the six. State it
+        in <code>HOME-LOCKED.md</code> alongside the locked count so it is not
+        "tidied" later.
+      </p>
+      <p class="chg__w">
+        <b>Why:</b> cropping a photographer's own work to make a grid tidy is
+        the fastest way to lose them — a portrait cropped to a square loses the
+        gesture that made it worth commissioning. The packer already balances
+        the columns; the frames do not need to be cut to match.
+      </p>
+    </li>
+
+    <li class="chg__i">
+      <div class="chg__hd">
+        <span class="chg__n mono">11</span>
+        <h3 class="chg__t">Nothing repaints on rotate</h3>
+        <span class="chg__e mono">S</span>
+      </div>
+      <p class="chg__b">
+        Because change 01 is pure CSS, there is no resize handler to write and
+        nothing to reflow on orientationchange. State that as a constraint in
+        the stylesheet so the next person does not add a JS sizer to "fix" the
+        heading.
+      </p>
+      <p class="chg__w">
+        <b>Why:</b> a <code>resize</code> listener on iOS white-flashes the page
+        and jumps to the top on every rotation, which on a photography site
+        reads as a crash. The tempting JS fix for a type-fitting problem is the
+        exact thing that causes it. Solving 01 in CSS makes 11 free.
+      </p>
+    </li>
+
+  </ol>
+
+  <!-- one more block, deliberately not a numbered change -->
+  <div class="aside">
+    <p class="mono dim">Deliberately not changed</p>
+    <ul>
+      <li><b>Six frames, two columns.</b> <code>HOME-LOCKED.md</code> locks
+        <code>homeGalleryCount: 6</code> and the column count, and the comment
+        in <code>config.ts:233-245</code> explains why 6 is the only count that
+        divides evenly at every viewport. Not reopened here.</li>
+      <li><b>No site-wide footer.</b> An earlier footer was reverted. The band
+        still ends the page; change 09 just makes its contact lines usable
+        instead of replacing them with a new component.</li>
+      <li><b>No colour, anywhere.</b> Including the price. "From R1,200" in
+        white on black stays exactly as it is.</li>
+      <li><b>No new copy.</b> Every word in the proposed render already exists
+        in <code>src/config.ts</code> — the year, the place, the three subjects,
+        the tier names, the deposit note, the studio hours. Change 05 simply
+        stops hiding copy that was already there.</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="shell foot__in mono">
+    <span>Shutterhaus Visuals — home page upgrade, mockup v2</span>
+    <span>Sources: audit-v2/baseline · src/editorial.css · src/pages.ts · src/config.ts</span>
+    <span>Self-contained — no build step, no network requests</span>
+  </div>
+</footer>
+
+<style>
+/* ==========================================================================
+   7. DOCUMENT-ONLY TABLES, NOTES AND FOOTER
+   ========================================================================== */
+.tbl{
+  border-top:1px solid var(--d-ink);
+  margin:0 0 34px;
+}
+.tbl__head,.tbl__row{
+  display:grid;
+  grid-template-columns:1.5fr .7fr .8fr .8fr .9fr .9fr 1.5fr;
+  gap:0 14px;
+  align-items:baseline;
+  padding:11px 0;
+  border-bottom:1px solid var(--d-hair);
+}
+.tbl__head{ padding-top:12px; color:var(--d-dim); }
+.tbl__row{ font-family:var(--font-mono); font-size:12px; letter-spacing:.02em; }
+.tbl__row span:first-child{ font-weight:600; }
+.tbl__row em{ font-style:normal; color:var(--d-faint); font-weight:400; }
+.tbl__row--last{ border-bottom:1px solid var(--d-hair2); }
+.tbl__bad{ color:var(--d-ink); }
+.tbl__bad::before{ content:"✕ "; }
+.tbl__ok{ color:var(--d-dim); }
+.tbl__ok::before{ content:"✓ "; }
+
+.notes3{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:0 34px;
+}
+.notes3__c{ padding:0 0 20px; }
+.notes3__c p:first-child{ margin:0 0 8px; }
+.notes3__c p:last-child{
+  font-size:13.5px; line-height:1.6; color:var(--d-mid); margin:0;
+}
+.notes3__c b{ color:var(--d-ink); font-weight:600; }
+.notes3__c code{
+  font-family:var(--font-mono); font-size:11px;
+  background:var(--d-wash2); padding:1px 4px; color:var(--d-ink);
+}
+
+/* change list */
+.chg{ list-style:none; margin:0; padding:0; counter-reset:c; }
+.chg__i{
+  border-top:1px solid var(--d-hair);
+  padding:22px 0 24px;
+}
+.chg__i:first-child{ border-top:1px solid var(--d-ink); }
+.chg__i--crit{ background:linear-gradient(90deg,var(--d-wash) 0,var(--d-wash) 100%); }
+.chg__i--crit .chg__n{ background:var(--d-ink); color:#fff; }
+.chg__hd{
+  display:grid; grid-template-columns:34px 1fr auto; gap:0 14px;
+  align-items:start; margin-bottom:12px;
+}
+.chg__n{
+  display:flex; align-items:center; justify-content:center;
+  width:28px; height:28px; border-radius:50%;
+  box-shadow:inset 0 0 0 1px var(--d-hair2);
+  color:var(--d-dim);
+}
+.chg__t{
+  font-size:16px; font-weight:600; line-height:1.4; margin:2px 0 0;
+  letter-spacing:-.005em;
+}
+.chg__t code{ font-family:var(--font-mono); font-size:12.5px; font-weight:500; }
+.chg__e{
+  display:flex; align-items:center; justify-content:center;
+  width:26px; height:20px; border-radius:2px;
+  background:var(--d-ink); color:#fff; font-size:9px; letter-spacing:.12em;
+}
+.chg__b,.chg__w{
+  font-size:13.5px; line-height:1.62; color:var(--d-mid);
+  margin:0 0 8px; max-width:78ch;
+}
+.chg__b{
+  color:var(--d-ink);
+  padding:11px 14px; background:var(--d-wash);
+  border-left:2px solid var(--d-hair2);
+}
+.chg__w{ padding-left:2px; }
+.chg__b code,.chg__w code{
+  font-family:var(--font-mono); font-size:11.5px;
+  background:var(--d-wash2); padding:1px 4px; color:var(--d-ink);
+}
+.chg__b{ background:transparent; border-left:0; padding:0 0 4px; color:var(--d-mid); }
+.chg__b code,.chg__w code{ background:var(--d-wash2); }
+.chg__b strong{ color:var(--d-ink); }
+.chg__w b{ color:var(--d-ink); font-weight:600; }
+.chg__w em{ font-style:italic; }
+
+/* aside */
+.aside{
+  border-top:1px solid var(--d-ink);
+  margin-top:10px; padding-top:22px;
+}
+.aside p{ margin:0 0 12px; }
+.aside ul{ margin:0; padding:0; list-style:none; }
+.aside li{
+  font-size:13.5px; line-height:1.6; color:var(--d-mid);
+  padding:9px 0 9px 18px; position:relative;
+  border-bottom:1px solid var(--d-hair);
+}
+.aside li::before{
+  content:""; position:absolute; left:0; top:19px;
+  width:8px; height:1px; background:var(--d-faint);
+}
+.aside li b{ color:var(--d-ink); font-weight:600; }
+.aside code{ font-family:var(--font-mono); font-size:11.5px; color:var(--d-ink); }
+
+/* footer */
+.foot{
+  border-top:1px solid var(--d-ink);
+  background:var(--d-paper);
+  margin-top:20px;
+}
+.foot__in{
+  display:flex; flex-wrap:wrap; gap:6px 26px;
+  padding-top:20px; padding-bottom:26px;
+  color:var(--d-faint);
+}
+.foot__in span:first-child{ color:var(--d-ink); }
+
+@media (max-width:760px){
+  .tbl__head{ display:none; }
+  .tbl__row{ grid-template-columns:1fr 1fr; gap:2px 12px; }
+  .sec__head{ gap:10px; }
+}
+</style>
+
+</body>
+</html>

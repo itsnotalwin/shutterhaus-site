@@ -150,8 +150,15 @@ img { display: block; max-width: 100%; }
 }
 .logo-lg--b { display: block; }
 
-/* Nav sits centre-left, matching the reference's offset placement. */
-.site-nav { display: flex; gap: 30px; }
+/* Nav sits centre-left, matching the reference's offset placement.
+   `max-width: 100%` is load-bearing below 640px, where this becomes an
+   absolutely-positioned drawer carrying `grid-area: nav`. An out-of-flow grid
+   child uses its GRID AREA as its containing block, so the drawer's `right: 0`
+   resolves against that area — and the area is 284px wide at a 320px viewport
+   while five links at a 22px gap want 308px. The over-wide box then sticks out
+   past the header and the document scrollWidth becomes 326 on a 320 screen.
+   Clamping to the container stops the closed drawer creating scroll. */
+.site-nav { display: flex; gap: 30px; max-width: 100%; }
 
 /* The reference collapses the nav behind a hamburger below 760px. Hidden on
    desktop entirely so it can never be tabbed to when it's not on screen. */
@@ -272,38 +279,22 @@ img { display: block; max-width: 100%; }
   padding-top: 6px;
 }
 
-/* Monochrome at rest, full colour on hover — Alwin wants this back: "I liked
- * having the black and white then on hover shows image as uploaded."
+/* NO FILTER ON PHOTOGRAPHS — deliberately.
  *
- * CRITICAL: this is a DISPLAY filter only. The files on disk and in Supabase
- * are never processed, re-encoded, or filtered at upload — the JPEG bytes are
- * exactly what came out of the camera. CSS `filter` never rewrites a file; it
- * is composited at paint time and gone the moment the rule is removed. So the
- * original upload survives untouched and the site can change its mind later.
- * Do NOT "optimise" this into a build step — that would be lossy and
- * irreversible, and it is exactly what Alwin is guarding against.
+ * Alwin's instruction, 2026-10-02: "REMOVE THE GREY COVERING ON THE PHOTOS —
+ * PHOTOS MUST STAY EXACTLY AS THEY WERE UPLOADED (full colour, no greyscale
+ * filter)". The site's black-and-white look was only ever a CSS `filter` over
+ * colour JPEGs, so removing those rules restores the uploaded image and needs
+ * nothing else: no re-encode, no build step, no derivative changes. The files
+ * on disk and in Supabase were never touched by it.
  *
- * THE BASE TREATMENT IS NOT HOVER-GATED — that was the bug, fixed 2026-10-02.
+ * Nothing replaces the filter. Do not reintroduce a greyscale, sepia,
+ * desaturation or brightness tweak here — a photography site that grades his
+ * own work is second-guessing the photographer, and the rejection was of the
+ * whole idea, not of one particular value.
  *
- * The whole rule used to live inside `@media (hover: hover)`, on the reasoning
- * that `:hover` never fires on touch so an unwrapped rule would leave frames
- * "stuck grey on a phone". The consequence was the opposite and far worse: a
- * touch device never matches `(hover: hover)` AT ALL, so the *base* rule was
- * skipped too and the brand's monochrome was off on every phone. Verified on
- * the live site with touch emulation on: `matchMedia('(hover: hover)')` is
- * false, `getComputedStyle(img).filter` is `none` on 30 of 30 portfolio images
- * and 7 of 7 home images, and 25 of the 50 source frames are genuinely in
- * colour. Same site, two different brands depending on the device.
- *
- * So: the BASE (monochrome) is unconditional; only the hover REVEAL is gated,
- * because a reveal is a pointer affordance and there is no pointer to reveal to
- * on a phone. That is the intent the original comment was reaching for. */
-.shell.is-bw .cell img { filter: grayscale(1) contrast(1.06); transition: filter 260ms ease; }
-
-@media (hover: hover) {
-  .shell.is-bw .cell img:hover,
-  .shell.is-bw .cell picture:hover img { filter: grayscale(0) contrast(1); }
-}
+ * There is deliberately no rule in this file that references the shell's
+ * black-and-white class any more, so nothing downstream has to know about it. */
 
 /* --------------------------------------------------------- contact */
 
@@ -324,21 +315,26 @@ img { display: block; max-width: 100%; }
  * the viewport. Measured at 390px: 531px of blank space below the last line of
  * the contact details.
  *
- * On desktop it is a deliberate half-width column, so it keeps its ratio and is
- * cropped only if that ratio is wrong. On a phone it is decoration behind a form
- * and must not push the page from 1.8 screens to 3. */
+ * On desktop it is a deliberate half-width column and keeps its own ratio. On a
+ * phone it sits below the form and must not push the page from 1.8 screens to 3
+ * — the natural 2:3 photo is short enough that it no longer needs clipping. */
 .contact__fig {
   position: relative;
-  overflow: hidden;
 }
+.contact__fig picture { display: block; width: 100%; }
+/* No object-fit: cover. Alwin rejected crop-to-fill on his photographs, and
+ * this figure was the last public one still doing it — a 2:3 portrait squeezed
+ * into a 4:5 band. The natural ratio is used instead, and the img carries an
+ * inline aspect-ratio from contactPage(), so the space is reserved before the
+ * bytes arrive and removing the crop costs no layout stability.
+ *
+ * The `max-height: 38vh` cap that used to sit on the phone breakpoint is gone
+ * with it: it existed only to clip the cover crop, and keeping it would either
+ * re-crop or letterbox. */
 .contact__fig img {
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-@media (max-width: 760px) {
-  .contact__fig { max-height: 38vh; }
+  height: auto;
 }
 
 .contact__h {
@@ -885,12 +881,21 @@ code {
 @media (max-width: 640px) {
   :root { --head: 92px; --pad: 16px; --gut: 10px; }
   .site-header {
-    grid-template-columns: 1fr auto;
-    grid-template-areas: "logo social" "nav nav";
+    /* Three explicit tracks, not two. `.burger` had NO `grid-area` here, so it
+       was auto-placed into the logo's column: measured at 320px the row held
+       logo(128) + burger(44) + social(96) with two 20px gaps = 308px inside a
+       288px content box, which is what pushed document scrollWidth to 326 on a
+       320px screen. Naming every area stops the auto-placement.
+       The column gap drops to 10px for the same reason — 128+96+44 at the
+       base 20px gap does not fit 288px. */
+    grid-template-columns: 1fr auto auto;
+    grid-template-areas: "logo social burger" "nav nav nav";
+    column-gap: 10px;
     align-content: center;
     row-gap: 10px;
   }
   .logo { grid-area: logo; }
+  .burger { grid-area: burger; }
   .site-nav { grid-area: nav; gap: 22px; }
   .site-social { grid-area: social; }
   .logo-lg { font-size: 21px; }
@@ -908,6 +913,19 @@ code {
   .nav-link { padding: 0 8px; }
   .site-nav { gap: 16px; }
   .site-social { gap: 8px; }
+
+  /* 320px is the narrowest phone still in the wild (iPhone SE 1st gen, some
+     Android). At that width the drawer above is clamped to its container, so
+     the five links have to fit inside it rather than overflow: measured at
+     320px, 22px gaps plus 8px link padding wanted 308px of a 284px box. */
+  @media (max-width: 360px) {
+    .site-nav { gap: 12px; }
+    .nav-link { padding: 0 4px; }
+    /* 128+96+44 at a 10px gap is exactly 288px of a 288px box — no slack. Give
+       the wordmark a step down so a 320px screen has room to breathe. */
+    .site-header { column-gap: 8px; }
+    .logo-lg { font-size: 19px; }
+  }
 
   /* Let the PAGE scroll on a phone. The desktop design gives each column its
      own scrollbar, which is the reference's signature look — but on touch it
@@ -962,12 +980,10 @@ code {
   }
 
   /* The one place where a duration is load-bearing rather than decorative.
-     .cell img fades in on load (opacity 0 -> 1); with the transition cut the
-     frame appears at full opacity the moment it decodes, which is the desired
-     outcome. The B&W reveal on hover is gated behind (hover: hover) already,
-     so a touch device was never going to see it animate. */
-  .shell.is-bw .cell img { filter: grayscale(1) contrast(1.06); }
-}
+       .cell img fades in on load (opacity 0 -> 1); with the transition cut the
+       frame appears at full opacity the moment it decodes, which is the desired
+       outcome. */
+  }
 
 /* --------------------------------------------------------- dark mode
    NOT IMPLEMENTED, on purpose. Recording the reasoning so it is not
@@ -979,7 +995,10 @@ code {
    page, and every ratio measured in this file was measured on it. Shipping
    a dark mode means re-deriving that whole set, and a plausible-looking
    inversion with unverified ratios is a worse outcome than a site that is
-   honestly light-only. The monochrome brand carries over to a dark UI almost
-   unchanged, so the design case is weak as well as the verification case.
+   honestly light-only. The monochrome brand used to make this look like a free
+      win — photographs were filtered grey, so an inversion "carried over almost
+      unchanged". Photographs now render in full colour exactly as uploaded, which
+      is the opposite case: a dark UI would put a colour image against a dark
+      ground and force the whole set of measured ratios to be re-derived.
    If it is ever wanted, the work is: re-run mobile-audit/a11y/contrast.py
    with a prefers-color-scheme: dark capture and hold the same thresholds. */

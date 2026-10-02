@@ -1,0 +1,929 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shutterhaus &mdash; Services / packages, proposed &middot; v2 mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#111; --grey:#6b6b6b; --line:#e6e6e6; --paper:#fff;
+  --dim:#6d6d6d; --wash:#f6f6f6;
+  --display:"Archivo Black","Helvetica Neue",Arial,sans-serif;
+  --body:"Inter",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--wash);color:var(--ink);font-family:var(--body);
+  font-size:15px;line-height:1.6;padding:0 0 96px}
+img{filter:grayscale(1) contrast(1.06)}
+code{font-family:var(--mono);font-size:.9em;background:#ececec;padding:1px 4px;border-radius:2px}
+b{font-weight:600}
+
+.doc{max-width:1120px;margin:0 auto;padding:64px 26px 0}
+.doc__kicker{font:500 10.5px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--grey)}
+.doc__h1{font-family:var(--display);font-size:clamp(34px,5.2vw,58px);line-height:.92;margin:16px 0 0;letter-spacing:-.02em}
+.doc__lede{max-width:62ch;margin:22px 0 0;color:var(--dim);font-size:15.5px;line-height:1.7}
+.doc__facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);margin:34px 0 0}
+.fact{background:var(--paper);padding:14px 16px}
+.fact dt{font:500 9.5px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--grey);margin:0}
+.fact dd{margin:8px 0 0;font-family:var(--display);font-size:19px;line-height:1.1}
+.fact dd small{font-family:var(--body);font-weight:400;font-size:12px;color:var(--dim);display:block;margin-top:5px;letter-spacing:0}
+
+.sec{margin:0 0 96px}
+.sec__hd{display:flex;align-items:baseline;gap:14px;border-top:1px solid var(--ink);padding-top:14px;margin:0 0 8px}
+.sec__n{font:500 10.5px/1 var(--mono);letter-spacing:.18em;color:var(--grey)}
+.sec__t{font-family:var(--display);font-size:clamp(22px,3vw,30px);line-height:1;margin:0;letter-spacing:-.01em}
+.sec__note{max-width:66ch;color:var(--dim);font-size:14.5px;margin:12px 0 40px}
+
+.panel{margin:0}
+.panel__hd{display:flex;align-items:baseline;gap:12px;margin:0 0 20px;flex-wrap:wrap}
+.tag{font:500 10.5px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;
+  background:var(--ink);color:#fff;padding:7px 10px}
+.panel__sub{font:400 12.5px/1 var(--mono);color:var(--grey);letter-spacing:.04em}
+.phone{display:flex;justify-content:flex-start;padding-left:6px}
+.phone__frame{position:relative;width:417px;background:#0b0b0b;border-radius:56px;padding:12px;
+  box-shadow:0 24px 60px -18px rgba(0,0,0,.42),0 0 0 1px #2c2c2c}
+.phone__island{position:absolute;top:23px;left:50%;transform:translateX(-50%);
+  width:118px;height:34px;background:#000;border-radius:20px;z-index:9}
+.phone__screen{width:393px;overflow:hidden;background:#fff;border-radius:44px;position:relative}
+.screenfade{position:absolute;left:0;right:0;bottom:0;height:74px;z-index:7;pointer-events:none;
+  background:linear-gradient(to bottom,rgba(255,255,255,0),#fff 82%)}
+.panel__cap{font-size:13.5px;color:var(--dim);line-height:1.65;max-width:64ch;margin:20px 0 0;padding-left:6px}
+.panel__cap b{color:var(--ink)}
+
+/* ---- site chrome as it renders inside the frame ---- */
+.pg{font-family:var(--body);color:var(--ink)}
+.site-head{height:92px;display:flex;align-items:center;justify-content:space-between;
+  padding:44px 16px 0;border-bottom:1px solid var(--line)}
+.wordmark{font-family:var(--display);font-size:13px;line-height:.92;letter-spacing:-.01em}
+.nav{display:flex;gap:14px}
+.nav a{font:500 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--grey);text-decoration:none}
+.nav a.on{color:var(--ink);border-bottom:1px solid var(--ink);padding-bottom:3px}
+.shead{padding:28px 16px 0;display:flex;flex-direction:column;gap:12px}
+.eyebrow{margin:0;font:500 10.5px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--grey)}
+.shead__h{font-family:var(--display);font-size:42px;line-height:.9;margin:0;letter-spacing:-.02em}
+.shead__p{margin:0;font-size:14px;line-height:1.6;color:var(--dim)}
+.mono-note{margin:0;font:500 10.5px/1.6 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.cut{display:flex;align-items:center;gap:10px;margin:14px 16px 0;
+  font:400 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#9a9a9a}
+.cut::before,.cut::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* ---- NOW: the package card exactly as shipped at 393px ---- */
+.pkgrow{display:block;border-top:1px solid var(--line);margin-top:22px}
+.pkg{padding:20px 16px 22px;border-bottom:1px solid var(--line);display:flex;flex-direction:column}
+.pkg__fig{margin:0 0 14px}
+.ph{display:block;width:100%;height:104px;background:#ececec;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.045)}
+.ph--wide{height:88px}
+.pkg__num{margin:0;font:500 9.5px/1 var(--mono);letter-spacing:.16em;color:#9a9a9a}
+.pkg__name{font-family:var(--display);font-size:20px;line-height:1;margin:10px 0 0;letter-spacing:-.01em}
+.pkg__desc{margin:9px 0 0;font-size:12.5px;line-height:1.5;color:var(--dim)}
+.pkg__list{margin:12px 0 0;padding-left:16px;font-size:12px;line-height:1.55;color:#4a4a4a}
+.pkg__list li{margin:0 0 5px}
+.pkg__price{font-family:var(--display);font-size:21px;margin:16px 0 0;letter-spacing:-.02em}
+.cta--sm{display:inline-block;margin-top:14px;align-self:flex-start;background:var(--ink);color:#fff;
+  font:500 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:11px 13px;
+  text-decoration:none;min-height:38px}
+
+/* ---- NOW: the live investment band, bug reproduced verbatim ---- */
+.invest{margin:26px 16px 0;background:#0d0d0d;padding:26px 20px;display:flex;flex-direction:column;gap:14px}
+/* THE BUG: `.eyebrow--inv` matches no rule in the stylesheet, so the base
+   `.eyebrow` wins and paints var(--ink) #111 onto #0d0d0d. Measured live:
+   rgb(17,17,17) on rgb(13,13,13) = 1.03:1. WCAG AA needs 4.5:1. */
+.eyebrow--inv{color:#111}
+.invest__h{font-family:var(--display);font-size:26px;line-height:1;margin:0;color:#fff;letter-spacing:-.01em}
+.invest__p{margin:0;font:500 10.5px/1.6 var(--mono);letter-spacing:.1em;text-transform:uppercase;
+  color:#fff;opacity:.62}
+
+/* ---- NOW: terms / add-ons, as shipped ---- */
+.sterms{padding:26px 16px 0}
+.sterms__h{font-family:var(--display);font-size:16px;margin:0 0 14px;letter-spacing:-.01em}
+.addons{list-style:none;margin:0;padding:0}
+.addons li{display:flex;justify-content:space-between;gap:12px;padding:9px 0;
+  border-top:1px solid var(--line);font-size:13px}
+.addons__p{font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+.terms{margin:0;padding-left:16px;font-size:12.5px;line-height:1.65;color:#4a4a4a}
+.terms li{margin:0 0 7px}
+
+/* ---- PROPOSED: tier stack, inverted popular card ---- */
+.tiers{display:flex;flex-direction:column;border-top:1px solid var(--ink);margin:22px 16px 0}
+.tier{position:relative;padding:20px 16px 22px;border-bottom:1px solid var(--ink);background:#fff;
+  display:flex;flex-direction:column}
+.tier--pop{background:#0a0a0a;color:#fff;border-bottom:1px solid #0a0a0a}
+.tier__flag{display:inline-block;align-self:flex-start;margin:0 0 13px;padding:6px 9px;
+  font:500 9.5px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;
+  box-shadow:inset 0 0 0 1px var(--ink);color:var(--ink)}
+.tier--pop .tier__flag{background:#fff;color:#0a0a0a;box-shadow:none}
+.tier__hd{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.tier__name{font-family:var(--display);font-size:28px;line-height:.94;margin:0;letter-spacing:-.015em}
+.tier__price{font-family:var(--display);font-size:24px;line-height:1;margin:1px 0 0;
+  white-space:nowrap;letter-spacing:-.02em}
+.tier__spec{margin:11px 0 0;font:500 10px/1.5 var(--mono);letter-spacing:.11em;text-transform:uppercase;color:var(--grey)}
+.tier--pop .tier__spec{color:rgba(255,255,255,.68)}
+.tier__fit{margin:11px 0 0;font-size:13.5px;line-height:1.5;color:var(--dim)}
+.tier--pop .tier__fit{color:rgba(255,255,255,.78)}
+.tier__list{margin:14px 0 0;padding:0;list-style:none;font-size:13px;line-height:1.55}
+.tier__list li{position:relative;padding:8px 0 8px 20px;border-top:1px solid var(--line)}
+.tier--pop .tier__list li{border-top-color:rgba(255,255,255,.18)}
+.tier__list li::before{content:"";position:absolute;left:0;top:15px;width:10px;height:1px;
+  background:currentColor;opacity:.55}
+.tier__cta{margin:17px 0 0;align-self:flex-start;display:inline-block;padding:14px 18px;
+  font:500 10.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;
+  background:var(--ink);color:#fff;min-height:44px}
+.tier--pop .tier__cta{background:#fff;color:#0a0a0a}
+
+/* ---- PROPOSED: the same dark band, legible this time ---- */
+.invest--pro{margin:30px 16px 0;background:#0a0a0a;padding:26px 20px}
+/* .invest__label is the class editorial.css:599 already defines. The fix is a
+   rename in the markup, not a new rule. */
+.invest__label{margin:0;font:500 10.5px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;
+  color:#fff;opacity:.72}
+.invest__h2{font-family:var(--display);font-size:28px;line-height:1;margin:14px 0 0;color:#fff;letter-spacing:-.01em}
+.invest__note{margin:15px 0 0;font:500 10.5px/1.7 var(--mono);letter-spacing:.09em;
+  text-transform:uppercase;color:#fff;opacity:.74}
+
+/* ---- PROPOSED: add-ons as a priced two-up, terms under a hairline ---- */
+.termswrap{padding:0 16px;margin-top:30px}
+.terms__hd{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  border-top:1px solid var(--ink);padding-top:14px}
+.terms__t{font-family:var(--display);font-size:16px;margin:0;letter-spacing:-.01em}
+.terms__n{font:500 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--grey)}
+.addons--pro{display:grid;grid-template-columns:1fr 1fr;gap:0 18px;margin-top:14px}
+.addons--pro li{padding:10px 0;font-size:12.5px;line-height:1.35}
+.addons--pro .addons__p{font-size:12px}
+
+/* sticky booking bar — the thumb-reachable repeat */
+.bookbar{position:absolute;left:0;right:0;bottom:0;background:rgba(255,255,255,.95);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-top:1px solid var(--ink);
+  padding:12px 16px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:8}
+.bookbar__l{font:500 9.5px/1.45 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--grey)}
+.bookbar__b{display:inline-block;background:var(--ink);color:#fff;text-decoration:none;
+  font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:16px 18px;min-height:46px}
+
+/* ---- diagnostics ---- */
+.diag{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);margin:0 0 30px}
+.diag__c{background:var(--paper);padding:18px}
+.diag__t{margin:0 0 14px;font:500 10.5px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--grey)}
+.swatch{display:flex;align-items:center;gap:10px;font:400 11.5px/1.4 var(--mono);letter-spacing:.02em;
+  padding:8px 0;border-top:1px solid var(--line)}
+.swatch:first-of-type{border-top:0}
+.swatch__chip{width:26px;height:26px;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+/* Diagnostics stay monochrome: emphasis is weight and the ✗/PASS glyphs, never hue. */
+.swatch__bad{color:var(--ink);font-weight:500}
+.swatch__ok{color:var(--ink)}
+.verdict{margin:16px 0 0;padding:13px 15px;background:#0a0a0a;color:#f4f4f4;
+  font:400 12.5px/1.65 var(--mono);letter-spacing:.02em}
+.verdict b{color:#fff}
+
+table.chk{width:100%;border-collapse:collapse;margin:0;font-size:12.5px;background:var(--paper)}
+table.chk th,table.chk td{border:1px solid var(--line);padding:8px 9px;text-align:left;vertical-align:top}
+table.chk th{font:500 9.5px/1.3 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--grey)}
+table.chk td.n{font-family:var(--mono);font-size:12px;white-space:nowrap}
+table.chk .same{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);font-weight:500}
+table.chk .fixed{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+
+/* ---- scan test ---- */
+.scans{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin:0 0 8px}
+.scan{background:var(--paper);padding:18px}
+.scan__k{display:flex;align-items:baseline;gap:10px;margin:0 0 12px}
+.scan__n{font:500 10.5px/1 var(--mono);letter-spacing:.16em;color:var(--grey)}
+.scan__t{margin:0;font:500 10.5px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase}
+.scan__t.a{color:var(--ink);text-decoration:line-through;text-decoration-thickness:1px;text-underline-offset:3px}
+.scan__t.b{color:var(--ink)}
+.scan__row{display:flex;gap:18px;flex-wrap:wrap;padding:9px 0;border-top:1px solid var(--line)}
+.scan__row>div{flex:1 1 150px}
+.scan__lbl{font:500 9px/1.3 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--grey);margin:0 0 5px}
+.scan__val{margin:0;font-size:13.5px;line-height:1.5;color:var(--dim)}
+.scan__val b{color:var(--ink);font-weight:600}
+
+/* ---- desktop ---- */
+.deskwrap{background:var(--paper);border:1px solid var(--line);overflow:hidden}
+.desk{display:grid;grid-template-columns:minmax(0,780px) 1fr;min-height:720px;font-family:var(--body)}
+.desk__main{padding:34px 30px 32px;min-width:0}
+.desk__h{display:flex;align-items:flex-start;justify-content:space-between;gap:28px}
+.desk__h1{font-family:var(--display);font-size:clamp(38px,4.2vw,54px);line-height:.9;margin:12px 0 0;letter-spacing:-.02em}
+.desk__intro{max-width:32ch;margin:0;font-size:13.5px;line-height:1.65;color:var(--dim)}
+.desk__strip{display:flex;gap:0;border-top:1px solid var(--ink);margin-top:24px;padding-top:11px}
+.desk__strip span{font:500 9.5px/1.4 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--grey);padding-right:22px}
+.desk__strip span+span{border-left:1px solid var(--line);padding-left:22px}
+.desk__strip b{color:var(--ink);font-weight:500}
+.desk__tiers{display:grid;grid-template-columns:repeat(4,1fr);margin-top:14px;border-top:1px solid var(--ink)}
+.dcard{padding:18px 15px 20px;border-right:1px solid var(--line);display:flex;flex-direction:column}
+.dcard:last-child{border-right:0}
+.dcard--pop{background:#0a0a0a;color:#fff}
+.dcard__flag{margin:0 0 13px;font:500 9px/1 var(--mono);letter-spacing:.15em;text-transform:uppercase;
+  box-shadow:inset 0 0 0 1px var(--ink);padding:5px 7px;align-self:flex-start}
+.dcard--pop .dcard__flag{background:#fff;color:#0a0a0a;box-shadow:none}
+.dcard__n{font-family:var(--display);font-size:21px;line-height:1;margin:0;letter-spacing:-.01em}
+.dcard__p{font-family:var(--display);font-size:26px;line-height:1;margin:13px 0 0;letter-spacing:-.02em}
+.dcard__spec{margin:11px 0 0;font:500 9.5px/1.5 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--grey)}
+.dcard--pop .dcard__spec{color:rgba(255,255,255,.66)}
+.dcard__fit{margin:12px 0 0;font-size:12px;line-height:1.5;color:var(--dim)}
+.dcard--pop .dcard__fit{color:rgba(255,255,255,.78)}
+.dcard__list{margin:13px 0 0;padding:0;list-style:none;font-size:11.5px;line-height:1.5}
+.dcard__list li{padding:7px 0 7px 16px;position:relative;border-top:1px solid var(--line)}
+.dcard--pop .dcard__list li{border-top-color:rgba(255,255,255,.18)}
+.dcard__list li::before{content:"";position:absolute;left:0;top:12px;width:8px;height:1px;background:currentColor;opacity:.5}
+.dcard__cta{margin:15px 0 0;align-self:flex-start;background:var(--ink);color:#fff;text-decoration:none;
+  font:500 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:14px 14px;min-height:44px}
+.dcard--pop .dcard__cta{background:#fff;color:#0a0a0a}
+.desk__band{margin:30px 0 0;background:#0a0a0a;color:#fff;padding:24px;display:flex;
+  align-items:flex-end;justify-content:space-between;gap:26px;flex-wrap:wrap}
+.desk__bandh{font-family:var(--display);font-size:26px;line-height:1;margin:12px 0 0;letter-spacing:-.01em}
+.desk__bandnote{font:500 10.5px/1.7 var(--mono);letter-spacing:.09em;text-transform:uppercase;
+  opacity:.74;margin:0;max-width:28ch}
+.desk__rail{border-left:1px solid var(--line);padding:34px 26px 30px;display:flex;flex-direction:column;gap:15px;background:#fbfbfb;min-width:0}
+.rail__k{margin:0;font-family:var(--display);font-size:17px;line-height:1}
+.rail__dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 14px;align-items:baseline}
+.rail__dl dt{font:500 9.5px/1.2 var(--mono);letter-spacing:.15em;text-transform:uppercase;color:var(--grey)}
+.rail__dl dd{margin:0;font-family:var(--display);font-size:15px;text-align:right}
+.addons--d{margin:0;padding:0;list-style:none}
+.addons--d li{display:flex;justify-content:space-between;gap:10px;padding:8px 0;
+  border-top:1px solid var(--line);font-size:12px}
+.addons--d li span:last-child{font-family:var(--mono);font-size:11.5px;white-space:nowrap}
+.rail__note{margin:0;font-size:12px;line-height:1.6;color:var(--dim)}
+.hcta__btn{display:inline-block;margin-top:auto;align-self:flex-start;background:var(--ink);color:#fff;
+  font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:16px 18px;text-decoration:none;min-height:46px}
+
+/* ---- changes ---- */
+.chgs{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
+.chg{border-bottom:1px solid var(--line);padding:22px 0 24px}
+.chg__hd{display:flex;align-items:baseline;gap:14px}
+.chg__n{font:500 10.5px/1 var(--mono);letter-spacing:.14em;color:var(--grey);flex:none;padding-top:5px}
+.chg__t{margin:0;font-family:var(--display);font-size:clamp(16px,2.1vw,21px);line-height:1.16;
+  letter-spacing:-.01em;flex:1}
+.chg__eff{flex:none;font:500 10.5px/1 var(--mono);letter-spacing:.14em;padding:6px 9px;
+  border:1px solid var(--ink);margin-top:3px}
+.chg__eff[data-eff="M"]{background:var(--ink);color:#fff}
+.chg__eff[data-eff="L"]{background:#0a0a0a;color:#fff;box-shadow:0 0 0 2px #fff,0 0 0 3px var(--ink)}
+.chg__why{margin:12px 0 0;max-width:84ch;color:var(--dim);font-size:14.5px;line-height:1.7}
+.chg__why b{color:var(--ink)}
+.chg__code{margin:14px 0 0;padding:13px 15px;background:#0a0a0a;color:#f2f2f2;overflow-x:auto;
+  font:400 12px/1.65 var(--mono);letter-spacing:.01em;white-space:pre}
+.chg__code .c{color:#8a8a8a}
+.chg__code .d{color:#8a8a8a;text-decoration:line-through}
+.chg__code .a{color:#ffffff}
+
+.closing{border-top:1px solid var(--ink);margin-top:8px;padding-top:20px;max-width:84ch}
+.closing h3{margin:0 0 12px;font-family:var(--display);font-size:17px}
+.closing p{margin:0 0 10px;color:var(--dim);font-size:14.5px;line-height:1.7}
+.closing b{color:var(--ink)}
+
+@media (max-width:960px){
+  .desk{grid-template-columns:1fr}
+  .desk__rail{border-left:0;border-top:1px solid var(--line)}
+  .desk__tiers{grid-template-columns:1fr 1fr}
+  .dcard{border-bottom:1px solid var(--line)}
+}
+@media (max-width:470px){
+  .phone__frame{transform:scale(.84);transform-origin:top left;margin-bottom:-120px}
+}
+</style>
+</head>
+<body>
+
+<header class="doc">
+  <p class="doc__kicker">Shutterhaus Visuals &middot; design artefact &middot; v2</p>
+  <h1 class="doc__h1">The packages page,<br>proposed.</h1>
+  <p class="doc__lede">A visual upgrade for <code>/services</code> at 393px, built on the real data in
+  <code>src/config.ts</code>: the same four tiers, the same prices, the same bullets, the same six
+  add-ons, the same five booking terms. No tier is added, no rand is changed, and none of Alwin's copy is
+  rewritten. What this fixes is what the current page measurably gets wrong &mdash; a label painted
+  <b>#111 on #0d0d0d</b>, invisible to every human on the page, and a "most popular" package that is
+  pixel-identical to the other three.</p>
+
+  <dl class="doc__facts">
+    <div class="fact"><dt>Contrast bug</dt><dd>1.03:1<small>AA needs 4.5:1 &middot; the "Investment" label</small></dd></div>
+    <div class="fact"><dt>Popular flag</dt><dd>0<small>CSS rules matched by <code>.pkg--pop</code></small></dd></div>
+    <div class="fact"><dt>Tiers &amp; prices</dt><dd>4, unchanged<small>R1,200 / R2,200 / R3,500 / R1,800</small></dd></div>
+    <div class="fact"><dt>Colour added</dt><dd>None<small>Emphasis is an inverted black card</small></dd></div>
+  </dl>
+</header>
+
+<main class="doc">
+
+<!-- ============================== 01 NOW ============================== -->
+<section class="sec">
+  <div class="sec__hd"><span class="sec__n">01</span><h2 class="sec__t">Now</h2></div>
+  <p class="sec__note">The shipped page at 393px, rebuilt from the markup at
+  <code>src/pages-more.ts:44&ndash;115</code> and the cascade that actually lands. <b>Two failures are
+  visible in this frame.</b> The <code>Investment</code> label in the dark band is painted at
+  <code>rgb(17,17,17)</code> on <code>rgb(13,13,13)</code>, so it is present for a screen reader and
+  absent for a person. And <code>Essential</code> &mdash; the tier Alwin marked
+  <code>popular: true</code> in the data &mdash; carries no fill, no border, no shadow and no offset, so
+  it is indistinguishable from Starter, Signature and Social. Both panels in this document use identical
+  tier data; only the CSS differs.</p>
+
+  <div class="diag">
+    <div class="diag__c">
+      <p class="diag__t">Bug 01 &mdash; the label nobody can read</p>
+      <div class="swatch swatch__bad"><span class="swatch__chip" style="background:#111"></span>
+        <span>&#10005; painted rgb(17,17,17) &middot; base <code>.eyebrow</code> wins</span></div>
+      <div class="swatch swatch__bad"><span class="swatch__chip" style="background:#0d0d0d"></span>
+        <span>&#10005; backdrop rgb(13,13,13) &middot; <code>.invest</code></span></div>
+      <div class="swatch swatch__ok"><span class="swatch__chip" style="background:#fff"></span>
+        <span>&#10003; <code>editorial.css:599</code> already defines <code>.invest__label</code></span></div>
+      <p class="verdict">Selector <code>.eyebrow--inv</code> &rarr; <b>0 matching rules</b>.
+      The label on screen is the base <code>.eyebrow</code> at <b>var(--ink) #111</b>.<br>
+      rgb(17,17,17) on rgb(13,13,13) &rarr; <b>1.03:1</b> against a 4.5:1 requirement.<br>
+      <code>.invest__label</code> exists in the stylesheet and matches <b>0 elements</b> in the DOM.</p>
+    </div>
+
+    <div class="diag__c">
+      <p class="diag__t">Bug 02 &mdash; the popular tier that is not</p>
+      <table class="chk">
+        <thead><tr><th>Tier</th><th>Class</th><th>Border</th><th>Background</th><th>Shadow</th></tr></thead>
+        <tbody>
+          <tr><td>Starter</td><td class="n">&mdash;</td><td class="n">none</td><td class="n">transparent</td><td class="n">none</td></tr>
+          <tr><td><b>Essential</b></td><td class="n">pkg--pop</td><td class="n">none</td><td class="n">transparent</td><td class="n">none</td></tr>
+          <tr><td>Signature</td><td class="n">&mdash;</td><td class="n">none</td><td class="n">transparent</td><td class="n">none</td></tr>
+          <tr><td>Social</td><td class="n">&mdash;</td><td class="n">none</td><td class="n">transparent</td><td class="n">none</td></tr>
+        </tbody>
+      </table>
+      <p class="verdict">All four cards compute to <b>the same box</b>. The recommendation Alwin made
+      in the data reaches no eye, and the cheapest tier to compare &mdash; R1,800 against R2,200 against
+      R3,500 &mdash; is the one place the page asks a ten-second decision.</p>
+    </div>
+  </div>
+
+  <figure class="panel">
+    <div class="panel__hd"><span class="tag">Now</span>
+      <span class="panel__sub">393 &times; 852 &middot; as shipped &middot; grey blocks stand in for the card photographs</span></div>
+    <div class="phone">
+      <div class="phone__frame">
+        <div class="phone__island" aria-hidden="true"></div>
+        <div class="phone__screen" style="height:852px">
+          <div class="pg">
+            <div class="site-head">
+              <span class="wordmark">SHUTTERHAUS<br>VISUALS</span>
+              <span class="nav"><a>Home</a><a>Portfolio</a><a class="on">Services</a></span>
+            </div>
+            <header class="shead">
+              <p class="eyebrow">Services</p>
+              <h1 class="shead__h">Capture What<br>Matters.</h1>
+              <p class="shead__p">Every session is directed start to finish &mdash; you don't need to know
+              how to pose. 50% deposit secures your date.</p>
+            </header>
+
+            <div class="pkgrow">
+              <article class="pkg">
+                <figure class="pkg__fig"><span class="ph"></span></figure>
+                <p class="pkg__num">01.</p>
+                <h3 class="pkg__name">Starter</h3>
+                <p class="pkg__desc">Headshots, matric farewells, quick portraits.</p>
+                <ul class="pkg__list">
+                  <li>15 professionally edited high-res images</li>
+                  <li>Private online gallery (90-day access)</li>
+                  <li>High-res + web-optimised downloads</li>
+                  <li>Clothing guide &amp; location suggestions</li>
+                  <li>Print release for personal use</li>
+                </ul>
+                <p class="pkg__price">R1,200</p>
+                <a class="cta--sm" href="#">Book now</a>
+              </article>
+            </div>
+            <div class="cut"><span>tiers 02&ndash;04 &middot; four near-identical cards</span></div>
+
+            <div class="pkgrow">
+              <article class="pkg pkg--pop">
+                <figure class="pkg__fig"><span class="ph"></span></figure>
+                <p class="pkg__num">02.</p>
+                <h3 class="pkg__name">Essential</h3>
+                <p class="pkg__desc">Our go-to for couples, individuals and small families.</p>
+                <ul class="pkg__list">
+                  <li>40 professionally edited high-res images</li>
+                  <li>Reels-ready vertical crops</li>
+                  <li>Print release + 5&times;7&Prime; fine art print</li>
+                  <li>Private online gallery (90-day access)</li>
+                  <li>Clothing guide, location scouting, shot list</li>
+                </ul>
+                <p class="pkg__price">R2,200</p>
+                <a class="cta--sm" href="#">Book now</a>
+              </article>
+            </div>
+
+            <section class="invest">
+              <div class="invest__col">
+                <p class="eyebrow eyebrow--inv">Investment</p>
+                <h2 class="invest__h">Quality over quantity.</h2>
+              </div>
+              <p class="invest__p">50% deposit to book &middot; EFT accepted</p>
+            </section>
+
+            <div class="sterms">
+              <h2 class="sterms__h">Add-ons</h2>
+              <ul class="addons">
+                <li><span>Extra 30 minutes</span><span class="addons__p">+R600</span></li>
+                <li><span>Extra location</span><span class="addons__p">+R400</span></li>
+              </ul>
+            </div>
+            <div class="screenfade"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <figcaption class="panel__cap"><b>The label in the dark band is not rendering dark &mdash; it is
+    rendering invisible.</b> Everything around it is fine: <code>.invest</code> paints the band and
+    <code>#fff</code> reaches the heading and the deposit line through <code>opacity</code>. Only the
+    <code>&lt;p class="eyebrow eyebrow--inv"&gt;</code> falls through to the base rule. Read the two
+    lines: "Investment" is a hole, "Quality over quantity." is legible, and the deposit note is legible.</figcaption>
+  </figure>
+</section>
+<!-- ============================== 02 PROPOSED ============================== -->
+<section class="sec">
+  <div class="sec__hd"><span class="sec__n">02</span><h2 class="sec__t">Proposed</h2></div>
+  <p class="sec__note">Same four tiers, same prices, same bullets, same add-ons, same terms, same copy.
+  Three things changed. <code>Essential</code> is inverted black-on-white and carries a white
+  <b>MOST POPULAR</b> flag, so the recommended tier is the only thing on the page that inverts &mdash; no
+  colour token, no shadow, no gradient. The dark band's label uses the class the stylesheet already
+  defines. And a hairline-pinned booking bar keeps <b>Book now</b> under the thumb at all times instead of
+  once per card. The <code>spec</code> line that sat unused in <code>config.ts</code> now carries each
+  tier's real duration and location count &mdash; it is the fastest way to compare four tiers in ten
+  seconds, and it was already written.</p>
+
+  <figure class="panel">
+    <div class="panel__hd"><span class="tag">Proposed</span>
+      <span class="panel__sub">393 &times; 852 &middot; no new colour, no shadow, no gradient</span></div>
+    <div class="phone">
+      <div class="phone__frame">
+        <div class="phone__island" aria-hidden="true"></div>
+        <div class="phone__screen" style="height:852px">
+          <div class="pg">
+            <div class="site-head">
+              <span class="wordmark">SHUTTERHAUS<br>VISUALS</span>
+              <span class="nav"><a>Home</a><a>Portfolio</a><a class="on">Services</a></span>
+            </div>
+            <header class="shead">
+              <p class="eyebrow">Services</p>
+              <h1 class="shead__h">Capture What<br>Matters.</h1>
+              <p class="shead__p">Every session is directed start to finish &mdash; you don't need to know
+              how to pose. 50% deposit secures your date.</p>
+            </header>
+
+            <div class="tiers">
+              <article class="tier tier--pop">
+                <span class="tier__flag">Most popular</span>
+                <div class="tier__hd">
+                  <h3 class="tier__name">Essential</h3>
+                  <p class="tier__price">R2,200</p>
+                </div>
+                <p class="tier__spec">60 min &middot; 2 outfits &middot; 1&ndash;2 locations</p>
+                <p class="tier__fit">Our go-to for couples, individuals and small families.</p>
+                <ul class="tier__list">
+                  <li>40 professionally edited high-res images</li>
+                  <li>Reels-ready vertical crops</li>
+                  <li>Print release + 5&times;7&Prime; fine art print</li>
+                  <li>Private online gallery (90-day access)</li>
+                  <li>Clothing guide, location scouting, shot list</li>
+                </ul>
+                <a class="tier__cta" href="#">Book Essential</a>
+              </article>
+
+              <article class="tier">
+                <div class="tier__hd">
+                  <h3 class="tier__name">Starter</h3>
+                  <p class="tier__price">R1,200</p>
+                </div>
+                <p class="tier__spec">30 min &middot; 1 outfit &middot; 1 location</p>
+                <p class="tier__fit">Headshots, matric farewells, quick portraits.</p>
+                <ul class="tier__list">
+                  <li>15 professionally edited high-res images</li>
+                  <li>Private online gallery (90-day access)</li>
+                  <li>High-res + web-optimised downloads</li>
+                  <li>Clothing guide &amp; location suggestions</li>
+                  <li>Print release for personal use</li>
+                </ul>
+                <a class="tier__cta" href="#">Book Starter</a>
+              </article>
+            </div>
+            <div class="cut"><span>Signature R3,500 &middot; Social R1,800 &middot; same pattern</span></div>
+
+            <section class="invest invest--pro">
+              <p class="invest__label">Investment</p>
+              <h2 class="invest__h2">Quality over quantity.</h2>
+              <p class="invest__note">50% deposit to book &middot; EFT accepted</p>
+            </section>
+
+            <div class="termswrap">
+              <div class="terms__hd">
+                <h2 class="terms__t">Add-ons</h2>
+                <span class="terms__n">6 available</span>
+              </div>
+              <ul class="addons addons--pro">
+                <li><span>Extra 30 minutes</span><span class="addons__p">+R600</span></li>
+                <li><span>Extra location</span><span class="addons__p">+R400</span></li>
+                <li><span>Rush delivery (48hr)</span><span class="addons__p">+R400</span></li>
+                <li><span>Extra 5&times;7&Prime; print</span><span class="addons__p">+R150</span></li>
+                <li><span>Fine art album (20pg)</span><span class="addons__p">+R1,200</span></li>
+                <li><span>Travel beyond 25km</span><span class="addons__p">+R5/km</span></li>
+              </ul>
+              <div class="terms__hd" style="margin-top:24px">
+                <h2 class="terms__t">Booking terms</h2>
+                <span class="terms__n">5 terms</span>
+              </div>
+              <ul class="terms" style="margin-top:12px">
+                <li>50% non-refundable deposit secures your date; balance before gallery delivery.</li>
+                <li>Rescheduling &ge;7 days notice is free. Under 7 days: R500 fee, deposit transfers.</li>
+              </ul>
+            </div>
+
+            <div class="bookbar">
+              <span class="bookbar__l">From R1,200 &middot; 4 packages</span>
+              <a class="bookbar__b" href="#">Book now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <figcaption class="panel__cap"><b>Read the frame in three passes.</b> Pass one: the only black card is
+    Essential, at R2,200. Pass two: the mono spec line gives the shape of each session &mdash; 30, 60, 90,
+    45 minutes &mdash; without reading a single bullet. Pass three: the band is now a band, not a black
+    rectangle with a missing label, and <b>Book now</b> is pinned within thumb reach at the bottom of the
+    screen instead of appearing once at the bottom of a 1,900px page.</figcaption>
+  </figure>
+
+  <div class="scans">
+    <div class="scan">
+      <div class="scan__k"><span class="scan__n">02.A</span>
+        <span class="scan__t a">Can four tiers be compared in ten seconds? &#10005;</span></div>
+      <div class="scan__row">
+        <div><p class="scan__lbl">Now</p><p class="scan__val"><b>No.</b> The popular flag paints
+          nothing, so four cards of identical weight compete equally. Duration is absent entirely &mdash;
+          <code>spec</code> is in <code>config.ts</code> and never rendered &mdash; so "which session
+          length do I need?" cannot be answered from the card at all.</p></div>
+        <div><p class="scan__lbl">Proposed</p><p class="scan__val"><b>Yes.</b> Price and duration sit on
+          the same horizontal line, above the fold of each card, before any bullet. The inverted card is
+          found in under one second at a glance and skipped thereafter.</p></div>
+      </div>
+    </div>
+    <div class="scan">
+      <div class="scan__k"><span class="scan__n">02.B</span>
+        <span class="scan__t a">Does the dark Investment band land? &#10005;</span></div>
+      <div class="scan__row">
+        <div><p class="scan__lbl">Now</p><p class="scan__val"><b>Half.</b> The inversion is strong and
+          it does stop the eye, but it introduces the section with a label nobody can read. A band whose
+          first line is invisible reads as an accident, not a decision.</p></div>
+        <div><p class="scan__lbl">Proposed</p><p class="scan__val"><b>Yes.</b> <code>#0a0a0a</code>
+          against 72%-opacity white gives roughly <b>10:1</b>. The label does its job as a
+          section opener and the band reads as intentional.</p></div>
+      </div>
+    </div>
+    <div class="scan">
+      <div class="scan__k"><span class="scan__n">02.C</span>
+        <span class="scan__t b">Do add-ons and terms bury the CTA? &#10005; now &rarr; &#10003; proposed</span></div>
+      <div class="scan__row">
+        <div><p class="scan__lbl">Now</p><p class="scan__val">On a 393px screen the page is roughly
+          1,900px tall. The last <b>Book now</b> in the final card sits above six add-on rows and five
+          terms, so it is scroll-past before anyone reaches it.</p></div>
+        <div><p class="scan__lbl">Proposed</p><p class="scan__val"><b>No.</b> Add-ons become a two-column
+          priced list (six rows &rarr; three) and the terms sit under a hairline that reads as
+          reference, not as the main act. The pinned bar means the CTA never scrolls away.</p></div>
+      </div>
+    </div>
+    <div class="scan">
+      <div class="scan__k"><span class="scan__n">02.D</span>
+        <span class="scan__t b">Is the CTA repeated and thumb-reachable? &#10003;</span></div>
+      <div class="scan__row">
+        <div><p class="scan__lbl">Now</p><p class="scan__val">Repeated four times, yes &mdash; but the
+          first three are near the top of their own cards and the fourth is deep in the page.
+          All four are <code>cta--sm</code> at roughly 38px, inside the 44px target.</p></div>
+        <div><p class="scan__lbl">Proposed</p><p class="scan__val">Per-tier CTA names the tier
+          ("Book Essential", "Book Starter") so the click carries context, and the pinned bar is a
+          constant <b>46px</b> target within reach of a right thumb.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== 03 DESKTOP ============================== -->
+<section class="sec">
+  <div class="sec__hd"><span class="sec__n">03</span><h2 class="sec__t">Proposed at 1280</h2></div>
+  <p class="sec__note">The same markup at desktop. The tier grid holds all four across the main column so
+  comparison is genuinely parallel &mdash; one price row, one spec row, four bullets each, same baseline.
+  The popular card is the only inverted block in the row. Add-ons and terms move into a quiet right rail
+  under a persistent booking CTA, which removes them from the reading path entirely and keeps the left
+  column to exactly one job: choose a package.</p>
+
+  <div class="deskwrap">
+    <div class="desk">
+      <div class="desk__main">
+        <div class="desk__h">
+          <div>
+            <p class="eyebrow">Services</p>
+            <h1 class="desk__h1">Capture What<br>Matters.</h1>
+          </div>
+          <p class="desk__intro">Every session is directed start to finish &mdash; you don't need to know
+          how to pose. 50% deposit secures your date.</p>
+        </div>
+
+        <div class="desk__strip">
+          <span><b>4</b> packages</span>
+          <span><b>R1,200</b> &ndash; R3,500</span>
+          <span><b>50%</b> deposit to book</span>
+          <span><b>EFT</b> accepted</span>
+        </div>
+
+        <div class="desk__tiers">
+          <article class="dcard dcard--pop">
+            <span class="dcard__flag">Most popular</span>
+            <h3 class="dcard__n">Essential</h3>
+            <p class="dcard__p">R2,200</p>
+            <p class="dcard__spec">60 min &middot; 2 outfits &middot; 1&ndash;2 locations</p>
+            <p class="dcard__fit">Our go-to for couples, individuals and small families.</p>
+            <ul class="dcard__list">
+              <li>40 professionally edited high-res images</li>
+              <li>Reels-ready vertical crops</li>
+              <li>Print release + 5&times;7&Prime; fine art print</li>
+              <li>Private online gallery (90-day access)</li>
+              <li>Clothing guide, location scouting, shot list</li>
+            </ul>
+            <a class="dcard__cta" href="#">Book Essential</a>
+          </article>
+
+          <article class="dcard">
+            <h3 class="dcard__n">Starter</h3>
+            <p class="dcard__p">R1,200</p>
+            <p class="dcard__spec">30 min &middot; 1 outfit &middot; 1 location</p>
+            <p class="dcard__fit">Headshots, matric farewells, quick portraits.</p>
+            <ul class="dcard__list">
+              <li>15 professionally edited high-res images</li>
+              <li>Private online gallery (90-day access)</li>
+              <li>High-res + web-optimised downloads</li>
+              <li>Clothing guide &amp; location suggestions</li>
+              <li>Print release for personal use</li>
+            </ul>
+            <a class="dcard__cta" href="#">Book Starter</a>
+          </article>
+
+          <article class="dcard">
+            <h3 class="dcard__n">Signature</h3>
+            <p class="dcard__p">R3,500</p>
+            <p class="dcard__spec">90 min &middot; 2&ndash;3 outfits &middot; multiple locations</p>
+            <p class="dcard__fit">Families, maternity, engagements &mdash; the full experience.</p>
+            <ul class="dcard__list">
+              <li>70 professionally edited high-res images</li>
+              <li>B&amp;W timeless set + Reels crops</li>
+              <li>Print release + 2&times; 5&times;7&Prime; fine art prints</li>
+              <li>Private online gallery (90-day access)</li>
+              <li>Full prep: clothing guide, shot list, scouting</li>
+            </ul>
+            <a class="dcard__cta" href="#">Book Signature</a>
+          </article>
+
+          <article class="dcard">
+            <h3 class="dcard__n">Social</h3>
+            <p class="dcard__p">R1,800</p>
+            <p class="dcard__spec">45 min &middot; 2 outfits &middot; 1 location</p>
+            <p class="dcard__fit">Built for creators &mdash; vertical-first, quick turnaround.</p>
+            <ul class="dcard__list">
+              <li>30 edited images + 15 Reels-ready vertical crops</li>
+              <li>48hr sneak peek</li>
+              <li>Vertical (4:5, 9:16) + high-res + web</li>
+              <li>Content calendar template</li>
+              <li>Pose coaching for video &amp; content</li>
+            </ul>
+            <a class="dcard__cta" href="#">Book Social</a>
+          </article>
+        </div>
+
+        <div class="desk__band">
+          <div>
+            <p class="invest__label">Investment</p>
+            <h2 class="desk__bandh">Quality over quantity.</h2>
+          </div>
+          <p class="desk__bandnote">50% deposit to book &middot; EFT accepted</p>
+        </div>
+      </div>
+
+      <aside class="desk__rail">
+        <h3 class="rail__k">Add-ons</h3>
+        <ul class="addons--d">
+          <li><span>Extra 30 minutes</span><span>+R600</span></li>
+          <li><span>Extra location</span><span>+R400</span></li>
+          <li><span>Rush delivery (48hr)</span><span>+R400</span></li>
+          <li><span>Extra 5&times;7&Prime; print</span><span>+R150</span></li>
+          <li><span>Fine art album (20pg)</span><span>+R1,200</span></li>
+          <li><span>Travel beyond 25km</span><span>+R5/km</span></li>
+        </ul>
+
+        <h3 class="rail__k">Booking terms</h3>
+        <ul class="terms" style="font-size:11.5px;line-height:1.55">
+          <li>50% non-refundable deposit secures your date; balance before gallery delivery.</li>
+          <li>Rescheduling &ge;7 days notice is free. Under 7 days: R500 fee, deposit transfers.</li>
+          <li>Outdoor shoots include a backup indoor location. Severe weather = free reschedule.</li>
+          <li>Delivery: Starter, Essential and Social in 5 business days; Signature in 7.</li>
+          <li>Personal use licence included. Commercial use needs a separate licence (+50&ndash;200%).</li>
+        </ul>
+
+        <p class="rail__note">Not sure which package? Send the date and location and Alwin will point at
+          the right one.</p>
+        <a class="hcta__btn" href="#">Book now</a>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== 04 CHANGES ============================== -->
+<section class="sec">
+  <div class="sec__hd"><span class="sec__n">04</span><h2 class="sec__t">Changes</h2></div>
+  <p class="sec__note">Fourteen changes, in the order they should be done. Items 1 and 2 are the two
+  confirmed bugs and are worth doing today; everything after that is design.
+  <b>Effort:</b> S = under 30 min &middot; M = under 2h &middot; L = more.</p>
+
+  <ol class="chgs">
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">01</span>
+        <h3 class="chg__t">Rename <code>eyebrow--inv</code> to <code>invest__label</code> in the markup</h3>
+        <span class="chg__eff" data-eff="S">S</span></div>
+      <p class="chg__why">The one-character-class fix. <code>pages-more.ts:86</code> writes
+        <code>&lt;p class="eyebrow eyebrow--inv"&gt;</code>, but <code>.eyebrow--inv</code> has no rule
+        anywhere in the stylesheet, so the base <code>.eyebrow</code> wins and paints
+        <code>var(--ink)</code> &mdash; <b>#111 on #0d0d0d</b>. <code>editorial.css:599</code> already
+        defines <code>.invest__label</code> for exactly this label and it matches nothing in the DOM.
+        Renaming the class in the markup activates the rule that has been sitting there unused.
+        <b>Do not add a new CSS rule</b> &mdash; that hides the class-name mismatch instead of fixing it.
+        Expected: roughly 10:1, white at 72%.</p>
+      <pre class="chg__code"><span class="c">// src/pages-more.ts:86</span>
+- &lt;p class="eyebrow eyebrow--inv"&gt;Investment&lt;/p&gt;
++ &lt;p class="invest__label"&gt;Investment&lt;/p&gt;</pre>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">02</span>
+        <h3 class="chg__t">Give the popular tier a real treatment</h3>
+        <span class="chg__eff" data-eff="M">M</span></div>
+      <p class="chg__why"><code>pages-more.ts:58</code> adds <code>pkg--pop</code> to Essential and
+        nothing binds it: measured computed styles across all four cards are <b>border 0 none,
+        background transparent, shadow none, transform none</b>. Alwin's recommendation is invisible.
+        The treatment is <b>black fill, white text</b> &mdash; no new colour token, no shadow, no
+        gradient, and it reads as emphasis in a strictly monochrome system because it is the only
+        inversion in the row. Two supporting details make it scannable without colour: a white
+        <b>MOST POPULAR</b> flag on the card, and Essential moved to first position so the scan starts at
+        the recommendation. Flag the class as load-bearing in a comment the way
+        <code>homeGalleryCount</code> is flagged, so the next edit does not quietly drop it again.</p>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">03</span>
+        <h3 class="chg__t">Render the <code>spec</code> line that is already in the data</h3>
+        <span class="chg__eff" data-eff="S">S</span></div>
+      <p class="chg__why">Every tier in <code>config.ts</code> carries a
+        <code>spec</code> string &mdash; "30 min &middot; 1 outfit &middot; 1 location" through
+        "90 min &middot; 2&ndash;3 outfits &middot; multiple locations" &mdash; and
+        <code>servicesPage()</code> never prints it. This is the cheapest real improvement on the page: it
+        turns four text-heavy cards into a duration comparison you can read in one pass, in the site's
+        own uppercase-letterspaced mono layer, and it costs one line of markup.</p>
+      <pre class="chg__code"><span class="c">// inside card(), after the name</span>
++ &lt;p class="tier__spec"&gt;${escapeHtml(t.spec)}&lt;/p&gt;</pre>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">04</span>
+        <h3 class="chg__t">Move price onto the same line as the tier name</h3>
+        <span class="chg__eff" data-eff="S">S</span></div>
+      <p class="chg__why">Price currently sits at the <b>bottom</b> of a card, below five bullets, which
+        means the single most decision-relevant number is the last thing in the block. Name and price on
+        one baseline, spec beneath, fit line beneath that &mdash; the decision data lands first, the
+        supporting detail follows. Keeps the desktop price row perfectly parallel across four columns.</p>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">05</span>
+        <h3 class="chg__t">Add a pinned booking bar on mobile</h3>
+        <span class="chg__eff" data-eff="M">M</span></div>
+      <p class="chg__why">On a 393px screen the page is roughly 1,900px tall and the last
+        <b>Book now</b> sits above six add-ons and five terms. A hairline-pinned bar keeps a
+        <b>46px</b> target inside right-thumb reach at all times. It should be white with a
+        <code>1px solid var(--ink)</code> top rule and slight backdrop blur &mdash; no shadow, no colour,
+        no floating pill, which would fight the flush-left layout. Hidden on desktop, where the rail CTA
+        already sits in a fixed position.</p>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">06</span>
+        <h3 class="chg__t">Name the tier in the per-card CTA</h3>
+        <span class="chg__eff" data-eff="S">S</span></div>
+      <p class="chg__why">Four identical <b>Book now</b> buttons give the client no idea which one they
+        are committing to. <b>Book Essential</b> / <b>Book Starter</b> carries the context into the click
+        and into the WhatsApp or enquiry-form handoff that follows it. A/B-nothing: this is strictly
+        better copy at the same cost.</p>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">07</span>
+        <h3 class="chg__t">Two-column add-ons with a count in the mono layer</h3>
+        <span class="chg__eff" data-eff="S">S</span></div>
+      <p class="chg__why">Six single-column rows become three two-column rows and the add-on block loses
+        roughly half its height. The <b>6 AVAILABLE</b> meta line comes straight from
+        <code>p.addons.length</code>, so it stays true when Alwin edits the list. Keeps add-ons clearly
+        secondary &mdash; useful, not the reason to book.</p>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">08</span>
+        <h3 class="chg__t">Put booking terms behind a hairline, under a count</h3>
+        <span class="chg__eff" data-eff="S">S</span></div>
+      <p class="chg__why">Terms are five sentences of legal weight and they are the least valuable thing
+        on the page per pixel. A hairline top rule plus <b>5 TERMS</b> in the mono layer reframes the
+        block as reference material a client can open, not a wall to scroll past. Content unchanged and
+        still fully visible &mdash; nothing is hidden behind an interaction.</p>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">09</span>
+        <h3 class="chg__t">Deepen the Investment band from #0d0d0d to #0a0a0a</h3>
+        <span class="chg__eff" data-eff="S">S</span></div>
+      <p class="chg__why">Three points of separation, and it lets the band use the same inverted-black
+        value as the popular card, so the page has <b>one</b> inversion token rather than two. At
+        <code>#0a0a0a</code> the white label clears AA comfortably at 72% opacity. Contrast between the band
+        and the page is what makes it read as a deliberate edge rather than a dark patch.</p>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">10</span>
+        <h3 class="chg__t">Add a one-line range strip under the desktop heading</h3>
+        <span class="chg__eff" data-eff="S">S</span></div>
+      <p class="chg__why"><b>4 PACKAGES &middot; R1,200&ndash;R3,500 &middot; 50% DEPOSIT TO BOOK &middot; EFT
+        ACCEPTED</b>, hairline-divided, in the mono layer. It answers "is this page for me?" before a
+        single card renders, and it is the one place the deposit mechanic and the Rand range appear
+        outside the band. Derive it from <code>p.tiers</code> rather than typing the numbers, so it cannot
+        drift from the data.</p>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">11</span>
+        <h3 class="chg__t">Give every tier a photograph with <code>object-position</code></h3>
+        <span class="chg__eff" data-eff="M">M</span></div>
+      <p class="chg__why">The card image is the only colour-free emotional signal on the page and it is
+        doing the most work at the smallest size. Keep <code>pictureFor()</code>'s existing
+        <code>sizes</code> and rotate through the gallery as the code does now, but crop with
+        <b><code>object-position</code></b> and never <code>object-fit: cover</code> &mdash; cover crops
+        faces off, which is fatal in a portrait studio's own portfolio. Per-tier crop points should be
+        hand-picked, and <code>loading="lazy"</code> stays on everything below the first card.</p>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">12</span>
+        <h3 class="chg__t">Move add-ons and terms into a quiet desktop right rail</h3>
+        <span class="chg__eff" data-eff="M">M</span></div>
+      <p class="chg__why">At 1280px the main column holds all four tiers in one parallel grid and the
+        supporting material moves to a <code>#fbfbfb</code> rail separated by a single hairline. The left
+        column then does exactly one job. The rail CTA sits at the bottom on <code>margin-top: auto</code>,
+        so it stays at the fold's edge regardless of how many add-ons Alwin adds &mdash; the layout does
+        not need revisiting each time the list changes.</p>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">13</span>
+        <h3 class="chg__t">Add a "not sure which package" line above the rail CTA</h3>
+        <span class="chg__eff" data-eff="S">S</span></div>
+      <p class="chg__why">"Not sure which package? Send the date and location and Alwin will point at the
+        right one." Four tiers is a real decision and hesitation is the thing that loses the booking.
+        This gives a client who is stuck somewhere to go, so <b>Book now</b> stops being the only exit.
+        It is one line in body grey &mdash; not a new component.</p>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">14</span>
+        <h3 class="chg__t">Add a lint gate so orphan classes cannot ship again</h3>
+        <span class="chg__eff" data-eff="L">L</span></div>
+      <p class="chg__why">Both bugs on this page are the same bug: <b>a class in the markup with no rule in
+        the stylesheet.</b> <code>.eyebrow--inv</code> is invisible; <code>.pkg--pop</code> is inert. A CI
+        step that extracts class names from the rendered HTML and greps the CSS for each one &mdash;
+        flagging both "class in markup, no rule" and "rule in CSS, no element", which is how
+        <code>.invest__label</code> survived &mdash; turns a class of invisible defects into a build
+        failure. Worth doing after the twelve design items land, not before.</p>
+    </li>
+  </ol>
+
+  <div class="closing">
+    <h3>What this document deliberately does not do</h3>
+    <p><b>No colour.</b> Emphasis is an inverted black card and nothing else. No accent, no highlight, no
+    tinted "popular" badge &mdash; a hue would be the first thing to fight the black-and-white identity and
+    the cheapest thing to regret.</p>
+    <p><b>No shadows, no radii, no gradients.</b> Cards are separated by 1px rules and one fill inversion.
+    The popular card is the only corner in the page that differs from flush-left, which is exactly what
+    makes it work.</p>
+    <p><b>No change to the mono layer.</b> The uppercase, letterspaced mono treatment is the site's
+    strongest brand decision. Every new element here &mdash; spec lines, meta counts, the range strip,
+    the pinned bar &mdash; is built inside it rather than beside it.</p>
+    <p><b>No new tiers, prices, bullets, add-ons or terms.</b> Everything above renders
+    <code>SITE.pricing</code> as it stands in <code>config.ts</code>. The only content-shaped change is
+    that <code>spec</code> becomes visible.</p>
+    <p><b>No <code>object-fit: cover</code> on any photograph.</b> Crop with <code>object-position</code>.
+    This constraint is not negotiable on a photographer's own site.</p>
+    <p>Items <b>01</b> and <b>02</b> are the two confirmed bugs. Item 01 is a rename of one class in one
+    line and it turns invisible text into 10:1 text. Item 02 makes Alwin's own recommendation visible.
+    Everything else is craft on top of a page that was already honest.</p>
+  </div>
+</section>
+</main>
+</body>
+</html>

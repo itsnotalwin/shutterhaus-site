@@ -9,9 +9,10 @@ spacing issues at all please". The fix is in the data — every row holds frames
 of the same ratio — so this asserts it, because a row that quietly mixes
 ratios is the whole defect coming back and the page still looks plausible.
 
-Alwin, 2026-10-02: rows are TWO frames now, not three, so the counts below
-moved with them (14 rows / 28 frames). These are asserted rather than inferred
-so a silent re-pack cannot shrink the wall.
+Alwin, 2026-10-02: rows are TWO frames now, not three, and the re-curation
+restored the 30 he originally asked for, so the counts below moved to
+15 rows / 30 frames. These are asserted rather than inferred so a silent re-pack
+cannot shrink the wall.
 
 Also checks: frame count, no duplicates, every file exists, no numbering left
 in the markup.
@@ -44,11 +45,11 @@ def check(name, ok, detail=""):
 
 flat = [f for row in ROWS for f in row]
 
-EXPECTED_ROWS = 14
+EXPECTED_ROWS = 15
 EXPECTED_PER_ROW = 2
 EXPECTED_FRAMES = EXPECTED_ROWS * EXPECTED_PER_ROW
 
-check("fourteen rows", len(ROWS) == EXPECTED_ROWS, str(len(ROWS)))
+check("fifteen rows", len(ROWS) == EXPECTED_ROWS, str(len(ROWS)))
 check("two frames per row", all(len(r) == EXPECTED_PER_ROW for r in ROWS), str([len(r) for r in ROWS]))
 check(f"{EXPECTED_FRAMES} frames", len(flat) == EXPECTED_FRAMES, str(len(flat)))
 check("no duplicates", len(set(flat)) == EXPECTED_FRAMES, f"{len(set(flat))} unique")

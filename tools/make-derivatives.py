@@ -22,11 +22,21 @@ DERIV_RE = re.compile(r"-\d+w$")
 
 # Widths a phone and a desktop actually request, plus a 3x slot for retina
 # tablets. 1600 is the largest useful: nothing renders wider than ~640 CSS px.
-WIDTHS = (400, 800, 1200, 1600)
+#
+# 560 exists because of the portfolio wall. A cell is ~173 CSS px on a phone,
+# which is ~519 device px at DPR 3 — just past 400, so without this rung the
+# browser had to jump all the way to 800w and over-fetch by ~50% on every one
+# of the 30 frames. 560 lands on the need instead of doubling it.
+WIDTHS = (400, 560, 800, 1200, 1600)
 QUALITY = 88
 # WebP at 72 was visibly soft on a photography portfolio — the whole point of
 # the site is the image, and q72 plus the greyscale filter together read as
 # "low quality". q86 is roughly JPEG q92 for a fraction more bytes than q72.
+#
+# The filter is gone as of 2026-10-02 (photographs render as uploaded), so q86
+# may now be more quality than this needs. Dropping it to ~80 would save a
+# further ~20% per frame. Not done here because it means re-encoding the whole
+# gallery and the saving should be measured on a real screen first, not guessed.
 WEBP_QUALITY = 86
 
 

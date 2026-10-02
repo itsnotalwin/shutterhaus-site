@@ -178,7 +178,11 @@ function wire(): void {
           console.error("[admin] alt text save failed", err);
           paint({
             kind: "err",
-            text: `Alt text didn't save: ${err instanceof Error ? err.message : "unknown error"}. Your text is still in the box — copy it before reloading.`,
+            // The re-render below REPLACES the input, so "your text is still in
+            // the box" was false — the typed text was destroyed by the very
+            // paint that reported the failure. Carry it in the notice instead,
+            // where it survives the repaint.
+          text: `Alt text didn't save: ${err instanceof Error ? err.message : "unknown error"}. Your text was "${inp.value.trim()}" — copy it from here and re-enter it.`,
           });
         });
     });
@@ -261,6 +265,10 @@ function bindGate(): void {
     btn.disabled = true;
     const { error } = await signInWithGoogle();
     if (error) {
+      // Re-enable: a failed popup/denied consent used to leave the button
+      // disabled forever, so one refused click locked the admin out of the
+      // gate with no way back except a full page reload.
+      btn.disabled = false;
       const p = document.querySelector(".gate__err") ?? createErr();
       p.textContent = error.message;
     }

@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shutterhaus &mdash; Portfolio, proposed &middot; v2 mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#111; --grey:#6b6b6b; --line:#e6e6e6; --paper:#fff;
+  --dim:#6d6d6d; --wash:#f6f6f6; --rule:#d8d8d8;
+  --display:"Archivo Black","Helvetica Neue",Arial,sans-serif;
+  --body:"Inter",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--wash);color:var(--ink);font-family:var(--body);
+  font-size:15px;line-height:1.6;padding:0 0 96px}
+img{filter:grayscale(1) contrast(1.06)}
+code{font-family:var(--mono);font-size:.9em;background:#ececec;padding:1px 4px;border-radius:2px}
+b{font-weight:600}
+
+.doc{max-width:1120px;margin:0 auto;padding:64px 26px 0}
+.doc__kicker{font:500 10.5px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--grey)}
+.doc__h1{font-family:var(--display);font-size:clamp(34px,5.2vw,58px);line-height:.92;margin:16px 0 0;letter-spacing:-.02em}
+.doc__lede{max-width:60ch;margin:22px 0 0;color:var(--dim);font-size:15.5px;line-height:1.7}
+.doc__facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);margin:34px 0 0}
+.fact{background:var(--paper);padding:14px 16px}
+.fact dt{font:500 9.5px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--grey);margin:0}
+.fact dd{margin:8px 0 0;font-family:var(--display);font-size:19px;line-height:1.1}
+.fact dd small{font-family:var(--body);font-weight:400;font-size:12px;color:var(--dim);display:block;margin-top:5px;letter-spacing:0}
+
+.sec{margin:0 0 96px}
+.sec__hd{display:flex;align-items:baseline;gap:14px;border-top:1px solid var(--ink);padding-top:14px;margin:0 0 8px}
+.sec__n{font:500 10.5px/1 var(--mono);letter-spacing:.18em;color:var(--grey)}
+.sec__t{font-family:var(--display);font-size:clamp(22px,3vw,30px);line-height:1;margin:0;letter-spacing:-.01em}
+.sec__note{max-width:64ch;color:var(--dim);font-size:14.5px;margin:12px 0 40px}
+
+.panel{margin:0}
+.panel__hd{display:flex;align-items:baseline;gap:12px;margin:0 0 20px;flex-wrap:wrap}
+.tag{font:500 10.5px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;
+  background:var(--ink);color:#fff;padding:7px 10px}
+.panel__sub{font:400 12.5px/1 var(--mono);color:var(--grey);letter-spacing:.04em}
+.phone{display:flex;justify-content:flex-start;padding-left:6px}
+.phone__frame{position:relative;width:417px;background:#0b0b0b;border-radius:56px;padding:12px;
+  box-shadow:0 24px 60px -18px rgba(0,0,0,.42),0 0 0 1px #2c2c2c}
+.phone__island{position:absolute;top:23px;left:50%;transform:translateX(-50%);
+  width:118px;height:34px;background:#000;border-radius:20px;z-index:9}
+.phone__screen{width:393px;overflow:hidden;background:#fff;border-radius:44px;position:relative}
+.panel__cap{font-size:13.5px;color:var(--dim);line-height:1.65;max-width:62ch;margin:20px 0 0;padding-left:6px}
+
+.pg{font-family:var(--body);color:var(--ink)}
+.site-head{height:92px;display:flex;align-items:center;justify-content:space-between;
+  padding:44px 16px 0;border-bottom:1px solid var(--line)}
+.wordmark{font-family:var(--display);font-size:13px;line-height:.92;letter-spacing:-.01em}
+.nav{display:flex;gap:14px}
+.nav a{font:500 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--grey);text-decoration:none}
+.nav a.on{color:var(--ink);border-bottom:1px solid var(--ink);padding-bottom:3px}
+.phead{padding:28px 16px 0;display:flex;flex-direction:column;gap:12px}
+.eyebrow{margin:0;font:500 10.5px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--grey)}
+.phead__h{font-family:var(--display);font-size:44px;line-height:.9;margin:0;letter-spacing:-.02em}
+.rule{height:1px;background:var(--ink);opacity:.16}
+.rule--hd{margin:2px 0 0}
+.mono-note{margin:0;font:500 10.5px/1.6 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+
+.pf-rows{display:flex;flex-direction:column;gap:12px;padding:26px 16px 0}
+.pf-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.pf-cell{display:block}
+.pf-cell .cell,.pf-cell picture,.pf-cell img{display:block;width:100%;height:auto;background:#f4f4f4}
+.cut{display:flex;align-items:center;gap:10px;padding:2px 0 8px}
+.cut::before,.cut::after{content:"";height:1px;background:var(--rule);flex:1}
+.cut span{font:500 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#9a9a9a;white-space:nowrap}
+
+.phead--pro{padding-bottom:0}
+.phead--pro .eyebrow{color:var(--ink)}
+.pg--pro .pf-rows{padding-top:22px;gap:14px}
+
+.rhythm{display:grid;grid-template-columns:96px 1fr 140px;gap:16px;align-items:end;
+  background:var(--paper);border:1px solid var(--line);padding:16px;margin:0 0 12px}
+.rhythm__lbl{font:500 10.5px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase}
+.rhythm__bars{display:flex;align-items:flex-end;gap:3px;height:96px}
+.rhythm__bars .bar{flex:1;background:var(--ink);opacity:.82;min-height:2px}
+.rhythm__bars .bar.alt{background:#fff;box-shadow:inset 0 0 0 1px var(--ink)}
+.rhythm__meta{font:400 10.5px/1.4 var(--mono);color:var(--grey);letter-spacing:.04em;text-align:right}
+
+.lbpanel{display:flex;gap:34px;flex-wrap:wrap;align-items:flex-start}
+.lbnotes{flex:1 1 320px;max-width:440px}
+.lbnote{border-top:1px solid var(--line);padding:14px 0}
+.lbnote:first-child{border-top:1px solid var(--ink)}
+.lbnote h4{margin:0 0 7px;font:500 10.5px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase}
+.lbnote p{margin:0;font-size:14px;color:var(--dim);line-height:1.65}
+.lbnote.bad h4::after{content:" \2014 live bug";color:#8a2b2b}
+.lb{position:relative;width:393px;height:852px;background:#0c0c0c;color:#fff;overflow:hidden;font-family:var(--body)}
+.lb__img{position:absolute;top:47%;left:50%;transform:translate(-50%,-50%);
+  max-width:92vw;max-height:62vh;width:auto;height:auto;display:block;filter:grayscale(1) contrast(1.06)}
+.lb__bar{position:absolute;top:71px;left:0;right:0;display:flex;justify-content:space-between;
+  align-items:center;padding:0 18px 0 22px;z-index:3}
+.lb__pos,.lb__x{font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;opacity:.88}
+.lb__x{min-height:44px;display:flex;align-items:center;border:1px solid rgba(255,255,255,.34);
+  border-radius:2px;padding:0 14px}
+.lb__foot{position:absolute;left:0;right:0;bottom:34px;padding:0 24px 0 22px;z-index:3;
+  display:flex;flex-direction:column;gap:8px}
+.lb__cap{margin:0;font-size:13.5px;line-height:1.45;font-weight:400;max-width:34ch}
+.lb__sub{margin:0;font:500 10.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;opacity:.6}
+.lb__nav{position:absolute;top:50%;transform:translateY(-50%);z-index:3;
+  font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;opacity:.88;
+  min-height:44px;display:flex;align-items:center}
+.lb__nav--p{left:16px} .lb__nav--n{right:16px}
+
+.deskwrap{background:var(--paper);border:1px solid var(--line);overflow:hidden}
+.desk{display:grid;grid-template-columns:900px 1fr;min-height:660px;font-family:var(--body)}
+.desk__wall{padding:24px 26px 26px;display:flex;flex-direction:column;gap:12px}
+.pf-row--d{gap:14px}
+.desk__rail{border-left:1px solid var(--line);padding:24px 26px 26px;display:flex;
+  flex-direction:column;gap:16px;background:#fbfbfb}
+.rail__k{margin:0;font-family:var(--display);font-size:17px;line-height:1}
+.rail__dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 14px;align-items:baseline}
+.rail__dl dt{font:500 9.5px/1.2 var(--mono);letter-spacing:.15em;text-transform:uppercase;color:var(--grey)}
+.rail__dl dd{margin:0;font-family:var(--display);font-size:15px;text-align:right}
+.rail__ol{margin:0;padding-left:16px;font:400 12px/1.9 var(--body);color:var(--dim)}
+.rail__note{margin:0;font-size:12.5px;line-height:1.6;color:var(--dim)}
+.hcta__btn{display:inline-block;margin-top:auto;align-self:flex-start;background:var(--ink);color:#fff;
+  font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:14px 18px;text-decoration:none}
+
+.chgs{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
+.chg{border-bottom:1px solid var(--line);padding:22px 0 24px}
+.chg__hd{display:flex;align-items:baseline;gap:14px}
+.chg__n{font:500 10.5px/1 var(--mono);letter-spacing:.14em;color:var(--grey);flex:none;padding-top:4px}
+.chg__t{margin:0;font-family:var(--display);font-size:clamp(16px,2.1vw,21px);line-height:1.16;
+  letter-spacing:-.01em;flex:1}
+.chg__eff{flex:none;font:500 10.5px/1 var(--mono);letter-spacing:.14em;padding:6px 9px;border:1px solid var(--ink)}
+.chg__eff[data-eff="M"]{background:var(--ink);color:#fff}
+.chg__why{margin:12px 0 0;max-width:82ch;color:var(--dim);font-size:14.5px;line-height:1.7}
+.chg__why em{color:var(--ink);font-style:italic}
+
+.closing{border-top:1px solid var(--ink);margin-top:8px;padding-top:20px;max-width:82ch}
+.closing h3{margin:0 0 12px;font-family:var(--display);font-size:17px}
+.closing p{margin:0 0 10px;color:var(--dim);font-size:14.5px;line-height:1.7}
+.closing b{color:var(--ink)}
+
+@media (max-width:940px){
+  .desk{grid-template-columns:1fr}
+  .desk__rail{border-left:0;border-top:1px solid var(--line)}
+  .rhythm{grid-template-columns:1fr;gap:10px}
+  .rhythm__meta{text-align:left}
+  .deskwrap{overflow-x:auto}
+}
+@media (max-width:460px){
+  .phone__frame{transform:scale(.86);transform-origin:top left;margin-bottom:-118px}
+}
+</style>
+</head>
+<body>
+
+<header class="doc">
+  <p class="doc__kicker">Shutterhaus Visuals &middot; design artefact &middot; 2 October 2026</p>
+  <h1 class="doc__h1">The portfolio wall,<br>proposed.</h1>
+  <p class="doc__lede">A visual upgrade for <code>/portfolio</code> at 393px, built on the real
+  gallery: the same 28 frames, in the same rows, in the same order as <code>src/rows.ts</code>.
+  Nothing here reinstates the column scroll, the printed numbers, the category filter or the
+  hover image swap &mdash; those were Alwin's decisions and they stand. What this fixes is the
+  three things the current page measurably gets wrong: 1624KB on the heaviest route, a flat grid
+  with no cadence, and a lightbox whose own safe-area fixes are overridden on this route.</p>
+
+  <dl class="doc__facts">
+    <div class="fact"><dt>Baseline</dt><dd>1624<small>KB on /portfolio &middot; 28 frames &middot; 4406px tall</small></dd></div>
+    <div class="fact"><dt>Proposed</dt><dd>821<small>KB &mdash; measured, 560w rung, same q86</small></dd></div>
+    <div class="fact"><dt>Frames</dt><dd>28<small>14 rows &times; 2, straight from rows.ts</small></dd></div>
+    <div class="fact"><dt>Guarantees</dt><dd>Kept<small>2-up on phone &middot; even bottom per row</small></dd></div>
+  </dl>
+</header>
+
+<main class="doc">
+
+<!-- ============================== 01 NOW ============================== -->
+<section class="sec">
+  <div class="sec__hd"><span class="sec__n">01</span><h2 class="sec__t">Now</h2></div>
+  <p class="sec__note">The shipped page at 393px. <b>Three rows of fourteen shown &mdash; a
+  representative slice, not the whole wall.</b> Every row in the first block is a pixel-identical
+  2:3 pair at 262px tall, which is exactly why fourteen of them read as a grid rather than a
+  sequence. The full route is 4406px tall and transfers 1624KB, the heaviest on the site.</p>
+
+  <figure class="panel">
+    <div class="panel__hd"><span class="tag">Now</span>
+      <span class="panel__sub">393 &times; 852 &middot; live route, rows 1&ndash;3 of 14</span></div>
+    <div class="phone">
+      <div class="phone__frame">
+        <div class="phone__island" aria-hidden="true"></div>
+        <div class="phone__screen" style="height:852px">
+          <div class="pg">
+            <div class="site-head">
+              <span class="wordmark">SHUTTERHAUS<br>VISUALS</span>
+              <span class="nav"><a class="on">Portfolio</a><a>About</a><a>Services</a></span>
+            </div>
+            <header class="phead">
+              <p class="eyebrow">28 photographs &middot; Gauteng</p>
+              <h1 class="phead__h">Portfolio</h1>
+            </header>
+            <div class="pf-rows">
+              <div class="pf-row">
+                <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/49-img-0131-800w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/49-img-0131-800w.webp" alt="49-img-0131.jpg" loading="lazy" style="aspect-ratio:1600/2400"></picture></figure></span>
+                <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/48-img-0128-800w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/48-img-0128-800w.webp" alt="48-img-0128.jpg" loading="lazy" style="aspect-ratio:1600/2400"></picture></figure></span>
+              </div>
+              <div class="pf-row">
+                <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/25-img-0249-800w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/25-img-0249-800w.webp" alt="25-img-0249.jpg" loading="lazy" style="aspect-ratio:1600/2400"></picture></figure></span>
+                <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/14-img-0026-800w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/14-img-0026-800w.webp" alt="14-img-0026.jpg" loading="lazy" style="aspect-ratio:1600/2400"></picture></figure></span>
+              </div>
+              <div class="pf-row">
+                <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/15-img-0025-800w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/15-img-0025-800w.webp" alt="15-img-0025.jpg" loading="lazy" style="aspect-ratio:1600/2400"></picture></figure></span>
+                <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/18-img-0043-800w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/18-img-0043-800w.webp" alt="18-img-0043.jpg" loading="lazy" style="aspect-ratio:1600/2400"></picture></figure></span>
+              </div>
+              <div class="cut"><span>rows 4&ndash;14 continue &middot; 7&times;2:3, then 6&times;4:5, then one 9:16</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <figcaption class="panel__cap">The wall runs as three blocks &mdash; seven 2:3 rows, then six
+    4:5 rows, then a single 9:16 row. The first two blocks are long enough that the page reads as
+    one flat field rather than a sequence of frames.</figcaption>
+  </figure>
+
+  <h3 class="rail__k" style="margin:36px 0 12px">Row cadence, measured</h3>
+  <div class="rhythm">
+    <div class="rhythm__lbl">Now</div>
+    <div class="rhythm__bars">
+      <span class="bar" style="height:100%"></span><span class="bar" style="height:100%"></span>
+      <span class="bar" style="height:100%"></span><span class="bar" style="height:100%"></span>
+      <span class="bar" style="height:100%"></span><span class="bar" style="height:100%"></span>
+      <span class="bar" style="height:100%"></span>
+      <span class="bar" style="height:83.3%"></span><span class="bar" style="height:83.3%"></span>
+      <span class="bar" style="height:83.3%"></span><span class="bar" style="height:83.3%"></span>
+      <span class="bar" style="height:83.3%"></span><span class="bar" style="height:83.3%"></span>
+      <span class="bar" style="height:118.4%"></span>
+    </div>
+    <div class="rhythm__meta">14 rows<br>3451px of wall</div>
+  </div>
+  <div class="rhythm">
+    <div class="rhythm__lbl">Proposed</div>
+    <div class="rhythm__bars">
+      <span class="bar" style="height:100%"></span><span class="bar alt" style="height:83.3%"></span>
+      <span class="bar" style="height:100%"></span><span class="bar alt" style="height:83.3%"></span>
+      <span class="bar" style="height:100%"></span><span class="bar alt" style="height:83.3%"></span>
+      <span class="bar" style="height:100%"></span><span class="bar alt" style="height:83.3%"></span>
+      <span class="bar" style="height:100%"></span><span class="bar alt" style="height:83.3%"></span>
+      <span class="bar" style="height:100%"></span><span class="bar alt" style="height:83.3%"></span>
+      <span class="bar" style="height:100%"></span>
+      <span class="bar" style="height:118.4%"></span>
+    </div>
+    <div class="rhythm__meta">same 14 rows<br>same total height</div>
+  </div>
+  <p class="sec__note" style="margin-top:6px">Each bar is one row, height to scale. Today the wall
+  is a 7-bar block, a 6-bar block and a 1-bar block. Interleaving the same fourteen rows turns it
+  into a 2/1 beat, because row height steps 262&rarr;218&rarr;262&rarr;218px. No row ever holds
+  two ratios, so <code>tools/check-rows.py</code> still passes untouched &mdash; the guarantee
+  lives in the data, and the data is unchanged.</p>
+</section>
+
+<!-- =========================== 02 PROPOSED ============================ -->
+<section class="sec">
+  <div class="sec__hd"><span class="sec__n">02</span><h2 class="sec__t">Proposed</h2></div>
+  <p class="sec__note">Same frame, same rows, same two-up wall, same ratio per row. Four changes
+  are visible and nothing else moves: the header tightens and gains a hairline plus a mono line,
+  the row order is interleaved so consecutive rows differ in height, the row gap opens to 14px
+  for a little more air between beats, and the crops are untouched &mdash; no swap, no number, no
+  cover.</p>
+
+  <figure class="panel">
+    <div class="panel__hd"><span class="tag">Proposed</span>
+      <span class="panel__sub">393 &times; 852 &middot; rows 1&ndash;4, interleaved</span></div>
+    <div class="phone">
+      <div class="phone__frame">
+        <div class="phone__island" aria-hidden="true"></div>
+        <div class="phone__screen" style="height:852px">
+          <div class="pg pg--pro">
+            <div class="site-head">
+              <span class="wordmark">SHUTTERHAUS<br>VISUALS</span>
+              <span class="nav"><a>Home</a><a class="on">Portfolio</a><a>About</a></span>
+            </div>
+            <header class="phead phead--pro">
+              <p class="eyebrow">28 photographs &middot; Gauteng</p>
+              <h1 class="phead__h">Portfolio</h1>
+              <div class="rule rule--hd"></div>
+              <p class="mono-note">One province. Twelve years.<br>Every frame here was chosen by hand.</p>
+            </header>
+            <div class="pf-rows">
+              <div class="pf-row">
+                <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/49-img-0131-400w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/49-img-0131-400w.webp" alt="49-img-0131.jpg" loading="lazy" style="aspect-ratio:1600/2400"></picture></figure></span>
+                <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/48-img-0128-400w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/48-img-0128-400w.webp" alt="48-img-0128.jpg" loading="lazy" style="aspect-ratio:1600/2400"></picture></figure></span>
+              </div>
+              <div class="pf-row">
+                <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/26-img-0253-400w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/26-img-0253-400w.webp" alt="26-img-0253.jpg" loading="lazy" style="aspect-ratio:1920/2400"></picture></figure></span>
+                <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/40-img-0092-400w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/40-img-0092-400w.webp" alt="40-img-0092.jpg" loading="lazy" style="aspect-ratio:1920/2400"></picture></figure></span>
+              </div>
+              <div class="pf-row">
+                <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/25-img-0249-400w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/25-img-0249-400w.webp" alt="25-img-0249.jpg" loading="lazy" style="aspect-ratio:1600/2400"></picture></figure></span>
+                <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/14-img-0026-400w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/14-img-0026-400w.webp" alt="14-img-0026.jpg" loading="lazy" style="aspect-ratio:1600/2400"></picture></figure></span>
+              </div>
+              <div class="pf-row">
+                <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/42-img-0095-400w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/42-img-0095-400w.webp" alt="42-img-0095.jpg" loading="lazy" style="aspect-ratio:1920/2400"></picture></figure></span>
+                <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/30-img-0396-400w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/30-img-0396-400w.webp" alt="30-img-0396.jpg" loading="lazy" style="aspect-ratio:1920/2400"></picture></figure></span>
+              </div>
+              <div class="cut"><span>rows 5&ndash;13 alternate 2:3 / 4:5 &middot; 9:16 pair held back as the closer</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <figcaption class="panel__cap">The visible difference is row height: 262, 218, 262, 218. The eye
+    gets a beat instead of a field. Nothing about the photographs changed &mdash; the 400w rungs
+    here stand in for the proposed 560w rung, which is the point of change 01 below.</figcaption>
+  </figure>
+</section>
+
+<!-- ============================ 03 LIGHTBOX =========================== -->
+<section class="sec">
+  <div class="sec__hd"><span class="sec__n">03</span><h2 class="sec__t">The lightbox</h2></div>
+  <p class="sec__note">It only exists once a frame is open, so it gets its own panel. The swipe
+  physics, the axis lock, the 44px controls and the 1:1 finger tracking are all correct and are
+  not being touched. What is broken is the caption, the close button, and the fact that the
+  caption says nothing at all.</p>
+
+  <div class="lbpanel">
+    <div class="phone">
+      <div class="phone__frame">
+        <div class="phone__island" aria-hidden="true"></div>
+        <div class="phone__screen" style="padding:0;border-radius:44px">
+          <div class="lb">
+            <div class="lb__bar">
+              <span class="lb__pos">07 / 28</span>
+              <span class="lb__x">Close</span>
+            </div>
+            <img class="lb__img" src="../public/gallery/14-img-0026-1200w.webp"
+                 data-remote="https://shutterhausvisuals.co.za/gallery/14-img-0026-1200w.webp"
+                 alt="Portrait of a woman with a hand in her hair">
+            <span class="lb__nav lb__nav--p">&larr; Prev</span>
+            <span class="lb__nav lb__nav--n">Next &rarr;</span>
+            <div class="lb__foot">
+              <p class="lb__cap">Black and white portrait of a woman with a hand in her hair</p>
+              <p class="lb__sub">Portrait &middot; Gauteng &middot; frame 07 of 28</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lbnotes">
+      <div class="lbnote bad"><h4>Close button inside the Dynamic Island</h4>
+        <p>The base rule <code>.lb__x</code> uses <code>top: calc(12px + var(--sat))</code> &mdash;
+        71px on an iPhone 16, correctly clear of the 59px island band. The wall variant
+        <code>.lb--wall .lb__x</code> sets <code>top: 18px</code> and puts the control straight back
+        inside the band, which is the exact regression that base rule's own comment says it was
+        written to kill. It also hard-codes <code>right: 22px</code>, dropping the
+        <code>--sar</code> side inset that keeps the target inside the rounded corner in landscape.
+        In the panel above it sits at 71px.</p></div>
+
+      <div class="lbnote bad"><h4>Caption inside the home-indicator band</h4>
+        <p><code>.lb__cap</code> base is <code>bottom: calc(18px + var(--sab))</code> = 52px.
+        <code>.lb--wall .lb__cap</code> sets <code>bottom: 22px</code> &mdash; inside the 34px
+        home-indicator band, so the caption sits underneath the swipe-to-dismiss target. The base
+        rule's comment describes this bug in those words. Above, the block clears
+        <code>--sab</code> entirely.</p></div>
+
+      <div class="lbnote"><h4>A caption worth reading</h4>
+        <p>The wall caption is <code>"07 / 28"</code> &mdash; a position and nothing else, at 11px
+        mono. The frame's own description is sitting unused in <code>data-alt</code>. Above, the
+        description is the caption and the position is demoted to a secondary line with the shoot
+        and location beside it, at 13.5px. The counter stays: it is not a number printed on a
+        photograph, and <code>check-rows.py</code> already passes on it, so this is not a reversal
+        of the no-numbering rule.</p></div>
+
+      <div class="lbnote"><h4>Unchanged on purpose</h4>
+        <p>Swipe axis lock, the 10/48/90px thresholds, 44px minimum targets, 1:1 finger tracking and
+        the drag-follows-finger transform all stay exactly as they are. They are correct, and they
+        are the reason the lightbox is usable on touch at all. Swipe down to dismiss and swipe
+        across to step both keep working; only the chrome around the photograph moves.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= 04 DESKTOP =========================== -->
+<section class="sec">
+  <div class="sec__hd"><span class="sec__n">04</span><h2 class="sec__t">Desktop, 1280px</h2></div>
+  <p class="sec__note">Today <code>--row-cols</code> is hardwired to <code>row.length</code>, which
+  is 2, so at 1280px every cell is 607px wide and the wall runs to roughly 12,700px tall &mdash;
+  two enormous columns and a very long thumb. Capping the wall at 900px puts cells at 417px and
+  roughly halves the page, and the freed gutter becomes the mono layer doing structural work:
+  what this is, how many frames, the movements, and the rule that keeps the bottom edge even.
+  Flush-left, hairline-ruled, no colour, no repaint on resize.</p>
+
+  <div class="deskwrap"><div class="desk">
+    <div class="desk__wall">
+      <header class="phead phead--pro" style="padding-left:0;padding-top:0">
+        <p class="eyebrow">28 photographs &middot; Gauteng</p>
+        <h1 class="phead__h">Portfolio</h1>
+      </header>
+      <div class="pf-row pf-row--d">
+        <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/49-img-0131-400w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/49-img-0131-400w.webp" alt="49-img-0131.jpg" loading="lazy" style="aspect-ratio:1600/2400"></picture></figure></span>
+        <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/48-img-0128-400w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/48-img-0128-400w.webp" alt="48-img-0128.jpg" loading="lazy" style="aspect-ratio:1600/2400"></picture></figure></span>
+      </div>
+      <div class="pf-row pf-row--d">
+        <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/26-img-0253-400w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/26-img-0253-400w.webp" alt="26-img-0253.jpg" loading="lazy" style="aspect-ratio:1920/2400"></picture></figure></span>
+        <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/40-img-0092-400w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/40-img-0092-400w.webp" alt="40-img-0092.jpg" loading="lazy" style="aspect-ratio:1920/2400"></picture></figure></span>
+      </div>
+      <div class="pf-row pf-row--d">
+        <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/25-img-0249-400w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/25-img-0249-400w.webp" alt="25-img-0249.jpg" loading="lazy" style="aspect-ratio:1600/2400"></picture></figure></span>
+        <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/14-img-0026-400w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/14-img-0026-400w.webp" alt="14-img-0026.jpg" loading="lazy" style="aspect-ratio:1600/2400"></picture></figure></span>
+      </div>
+      <div class="pf-row pf-row--d">
+        <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/42-img-0095-400w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/42-img-0095-400w.webp" alt="42-img-0095.jpg" loading="lazy" style="aspect-ratio:1920/2400"></picture></figure></span>
+        <span class="pf-cell"><figure class="cell"><picture><img src="../public/gallery/30-img-0396-400w.webp" data-remote="https://shutterhausvisuals.co.za/gallery/30-img-0396-400w.webp" alt="30-img-0396.jpg" loading="lazy" style="aspect-ratio:1920/2400"></picture></figure></span>
+      </div>
+      <div class="cut"><span>rows 6&ndash;14 &middot; same alternating pattern</span></div>
+    </div>
+
+    <aside class="desk__rail">
+      <p class="rail__k">Portfolio</p>
+      <div class="rule"></div>
+      <dl class="rail__dl">
+        <dt>Frames</dt><dd>28</dd>
+        <dt>Format</dt><dd>2 &times; 14</dd>
+        <dt>Location</dt><dd>Gauteng, ZA</dd>
+        <dt>Since</dt><dd>2019</dd>
+      </dl>
+      <div class="rule"></div>
+      <p class="rail__k">Movements</p>
+      <ol class="rail__ol">
+        <li>Portrait &mdash; 2:3</li>
+        <li>Standing &mdash; 4:5</li>
+        <li>Full length &mdash; 9:16</li>
+      </ol>
+      <div class="rule"></div>
+      <p class="rail__note">Rows alternate between the first two so the wall keeps a beat. Every
+      row holds one ratio, so the bottom edge stays even.</p>
+      <a class="hcta__btn" href="#">Get a quote &rarr;</a>
+    </aside>
+  </div></div>
+</section>
+
+<!-- ============================= 05 CHANGES =========================== -->
+<section class="sec">
+  <div class="sec__hd"><span class="sec__n">05</span><h2 class="sec__t">Changes</h2></div>
+  <p class="sec__note">Seven changes, six of them small. The weight claim is measured, not
+  estimated: I re-encoded all 28 wall frames at 560w through the same q86 WebP settings as
+  <code>tools/make-derivatives.py</code> and totalled the files.</p>
+
+  <ol class="chgs">
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">01</span>
+        <h3 class="chg__t">Ship a 560w derivative rung for the wall.</h3>
+        <span class="chg__eff" data-eff="S">S</span></div>
+      <p class="chg__why">A wall cell is 174.5 CSS px, so an iPhone 16 at DPR3 needs about 523
+      device px. The ladder stops at 400/800/1200/1600, so the browser rounds up to the 800w rung
+      and never gets the fidelity it paid for. I re-encoded all 28 wall frames at 560w through the
+      same quality settings as the real pipeline: <b>821KB total against 1548KB at 800w, a 47% cut</b>.
+      DPR2 phones already pick 400w, so this only moves DPR3 &mdash; which is the 1624KB case.
+      Intrinsic <code>width</code>/<code>height</code> stay on the file, so nothing reflows and the
+      even bottom is untouched, because the guarantee lives in the data and not in the byte count.</p>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">02</span>
+        <h3 class="chg__t">Make the wall's LCP frame eager.</h3>
+        <span class="chg__eff" data-eff="S">S</span></div>
+      <p class="chg__why">Every wall cell passes <code>-1</code> to <code>figure()</code>, so
+      <em>every</em> frame on the heaviest route ships as <code>loading="lazy"</code> &mdash;
+      including the two in the first row, one of which is the LCP element. The code comment says
+      the first frame is unknowable under column packing, but the wall is rows now, so row 1 frame
+      1 is knowable. Marking that single frame <code>eager</code> with
+      <code>fetchpriority="high"</code> is a one-line change in <code>wallCell()</code> that
+      touches no layout, and leaves the other 27 frames lazy exactly as they should be.</p>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">03</span>
+        <h3 class="chg__t">Fix <code>wallSizes()</code> to use the widths the phone CSS applies.</h3>
+        <span class="chg__eff" data-eff="S">S</span></div>
+      <p class="chg__why">It computes the cell from <code>--pad: 26px</code> and
+      <code>--gut: 14px</code>, but at 640px and below the page sets <code>--pad: 16px</code> and
+      editorial.css sets the row gap to 12px, and the wall rule overrides <code>--gut</code>
+      outright. The real cell is 174.5px; <code>wallSizes(2)</code> advertises 163.5px, a 42vw hint
+      that under-declares by 2.4vw. It happens not to change the rung picked at DPR2 or DPR3 today,
+      so this is latent rather than a live regression &mdash; but it is the same constants-drift
+      class of bug that has bitten this page three times already. Read the values off the cascade
+      rather than restating them.</p>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">04</span>
+        <h3 class="chg__t">Interleave the ratio families so the wall has a cadence.</h3>
+        <span class="chg__eff" data-eff="S">S</span></div>
+      <p class="chg__why">As shipped the 14 rows run 7&times;2:3, then 6&times;4:5, then one 9:16
+      &mdash; three blocks, with the first two long enough that the wall reads as a flat field.
+      Interleaving the same 14 rows to 2:3 / 4:5 / 2:3 / 4:5 makes row height step
+      262&rarr;218&rarr;262&rarr;218px, so the eye gets a beat. This reorders whole rows only: no
+      row ever holds two ratios, so <code>tools/check-rows.py</code> still passes untouched. The
+      9:16 pair is held back to the end, where its 310px cell is the tallest thing in the wall and
+      lands as a closer instead of a lump.</p>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">05</span>
+        <h3 class="chg__t">Restore the safe-area offsets that <code>.lb--wall</code> overrides.</h3>
+        <span class="chg__eff" data-eff="S">S</span></div>
+      <p class="chg__why">Two live bugs, both in <code>src/styles.css</code>, both of the form
+      "the variant undid the fix the base rule was written to make". <br>&middot;
+      <code>.lb__x</code> base: <code>top: calc(12px + var(--sat))</code> = 71px on an iPhone 16,
+      correctly below the 59px island. <code>.lb--wall .lb__x</code>: <code>top: 18px</code>,
+      back inside the band, and it also hard-codes <code>right: 22px</code>, dropping the
+      <code>--sar</code> inset that keeps the target inside the rounded corner in landscape.
+      <br>&middot; <code>.lb__cap</code> base: <code>bottom: calc(18px + var(--sab))</code> = 52px.
+      <code>.lb--wall .lb__cap</code>: <code>bottom: 22px</code>, inside the 34px home-indicator
+      band, so the caption sits under the swipe-to-dismiss target. Both fixes are deleting an
+      override, not adding a rule.</p>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">06</span>
+        <h3 class="chg__t">Give the lightbox caption something worth reading.</h3>
+        <span class="chg__eff" data-eff="S">S</span></div>
+      <p class="chg__why">The wall caption is <code>"07 / 28"</code> &mdash; a position and nothing
+      else, at 11px mono, on the home-indicator band. The frame's own description is available in
+      <code>data-alt</code> and discarded. Show the description as the caption and demote the
+      counter to a small secondary mono line, then lift the whole block clear of
+      <code>--sab</code> and take the type to 12.5&ndash;13.5px. The position indicator stays,
+      because it lives in the viewer chrome rather than on the photograph, and
+      <code>check-rows.py</code> already passes on it.</p>
+    </li>
+
+    <li class="chg">
+      <div class="chg__hd"><span class="chg__n">07</span>
+        <h3 class="chg__t">Cap the desktop wall and give the right gutter to the mono layer.</h3>
+        <span class="chg__eff" data-eff="M">M</span></div>
+      <p class="chg__why"><code>--row-cols</code> is hardwired to <code>row.length</code>, which is
+      2, so at 1280px each cell is 607px wide and the wall runs to roughly 12,700px tall: two
+      enormous columns and a very long thumb. Capping the wall at 900px puts cells at 417px, where
+      a 2:3 frame renders 625px tall, and roughly halves the page. The freed 300px becomes a mono
+      spec rail &mdash; frame count, format, location, the movements, and a line stating the
+      even-bottom rule. Static <code>max-width</code>, so nothing repaints on resize. This is the
+      only change here that is not small, and it is the one most worth arguing about: it changes
+      the desktop composition, not just its size.</p>
+    </li>
+  </ol>
+
+  <div class="closing">
+    <h3>What is deliberately not changing</h3>
+    <p><b>No per-column scroll.</b> Alwin's call &mdash; "I dont like having the scroll on each
+    column anymore, static is better." The wall stays static and the page scrolls once.</p>
+    <p><b>No numbers on the images.</b> Nothing is printed on a frame. The lightbox counter is a
+    position indicator in the viewer chrome, which is where it has always been.</p>
+    <p><b>No category filter.</b> "a filter over hand-picked work hides work on purpose" &mdash; and
+    with 28 chosen frames there is nothing left for it to select between.</p>
+    <p><b>No hover image swap.</b> "when i hover it destroys the crop." The greyscale
+    <code>contrast(1.06)</code> at rest still releases to full colour on hover exactly as shipped,
+    which reveals the photograph without moving a pixel of it.</p>
+    <p><b>No <code>object-fit: cover</code> anywhere.</b> Aspect ratio and focal point only, and
+    focal point only where a specific frame needs it.</p>
+    <p><b>No repaint on resize.</b> Nothing here touches <code>window.resize</code>. iOS fires it on
+    every address-bar collapse, so the desktop cap is a static <code>max-width</code> and the phone
+    layout is fluid CSS, not JS-driven.</p>
+  </div>
+</section>
+
+</main>
+
+<script>
+// If this file is opened away from the repo the relative ../public paths miss,
+// so fall back to the live site's copies. One retry, then leave the grey box.
+document.querySelectorAll("img[data-remote]").forEach(function (im) {
+  im.addEventListener("error", function () {
+    if (!im.dataset.tried) { im.dataset.tried = "1"; im.src = im.dataset.remote; }
+  }, { once: true });
+});
+</script>
+</body>
+</html>
