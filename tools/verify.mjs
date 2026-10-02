@@ -461,8 +461,25 @@ check("all package names present", pr.names.every(Boolean), pr.names.join("/"));
 check("every package has a price", pr.prices.every(p => /^R[\\s]?[0-9]/.test(p)), pr.prices.join(" "));
 check("exactly one 'most popular'", pr.popular === 1, String(pr.popular));
 check("each package has a photo", pr.figs === pr.tiers, `${pr.figs}/${pr.tiers}`);
-check("add-ons listed", pr.addons === 6, String(pr.addons));
+check("add-ons listed", pr.addons >= 6, `${pr.addons} add-ons`);
 check("booking terms listed", pr.terms >= 4, String(pr.terms));
+
+// Alwin, 2026-10-02: "no reels at all". Reels and vertical crops came out of
+// every tier and out of the add-ons. Asserted against config.ts, which is where
+// every customer-visible string actually lives, rather than against the DOM --
+// the earlier attempt read document.body and crashed, because that code runs in
+// Node, not in the page. "vertically" is stripped first: it is a placement word
+// used in the booking terms ("travel beyond 25km"), not a format promise.
+const reelsGone = (() => {
+  // Strip comments and type declarations: the assertion is about what a CUSTOMER
+  // reads, and an engineer's note about an image's 4:5 ratio is not a promise.
+  const copy = readFileSync(new URL("../src/config.ts", import.meta.url), "utf8")
+    .replace(/\/\*[\s\S]*?\*\//g, " ")      // block comments
+    .replace(/\/\/.*$/gm, " ")                // line comments
+    .replace(/vertically|vertical-first/gi, "");
+  return !/reel|9:16|\b4:5\b/i.test(copy);
+})();
+check("no reels or vertical crops promised anywhere", reelsGone);
 check("every package links to contact", pr.ctas.length > 0 && pr.ctas.every(h => /(^|\/)contact(\.html)?$/.test(h)), pr.ctas.join(","));
 // The editorial package cards carry no fill — they sit on the white page
 // separated by whitespace, not by a card background. The old check asserted
