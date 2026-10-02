@@ -914,8 +914,18 @@ code {
   .pricing__grid { grid-template-columns: 1fr 1fr; }
 }
 
+/* The phone gutters. Alwin: "I want them to take up more screen space in mobile
+   view" and "images should have more screen real estate".
+   At --pad 16 / --gut 10 a portfolio cell measured 173px wide on a 393px
+   screen — 44px, or 11% of the width, was spent on air. At --pad 10 / --gut 6
+   the same wall gives 181px cells and the home strip 186px: +9% linear, +19% of
+   image AREA, which is what "more real estate" means on a screen you judge
+   photographs on.
+   The 10px side padding is retained deliberately: at 0 the wall would touch
+   both edges of the screen, and Alwin's own rule (2026-09-29) was to keep the
+   site centred with visible margins. */
 @media (max-width: 640px) {
-  :root { --head: 92px; --pad: 16px; --gut: 10px; }
+  :root { --head: 92px; --pad: 10px; --gut: 6px; }
   .site-header {
     /* Three explicit tracks, not two. `.burger` had NO `grid-area` here, so it
        was auto-placed into the logo's column: measured at 320px the row held

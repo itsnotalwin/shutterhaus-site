@@ -932,7 +932,16 @@
      logo was centred inside a box 0.4px smaller than itself and pushed to
      top: -14.3px, taking "SHUTTERHAUS" off-screen again. `min-height`
      lets the row grow to fit instead. */
-  :root { --pad: 18px; --head: 92px; }
+  /* --pad is NOT restated here on purpose. This block overrode the 640px
+     `--pad: 10px` in styles.css back up to 18px, because editorial.css is
+     imported second and a later rule at equal specificity wins. That is why
+     tightening the phone gutter appeared to do nothing: measured --pad on a
+     393px phone was 18px, not the 10px just set, and the portfolio cell only
+     reached 176px instead of 183px.
+     --head still belongs here — it is the header height for this breakpoint and
+     nothing else sets it. --gut is likewise left to the single declaration in
+     styles.css so there is exactly one source of truth for the gutters. */
+  :root { --head: 92px; }
   /* --sat is ADDED to the 10px top pad, not replacing it: this rule overrides
      the desktop `padding: var(--sat) var(--pad) 0` wholesale, so dropping the
      inset here would put the burger back under the Dynamic Island on exactly
@@ -1030,8 +1039,11 @@
    holds exactly TWO frames, so reducing the columns does not push a cell onto
    its own line — which is what made three-per-row impossible to reflow. */
 @media (max-width: 760px) {
-  .pf-row { gap: 12px; }
-  .pf-rows { gap: 12px; }
+  /* 12px -> var(--gut) (6px on a phone). These two overrides were the last
+     place the wall kept its old gutter, so it silently ignored the tightened
+     --gut and the cells never actually grew. One gutter, set once. */
+  .pf-row { gap: var(--gut); }
+  .pf-rows { gap: var(--gut); }
 }
 
 /* Booking-terms block headings.
