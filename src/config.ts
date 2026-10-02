@@ -12,7 +12,6 @@ export interface SiteConfig {
   /** big word, the whole second line */
   nameBig2: string;
   /** render the gallery in monochrome, as in the reference design */
-  blackAndWhite: boolean;
   nav: { id: string; label: string }[];
   social: { id: IconId; label: string; url: string }[];
   contact: { email: string; phone: string; location: string; hours: string; formEndpoint: string };
@@ -90,7 +89,6 @@ export const SITE: SiteConfig = {
   nameTop: "SHUTTERHAUS",
   nameBig1: "",
   nameBig2: "VISUALS",
-  blackAndWhite: true,
 
   /** `id` must match a route in src/main.ts */
   nav: [
@@ -192,7 +190,7 @@ export const SITE: SiteConfig = {
         bullets: [
           "70 professionally edited high-res images",
           "B&W timeless set + Reels crops",
-          "Print release + 2× 5×7\" fine art prints",
+          "Print release + two 5×7\" fine art prints",
           "Private online gallery (90-day access)",
           "Full prep: clothing guide, shot list, scouting",
         ],
@@ -208,7 +206,7 @@ export const SITE: SiteConfig = {
         focal: "50% 22%",
         bullets: [
           "30 edited images + 15 Reels-ready vertical crops",
-          "48hr sneak peek",
+          "48hr sneak peek — 10 images, not the full set",
           "Vertical (4:5, 9:16) + high-res + web",
           "Content calendar template",
           "Pose coaching for video & content",
@@ -220,7 +218,7 @@ export const SITE: SiteConfig = {
     addons: [
       { label: "Extra 30 minutes", price: "+R600" },
       { label: "Extra location", price: "+R400" },
-      { label: "Rush delivery (48hr)", price: "+R400" },
+      { label: "Rush delivery — full gallery in 48hr", price: "+R400" },
       { label: "Extra 5×7\" print", price: "+R150" },
       { label: "Fine art album (20pg)", price: "+R1,200" },
       { label: "Travel beyond 25km", price: "+R5/km" },
@@ -231,7 +229,7 @@ export const SITE: SiteConfig = {
       "Rescheduling ≥7 days notice is free. Under 7 days: R500 fee, deposit transfers.",
       "Outdoor shoots include a backup indoor location. Severe weather = free reschedule.",
       "Delivery: Starter, Essential and Social in 5 business days; Signature in 7.",
-      "Personal use licence included. Commercial use needs a separate licence (+50–200%).",
+      "Personal use licence included. Commercial use needs a separate licence, +50–200% of the package fee.",
     ],
 
     depositNote: "50% deposit to book · EFT accepted",
@@ -254,7 +252,7 @@ export const SITE: SiteConfig = {
   },
   about: {
     eyebrow: "About me",
-    heading: "Photography Is Poetry.",
+    heading: "Photography is poetry.",
     /** paragraphs, in order, on the left column beside the portrait */
     body: [
       "I'm a photographer based in Gauteng, drawn to the raw, unfiltered beauty of real people and unfiltered moments. For me, photography isn't just about what you see — it's about what you feel.",

@@ -545,6 +545,15 @@
 .about__fig { margin: 0; }
 .about__fig picture { display: block; }
 .about__fig img { width: 100%; height: auto; }
+/* On a large monitor the prose column is ~500px tall while the uncropped 2:3
+   photograph is ~1200px, so the grid left roughly 700px of dead white under the
+   text — measured at 1920 and still noticeable at 1440. The photograph keeps
+   its natural ratio (no crop, per Alwin's rule); capping its width instead
+   brings the two columns back toward balance without touching the type, the
+   colour or the flush-left system. */
+@media (min-width: 1400px) {
+  .about__fig { max-width: 520px; }
+}
 
 /* ----------------------------------------------------- services page */
 
@@ -691,8 +700,12 @@
   text-transform: uppercase;
   margin: 0 0 12px;
 }
-.pkg__desc { font-size: 13.5px; line-height: 1.66; color: var(--dim); margin: 0 0 16px; }
-.pkg__list { list-style: none; margin: 0 0 18px; padding: 0; font-size: 13px; color: var(--dim); flex: none; }
+.pkg__desc { font-size: 14px; line-height: 1.66; color: var(--dim); margin: 0 0 16px; }
+/* 13px -> 14px. This is the money page: the bullets under each price are what a
+   client actually reads to decide, and 13px is below the comfortable floor for
+   body copy on a phone held at arm's length. It stays clearly subordinate to
+   the price and to `.pkg__name`, so the hierarchy is unchanged. */
+.pkg__list { list-style: none; margin: 0 0 18px; padding: 0; font-size: 14px; color: var(--dim); flex: none; }
 .pkg__list li { padding: 5px 0; border-top: 1px solid var(--line); }
 .pkg__price {
   font-family: var(--font-display);
@@ -727,21 +740,18 @@
 
 /* ----------------------------------------------------- contact page */
 
-.ct__h { font-size: clamp(34px, 5.4vw, 60px); margin-bottom: 30px; }
-.ct__p { font-size: 14.5px; line-height: 1.72; color: var(--dim); margin: 0 0 34px; max-width: 44ch; }
-.ct__details { list-style: none; margin: 0 0 38px; padding: 0; font-size: 13.5px; }
-.ct__details li { display: flex; align-items: center; gap: 12px; padding: 9px 0; }
-.ct__details svg { width: 15px; height: 15px; flex: none; opacity: 0.7; }
-.ct__details a:hover { color: var(--grey); }
-.ct { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.72fr); gap: 64px; align-items: start; }
-.ct__col { padding-top: 40px; }
-.ct__fig { margin: 0; }
-/* No `cover`: the frame keeps its own ratio rather than being cropped into a
-   4:5 band. `contain` is the same principle the lightbox uses at styles.css:479
-   — show the whole photograph, letterboxing if the box disagrees. */
-.ct__fig img { width: 100%; height: auto; object-fit: contain; }
-.ct .cform { gap: 18px; }
-.ct .cform label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--grey); }
+/* DEAD, and was never anything else. Every rule below targeted the `.ct*`
+   class family, and no template in src/ emits a single one of them: the contact
+   route renders `.contact`, `.contact__col`, `.contact__h`, `.contact__p`,
+   `.contact__list` and `.contact__fig`, all styled in styles.css.
+   Verified: grepping every class attribute emitted by src/*.ts finds zero
+   occurrences of `ct`, `ct__col`, `ct__h`, `ct__p`, `ct__fig` or
+   `ct__details`.
+   This mattered rather than being merely untidy: `.ct__fig img` carried the
+   object-fit fix from the 2026-10-02 audit, so the audit believed a cover crop
+   had been removed from the contact figure when the rule doing the removing was
+   attached to nothing. Deleting it, and the live `.contact__fig` rules in
+   styles.css are now the only ones governing that element. */
 
 /* ------------------------------------------------------- mobile */
 
@@ -964,6 +974,18 @@
 }
 @media (max-width: 760px) {
   .pf-rows { max-width: none; }   /* the phone wall is full-bleed, not capped */
+}
+/* A 900px wall was chosen to keep tiles ~443px, but measured at 1920 it left
+   994px — 51.8% of the screen — as dead white space to the right of the work
+   he is about to pay to advertise. Tiles stayed 443px from 1024px upward, so
+   the cap bought nothing on a big monitor; it only created a void.
+   From 1600px the cap grows to 1320px, which puts the cells at ~627px: wider
+   than 443 so the page fills, narrower than the 687px that was rejected as
+   too large, and still two-up so the row-evenness guarantee is untouched.
+   Flush-left is preserved — the site is a flush-left system and centring it
+   here would be the only centred block on the page. */
+@media (min-width: 1600px) {
+  .pf-rows { max-width: 1320px; }
 }
 .pf-row {
   display: grid;

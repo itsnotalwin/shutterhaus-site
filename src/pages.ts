@@ -373,7 +373,7 @@ function figure(p: Photo, index: number, sizes?: string): string {
   * the same frame, thumbnail underneath at opacity 0. Inside a justified row
   * that swaps in a differently-cropped copy whose height disagrees with its
   * neighbours. The wall now inherits the home page's monochrome-at-rest hover
-  * from `.shell.is-bw .cell img`, which needs no element of its own.
+  * because no element of its own is needed — there is no filter any more.
   *
   * The lightbox opens on CLICK of `.cell img[data-full]`, so the thumbnail
   * keeps that attribute and the button must not swallow the event — hence no

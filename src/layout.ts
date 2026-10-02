@@ -101,7 +101,11 @@ export function header(active: string): string {
  * would be invisible.
  */
 export function renderShell(active: string, body: string, over = false): string {
-  return `<div class="shell${SITE.blackAndWhite ? " is-bw" : ""}${over ? " shell--over" : ""}">${header(active)}<main class="main">${body}</main></div>`;
+  // No `is-bw` class. It gated the greyscale filter (styles.css:301) and nothing
+  // else: after the filter was removed on 2026-10-02 at Alwin's instruction,
+  // the class was emitted on every page and matched no rule. Carrying it
+  // suggested a monochrome treatment that no longer exists.
+  return `<div class="shell${over ? " shell--over" : ""}">${header(active)}<main class="main">${body}</main></div>`;
 }
 
 export { FONTS };

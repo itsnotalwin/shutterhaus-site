@@ -305,6 +305,19 @@ img { display: block; max-width: 100%; }
   padding: 40px 0 80px;
   max-width: 1100px;
 }
+/* On a large monitor the 1100px cap left 41% of a 1920px screen empty to the
+   right of the page — measured, and it reads as an unfinished layout rather
+   than as restraint. The cap existed to stop the form becoming absurdly wide,
+   so rather than lifting the cap wholesale, the FORM column is capped and the
+   photograph takes the reclaimed width: form fields stay at a readable ~560px
+   while the page actually fills the screen. */
+@media (min-width: 1400px) {
+  .contact {
+    max-width: none;
+    grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
+    gap: 72px;
+  }
+}
 /* The reference photograph beside the form.
  *
  * `.contact__fig` had NO rule anywhere — the same class of omission as .cico.
@@ -438,11 +451,16 @@ img { display: block; max-width: 100%; }
 .cform textarea:focus { outline: none; border-color: var(--ink); }
 .cform button {
   font-family: var(--font-body);
-  font-size: 12px;
-  letter-spacing: 0.06em;
+  /* 12px -> 13.5px. The primary action on the conversion page was set in the
+     small metadata size, which is the wrong register for the one control the
+     whole page exists to be pressed. No iOS zoom risk either way — it is a
+     button, not a field, and it is already 48px tall. */
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   min-height: 48px;
-  padding: 13px 18px;
+  padding: 13px 22px;
   background: var(--ink);
   color: #fff;
   border: 0;
