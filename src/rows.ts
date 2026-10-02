@@ -16,14 +16,18 @@ import type { PhotoRow } from "./types";
  * Gallery fingerprint: 417a95692b6bd627
  */
 export const PHOTO_ROWS: PhotoRow[] = [
-  ["c0", "c10", "c31"] as PhotoRow,
-  ["c2", "c19", "c24"] as PhotoRow,
-  ["c1", "c15", "c21"] as PhotoRow,
-  ["c17", "c22", "c32"] as PhotoRow,
-  ["c11", "c46", "c45"] as PhotoRow,
-  ["c3", "c4", "c7"] as PhotoRow,
-  ["c9", "c30", "c39"] as PhotoRow,
-  ["c18", "c23", "c42"] as PhotoRow,
-  ["c13", "c44", "c8"] as PhotoRow,
-  ["c12", "c36", "c29"] as PhotoRow,
+  ["c0", "c10"] as PhotoRow,
+  ["c31", "c2"] as PhotoRow,
+  ["c19", "c24"] as PhotoRow,
+  ["c1", "c15"] as PhotoRow,
+  ["c21", "c17"] as PhotoRow,
+  ["c22", "c32"] as PhotoRow,
+  ["c11", "c45"] as PhotoRow,
+  ["c3", "c4"] as PhotoRow,
+  ["c7", "c9"] as PhotoRow,
+  ["c30", "c39"] as PhotoRow,
+  ["c18", "c23"] as PhotoRow,
+  ["c42", "c13"] as PhotoRow,
+  ["c44", "c8"] as PhotoRow,
+  ["c12", "c29"] as PhotoRow,
 ];

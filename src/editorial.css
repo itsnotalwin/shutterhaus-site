@@ -764,11 +764,12 @@
 }
 .pf-row {
   display: grid;
-  /* ALWAYS three, at every viewport. A row is one grid line and must never
-     wrap: with two columns the third cell drops below its own row, which is a
-     visible step in the spacing — the exact defect Alwin said not to ship. The
-     inline --row-cols is deliberately NOT used here. */
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* Follows the inline --row-cols that pages.ts already computes from the
+     measured row width. This was hardcoded to repeat(3, …) at every viewport
+     while a comment said the variable was "deliberately NOT used" — the
+     variable was dead, and the wall rendered 111px tiles on a 393px phone, too
+     narrow to read a face. wallCols() emits 2 there and the CSS now obeys. */
+  grid-template-columns: repeat(var(--row-cols, 2), minmax(0, 1fr));
   gap: var(--gut);
   align-items: start;
 }
@@ -779,9 +780,10 @@
   width: 100%;
   height: auto;
 }
+/* Two per row on a phone. This is now safe because every row in src/rows.ts
+   holds exactly TWO frames, so reducing the columns does not push a cell onto
+   its own line — which is what made three-per-row impossible to reflow. */
 @media (max-width: 760px) {
-  /* Still three per row. Two would wrap the third cell onto its own line and
-     put a step in the spacing; the photos are smaller, but even. */
   .pf-row { gap: 12px; }
   .pf-rows { gap: 12px; }
 }

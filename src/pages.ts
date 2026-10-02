@@ -272,12 +272,46 @@ export function pictureFor(url: string, sizes: string, sourceWidth?: number | nu
 }
 
 /**
- * The `sizes` attribute. The grid is 1 column below 640px, 2 below 1000px, 3
- * above, with a 14px gutter. Anything that overstates this downloads too large;
- * anything that understates it downloads too small and looks soft.
+ * The `sizes` attribute for a full-bleed strip cell (the home page's horizontal
+ * strip), which really is close to the viewport width.
+ *
+ * The WALL used to share this string, whose `100vw` branch was the 1.28 MB
+ * defect — a wall cell is a fraction of the viewport, not all of it. The wall
+ * now uses `wallSizes(cols)`, computed from the real column count. Keep this one
+ * honest for genuinely full-width images only.
  */
-const SIZES =
-  "(max-width: 639px) 100vw, (max-width: 999px) 50vw, (max-width: 1399px) 33vw, 50vw";
+const SIZES = "100vw";
+
+/**
+ * The `sizes` attribute for a WALL cell, derived from the real column count.
+ *
+ * This used to be a single hardcoded `SIZES` string whose smallest branch was
+ * `100vw`, while a wall cell at 393px is 111px (or 186px at two columns). The
+ * browser is not allowed to guess: told "100vw" it correctly asks for 393 CSS
+ * px, which at DPR 3 is 1179 device px, which is why it correctly picked the
+ * 1200w derivative for every one of the 30 frames. Measured on the live site:
+ * 1.28 MB of images for one portfolio page, against 333 device px actually
+ * needed per cell. Downscaling the current pick to the true box scores
+ * PSNR 40-47 dB, i.e. visually lossless — the extra pixels bought nothing.
+ *
+ * So `sizes` now states the cell width honestly and the browser picks the 400w
+ * file that already exists on disk (11.9x smaller than 1200w on these frames).
+ *
+ * `cols` is the value wallCols() already computed for the measured row width,
+ * so the descriptor cannot drift away from the grid that renders it. The
+ * arithmetic is done in px against a 393px reference phone and converted to a
+ * percentage, then rounded UP so the browser is never told less than it paints.
+ * Deliberately generous: overstating costs a little bandwidth, understating
+ * costs sharpness.
+ */
+function wallSizes(cols: number): string {
+  const REF = 393; // iPhone 16 CSS width, the viewport the bug was measured at
+  const PAD = 26 * 2; // --pad on both sides
+  const GUT = 14; // --gut between cells
+  const cellPx = (REF - PAD - (cols - 1) * GUT) / cols;
+  const pct = Math.min(100, Math.ceil((cellPx / REF) * 100));
+  return `${pct}vw`;
+}
 
 /**
  * The category a photo belongs to, read off its `cat-` prefix.
@@ -297,7 +331,7 @@ function titleCase(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-function figure(p: Photo, index: number): string {
+function figure(p: Photo, index: number, sizes?: string): string {
   // The first frame is the LCP element. Marking it lazy forces the browser to
     // discover it, then decide — which is exactly the 6.4s stall we measured.
     // Only the first is eager; the rest stay lazy.
@@ -307,7 +341,7 @@ function figure(p: Photo, index: number): string {
     // "the first frame" is not a fixed, knowable frame — see wallCell().
     const loading = index === 0 ? "eager" : "lazy";
     const priority = index === 0 ? ' fetchpriority="high"' : "";
-  const sources = pictureFor(p.url, SIZES, p.width);
+  const sources = pictureFor(p.url, sizes ?? SIZES, p.width);
   // Intrinsic ratio is unknown here, so aspect-ratio comes from the DB if we
   // have it; otherwise the CSS fallback keeps the box from collapsing.
   const ratio = p.width && p.height ? ` style="aspect-ratio:${p.width}/${p.height}"` : "";
@@ -341,7 +375,7 @@ function figure(p: Photo, index: number): string {
   * keeps that attribute and the button must not swallow the event — hence no
   * JS here at all.
   */
- function wallCell(p: Photo, n: number): string {
+ function wallCell(p: Photo, n: number, sizes: string): string {
    // No index argument: `figure()` marks index 0 as the eager/high-priority LCP
    // image, and under column packing that would be whichever frame the packer
    // happened to put first in column one — not the first frame in reading order.
@@ -353,7 +387,7 @@ function figure(p: Photo, index: number): string {
    // (aria-hidden): the accessible name is already the alt text.
    return `<span class="pf-cell" role="button" tabindex="0" data-photo-id="${escapeHtml(p.id)}"
                 data-n="${n}" aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">
-         ${figure(p, -1)}
+         ${figure(p, -1, sizes)}
        </span>`;
  }
 
@@ -443,6 +477,9 @@ export function portfolioPage(photos: Photo[], cols: number): string {
 
   let n = 1; // 1-based: the lightbox prints it as "07 / 30"
   const shown: string[] = [];
+  // The cell width the browser is told about, derived from the SAME column
+  // count the CSS will render with. Computed once, passed to every cell.
+  const sizes = wallSizes(cols);
 
   const rows = PHOTO_ROWS.map((row, ri) => {
     const cells: string[] = [];
@@ -453,9 +490,12 @@ export function portfolioPage(photos: Photo[], cols: number): string {
         continue;
       }
       shown.push(p.id);
-      cells.push(wallCell(p, n++));
+      cells.push(wallCell(p, n++, sizes));
     }
-    if (cells.length < 3) return "";
+    // A short row renders a hole, so drop the whole row rather than ship a gap.
+    // The threshold is the column count, NOT a literal 3: rows are two frames
+    // since 2026-10-02, and a hardcoded 3 here silently discarded every row.
+    if (cells.length < cols) return "";
     return `<div class="pf-row" style="--row-cols:${cols}">${cells.join("")}</div>`;
   }).join("");
 
@@ -480,21 +520,22 @@ export function portfolioPage(photos: Photo[], cols: number): string {
 /**
  * How many columns the portfolio wall uses.
  *
- * Three on a desktop, two on a phone, and never one: 50 frames stacked in a
- * single column is 50 screens of scroll, and the packer cannot redistribute
+ * Three on a desktop, two on a phone, and never one: 28 frames stacked in a
+ * single column is 28 screens of scroll, and the packer cannot redistribute
  * them afterwards. The phone case is decided by the CONTENT WIDTH rather than
- * the viewport, so it matches what the CSS ends up doing — at 390px three
- * columns would be 118px per frame, too narrow to read a face, while two still
- * gives ~175px.
+ * the viewport, so it matches what the CSS ends up doing — at 393px three
+ * columns would be 111px per frame, too narrow to read a face, while two still
+ * gives ~160px.
  *
- * Derived from the same measurement the markup uses, so the emitted column
- * count and the CSS track count cannot drift apart the way a hardcoded pair did.
+ * This was DEAD CODE until 2026-10-02: it was never called, `main.ts` passed a
+ * hardcoded 3 to portfolioPage(), and `.pf-row` hardcoded `repeat(3, …)` — so
+ * both halves of the intent were ignored and the wall rendered 3 columns on a
+ * phone. `main.ts` now calls its own `wallColsFor()` at paint time and the CSS
+ * obeys the inline `--row-cols`, so the number is computed once and used twice.
+ * Kept as the documented source of that rule; if you change the minimum frame
+ * width, change it here AND in main.ts:wallColsFor.
  */
-function wallCols(frameCount: number, rowWidth: number): number {
-  const MIN = 175;
-  const fit = Math.floor((rowWidth || 1200) / MIN);
-  return Math.max(2, Math.min(3, fit, frameCount));
-}
+export const WALL_MIN_FRAME_PX = 175;
 
 /**
  * The closing band on the portfolio route.

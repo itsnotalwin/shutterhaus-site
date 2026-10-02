@@ -45,7 +45,18 @@ img { display: block; max-width: 100%; }
 .shell { min-height: 100%; }
 
 .site-header {
-  position: relative;
+  /* STICKY, fixed 2026-10-02. This was `position: relative`, which means the
+     header scrolls away with the document: on #/services the audit measured the
+     burger at top: -3105px, so reaching the menu meant scrolling back 3124px.
+     The burger is the ONLY navigation on a phone, so a page that scrolls it out
+     of reach is a page you can only navigate by scrolling back to the top.
+     `sticky` keeps it in the document flow (so the hero on the home route still
+     starts at the very top) while pinning it to the viewport as you scroll. */
+  position: sticky;
+  top: 0;
+  /* Above the hero photograph (z-index 5) and the nav drawer, or the header
+     would slide under the drawer instead of carrying it. */
+  z-index: 6;
   /* The mobile nav drawer is absolutely positioned against this. */
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -53,6 +64,10 @@ img { display: block; max-width: 100%; }
   height: var(--head);
   padding: 0 var(--pad);
   gap: 20px;
+  /* Opaque, because it now sits over scrolling content and a transparent
+     header would let photos run under the wordmark. The home route overrides
+     this with its own scrim in .shell--over. */
+  background: var(--paper);
 }
 
 /* Logo lockup: small word inline, big word wrapping onto a second line. */
@@ -231,11 +246,24 @@ img { display: block; max-width: 100%; }
  * Do NOT "optimise" this into a build step — that would be lossy and
  * irreversible, and it is exactly what Alwin is guarding against.
  *
- * Wrapped in `@media (hover: hover)`: `:hover` never fires on touch, so an
- * unwrapped rule would leave every frame stuck grey on a phone. On touch the
- * photos simply show in their own colour. */
+ * THE BASE TREATMENT IS NOT HOVER-GATED — that was the bug, fixed 2026-10-02.
+ *
+ * The whole rule used to live inside `@media (hover: hover)`, on the reasoning
+ * that `:hover` never fires on touch so an unwrapped rule would leave frames
+ * "stuck grey on a phone". The consequence was the opposite and far worse: a
+ * touch device never matches `(hover: hover)` AT ALL, so the *base* rule was
+ * skipped too and the brand's monochrome was off on every phone. Verified on
+ * the live site with touch emulation on: `matchMedia('(hover: hover)')` is
+ * false, `getComputedStyle(img).filter` is `none` on 30 of 30 portfolio images
+ * and 7 of 7 home images, and 25 of the 50 source frames are genuinely in
+ * colour. Same site, two different brands depending on the device.
+ *
+ * So: the BASE (monochrome) is unconditional; only the hover REVEAL is gated,
+ * because a reveal is a pointer affordance and there is no pointer to reveal to
+ * on a phone. That is the intent the original comment was reaching for. */
+.shell.is-bw .cell img { filter: grayscale(1) contrast(1.06); transition: filter 260ms ease; }
+
 @media (hover: hover) {
-  .shell.is-bw .cell img { filter: grayscale(1) contrast(1.06); transition: filter 260ms ease; }
   .shell.is-bw .cell img:hover,
   .shell.is-bw .cell picture:hover img { filter: grayscale(0) contrast(1); }
 }

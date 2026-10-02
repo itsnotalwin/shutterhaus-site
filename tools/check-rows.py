@@ -3,14 +3,18 @@ The spacing guarantee, enforced.
 
     python tools/check-rows.py
 
-Three uncropped photos at three DIFFERENT aspect ratios are not one height, so
-the short ones leave a gap underneath. Alwin, 2026-10-01: "make sure it sits
-nice, no spacing issues at all please". The fix is in the data — every row holds
-three frames of the same ratio — so this asserts it, because a row that quietly
-mixes ratios is the whole defect coming back and the page still looks plausible.
+Uncropped photos at DIFFERENT aspect ratios are not one height, so the short
+ones leave a gap underneath. Alwin, 2026-10-01: "make sure it sits nice, no
+spacing issues at all please". The fix is in the data — every row holds frames
+of the same ratio — so this asserts it, because a row that quietly mixes
+ratios is the whole defect coming back and the page still looks plausible.
 
-Also checks: 30 frames, no duplicates, every file exists, no numbering left in
-the markup.
+Alwin, 2026-10-02: rows are TWO frames now, not three, so the counts below
+moved with them (14 rows / 28 frames). These are asserted rather than inferred
+so a silent re-pack cannot shrink the wall.
+
+Also checks: frame count, no duplicates, every file exists, no numbering left
+in the markup.
 """
 import re
 import sys
@@ -40,10 +44,14 @@ def check(name, ok, detail=""):
 
 flat = [f for row in ROWS for f in row]
 
-check("ten rows", len(ROWS) == 10, str(len(ROWS)))
-check("three frames per row", all(len(r) == 3 for r in ROWS), str([len(r) for r in ROWS]))
-check("30 frames", len(flat) == 30, str(len(flat)))
-check("no duplicates", len(set(flat)) == 30, f"{len(set(flat))} unique")
+EXPECTED_ROWS = 14
+EXPECTED_PER_ROW = 2
+EXPECTED_FRAMES = EXPECTED_ROWS * EXPECTED_PER_ROW
+
+check("fourteen rows", len(ROWS) == EXPECTED_ROWS, str(len(ROWS)))
+check("two frames per row", all(len(r) == EXPECTED_PER_ROW for r in ROWS), str([len(r) for r in ROWS]))
+check(f"{EXPECTED_FRAMES} frames", len(flat) == EXPECTED_FRAMES, str(len(flat)))
+check("no duplicates", len(set(flat)) == EXPECTED_FRAMES, f"{len(set(flat))} unique")
 missing = [f for f in flat if not (GALLERY / f).exists()]
 check("every frame exists on disk", not missing, ", ".join(missing))
 unknown = [f for f in flat if f not in RATIO]
@@ -62,7 +70,7 @@ check("every row is ONE aspect ratio (zero gap under any photo)", not bad, "; ".
 
 # And the arithmetic that proves it: equal ratio x equal column width = equal height.
 widths = [RATIO[f] for f in flat if f in RATIO]
-check("ratios present for every frame", len(widths) == 30, str(len(widths)))
+check("ratios present for every frame", len(widths) == EXPECTED_FRAMES, str(len(widths)))
 
 pages = (ROOT / "src" / "pages.ts").read_text(encoding="utf-8")
 check("no frame numbering is printed", "pf-cell__n" not in pages,
