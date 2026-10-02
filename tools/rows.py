@@ -12,18 +12,25 @@ It used to be derived from len(row) here, which meant the phone fix silently
 dragged the desktop to two columns too and produced a 14,582px-tall page. Do not
 put the column count back in this file.
 
-Alwin, 2026-10-02 (re-curation): the pack had drifted to 28 because two ratio
-groups had an odd count and an odd count cannot pair. Re-picked from the CHANELLE
-originals (C:/Users/Operations 3/Desktop/CHANELLE, 50 files) against a contact
-sheet, now that every frame renders as uploaded rather than behind a greyscale
-filter — so the green-screen studio series and the colour outdoor frames finally
-show their true selves. Restores the 30 he asked for on 2026-10-01.
+Alwin, verbatim (re-curation): "selected work should be the best of the best
+images no landscapes or random things keep it to the portraits we have".
+
+Re-picked against ratios measured with PIL on the base gallery files (not the
+-800w derivatives) and against contact sheets rendered at the TRUE tile size,
+because a tile is ~173px wide on a phone and a frame that only works big is a
+bad frame. Portrait frames only: everything at ratio >= 0.95 is out.
 
     ratio 0.6667  14 chosen of 16 available ->  7 rows
-    ratio 0.8     12 chosen of 13 available ->  6 rows
-    ratio 0.5625   4 chosen of  8 available ->  2 rows
+    ratio 0.8     10 chosen of 13 available ->  5 rows
+    ratio 0.5625   6 chosen of  7 available ->  3 rows
                     ---------------------------------
                     30 photos, 15 rows, 0px row spread
+
+RESERVED -- these must never appear on the wall:
+  54-img-0164  the family shot, pinned to the Signature package card on
+               /services (ratio 1.6, landscape)
+  55-metal-detector  portrait ratio, but it is the picture of the photographer
+               on the About page
 
 HOW THE SPACING GUARANTEE WORKS -- read before changing a pick
 ------------------------------------------------------------
@@ -46,37 +53,42 @@ TO CHANGE A PICK: edit ROWS, then run
 No other file needs to know.
 """
 
-# Each row is two frames of one exact aspect ratio, best first.
+# Each row is two frames of one exact aspect ratio. Row order IS the wall order:
+# top to bottom. Strongest frames open it.
 #
-# Re-picked 2026-10-02 against a contact sheet of the 50 CHANELLE originals,
-# now that frames render as uploaded instead of behind a greyscale filter.
-# The wall opens on the studio series so the page leads in colour, and the
-# studio frames are paired one-per-row against a portrait rather than two
-# together, so no run of green exceeds a single row -- there are 14
-# near-identical green-screen frames in the source and showing all of them
-# reads as padding.
+# 11 of the 30 are the green-backdrop shoot, which is not a free choice: only
+# 21 usable portraits sit outside it, so 30 frames cannot be built without it,
+# and the per-ratio pools make 11 the smallest count that still pairs. What is
+# enforced instead is SPREAD -- no row holds two of them (the 0.8 group carries
+# 5 across exactly 5 rows, the 0.5625 group 3 across 3 rows, so one per row is
+# the most those groups can hold) and no two are adjacent anywhere in the
+# rendered order, minimum gap 2 slots.
+#
+# Rows are interleaved by ratio on purpose. Grouping the 0.6667 rows together
+# and then the 0.8 rows buries eleven green frames inside four rows of each
+# other, which is exactly the clumping Alwin flagged.
 ROWS = [
-    # --- ratio 0.6667 (2:3 portrait) -- 7 rows
-    ["49-img-0131.jpg", "48-img-0128.jpg"],
-    # A genuine laugh, then the only male portrait in the set. Without that
-    # variety the wall reads as a single shoot.
-    ["21-img-0234.jpg", "5-img-0086.jpg"],
-    ["12-img-0019.jpg", "18-img-0043.jpg"],
-    ["13-img-0020.jpg", "16-img-0030.jpg"],
-    ["25-img-0249.jpg", "14-img-0026.jpg"],
-    ["32-img-0404.jpg", "37-img-0124.jpg"],
-    ["2-20240718114526-img-0124.jpg", "36-img-0076.jpg"],
-    # --- ratio 0.8 (4:5) -- 6 rows
-    # 51 not 11: img-0018 is 6557x8137 = 0.8059, which is NOT the same shape as
-    # a true 0.8 frame and would leave a visible gap under it.
-    ["51-img-0145.jpg", "19-img-0198-3.jpg"],
-    ["40-img-0092.jpg", "28-img-0308.jpg"],
-    ["26-img-0253.jpg", "35-img-0482.jpg"],
-    ["9-img-0269.jpg", "42-img-0095.jpg"],
-    ["30-img-0396.jpg", "45-img-0118.jpg"],
-    ["46-img-0119.jpg", "47-img-0121.jpg"],
-    # --- ratio 0.5625 (9:16 portrait) -- 2 rows
-    # The tall frames sit last, where the longest cell works as a run-out.
-    ["24-img-0245.jpg", "20-img-0202.jpg"],
-    ["34-img-0461.jpg", "52-img-0149.jpg"],
+    # Opens in colour -- warm outdoor daylight and a genuine laugh -- against a
+    # black-and-white city frame, so the wall leads in its strongest register.
+    ["2-20240718114526-img-0124.jpg", "18-img-0043.jpg"],          # 0.6667
+    # The sharpest frame in the set and the most legible face on the wall.
+    ["34-img-0461.jpg", "53-img-0155.jpg"],                       # 0.5625
+    # The studio beauty frame: warm rim light, holds together at 173px.
+    ["19-img-0198-3.jpg", "47-img-0121.jpg"],                     # 0.8
+    ["24-img-0245.jpg", "44-img-0098.jpg"],                       # 0.5625
+    # Tight monochrome headshot opposite the studio series.
+    ["28-img-0308.jpg", "51-img-0145.jpg"],                       # 0.8
+    ["25-img-0249.jpg", "49-img-0131.jpg"],                       # 0.6667
+    # 5-img-0086 is the only male portrait on the wall. Without it the whole
+    # thing reads as one afternoon with one subject.
+    ["32-img-0404.jpg", "5-img-0086.jpg"],                        # 0.6667
+    ["50-img-0143.jpg", "15-img-0025.jpg"],                       # 0.6667
+    ["45-img-0118.jpg", "30-img-0396.jpg"],                       # 0.8
+    ["41-img-0094.jpg", "20-img-0202.jpg"],                       # 0.5625
+    ["40-img-0092.jpg", "35-img-0482.jpg"],                       # 0.8
+    ["48-img-0128.jpg", "16-img-0030.jpg"],                       # 0.6667
+    ["37-img-0124.jpg", "14-img-0026.jpg"],                       # 0.6667
+    ["46-img-0119.jpg", "26-img-0253.jpg"],                       # 0.8
+    # Runs out on two monochrome city frames.
+    ["13-img-0020.jpg", "21-img-0234.jpg"],                       # 0.6667
 ]
