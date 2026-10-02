@@ -2,7 +2,7 @@ import "./styles.css";
 import "./editorial.css";
 import { SITE } from "./config";
 import { renderShell } from "./layout";
-import { portfolioPage, homePage, emptyGallery, WALL_MIN_FRAME_PX } from "./pages";
+import { portfolioPage, homePage, emptyGallery } from "./pages";
 import { contactPage, servicesPage, aboutPage } from "./pages-more";
 import { listPublicPhotos, type AdminPhoto } from "./store";
 import { DEMO_PHOTOS } from "./demo";
@@ -19,20 +19,10 @@ function columnsFor(w: number): number {
 }
 
 /**
- * Column count for the portfolio WALL, which is a different grid from the home
- * strip: it never goes to one column, because 28 frames stacked is 28 screens of
- * scroll, and the packer cannot redistribute them after the fact.
- *
- * Measured from the content width rather than the viewport so it matches what
- * the CSS ends up doing, and floored at 175px per frame. At a 393px phone the
- * row is 341px after padding, so this returns 2 (was hardcoded 3, which is what
- * produced 111px tiles and ~30px faces).
+ * Column count for the portfolio WALL — see portfolioPage() for why this is
+ * NOT derived from the viewport.
  */
-function wallColsFor(w: number): number {
-  const PAD = 26 * 2;
-  const rowWidth = Math.max(WALL_MIN_FRAME_PX, w - PAD);
-  return Math.max(2, Math.min(3, Math.floor(rowWidth / WALL_MIN_FRAME_PX)));
-}
+const WALL_MIN_FRAME_PX = 175;
 
 
 
@@ -166,7 +156,7 @@ function adoptable(live: AdminPhoto[] | null | undefined): AdminPhoto[] | null {
         ? photos.length
           ? homePage(photos, cols)
           : emptyGallery()
-        : portfolioPage(photos, wallColsFor(innerWidth));
+        : portfolioPage(photos);
     // The home header floats over the hero photograph; portfolio keeps the
     // solid header (its grid starts below the fold anyway).
     app.innerHTML = renderShell(r, body, r === "home");

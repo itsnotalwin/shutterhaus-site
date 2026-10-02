@@ -465,7 +465,7 @@ function filterBar(photos: Photo[]): string {
  * 30 deliberately chosen ones there is nothing left for it to select between, and
  * a filter over hand-picked work hides work on purpose.
  */
-export function portfolioPage(photos: Photo[], cols: number): string {
+export function portfolioPage(photos: Photo[]): string {
   if (!photos.length) return emptyGallery();
 
   const byId = new Map(photos.map((p) => [p.id, p]));
@@ -475,11 +475,13 @@ export function portfolioPage(photos: Photo[], cols: number): string {
   // offender rather than leaving a gap for someone to photograph.
   const missing: string[] = [];
 
-  let n = 1; // 1-based: the lightbox prints it as "07 / 30"
+  let n = 1; // 1-based: the lightbox prints it as "07 / 28"
   const shown: string[] = [];
-  // The cell width the browser is told about, derived from the SAME column
-  // count the CSS will render with. Computed once, passed to every cell.
-  const sizes = wallSizes(cols);
+  // The cell width the browser is told about, derived from the SAME frame count
+  // the CSS will render with — which is the number of frames in a row, not a
+  // column count derived from the viewport. Those two disagreed on desktop and
+  // blanked the page; see the guard below. Computed once and passed to each cell.
+  const sizes = wallSizes(PHOTO_ROWS[0]?.length ?? 2);
 
   const rows = PHOTO_ROWS.map((row, ri) => {
     const cells: string[] = [];
@@ -492,11 +494,22 @@ export function portfolioPage(photos: Photo[], cols: number): string {
       shown.push(p.id);
       cells.push(wallCell(p, n++, sizes));
     }
-    // A short row renders a hole, so drop the whole row rather than ship a gap.
-    // The threshold is the column count, NOT a literal 3: rows are two frames
-    // since 2026-10-02, and a hardcoded 3 here silently discarded every row.
-    if (cells.length < cols) return "";
-    return `<div class="pf-row" style="--row-cols:${cols}">${cells.join("")}</div>`;
+    // A row renders a hole if it is missing a frame, so a short row is dropped
+    // rather than shipped with a gap.
+    //
+    // The threshold is the row's OWN length, NOT `cols`. These are two different
+    // numbers and conflating them blanked the entire portfolio on desktop:
+    // `cols` is the grid track count (3 on a wide screen), while every row in
+    // rows.ts holds 2 frames, so `cells.length < cols` was true for all 14 rows
+    // and every one was discarded — 0 photos at 1920px, 0 at 1440px, the whole
+    // desktop range, while the phone at 2 columns rendered fine. Measured before
+    // this fix: 0 `.pf-row` elements at 1920/1440/1280/1100/1024/900/820/768/700/
+    // 600px, with the page heading present and the wall height 0.
+    //
+    // A row is emitted with `row.length` columns so the CSS always has one track
+    // per frame, whatever `cols` was computed as.
+    if (cells.length < row.length) return "";
+    return `<div class="pf-row" style="--row-cols:${row.length}">${cells.join("")}</div>`;
   }).join("");
 
   if (missing.length) {
@@ -518,22 +531,11 @@ export function portfolioPage(photos: Photo[], cols: number): string {
 }
 
 /**
- * How many columns the portfolio wall uses.
- *
- * Three on a desktop, two on a phone, and never one: 28 frames stacked in a
- * single column is 28 screens of scroll, and the packer cannot redistribute
- * them afterwards. The phone case is decided by the CONTENT WIDTH rather than
- * the viewport, so it matches what the CSS ends up doing — at 393px three
- * columns would be 111px per frame, too narrow to read a face, while two still
- * gives ~160px.
- *
- * This was DEAD CODE until 2026-10-02: it was never called, `main.ts` passed a
- * hardcoded 3 to portfolioPage(), and `.pf-row` hardcoded `repeat(3, …)` — so
- * both halves of the intent were ignored and the wall rendered 3 columns on a
- * phone. `main.ts` now calls its own `wallColsFor()` at paint time and the CSS
- * obeys the inline `--row-cols`, so the number is computed once and used twice.
- * Kept as the documented source of that rule; if you change the minimum frame
- * width, change it here AND in main.ts:wallColsFor.
+ * Why the wall's column count is NOT derived from the viewport — see
+ * portfolioPage()'s short-row guard. Retained as the documented reason rows.py
+ * packs TWO frames per row: three columns at 393px is 111px per frame, too
+ * narrow to read a face. Also the minimum a cell must be for the wall to be
+ * worth viewing at all.
  */
 export const WALL_MIN_FRAME_PX = 175;
 
