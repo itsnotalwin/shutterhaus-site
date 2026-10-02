@@ -138,6 +138,35 @@ export function servicesPage(photos: Photo[] = []): string {
  * right. The form is the SAME markup and the same `#cform` id as before, so
  * the Formspree wiring in main.ts and tools/prove-contact.mjs is untouched.
  */
+/**
+ * Spam trap for the contact form.
+ *
+ * The Formspree endpoint (`SITE.contact.formEndpoint`) accepts an unauthenticated
+ * POST from anyone who has read the bundle — the id is public by design, which
+ * is how Formspree works. Verified live: an empty POST returns
+ * `{"error":"Can't send an empty form"}`, a validation error rather than an
+ * auth wall, so the request reaches the handler. With no captcha, that is an
+ * open relay into Alwin's inbox.
+ *
+ * This is a honeypot: a field a person cannot see or focus, so only an
+ * automated filler completes it. wireContact() drops the submission if it
+ * arrives filled, WITHOUT telling the sender — replying "sent!" to a bot just
+ * teaches it to try again with the field empty.
+ *
+ * HONEST LIMITS, so this is not oversold: the check runs in the browser, so a
+ * determined bot that reads the script bypasses it. It stops the naive scraper
+ * that fills every input it finds, which is the overwhelming majority. Real
+ * protection needs Cloudflare Turnstile in front of the endpoint — worth doing
+ * when the domain is moved to Cloudflare for the HTTPS redirect anyway.
+ *
+ * `aria-hidden` + `tabindex="-1"` + `autocomplete="off"` keep it out of the
+ * accessibility tree and off the tab order; it must not be a trap for anyone
+ * using a screen reader or a keyboard.
+ */
+const HONEYPOT_FIELD =
+  `<label class="hp" aria-hidden="true">Leave this field empty` +
+  `<input name="_website" type="text" tabindex="-1" autocomplete="off" /></label>`;
+
 export function contactPage(photos: Photo[] = []): string {
   const c = SITE.contact;
   const wa = `https://wa.me/${c.phone.replace(/\D/g, "")}`;
@@ -185,6 +214,7 @@ export function contactPage(photos: Photo[] = []): string {
           </select>
         </label>
         <label>Message<textarea name="message" rows="4" required></textarea></label>
+        ${HONEYPOT_FIELD}
         <button type="submit">Send message</button>
         <p class="cform__note dim" id="cform-note"></p>
       </form>

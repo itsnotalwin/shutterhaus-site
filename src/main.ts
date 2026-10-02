@@ -334,6 +334,16 @@ function wireContact(): void {
     const fd = new FormData(form);
     const get = (k: string) => String(fd.get(k) ?? "").trim();
 
+    // Honeypot. A real visitor cannot see or focus this field, so anything in it
+    // came from a script filling every input it finds. Pretend it worked: a bot
+    // told "sent" learns to retry with the field left empty, whereas an error
+    // tells it the trap exists. Nothing is posted either way.
+    if (get("_website")) {
+      if (note) note.textContent = "Thanks — got it, I'll reply shortly.";
+      form.reset();
+      return;
+    }
+
     if (!get("name") || !get("email") || !get("message")) {
       if (note) note.textContent = "Please fill in name, email and message.";
       return;

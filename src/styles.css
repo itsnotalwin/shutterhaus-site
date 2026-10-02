@@ -468,6 +468,20 @@ img { display: block; max-width: 100%; }
   align-self: flex-start;
 }
 .cform button:hover { background: #333; }
+/* The honeypot. Visually gone and unclickable, but still in the DOM and still
+   in the accessibility tree's shadow — `aria-hidden="true"` on the label plus
+   `tabindex="-1"` on the input is what keeps it away from a screen reader and
+   from the tab order. `display:none` would also hide it from the FormData that
+   the check reads. */
+.cform .hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
 .cform__note { font-size: 12px; min-height: 1em; margin: 0; }
 
 .empty { padding: 60px 0; }
