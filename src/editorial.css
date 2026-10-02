@@ -687,12 +687,15 @@
 .pkg--pop {
   background: #0d0d0d;
   color: #fff;
-  /* No top padding: the photograph is flush with the top of the card, so all
-     four photos start on the same line. It used to be inset 26px from the top
-     AND carry a "Most popular" label above it in flow, which dropped the
-     recommended card's photo ~50px below its three neighbours and left the row
-     visibly ragged. */
-  padding: 0 24px 28px;
+  /* NO horizontal padding, and no negative margins on the figure either.
+     The card used to carry 24px of side padding while its photograph was pulled
+     back out with margin-inline -24px so the image could full-bleed. That
+     worked for the photo and quietly broke everything else: the tier name,
+     spec, price and button all sat 24px RIGHT of the other three cards —
+     measured nameLeft 34px against 10px for Starter, Signature and Social. It
+     was the only thing on the entire site not flush to the shared left edge.
+     Alignment beats the full-bleed flourish on a card that sits in a row. */
+  padding: 0 0 28px;
 }
 /* The side padding above inset the photograph 24px on each side, so the
    recommended card's figure came out 48px narrower than its neighbours and
@@ -700,11 +703,7 @@
    slot. Pulling the figure back out to the card's edges makes all four figures
    the same width, and a full-bleed photograph at the top of the black card
    reads as deliberate rather than as a mis-measurement. */
-.pkg--pop .pkg__fig {
-  margin-left: -24px;
-  margin-right: -24px;
-  margin-bottom: 20px;
-}
+.pkg--pop .pkg__fig { margin-bottom: 20px; }
 /* The recommendation marker. This is real text in the markup, not a ::before —
    generated content is absent from the accessibility tree, and "most popular"
    is the single strongest purchase signal on this page. It sits beside the

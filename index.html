@@ -11,7 +11,7 @@
          desktop browser, where these resolve to nothing, is unaffected. -->
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Shutterhaus Visuals — photography in Gauteng</title>
-    <meta name="description" content="Portraits, couples, families and social content, shot on location across Gauteng by Alwin Newman. Shutterhaus Visuals." />
+    <meta name="description" content="Portraits, couples, families and social content, shot on location across Gauteng by Alwin Newman. Shutterhaus Visuals, Pretoria." />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,18 +20,41 @@
       rel="stylesheet"
     />
 
-    <meta property="og:title" content="Shutterhaus Visuals" />
-    <meta property="og:description" content="Portraits, couples, families and social content, shot on location across Gauteng by Alwin Newman. Shutterhaus Visuals." />
+    <meta property="og:title" content="Shutterhaus Visuals — photography in Gauteng" />
+    <meta property="og:description" content="Portraits, couples, families and social content, shot on location across Gauteng by Alwin Newman. Shutterhaus Visuals, Pretoria." />
     <meta property="og:type" content="website" />
+    <!-- og:title used to be the <title> cut at the first em dash, which threw
+         the brand away: "Portfolio", "About", "Contact". A WhatsApp or Facebook
+         share showed a bare section name. It is the full title now. -->
+    <meta property="og:site_name" content="Shutterhaus Visuals" />
+    <!-- en_ZA, not en_US. The site only ever serves South Africa, and a
+         locale that matches the business is the one a local-intent click
+         should be attributed to. -->
+    <meta property="og:locale" content="en_ZA" />
     <!-- Share cards. Without og:image every WhatsApp/Instagram/Facebook share
          of this link renders as bare grey text, and for a photographer the
-         shared link IS the portfolio. Regenerate with tools/og-card.py. -->
+         shared link IS the portfolio. Regenerate with tools/og-card.py.
+         One card is shared by all five routes on purpose: it is the same
+         photographer either way, and the dimensions below are measured from
+         the actual bytes, not assumed. -->
     <meta property="og:image" content="https://shutterhausvisuals.co.za/og-card.jpg" />
+    <meta property="og:image:secure_url" content="https://shutterhausvisuals.co.za/og-card.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:url" content="https://shutterhausvisuals.co.za/" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Black and white portrait from a Shutterhaus Visuals session" />
+
+    <!-- X/Twitter falls back to the og:* tags for these, so the card already
+         rendered. They are declared explicitly because the fallback is
+         documented behaviour rather than a guarantee, and a silent card
+         regression on the platform Alwin posts links to is not something to
+         discover after the ad spend. -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Shutterhaus Visuals — photography in Gauteng" />
+    <meta name="twitter:description" content="Portraits, couples, families and social content, shot on location across Gauteng by Alwin Newman. Shutterhaus Visuals, Pretoria." />
+    <meta name="twitter:image" content="https://shutterhausvisuals.co.za/og-card.jpg" />
+    <meta name="twitter:image:alt" content="Black and white portrait from a Shutterhaus Visuals session" />
 
     <!-- The custom domain is canonical; github.io serves the same build.
          This is the ONE thing the split fixes for real: before it, every page
@@ -40,6 +63,87 @@
     <link rel="canonical" href="https://shutterhausvisuals.co.za/" />
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23111'/><text y='72' x='50' text-anchor='middle' font-size='62' font-family='Arial' font-weight='bold' fill='%23fff'>S</text></svg>" />
+    <!-- Breadcrumbs for the SERP trail. A photographer's subpages are
+         otherwise four flat results with no indication they sit under a home
+         page. Marked up as JSON-LD rather than a visible trail because a
+         breadcrumb bar is not copy Alwin asked for. -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ProfessionalService",
+      "@id": "https://shutterhausvisuals.co.za/#business",
+      "name": "Shutterhaus Visuals",
+      "description": "Photography studio shooting portraits, couples, families and social content on location across Gauteng.",
+      "url": "https://shutterhausvisuals.co.za/",
+      "email": "itsnotalwin@gmail.com",
+      "telephone": "+27730958363",
+      "image": "https://shutterhausvisuals.co.za/og-card.jpg",
+      "priceRange": "R800–R2,500",
+      "areaServed": [
+        {
+          "@type": "City",
+          "name": "Pretoria"
+        },
+        {
+          "@type": "City",
+          "name": "Johannesburg"
+        },
+        {
+          "@type": "AdministrativeArea",
+          "name": "Gauteng"
+        }
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Gauteng",
+        "addressCountry": "ZA"
+      },
+      "founder": {
+        "@id": "https://shutterhausvisuals.co.za/#alwin"
+      },
+      "sameAs": [
+        "https://instagram.com/shutterhausvisuals"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://shutterhausvisuals.co.za/#website",
+      "url": "https://shutterhausvisuals.co.za/",
+      "name": "Shutterhaus Visuals",
+      "inLanguage": "en-ZA",
+      "publisher": {
+        "@id": "https://shutterhausvisuals.co.za/#business"
+      }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://shutterhausvisuals.co.za/#alwin",
+      "name": "Alwin Newman",
+      "jobTitle": "Photographer",
+      "worksFor": {
+        "@id": "https://shutterhausvisuals.co.za/#business"
+      },
+      "url": "https://shutterhausvisuals.co.za/about.html"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://shutterhausvisuals.co.za/#webpage",
+      "url": "https://shutterhausvisuals.co.za/",
+      "name": "Shutterhaus Visuals — photography in Gauteng",
+      "description": "Portraits, couples, families and social content, shot on location across Gauteng by Alwin Newman. Shutterhaus Visuals, Pretoria.",
+      "isPartOf": {
+        "@id": "https://shutterhausvisuals.co.za/#website"
+      },
+      "about": {
+        "@id": "https://shutterhausvisuals.co.za/#business"
+      },
+      "inLanguage": "en-ZA"
+    }
+  ]
+}
+    </script>
   </head>
   <body>
     <div id="app"></div>

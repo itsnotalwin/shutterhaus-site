@@ -623,7 +623,7 @@ function stripCols(frameCount: number): number {
  * back up to the nav. The contact row is deliberately ONE line inside the band,
  * not a site-wide footer (an earlier footer was reverted).
  */
-function homeBand(): string {
+export function homeBand(): string {
   const from = cheapestTier();
   const insta = SITE.social.find((x) => x.id === "instagram");
   const names = SITE.pricing.tiers.map((t) => t.name).join(" · ");

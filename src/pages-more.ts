@@ -1,5 +1,6 @@
 import { SITE } from "./config";
 import { escapeHtml } from "./layout";
+import { homeBand } from "./pages";
 import { pictureFor, bestDerivative } from "./pages";
 import type { Photo } from "./types";
 import type { PricingTier } from "./config";
@@ -42,6 +43,7 @@ export function aboutPage(photos: Photo[]): string {
       <a class="cta about__cta" href="./contact.html">${escapeHtml(a.cta)}</a>
     </div>
     ${fig}
+    ${homeBand()}
   </section>`;
 }
 
@@ -135,6 +137,7 @@ export function servicesPage(photos: Photo[] = []): string {
         ${p.terms.map((t) => `<li>${escapeHtml(t)}</li>`).join("")}
       </ul>
     </div>
+${homeBand()}
   </section>`;
 }
 
