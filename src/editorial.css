@@ -892,8 +892,10 @@
   .invest { grid-template-columns: 1fr; gap: 24px; }
   .shead { grid-template-columns: 1fr; gap: 26px; }
   .pkgrow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .ct__fig { order: -1; }
-  .ct__fig img { aspect-ratio: 16 / 10; }
+  /* The `.ct__fig` rules that used to sit here are dead: the contact route
+     emits `.contact__fig`, and they were hiding inside this media block, which
+     is why a `grep '^\.ct'` anchored at the start of a line reported the
+     class family as fully removed when four more rules were still shipping. */
 }
 
 @media (max-width: 760px) {
@@ -927,7 +929,9 @@
   .hcta__foot span { display: none; }
   .invest { padding: 40px var(--pad) 44px; }
   
-  .about__body, .ct__col { padding-top: 28px; }
+  .about__body { padding-top: 28px; }
+  /* `.ct__col` dropped from this rule for the same reason as above: the live
+     class is `.contact__col`, styled in styles.css. */
 }
 
 /* ---------------------------------------------------- static wall, 10 rows
