@@ -216,14 +216,35 @@ function wireBurger(): void {
   const nav = document.getElementById("site-nav");
   if (!btn || !nav) return;
 
+  // A scrim behind the drawer, added on open and removed on close. Without it
+  // there is no "outside" to tap: the audit measured a tap at (196,600) on
+  // #/contact landing on the TEXTAREA with aria-expanded still "true", so the
+  // only ways out were the burger, a nav link, or Escape — and on a phone the
+  // first two are the only reachable ones. A menu you cannot dismiss by tapping
+  // the page you can see is a menu that traps people.
+  const scrim = document.createElement("div");
+  scrim.className = "nav-scrim";
+  scrim.setAttribute("aria-hidden", "true");
+
   const set = (open: boolean) => {
     btn.setAttribute("aria-expanded", String(open));
     btn.classList.toggle("is-on", open);
     nav.classList.toggle("is-open", open);
     document.body.classList.toggle("nav-open", open);
+    // Stop the page behind the drawer scrolling. Dragging the open drawer moved
+    // the background 800 -> 985px, which reads as the page jumping under your
+    // thumb. `nav-open` was set here since day one and styled NOWHERE, so the
+    // class was dead; the CSS that consumes it ships with this change.
+    document.documentElement.classList.toggle("nav-locked", open);
+    if (open) {
+      if (!scrim.parentNode) document.body.appendChild(scrim);
+    } else {
+      scrim.remove();
+    }
   };
 
   btn.addEventListener("click", () => set(btn.getAttribute("aria-expanded") !== "true"));
+  scrim.addEventListener("click", () => set(false));
   // Any nav link closes the panel — otherwise it stays open over the new page.
   nav.addEventListener("click", (e) => {
     if ((e.target as HTMLElement).closest("a")) set(false);
@@ -231,6 +252,10 @@ function wireBurger(): void {
   addEventListener("keydown", (e) => {
     if (e.key === "Escape") set(false);
   });
+  // The header is re-rendered on every route change, so the old burger and its
+  // scrim go with it. Leaving the body class set would lock scrolling on a page
+  // whose drawer no longer exists.
+  addEventListener("hashchange", () => set(false));
 }
 
 /** Contact form: posts to Formspree if configured, else opens the mail client. */

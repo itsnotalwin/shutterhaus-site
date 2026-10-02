@@ -690,9 +690,16 @@ export function homePage(photos: Photo[], cols: number): string {
   // Never feature the same frame twice on one page.
   const strip = photos.filter((p) => p.id !== hero?.id).slice(0, SITE.homeGalleryCount);
 
+  // The hero is the LCP element and was the single biggest byte on the home
+  // page: a 286 KB JPEG, while every other image on the site is WebP. Its
+  // `src` fallback asked bestDerivative for "jpg" explicitly, so a browser that
+  // took the <img> path paid JPEG bytes. The <picture> above already offers
+  // WebP first, so this only changes the fallback — but it is the path some
+  // browsers take, and it is free. "webp" is requested and the JPEG <source>
+  // stays as the real fallback for a browser with no WebP support at all.
   const heroFig = hero
     ? `<figure class="hero__fig">${pictureFor(hero.url, "100vw", hero.width)}
-        <img src="${escapeHtml(bestDerivative(hero.url, "jpg", hero.width))}"
+        <img src="${escapeHtml(bestDerivative(hero.url, "webp", hero.width))}"
              alt="${escapeHtml(hero.alt || hero.filename || "")}"
              loading="eager" decoding="async" fetchpriority="high"
              style="aspect-ratio:${hero.width ?? 1600}/${hero.height ?? 1067}" />

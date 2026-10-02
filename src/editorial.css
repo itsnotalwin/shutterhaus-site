@@ -655,6 +655,39 @@
   }
   .site-nav.is-open { visibility: visible; opacity: 1; transform: none; }
 
+  /* Scrim behind the open drawer, plus the scroll lock — added 2026-10-02.
+     *
+     * Two defects, one cause: there was no scrim, so there was no "outside" to
+     * tap. On #/contact a tap at (196,600) landed on the TEXTAREA with
+     * aria-expanded still "true", and dragging the open drawer scrolled the
+     * background 800 -> 985px underneath. The `nav-open` class main.ts has been
+     * setting since day one was styled NOWHERE, which is why the scroll lock
+     * never existed.
+     *
+     * Fixed viewport height in the `top`/`height` pair rather than `100%`, so
+     * the scrim covers the visible screen even when the document is taller and
+     * the iOS URL bar has collapsed. Below the header (var(--head)) so it never
+     * covers the burger or the wordmark. */
+  .nav-scrim {
+    position: fixed;
+    top: var(--head);
+    left: 0;
+    right: 0;
+    height: 100vh;
+    background: rgba(17, 17, 17, 0.34);
+    opacity: 0;
+    transition: opacity 0.16s ease;
+    /* Above the page content, below the drawer (z 5) and the sticky header
+       (z 6), so it dims the photographs without touching the menu. */
+    z-index: 4;
+  }
+  body.nav-open .nav-scrim { opacity: 1; }
+
+  /* Stop the page behind the drawer moving. `overflow: hidden` on the root is
+     what actually stops iOS Safari rubber-banding the background. */
+  html.nav-locked,
+  html.nav-locked body { overflow: hidden; }
+
   /* The home page is the only route with `shell--over`, which paints .nav-link
      WHITE for the transparent header sitting on the hero photograph. The drawer
      below it is painted `var(--paper)` — solid white — so those white links land
