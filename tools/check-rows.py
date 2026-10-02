@@ -33,7 +33,6 @@ RATIO = {f: round(int(h) / int(w), 4) for f, w, h in trip}
 
 fails = 0
 
-
 def check(name, ok, detail=""):
     global fails
     if ok:
@@ -76,6 +75,33 @@ check("ratios present for every frame", len(widths) == EXPECTED_FRAMES, str(len(
 pages = (ROOT / "src" / "pages.ts").read_text(encoding="utf-8")
 check("no frame numbering is printed", "pf-cell__n" not in pages,
       "pf-cell__n still emitted" if "pf-cell__n" in pages else "")
+
+# ---- the id trap ----------------------------------------------------------
+# src/rows.ts stores photo IDS ("c0", "c10"), not filenames. build-rows-ts.py
+# maps tools/rows.py filenames onto whatever ids src/demo.ts currently holds.
+# So adding ONE photograph and re-running build-demo-ts.py re-numbers the whole
+# gallery, and a rows.ts left over from before points at a completely different
+# set of photographs — silently. Measured after importing a 51st photo: row 3
+# rendered 39-img-0089 (ar 0.721) beside 6-img-0161 (ar 1.603), a 338px gap
+# under the shorter one, and every check above still passed because they read
+# rows.py rather than the emitted ids.
+#
+# So: resolve the emitted ids back to filenames and compare against rows.py.
+# rows.py holds FILENAMES; rows.ts holds IDS. Walk the emitted ids back through
+# demo.ts's id -> filename map and require the result to equal rows.py.
+emitted = (ROOT / "src" / "rows.ts").read_text(encoding="utf-8")
+id_of = dict(re.findall(r'id: "(c\d+)", url: "gallery/([^"]+)"', demo))
+id_pairs = re.findall(r'\["(c\d+)",\s*"(c\d+)"\]', emitted)
+resolved = [tuple(id_of.get(i, f"?{i}") for i in pair) for pair in id_pairs]
+drifted = [
+    f"{'/'.join(want)} -> {'/'.join(got)}"
+    for want, got in zip(ROWS, resolved) if tuple(got) != tuple(want)
+]
+check("emitted ids still point at the chosen frames",
+      not drifted and len(resolved) == len(ROWS),
+      drifted[0] if drifted else f"{len(resolved)} rows resolved")
+if drifted or len(resolved) != len(ROWS):
+    print("       src/rows.ts is stale. Re-run: python tools/build-rows-ts.py")
 
 if fails:
     print(f"\n{fails} check(s) failed")

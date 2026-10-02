@@ -57,6 +57,21 @@ export interface PricingTier {
   bullets: string[];
   /** marks the recommended tier in the UI */
   popular?: boolean;
+  /**
+   * Pins the card's photograph instead of rotating the gallery.
+   *
+   * The rotation is fine for three solo portraits, but it sold "Families,
+   * maternity, engagements" with another shot of one woman alone. A tier that
+   * names families has to show a family. Filename, matching src/demo.ts.
+   */
+  photo?: string;
+  /**
+   * Where the subject sits in the frame, as "x% y%" of the natural image, used
+   * as `object-position` on the card figure. Needed because the cards share one
+   * aspect-ratio slot and this frame is landscape while the others are portrait:
+   * without it the family group sits low in the crop. Omit and it centres.
+   */
+  focal?: string;
 }
 
 export interface PricingConfig {
@@ -126,6 +141,19 @@ export const SITE: SiteConfig = {
         price: "R1,200",
         fit: "Headshots, matric farewells, quick portraits.",
         spec: "30 min · 1 outfit · 1 location",
+        // Pinned, so a package card can never be handed a seascape. This tier
+        // used to rotate onto 8-img-0268 — an empty pier — on the page whose job
+        // is selling.
+        //
+        // Chosen for headshots and matric farewells, where the client wants a
+        // clean direct portrait: 50-img-0143 is "warm low light, looking directly
+        // at the camera" in the gallery's own alt text. It replaced 16-img-0030,
+        // a genuinely greyscale file (mean saturation 0.0000 — no colour data in
+        // it at all), and then 26-img-0253, whose backlit lens flare washed
+        // across the subject's face. Measured mean saturation of the four cards
+        // now: 0.35 / 0.23 / 0.26 / 0.20.
+        photo: "50-img-0143.jpg",
+        focal: "50% 26%",
         bullets: [
           "15 professionally edited high-res images",
           "Private online gallery (90-day access)",
@@ -139,6 +167,8 @@ export const SITE: SiteConfig = {
         price: "R2,200",
         fit: "Our go-to for couples, individuals and small families.",
         spec: "60 min · 2 outfits · 1–2 locations",
+        photo: "19-img-0198-3.jpg",
+        focal: "50% 24%",
         bullets: [
           "40 professionally edited high-res images",
           "Reels-ready vertical crops",
@@ -153,6 +183,12 @@ export const SITE: SiteConfig = {
         price: "R3,500",
         fit: "Families, maternity, engagements — the full experience.",
         spec: "90 min · 2–3 outfits · multiple locations",
+        // Pinned, not rotated. This tier sells families and the rotation was
+        // handing it another solo portrait, which is the one image that cannot
+        // demonstrate a family session. 54-img-0164 is landscape (2400x1499)
+        // with the six faces across the upper half — hence the focal point.
+        photo: "54-img-0164.jpg",
+        focal: "50% 32%",
         bullets: [
           "70 professionally edited high-res images",
           "B&W timeless set + Reels crops",
@@ -166,6 +202,10 @@ export const SITE: SiteConfig = {
         price: "R1,800",
         fit: "Built for creators — vertical-first, quick turnaround.",
         spec: "45 min · 2 outfits · 1 location",
+        // The one genuinely vertical frame in the gallery, which is the honest
+        // picture for a tier whose promise is Reels-ready vertical crops.
+        photo: "20-img-0202.jpg",
+        focal: "50% 22%",
         bullets: [
           "30 edited images + 15 Reels-ready vertical crops",
           "48hr sneak peek",

@@ -49,21 +49,36 @@ export function servicesPage(photos: Photo[] = []): string {
   const p = SITE.pricing;
   if (!p.show) return `<section class="page"><div class="empty"><p>Packages coming soon.</p></div></section>`;
 
-  // The reference gives each package a photograph. Rotate through the gallery
-  // so the three cards never show the same frame; short galleries just repeat.
-  const shot = (i: number): Photo | undefined => (photos.length ? photos[i % photos.length] : undefined);
+  // Each package gets a photograph. `t.photo` pins one by filename; without
+  // it the cards rotate the gallery, which is fine for three solo portraits and
+  // actively wrong for the tier that sells families. A pinned photo the gallery
+  // does not have falls back to the rotation rather than rendering a broken img.
+  const shotFor = (t: PricingTier, i: number): Photo | undefined => {
+    if (i > 0 && t.photo) {
+      const pinned = photos.find((p) => p.filename === t.photo);
+      if (pinned) return pinned;
+    }
+    return photos.length ? photos[i % photos.length] : undefined;
+  };
 
   // `spec` is the compact "30 min · 1 outfit · 1 location" line in config.ts.
   // It is the only place a client can see Starter and Signature differ by
   // anything other than prose, so it belongs on the card next to the name —
   // not behind a separate pricing route (there isn't one).
   const card = (t: PricingTier, i: number): string => {
-    const ph = shot(i + 1);
+    const ph = shotFor(t, i + 1);
     return `<article class="pkg${t.popular ? " pkg--pop" : ""}">
-    ${ph ? `<figure class="pkg__fig"><picture>${pictureFor(ph.url, "(max-width: 760px) 100vw, 33vw", ph.width)}
+    ${ph ? `<figure class="pkg__fig" style="--focal:${escapeHtml(t.focal ?? "50% 50%")}"><picture>${pictureFor(ph.url, "(max-width: 760px) 100vw, 33vw", ph.width)}
         <img src="${escapeHtml(bestDerivative(ph.url, "jpg", ph.width))}" alt="${escapeHtml(ph.alt || ph.filename || "")}"
              loading="lazy" decoding="async" /></picture></figure>` : ""}
-    <p class="pkg__num">${String(i + 1).padStart(2, "0")}.</p>
+    <p class="pkg__num">${String(i + 1).padStart(2, "0")}.${
+      // Real text, not a CSS ::before. Generated content is invisible to screen
+      // readers and to anything reading the DOM, so "most popular" — the one
+      // thing that steers a purchase on this page — was not in the document at
+      // all. It also sat ABOVE the photograph, which pushed the recommended
+      // card's photo ~50px lower than the other three and broke the row.
+      t.popular ? ' <span class="pkg__flag">Most popular</span>' : ""
+    }</p>
     <h3 class="pkg__name">${escapeHtml(t.name)}</h3>
     <p class="pkg__spec">${escapeHtml(t.spec)}</p>
     <p class="pkg__desc">${escapeHtml(t.fit)}</p>

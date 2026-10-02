@@ -35,6 +35,12 @@ CATEGORIES = {
 }
 
 FRAMES: dict[str, dict[str, str]] = {
+    # --- family, outdoor, six people --
+    # The first group frame in the gallery. It is pinned to the Signature tier
+    # on /services, whose positioning line is "Families, maternity, engagements
+    # — the full experience" — so the page can finally show the kind of
+    # photograph that tier is selling, rather than another solo portrait.
+    "54-img-0164.jpg": {"alt": "Family portrait of six people outdoors, laughing together on a path", "cat": "family"},
     # --- solo portraits, main subject, indoor ---
     "49-img-0131.jpg": {"alt": "Portrait of a woman in a black top and pale skirt, standing against a dark background", "cat": "portrait"},
     "40-img-0092.jpg": {"alt": "Portrait of a woman in a black top and pale skirt, lit from the front against a dark wall", "cat": "portrait"},

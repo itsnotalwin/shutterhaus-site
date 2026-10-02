@@ -1,0 +1,47 @@
+# Security headers for Cloudflare Pages / Pages-compatible hosts.
+#
+# WHY THIS FILE IS HERE BUT MAY DO NOTHING
+# ---------------------------------------
+# The site is currently served by GitHub Pages, which serves static files and
+# IGNORES this file entirely — measured on the live site: of
+# CSP / HSTS / X-Content-Type-Options / X-Frame-Options / Referrer-Policy /
+# Permissions-Policy, all six are absent from the response, and no repo change
+# can add them there. GitHub Pages offers no header configuration.
+#
+# If the domain is moved to (or already fronted by) Cloudflare Pages, this file
+# is picked up automatically and the headers start being sent. Nothing else
+# needs to change.
+#
+# ALTERNATIVELY, if the domain is proxied through Cloudflare while still serving
+# from GitHub Pages, set these as Transform Rules / Response Header Modification
+# rules in the Cloudflare dashboard instead — same values.
+#
+# CHECKED 2026-10-02: `npm audit --omit=dev` -> 0 vulnerabilities; no JWT-shaped
+# key has ever been committed (the `service_role` string appears only in
+# comments warning against it); `.env` is gitignored and was never tracked.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=()
+  X-Frame-Options: SAMEORIGIN
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  # The site loads its only third-party resource from Google Fonts and posts
+  # the contact form to Formspree; everything else is first-party. 'unsafe-inline'
+  # is required for styles because the CSS custom properties and the inline
+  # --focal values on the package figures are set as style attributes.
+  # 'unsafe-eval' is deliberately NOT allowed.
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; connect-src 'self' https://*.supabase.co https://formspree.io; form-action 'self' https://formspree.io; frame-ancestors 'self'; base-uri 'self'; object-src 'none'
+
+# The admin is a private tool. Keep it out of every index and out of the CDN.
+/admin.html
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store
+
+# Hashed asset filenames, so they can be cached hard and never revalidated.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# The gallery is content-addressed by width; a new derivative gets a new name.
+/gallery/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400

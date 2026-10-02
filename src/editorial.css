@@ -561,18 +561,46 @@
 
 .pkgrow {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 40px 32px;
+  /* FOUR packages, so four tracks. This was repeat(3, ...), which put three
+     cards in the first row and orphaned "Social" alone on a second row at half
+     width with a screen of empty space beside it — the single worst-looking
+     thing on the page at 1440px. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 40px 24px;
   padding: 52px 0 0;
 }
 .pkg { display: flex; flex-direction: column; }
-/* Each package card opens with the photograph at its OWN ratio — no `cover`, no
-   fixed 4:3 box. `cover` sliced a 2:3 portrait into a landscape band, which is
-   the same crop Alwin rejected on the wall ("when i hover it destroys the
-   crop"). `height: auto` lets the frame keep its natural proportions. */
-.pkg__fig { margin: 0 0 22px; }
-.pkg__fig picture { display: block; width: 100%; }
-.pkg__fig img { width: 100%; height: auto; }
+/* The card photograph.
+   Every card gets the SAME 3:2 slot. Before this, each figure kept its natural
+   height, so the four cards came out 662 / 295 / 276 / 662 — a 386px spread on
+   desktop. Four cards in a row at four different heights reads as broken, not
+   as editorial, and it pushed the tier names, specs and prices onto four
+   different baselines.
+
+   3:2 is chosen for the family frame: 54-img-0164 is 2400x1499 = 1.601, so it
+   crops about 6% off the sides and keeps all six people. A portrait slot would
+   have been the obvious default on a portrait-heavy gallery, but a 4:5 crop of a
+   1.6 landscape keeps only 1199 of 2400px — half the width — which cuts the
+   family in half. That is the crop Alwin rejected on the wall, and it applies
+   with more force on a card thumbnail.
+
+   `--focal` (set per tier in config.ts) is `object-position`, so the subject
+   stays put. Portraits default to 28% down because their faces sit in the upper
+   third and a centred 3:2 crop of a 2:3 portrait keeps only the middle 45% of
+   its height. The full uncropped frame is still in the gallery and the lightbox;
+   this slot is a thumbnail, not the work itself. */
+.pkg__fig {
+  margin: 0 0 22px;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+}
+.pkg__fig picture { display: block; width: 100%; height: 100%; }
+.pkg__fig img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--focal, 50% 28%);
+}
 /* The tier's one-line spec ("30 min · 1 outfit · 1 location"). It is the only
    place a client can see Starter and Signature differ by anything other than
    prose. Styled as quiet metadata beside `.pkg__num` so the two read as one
@@ -597,24 +625,50 @@
 .pkg--pop {
   background: #0d0d0d;
   color: #fff;
-  padding: 26px 24px 28px;
+  /* No top padding: the photograph is flush with the top of the card, so all
+     four photos start on the same line. It used to be inset 26px from the top
+     AND carry a "Most popular" label above it in flow, which dropped the
+     recommended card's photo ~50px below its three neighbours and left the row
+     visibly ragged. */
+  padding: 0 24px 28px;
 }
-.pkg--pop::before {
-  content: "Most popular";
-  display: block;
+/* The side padding above inset the photograph 24px on each side, so the
+   recommended card's figure came out 48px narrower than its neighbours and
+   32px shorter — the four cards stopped lining up even once they shared a
+   slot. Pulling the figure back out to the card's edges makes all four figures
+   the same width, and a full-bleed photograph at the top of the black card
+   reads as deliberate rather than as a mis-measurement. */
+.pkg--pop .pkg__fig {
+  margin-left: -24px;
+  margin-right: -24px;
+  margin-bottom: 20px;
+}
+/* The recommendation marker. This is real text in the markup, not a ::before —
+   generated content is absent from the accessibility tree, and "most popular"
+   is the single strongest purchase signal on this page. It sits beside the
+   tier number so it reads as metadata rather than as a badge. */
+.pkg__flag {
   font-family: var(--font-mono);
   font-size: 10px;
+  font-weight: 500;
   letter-spacing: 0.19em;
   text-transform: uppercase;
   color: #fff;
-  opacity: 0.7;
-  margin: 0 0 16px;
+  opacity: 0.72;
+  margin-left: 4px;
+  white-space: nowrap;
 }
 /* The muted layers are grey-on-white, which is unreadable on black. Lift them
    to the same 0.7/0.78 opacity the inverted `.invest` band already uses rather
-   than introducing lighter grey tokens. */
+   than introducing lighter grey tokens.
+
+   The number and spec use a dimmed COLOUR, not opacity: `.pkg__flag` is a child
+   of `.pkg__num`, and opacity on a parent multiplies through the subtree and
+   cannot be undone by the child — which would have left "most popular" the
+   faintest thing on the page, on the one card meant to draw the eye. */
 .pkg--pop .pkg__num,
-.pkg--pop .pkg__spec { color: #fff; opacity: 0.6; }
+.pkg--pop .pkg__spec { color: #9a9a9a; }
+.pkg--pop .pkg__flag { color: #fff; }
 .pkg--pop .pkg__desc,
 .pkg--pop .pkg__list { color: #fff; opacity: 0.78; }
 .pkg--pop .pkg__list li { border-top-color: rgba(255, 255, 255, 0.22); }
