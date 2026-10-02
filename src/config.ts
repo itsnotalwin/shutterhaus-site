@@ -72,11 +72,22 @@ export interface PricingTier {
   photo?: string;
   /**
    * Where the subject sits in the frame, as "x% y%" of the natural image, used
-   * as `object-position` on the card figure. Needed because the cards share one
-   * aspect-ratio slot and this frame is landscape while the others are portrait:
-   * without it the family group sits low in the crop. Omit and it centres.
+   * as `object-position` on the card figure.
+   *
+   * Only matters for the landscape card. The portrait cards now use a slot that
+   * matches their own frames, so almost none of their height is cropped and the
+   * focal point has very little to do.
    */
   focal?: string;
+  /**
+   * The slot shape for this card's photograph, as CSS `aspect-ratio`, e.g.
+   * "4 / 5". One 3:2 slot was being applied to four photographs of three
+   * different shapes, and a 3:2 slot keeps only 44% of a 2:3 portrait's height —
+   * which is why the tops of heads were being cut off. Matching the slot to the
+   * frame is the whole fix: a 4:5 slot keeps ~83% of a 2:3 portrait.
+   * Omit and the figure falls back to 3 / 2.
+   */
+  ar?: string;
 }
 
 export interface PricingConfig {
@@ -147,6 +158,8 @@ export const SITE: SiteConfig = {
         spec: "30 min · 1 outfit · 1 location",
         photo: "50-img-0143.jpg",
         focal: "50% 8%",
+        // slot matches the frame: 2:3 portrait, 0.667
+        ar: "4 / 5",
         bullets: [
           "15 professionally edited photos",
           "Private online gallery",
@@ -161,7 +174,9 @@ export const SITE: SiteConfig = {
         fit: "Our go-to for couples, individuals and small families.",
         spec: "60 min · 2 outfits · 1–2 locations",
         photo: "19-img-0198-3.jpg",
-        focal: "50% 4%",
+        focal: "50% 50%",
+        // slot matches the frame: 4:5 portrait, 0.800
+        ar: "4 / 5",
         bullets: [
           "40 professionally edited photos",
           "Private online gallery (90-day access)",
@@ -176,7 +191,9 @@ export const SITE: SiteConfig = {
         fit: "Families, maternity, engagements — the full experience.",
         spec: "90 min · 2–3 outfits · multiple locations",
         photo: "54-img-0164.jpg",
-        focal: "50% 34%",
+        focal: "50% 50%",
+        // slot matches the frame: landscape, 1.601
+        ar: "3 / 2",
         bullets: [
           "40 professionally edited photos",
           "Private online gallery (90-day access)",
@@ -190,7 +207,9 @@ export const SITE: SiteConfig = {
         fit: "Built for creators — quick turnaround, same-day previews.",
         spec: "45 min · 2 outfits · 1 location",
         photo: "20-img-0202.jpg",
-        focal: "50% 6%",
+        focal: "50% 50%",
+        // slot matches the frame: 9:16 vertical, 0.563
+        ar: "9 / 16",
         bullets: [
           "20 professionally edited photos",
           "Private online gallery (90-day access)",

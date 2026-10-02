@@ -622,7 +622,15 @@
    this slot is a thumbnail, not the work itself. */
 .pkg__fig {
   margin: 0 0 22px;
-  aspect-ratio: 3 / 2;
+  /* The slot is per-card (`--ar`, set from `ar` in config.ts), not one global
+     shape. A single 3/2 slot applied to four photographs of three different
+     shapes keeps only 44% of a 2:3 portrait's height — measured on a phone,
+     that cut the top off Starter's head, Essential's forehead, and left Social
+     showing her lap instead of her face. Matching the slot to the frame is the
+     whole fix: 4/5 keeps ~83% of a 2:3 portrait, 9/16 keeps ~94% of a 9:16.
+     Signature stays 3/2 because that photograph is landscape.
+     `3 / 2` is the fallback for a tier that sets no `ar`. */
+  aspect-ratio: var(--ar, 3 / 2);
   overflow: hidden;
 }
 .pkg__fig picture { display: block; width: 100%; height: 100%; }
