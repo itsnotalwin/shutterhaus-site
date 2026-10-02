@@ -31,3 +31,4 @@ shot-*.png
 
 # verify.mjs screenshots, if SHOT_DIR is ever pointed back at the root
 shot-*.png
+.commitmsg.txt

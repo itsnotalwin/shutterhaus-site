@@ -954,7 +954,13 @@
   .hero__lede { font-size: 14px; }
   /* Phone width fits one line of meta: keep the year and place, drop the rest. */
   .hero__meta-tags, .hero__meta-cue { display: none; }
-  .phead { padding: 28px 0 32px; }
+  /* Horizontal inset restored deliberately. This reads `28px 0 32px`, relying on
+     the page's own padding for its sides — fine at --pad 18px, but with the
+     phone gutter tightened to 10px the sub-heading measured at left 0 /
+     right 393, i.e. running to BOTH screen edges directly above a grid that
+     carries a 10px margin. The heading and the photographs beneath it must
+     share one left edge. */
+  .phead { padding: 28px var(--pad) 32px; }
   .hcta { padding: 54px var(--pad) 0; }
   .hcta__grid { grid-template-columns: 1fr; gap: 36px; padding-bottom: 48px; }
   .hcta__foot span { display: none; }
