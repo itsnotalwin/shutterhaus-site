@@ -643,15 +643,17 @@
    this slot is a thumbnail, not the work itself. */
 .pkg__fig {
   margin: 0 0 22px;
-  /* The slot is per-card (`--ar`, set from `ar` in config.ts), not one global
-     shape. A single 3/2 slot applied to four photographs of three different
-     shapes keeps only 44% of a 2:3 portrait's height — measured on a phone,
-     that cut the top off Starter's head, Essential's forehead, and left Social
-     showing her lap instead of her face. Matching the slot to the frame is the
-     whole fix: 4/5 keeps ~83% of a 2:3 portrait, 9/16 keeps ~94% of a 9:16.
-     Signature stays 3/2 because that photograph is landscape.
-     `3 / 2` is the fallback for a tier that sets no `ar`. */
-  aspect-ratio: var(--ar, 3 / 2);
+  /* ONE shape across the row. On desktop the four cards sit side by side, so the
+     figures have to be equal or the tier names and prices land on four different
+     baselines — measured at 1440 with per-card slots, they came out at 820 /
+     818 / 628 / 994px. That looks broken, and it is worse than a slightly
+     generous crop on one card.
+
+     3/2 is the compromise: it keeps the landscape family frame whole, and at
+     desktop card widths (329px) a 3/2 slice of a portrait reads as an editorial
+     crop rather than as a mistake. The phone, where the cards are narrow and the
+     same crop throws away 56% of the image, gets per-card slots below. */
+  aspect-ratio: 3 / 2;
   overflow: hidden;
 }
 .pkg__fig picture { display: block; width: 100%; height: 100%; }
@@ -951,6 +953,18 @@
 
 @media (max-width: 760px) {
   .pkgrow { grid-template-columns: 1fr; gap: 44px; }
+  /* PHONE ONLY: each card gets the slot that matches its own photograph.
+     Alwin: "instead of having half cut of heads let's do longer images on
+     services, only the family one is in landscape, the other should be
+     portraits... maybe something 4x5 or 9:16."
+
+     On a phone the same 3:2 slot keeps only 44% of a 2:3 portrait's height,
+     which cut the top off Starter's head, Essential's forehead, and left Social
+     showing her lap instead of her face. Slots come from `ar` in config.ts:
+     4/5 keeps ~83% of a 2:3 portrait, 9/16 keeps ~94% of a 9:16, and the
+     landscape family frame stays 3/2. Cards stack in one column here, so
+     differing heights cost nothing. */
+  .pkg__fig { aspect-ratio: var(--ar, 3 / 2); }
   .invest, .hcta { margin-left: calc(-1 * var(--pad)); margin-right: calc(-1 * var(--pad)); }
 }
 

@@ -207,9 +207,13 @@ export const SITE: SiteConfig = {
         fit: "Built for creators — quick turnaround, same-day previews.",
         spec: "45 min · 2 outfits · 1 location",
         photo: "20-img-0202.jpg",
-        focal: "50% 50%",
+        focal: "50% 17%",
         // slot matches the frame: 9:16 vertical, 0.563
         ar: "9 / 16",
+        // Focal is high because the DESKTOP slot is the uniform 3/2, which
+        // keeps only 38% of a 9:16 frame. Centred, that window shows her
+        // torso instead of her face. Irrelevant on the phone, where the
+        // 9/16 slot keeps ~94%.
         bullets: [
           "20 professionally edited photos",
           "Private online gallery (90-day access)",
