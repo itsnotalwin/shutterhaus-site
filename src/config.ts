@@ -146,7 +146,7 @@ export const SITE: SiteConfig = {
         fit: "Headshots, matric farewells, quick portraits.",
         spec: "30 min · 1 outfit · 1 location",
         photo: "50-img-0143.jpg",
-        focal: "50% 26%",
+        focal: "50% 8%",
         bullets: [
           "15 professionally edited photos",
           "Private online gallery",
@@ -161,7 +161,7 @@ export const SITE: SiteConfig = {
         fit: "Our go-to for couples, individuals and small families.",
         spec: "60 min · 2 outfits · 1–2 locations",
         photo: "19-img-0198-3.jpg",
-        focal: "50% 24%",
+        focal: "50% 4%",
         bullets: [
           "40 professionally edited photos",
           "Private online gallery (90-day access)",
@@ -176,7 +176,7 @@ export const SITE: SiteConfig = {
         fit: "Families, maternity, engagements — the full experience.",
         spec: "90 min · 2–3 outfits · multiple locations",
         photo: "54-img-0164.jpg",
-        focal: "50% 32%",
+        focal: "50% 34%",
         bullets: [
           "40 professionally edited photos",
           "Private online gallery (90-day access)",
@@ -190,7 +190,7 @@ export const SITE: SiteConfig = {
         fit: "Built for creators — quick turnaround, same-day previews.",
         spec: "45 min · 2 outfits · 1 location",
         photo: "20-img-0202.jpg",
-        focal: "50% 22%",
+        focal: "50% 6%",
         bullets: [
           "20 professionally edited photos",
           "Private online gallery (90-day access)",
