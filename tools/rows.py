@@ -70,6 +70,15 @@ No other file needs to know.
 ROWS = [
     # Opens in colour -- warm outdoor daylight and a genuine laugh -- against a
     # black-and-white city frame, so the wall leads in its strongest register.
+    # 9-img-0269 is deliberately NOT here, and the reason is worth writing
+    # down because it was mis-stated once already. It is not a pier and it is not
+    # pixel-identical to anything: measured at 13.00% of pixels differing, and it
+    # plainly contains a person. It is the SAME SHOT as 55-metal-detector — the
+    # man with the metal detector on the beach — which interleave-order.json puts
+    # both in shoot 7. That frame is the photograph of the photographer on the
+    # About page, so showing a duplicate of it on the portfolio wall would give
+    # away the identity of the one image where Alwin is the subject. Kept as the
+    # single beach frame on the site, in the place it belongs.
     ["2-20240718114526-img-0124.jpg", "18-img-0043.jpg"],          # 0.6667
     # The sharpest frame in the set and the most legible face on the wall.
     ["34-img-0461.jpg", "53-img-0155.jpg"],                       # 0.5625
