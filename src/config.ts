@@ -163,17 +163,26 @@ export const SITE: SiteConfig = {
         price: "R800",
         fit: "Headshots, matric farewells, quick portraits.",
         spec: "30 min · 1 outfit · 1 location",
-        // Alwin, 2026-10-03: "the red haired woman replaces starter." Her frame
-        // is 2-20240718114526-img-0124.jpg — a distinct model from the other
-        // three, red hair, straight to camera, hard backlight. The previous
-        // Starter frame showed the same model as Signature, so the row read as
-        // one face repeated.
-        photo: "2-20240718114526-img-0124.jpg",
-        // Hair is tied back, so the head sits high in the frame; 18% keeps the
-        // crown clear without pushing the face to the top edge.
-        focal: "50% 18%",
-        // slot matches the frame: 2:3 portrait, 0.667
-        ar: "2 / 3",
+        // Alwin, 2026-10-03: "the red haired woman replaces starter" — she is a
+        // distinct model from the other three tiers; the previous Starter frame
+        // shared a face with Signature, so the row read as one person repeated.
+        // He then supplied this frame himself, same rooftop shoot and same white
+        // zip top, as a tighter alternative: head and shoulders at 2048x1152.
+        photo: "56-img-0126.jpg",
+        // A tight head-and-shoulders crop leaves almost no room to move the
+        // window: the face occupies the middle band, so any vertical bias crops
+        // either her chin or the top of her head. 50% keeps the window on the
+        // face, and the horizontal centre is already right.
+        focal: "50% 50%",
+        // slot matches the frame: 16:9 landscape, 1.778
+        //
+        // This was 4/5, then 2/3, across two earlier attempts at this slot, and
+        // it is worth saying why the value moves rather than being a fixed
+        // "phone-shaped" portrait: `ar` is the DESKTOP card aspect, and the
+        // phone layout derives its own slot from the frame's real ratio. Pinning
+        // a guess here is what put a 2:3 frame inside a 4:5 window and cropped
+        // her hair off.
+        ar: "16 / 9",
         bullets: [
           "15 professionally edited photos",
           "Private online gallery",

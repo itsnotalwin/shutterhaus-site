@@ -99,6 +99,11 @@ FRAMES: dict[str, dict[str, str]] = {
     "5-img-0086.jpg": {"alt": "Black and white portrait of a young man in a beanie and a Manhattan sweatshirt", "cat": "portrait"},
     "1-20240718113728-img-0065.jpg": {"alt": "Portrait of a woman in a white top with her hair tied back, looking off into the distance", "cat": "portrait"},
     "2-20240718114526-img-0124.jpg": {"alt": "Portrait of a woman in a white top outdoors, hair pulled back, in bright light", "cat": "portrait"},
+    # Alwin supplied this frame on 2026-10-03 as the Starter package image: the
+    # same rooftop shoot and the same white zip top as the frame above, but a
+    # much tighter head-and-shoulders crop. Landscape because 2048x1152 is
+    # genuinely wider than tall — it is a close crop, not a portrait orientation.
+    "56-img-0126.jpg": {"alt": "Close portrait of a woman with auburn hair in a white zip top, looking straight at the camera in bright sunlight", "cat": "portrait"},
 
     # --- by the water ---
     "24-img-0245.jpg": {"alt": "Portrait of a woman standing by the water under an overcast sky", "cat": "portrait"},
