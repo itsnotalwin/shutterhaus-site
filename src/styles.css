@@ -311,24 +311,43 @@ img { display: block; max-width: 100%; }
 
 .contact {
   display: grid;
-  /* ONE column, not two. This was `1fr 1fr` with the right-hand track holding
-     the photograph; with no image (Alwin, 2026-10-02) a second column would just
-     split the form from the details with a 60px gutter and halve the measure
-     both are readable at. Single column, capped for measure. */
+  /* Stacks: heading, blurb and form, then the direct-contact details below.
+     The form and the ways to reach him are one thought on a phone and belong in
+     one column. Alwin asked for this page to carry no image, so the second
+     column that once held a photograph is gone and the page has nothing in it. */
   grid-template-columns: minmax(0, 1fr);
   gap: 40px;
   padding: 40px 0 80px;
   max-width: 720px;
 }
-/* On a large monitor the 1100px cap left 41% of a 1920px screen empty to the
-   right of the page — measured, and it reads as an unfinished layout rather
-   than as restraint. The cap existed to stop the form becoming absurdly wide,
-   so rather than lifting the cap wholesale, the FORM column is capped and the
-   photograph takes the reclaimed width: form fields stay at a readable ~560px
-   while the page actually fills the screen. */
-@media (min-width: 1400px) {
-  .contact { max-width: 820px; }
+
+/* From 1100px the two sit side by side. This page was leaving 41% of a 1440px
+   screen and 56% of a 1920px screen empty on its right edge -- measured -- while
+   every other route fills 98.6-100% of the viewport. It is also the page that
+   converts, so the space is worth using.
+
+   The form column is capped rather than allowed to stretch: a 900px-wide text
+   input is worse to complete than a 620px one. Dead space drops from 41% to
+   roughly a fifth instead of being "fixed" by making the form unusable.
+   Flush-left, consistent with every other block on the site. */
+@media (min-width: 1100px) {
+  /* The grid belongs on `.contact__col`, NOT on `.contact`. `.contact` is the
+     <section> and its only child is `.contact__col`, so putting two tracks on
+     the section left the second one empty and the details dropped back below
+     the form — which is exactly what the first attempt did, and why the
+     measured dead space went down while the screenshot still looked half-empty.
+     Measure and LOOK; the two disagreed. */
+  .contact { max-width: none; }
+  .contact__col {
+    display: grid;
+    grid-template-columns: minmax(0, 620px) minmax(260px, 340px);
+    gap: 72px;
+    align-items: start;
+  }
+  .contact__aside { padding-top: 4px; }
 }
+
+
 
 
 .contact__h {

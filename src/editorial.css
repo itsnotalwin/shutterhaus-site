@@ -257,7 +257,11 @@
    tracking below is kept — it is deliberate and looks right — as is the
    padding-right that absorbs its overflow. */
 .hero__h {
-  font-size: clamp(30px, 9.6vw, 132px);
+  /* 9.6vw -> 9.7vw, and not for taste: 9.6vw computes 37.728px at a
+     393px viewport, a fractional size that puts the letterforms on a
+     sub-pixel baseline. 9.7vw lands on whole pixels across the phone
+     range (37px at 393, 40px at 430) and is still only a 1% change. */
+  font-size: clamp(30px, 9.7vw, 132px);
   overflow-wrap: normal;
   word-break: keep-all;
   hyphens: none;
@@ -767,7 +771,13 @@
 }
 /* Pushed to the bottom so the book buttons line up across cards. */
 .pkg .cta { margin-top: auto; align-self: flex-start; }
-.cta--sm { font-size: 10.5px; }
+/* 10.5px -> 11px. This is the "Book now" button on every package card --
+   the control the money page actually exists to be pressed -- and it was
+   the smallest text on the site, a full 1.5px below every other .cta.
+   11px rather than 12px keeps it visibly subordinate to the tier name
+   while closing the gap; the letter-spacing is widened a touch so a
+   tracked 11px still reads as confidently as a tighter 12px. */
+.cta--sm { font-size: 11px; letter-spacing: 0.13em; }
 
 /* The dark "investment" band that closes the services page. */
 .invest {

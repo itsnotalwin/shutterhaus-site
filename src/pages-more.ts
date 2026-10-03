@@ -186,6 +186,7 @@ export function contactPage(_photos: Photo[] = []): string {
 
   return `<section class="page contact">
     <div class="contact__col">
+      <div class="contact__main">
       <p class="eyebrow">Get in touch</p>
       <h1 class="contact__h">Let's Create Something Beautiful.</h1>
       <p class="contact__p">${escapeHtml(SITE.blurb)}</p>
@@ -207,7 +208,9 @@ export function contactPage(_photos: Photo[] = []): string {
         <button type="submit">Send message</button>
         <p class="cform__note dim" id="cform-note"></p>
       </form>
+      </div>
 
+      <aside class="contact__aside">
       <ul class="contact__list">
         <li>${icon("pin")}<span>${escapeHtml(c.location)}</span></li>
         <li>${icon("mail")}<a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></li>
@@ -215,6 +218,7 @@ export function contactPage(_photos: Photo[] = []): string {
         <li>${icon("whatsapp")}<a href="${escapeHtml(wa)}" target="_blank" rel="noopener">WhatsApp</a></li>
       </ul>
       <p class="contact__hours dim">${escapeHtml(c.hours)}</p>
+      </aside>
     </div>
   </section>`;
 }
