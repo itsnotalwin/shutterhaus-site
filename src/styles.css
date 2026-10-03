@@ -1143,3 +1143,12 @@ img,
   -webkit-touch-callout: none;
   -webkit-user-drag: none;
 }
+
+/* The WhatsApp mark's handset is filled with the BACKGROUND behind the icon, so
+ * it reads as a knockout. Default is the white page; the home page's header
+ * floats over a dark photograph, so it overrides to the scrim colour there.
+ * This is what the original hard-coded `var(--paper)` got wrong: white on a
+ * dark header left the handset invisible. */
+.social { --social-bg: #fff; }
+.shell--over .social { --social-bg: rgba(12, 12, 12, 0.85); }
+.cico--wa { fill: none; stroke: currentColor; stroke-width: 1.15; }

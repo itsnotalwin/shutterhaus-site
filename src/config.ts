@@ -163,10 +163,17 @@ export const SITE: SiteConfig = {
         price: "R800",
         fit: "Headshots, matric farewells, quick portraits.",
         spec: "30 min · 1 outfit · 1 location",
-        photo: "50-img-0143.jpg",
-        focal: "50% 8%",
+        // Alwin, 2026-10-03: "the red haired woman replaces starter." Her frame
+        // is 2-20240718114526-img-0124.jpg — a distinct model from the other
+        // three, red hair, straight to camera, hard backlight. The previous
+        // Starter frame showed the same model as Signature, so the row read as
+        // one face repeated.
+        photo: "2-20240718114526-img-0124.jpg",
+        // Hair is tied back, so the head sits high in the frame; 18% keeps the
+        // crown clear without pushing the face to the top edge.
+        focal: "50% 18%",
         // slot matches the frame: 2:3 portrait, 0.667
-        ar: "4 / 5",
+        ar: "2 / 3",
         bullets: [
           "15 professionally edited photos",
           "Private online gallery",
@@ -207,7 +214,7 @@ export const SITE: SiteConfig = {
       },
       {
         name: "Social",
-        price: "R1,500",
+        price: "R2,500",
         fit: "Built for creators: quick turnaround, same-day previews.",
         spec: "45 min · 2 outfits · 1 location",
         photo: "20-img-0202.jpg",
@@ -249,7 +256,7 @@ export const SITE: SiteConfig = {
       "Rescheduling ≥7 days notice is free. Under 7 days: R500 fee, deposit transfers.",
       "Outdoor shoots include a backup indoor location. Severe weather = free reschedule.",
       "Delivery: Starter and Social in 5 business days; Essential and Signature in 7.",
-      "Commercial licence included with Social. Personal use licence with all other packages. Own-brand commercial use on any other package needs a separate licence, +50–200% of the package fee.",
+      "Commercial licence included with Social. Personal use licence with all other packages.",
     ],
 
     depositNote: "50% deposit to book · EFT accepted",

@@ -188,7 +188,11 @@ export function contactPage(_photos: Photo[] = []): string {
    * tier. They were absent before: the list held only generic descriptions, so
    * a visitor who tapped "Book now" on Signature still had to re-state the
    * package by hand, which is the part they had just decided. The generic
-   * options are kept below as fallbacks for a visitor not booking a package.
+   * "Something else" is the only non-package option left. The generic list
+   * (Mini session / Portrait / Couples / Social content) was kept alongside the
+   * packages at first and Alwin read the result as a duplicated menu, which it
+   * was: "Social content" sat directly above "Social package", and "Portrait"
+   * duplicated what Starter is. The packages ARE the choices now.
    */
   // Built from the social config, not from contact.phone, which no longer
   // exists. The number is the only thing WhatsApp needs and it is not shown.
@@ -208,10 +212,6 @@ export function contactPage(_photos: Photo[] = []): string {
         <label>What do you need?
           <select name="kind" id="cform-kind">
             ${p0.tiers.map((t) => `<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)} package (${escapeHtml(t.price)})</option>`).join("\n            ")}
-            <option value="Mini session">Mini session</option>
-            <option value="Portrait">Portrait</option>
-            <option value="Couples / family">Couples / family</option>
-            <option value="Social content">Social content</option>
             <option value="Something else">Something else</option>
           </select>
         </label>
@@ -256,16 +256,12 @@ function icon(id: string): string {
     mail: "M3 6h18v12H3z M3 7l9 6 9-6",
     phone: "M6 3h4l2 5-3 2a12 12 0 0 0 5 5l2-3 5 2v4a4 4 0 0 1-2 2A17 17 0 0 1 4 5a4 4 0 0 1 2-2Z",
   };
-  // Solid WhatsApp mark: a rounded speech bubble with the handset cut out of it.
-  const solid: Record<string, string> = {
-    whatsapp: WHATSAPP_PATH,
-  };
-
-  if (solid[id]) {
-    // `fill-rule` on the path, matching layout.ts: the handset has to knock out
-    // of the bubble on this renderer too, and winding-independent evenodd is the
-    // only way to guarantee that across two different svg wrappers.
-    return `<svg class="cico cico--fill" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${solid[id]}" fill-rule="evenodd" /></svg>`;
+  // WhatsApp is the one glyph that is NOT an outline shape: it is a stroke
+  // bubble with the handset filled in the background colour, which is how Alwin
+  // preferred it. Rendered here at the contact list's own 24x24 with the same
+  // path layout.ts uses, so the two cannot drift apart again.
+  if (id === "whatsapp") {
+    return `<svg class="cico cico--wa" viewBox="0 0 20 20" aria-hidden="true" focusable="false">${WHATSAPP_PATH}</svg>`;
   }
   return `<svg class="cico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${outline[id] ?? ""}" /></svg>`;
 }
