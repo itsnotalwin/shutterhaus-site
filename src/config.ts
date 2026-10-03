@@ -186,7 +186,7 @@ export const SITE: SiteConfig = {
         // her hair off.
         ar: "16 / 9",
         bullets: [
-          "15 professionally edited photos",
+          "15 edited photos",
           "Private online gallery",
           "Clothing guide & location suggestions",
           "High-res and web-optimised downloads",
@@ -202,7 +202,7 @@ export const SITE: SiteConfig = {
         // slot matches the frame: 4:5 portrait, 0.800
         ar: "4 / 5",
         bullets: [
-          "40 professionally edited photos",
+          "40 edited photos",
           "Private online gallery (90-day access)",
           "Clothing guide, location scouting, shot list",
         ],
@@ -218,7 +218,7 @@ export const SITE: SiteConfig = {
         // slot matches the frame: landscape, 1.601
         ar: "3 / 2",
         bullets: [
-          "40 professionally edited photos",
+          "40 edited photos",
           "Private online gallery (90-day access)",
           "Full prep: clothing guide, shot list, scouting",
         ],
@@ -237,11 +237,11 @@ export const SITE: SiteConfig = {
         // torso instead of her face. Irrelevant on the phone, where the
         // 9/16 slot keeps ~94%.
         bullets: [
-          "20 professionally edited photos",
+          "20 edited photos",
           "Private online gallery (90-day access)",
           "48hr sneak peek, 10 images, not the full set",
           "High-res and web-optimised downloads",
-          "Commercial licence for social and paid ads included",
+          "Commercial licence included",
         ],
       },
     ],
@@ -267,7 +267,7 @@ export const SITE: SiteConfig = {
       "Rescheduling ≥7 days notice is free. Under 7 days: R500 fee, deposit transfers.",
       "Outdoor shoots include a backup indoor location. Severe weather = free reschedule.",
       "Delivery: Starter and Social in 5 business days; Essential and Signature in 7.",
-      "Commercial licence included with Social. Personal use licence with all other packages.",
+      "Personal use licence with every package. The Social package includes a commercial licence.",
     ],
 
     depositNote: "50% deposit to book · EFT accepted",
