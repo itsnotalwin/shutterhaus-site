@@ -199,25 +199,34 @@
 .hero__scrim {
   position: absolute;
   inset: 0;
-  /* The stop positions are PLACED, and the values are MEASURED.
-     The old gradient ran .28 -> .12 at 38% -> .78 at 100%, and that .12 dip is
-     the defect: the hero eyebrow sits at 35.9%-38% of the hero box, so the
-     quietest part of the scrim landed exactly on the smallest, thinnest text
-     on the page. Measured there, it was 1.36:1.
+  /* Alwin: "there is like a grey bar below where that one used to be covering
+       the image — if you did this for readability I would prefer to cover the
+       whole image or none of the image."
 
-     The new shape keeps the 0%-22% falloff, because that is where the
-     subject's face and the sky live and a dense wash there would dull the one
-     thing the page exists to show. It then holds a plateau from 34% down,
-     covering the eyebrow (36-38%), the headline (41-62%), the lede (67-75%)
-     and the meta strip (93-100%).
+       The scrim always covered the full hero (inset: 0, same box as .hero__fig —
+       measured 390x608 on all three phone widths). The "bar" was the SHAPE, not
+       the extent. This gradient dipped to .12 at 22% and then jumped to .62 at
+       34%. That reversal is what reads as an edge: light grey across the top
+       fifth, then a hard step into a much denser wash, so the top looked like a
+       separate rectangle laid over the photograph. Same class of defect as the
+       .site-header band removed in 178e3cf, one element further down.
 
-     Values came from a sweep, not from taste: candidates were injected into
-     the live page, painted, captured and decoded against the gallery's
-     brightest frame. This shape measures 5.60:1 on that worst case (a
-     1.24:1 before) and 5.70:1-8.45:1 across the other five. The scrim is
-     still not opaque: the photograph reads through it, which is checked by
-     eye as well as by ratio. */
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.36) 0%, rgba(0, 0, 0, 0.12) 22%, rgba(0, 0, 0, 0.62) 34%, rgba(0, 0, 0, 0.66) 40%, rgba(0, 0, 0, 0.70) 66%, rgba(0, 0, 0, 0.76) 80%, rgba(0, 0, 0, 0.86) 100%);
+       The fix is monotonicity. Alpha now only ever increases, top to bottom, so
+       the eye tracks one continuous veil across one photograph and there is no
+       edge to find.
+
+       Every stop from 34% down is BYTE-IDENTICAL to the values that were
+       measured at 5.60:1 worst case and 5.70:1-8.45:1 across the other five
+       frames. The eyebrow (36-38%), headline (41-62%), lede (67-75%) and meta
+       strip (93-100%) therefore sit under exactly the same alpha as before and
+       those figures still hold. Only the top 34% changed: .36/.12 -> a .20/.38
+       ramp that leads into the unchanged .62 without reversing. The top is
+       lighter than it was (.20 vs .36) because the sky and the subject's hair
+       live there, and it is never as light as the old .12 dip, which is the
+       value that caused the step.
+
+       Still translucent, deliberately: the photograph reads through it. */
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.38) 22%, rgba(0, 0, 0, 0.62) 34%, rgba(0, 0, 0, 0.66) 40%, rgba(0, 0, 0, 0.70) 66%, rgba(0, 0, 0, 0.76) 80%, rgba(0, 0, 0, 0.86) 100%);
   pointer-events: none;
 }
 .hero__body {
