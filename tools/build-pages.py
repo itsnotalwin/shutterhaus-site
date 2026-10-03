@@ -202,7 +202,7 @@ BIZ = {
         "content on location across Gauteng."
     ),
     "url": f"{SITE}/",
-    "email": "itsnotalwin@gmail.com",
+    "email": "alwin@shutterhausvisuals.co.za",
     "telephone": "+27730958363",
     "image": f"{SITE}/og-card.jpg",
     # R800 / R1,500 / R2,000 / R2,500 are the four packages on /services.

@@ -126,7 +126,7 @@ export const SITE: SiteConfig = {
   ],
 
   contact: {
-    email: "itsnotalwin@gmail.com",
+    email: "alwin@shutterhausvisuals.co.za",
     phone: "+27 73 095 8363",
     location: "Gauteng, South Africa",
     hours: "Evenings & weekends, by appointment",
@@ -316,5 +316,11 @@ export const FONTS = {
  * ADMIN ACCESS — only these Google accounts reach /admin.
  * The Supabase RLS policies in supabase/schema.sql enforce the same list
  * server-side, so this is UX, not security. Keep the two in sync.
+ *
+ * The business moved to a Workspace account on 2026-10-03 and all enquiries
+ * go to alwin@shutterhausvisuals.co.za, but that address is deliberately NOT
+ * here: Alwin signs in to the gallery with his personal Google account, and
+ * is_admin() matches on whatever email Google returns. The database copy in
+ * supabase/schema.sql is therefore unchanged and needs no migration.
  */
 export const ADMIN_EMAILS = ["itsnotalwin@gmail.com"];

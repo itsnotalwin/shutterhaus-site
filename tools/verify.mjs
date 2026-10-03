@@ -401,6 +401,11 @@ const adm = await evaluate(`(() => ({
   // NB: "\\s" must stay escaped — an unescaped \s in this template literal
   // collapses to /s+/ and silently strips every letter "s" from the output.
   text: document.querySelector('#app')?.innerText.replace(/\\s+/g,' ').slice(0,200),
+  // Asserts ADMIN_EMAILS, not the business contact address. Those are two
+  // different things: enquiries go to alwin@shutterhausvisuals.co.za, but the
+  // gallery is signed into with Alwin's personal Google account, and
+  // is_admin() in the database matches that. Keep this tied to
+  // ADMIN_EMAILS in src/config.ts, not to SITE.contact.email.
   allowlist: document.body.innerText.includes('itsnotalwin@gmail.com'),
   notConfigured: document.body.innerText.includes("isn't connected yet"),
   overflow: document.documentElement.scrollWidth - window.innerWidth,
