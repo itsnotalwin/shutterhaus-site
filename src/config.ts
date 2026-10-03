@@ -202,7 +202,7 @@ export const SITE: SiteConfig = {
         // slot matches the frame: 4:5 portrait, 0.800
         ar: "4 / 5",
         bullets: [
-          "40 edited photos",
+          "20 edited photos",
           "Private online gallery (90-day access)",
           "Clothing guide, location scouting, shot list",
         ],
@@ -266,7 +266,7 @@ export const SITE: SiteConfig = {
       "50% non-refundable deposit secures your date; balance before gallery delivery.",
       "Rescheduling ≥7 days notice is free. Under 7 days: R500 fee, deposit transfers.",
       "Outdoor shoots include a backup indoor location. Severe weather = free reschedule.",
-      "Delivery: Starter and Social in 5 business days; Essential and Signature in 7.",
+      "Delivery: 7 to 14 days for every package. Social can be faster, ask about the 48hr sneak peek.",
       "Personal use licence with every package. The Social package includes a commercial licence.",
     ],
 
