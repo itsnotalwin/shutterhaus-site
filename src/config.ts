@@ -40,6 +40,8 @@ export interface SiteConfig {
   categories: string[];
   /** how many frames the home page features under its hero */
   homeGalleryCount: number;
+  /** Pinned, ordered filenames for the home strip. See homeStrip below. */
+  homeStrip: string[];
   /**
    * Which frame carries the home hero, by filename. Auto-detection picks the
    * first landscape shot, but that is a guess — this pins it so the choice is
@@ -320,6 +322,44 @@ export const SITE: SiteConfig = {
   // **HOME IS LOCKED** (see HOME-LOCKED.md). Do not "tidy" this number or the
   // column count in stripCols() without Alwin reopening the home route.
   homeGalleryCount: 6,
+
+  /**
+   * The home strip, pinned BY FILENAME and in this exact order.
+   *
+   * Alwin, 2026-10-03: "the 3 images on home page are almost duplicates, we
+   * should fix that, these should be my best shots."
+   *
+   * This was `photos.slice(0, 6)` — the first six frames in gallery order — so
+   * the home page showed whatever the interleave happened to put first. That
+   * produced three shots of the same model in the same black top and pale skirt
+   * against the same green wall (51-img-0145, 52-img-0149, 49-img-0131), which
+   * is what he saw as near-duplicates. They were genuinely different frames;
+   * they read as the same photograph because the pose, the clothing and the
+   * backdrop were identical.
+   *
+   * A strip this short is art direction, not a sample, so it is now named here
+   * where the choice is visible. Ordered so the eye moves between looks rather
+   * than between outfits:
+   *   1. 22-img-0239  colour, gold hour, red hair, movement in the frame
+   *   2. 21-img-0234  B&W, straight to camera, lace — the strongest face here
+   *   3. 18-img-0043  B&W, hand to cheek, outdoors under palms
+   *   4. 26-img-0253  B&W, close, shallow depth against city bokeh
+   *   5. 46-img-0119  colour, arms raised, dark interior
+   *   6. 1-...-0065   wide, the pier — a landscape to break the run of faces
+   *
+   * Three models, five settings, colour and monochrome interleaved rather than
+   * blocked, and no two adjacent frames share a look. Frames missing from the
+   * gallery are skipped rather than shifting the list, so a removed photo
+   * thins the strip instead of silently promoting a duplicate into it.
+   */
+  homeStrip: [
+    "22-img-0239.jpg",
+    "21-img-0234.jpg",
+    "18-img-0043.jpg",
+    "26-img-0253.jpg",
+    "46-img-0119.jpg",
+    "1-20240718113728-img-0065.jpg",
+  ],
   // Pinned deliberately: strongest subject in the set AND real dark space in
   // the lower-left for the white headline. Chosen from a side-by-side of all
   // six landscape frames cropped to the hero ratio.

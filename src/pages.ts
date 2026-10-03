@@ -698,8 +698,31 @@ export function homePage(photos: Photo[], cols: number): string {
   // Fall back through the same ladder when it is unset or the file is gone.
   const pinned = SITE.heroPhoto ? photos.find((p) => p.filename === SITE.heroPhoto) : undefined;
   const hero = pinned ?? portraitShot[0] ?? landscape[0] ?? photos[0];
-  // Never feature the same frame twice on one page.
-  const strip = photos.filter((p) => p.id !== hero?.id).slice(0, SITE.homeGalleryCount);
+  // The strip is PINNED by filename (SITE.homeStrip), not sliced from gallery
+  // order. See the note on homeStrip in config.ts: taking the first N frames
+  // put three near-identical shots of one model on the home page, because they
+  // happened to be adjacent in the interleave.
+  //
+  // Resolution order, and why each fallback exists:
+  //   1. the named frame, in the order given — the art direction
+  //   2. any named frame not already used as the hero
+  //   3. only if the pinned list is empty or wholly missing from the gallery,
+  //      the old positional slice, so a wiped gallery still renders
+  //
+  // A named frame that is missing is SKIPPED, not replaced in place. Substituting
+  // the next gallery frame would quietly promote a near-duplicate into the strip,
+  // which is the exact defect this change exists to remove.
+  const usedHero = hero?.id;
+  // Named `pinnedStrip`, not `pinned`: `pinned` above is already the hero's
+  // pinned frame, and shadowing it is how this briefly compiled into two
+  // different variables with the same name.
+  const pinnedStrip: Photo[] = SITE.homeStrip
+    .map((name) => photos.find((p) => p.filename === name && p.id !== usedHero))
+    .filter((p): p is Photo => !!p)
+    .slice(0, SITE.homeGalleryCount);
+  const strip: Photo[] = pinnedStrip.length
+    ? pinnedStrip
+    : photos.filter((p) => p.id !== usedHero).slice(0, SITE.homeGalleryCount);
 
   // The hero is the LCP element and was the single biggest byte on the home
   // page: a 286 KB JPEG, while every other image on the site is WebP. Its
