@@ -1,0 +1,16 @@
+ROLE: code auditor. Bounded task. Report in <= 8 bullets. STOP after the report.
+__REPO__/
+
+RUN and read:
+1. `npx tsc --noEmit`
+2. `npm run build`  (fix any errors in place)
+3. Read src/admin.ts (auth/session), src/store.ts (state), src/main.ts (DOM), src/pages.ts (pagination).
+
+Fix any simple bug you find. Nothing beyond these 4 files.
+
+REPORT:
+VERDICT: PASS   OR   VERDICT: FAIL: category: src/file.ts:LINE description
+# changed
+- ... (max 4)
+# left behind
+- ... (max 4)

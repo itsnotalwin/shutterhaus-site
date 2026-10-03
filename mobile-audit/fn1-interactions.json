@@ -1,0 +1,156 @@
+{
+  "portfolio": {
+    "firstCellHTML": "<picture><source type=\"image/webp\" srcset=\"gallery/49-img-0131-400w.webp 400w, gallery/49-img-0131-800w.webp 800w, gallery/49-img-0131-1200w.webp 1200w, gallery/49-img-0131-1600w.webp 1600w\" sizes=\"(max-width: 639px) 100vw, (max-width: 999px) 50vw, (max-width: 1399px) 33vw, 50vw\">\n        <source type=\"image/jpeg\" srcset=\"gallery/49-img-0131-400w.jpg 400w, gallery/49-img-0131-800w.jpg 800w, gallery/49-img-0131-1200w.jpg 1200w, gallery/49-img-0131-1600w.jpg 1600w\" sizes=\"(max-width: 639px) 100vw, (max-width: 999px) 50vw, (max-width: 1399px) 33vw, 50vw\">\n        <img src=\"gallery/49-img-0131-400w.jpg\" alt=\"Portrait of a woman in a black top and pale skirt, standing against a dark background\" l",
+    "sources": [
+      {
+        "media": "",
+        "type": "image/webp",
+        "sizes": "(max-width: 639px) 100vw, (max-width: 999px) 50vw, (max-width: 1399px) 33vw, 50vw",
+        "srcset": "gallery/49-img-0131-400w.webp 400w, gallery/49-img-0131-800w.webp 800w, gallery/49-img-0131-1200w.webp 1200w, gallery/49-img-0131-1600w.webp 1600w"
+      },
+      {
+        "media": "",
+        "type": "image/jpeg",
+        "sizes": "(max-width: 639px) 100vw, (max-width: 999px) 50vw, (max-width: 1399px) 33vw, 50vw",
+        "srcset": "gallery/49-img-0131-400w.jpg 400w, gallery/49-img-0131-800w.jpg 800w, gallery/49-img-0131-1200w.jpg 1200w, gallery/49-img-0131-1600w.jpg 1600w"
+      }
+    ],
+    "imgSrcset": null,
+    "imgSizes": null,
+    "imgCurrentSrc": "49-img-0131-1200w.webp",
+    "rows": [
+      {
+        "cols": "3",
+        "display": "grid",
+        "overflowX": "visible",
+        "scrollW": 357,
+        "clientW": 357,
+        "rect": {
+          "y": 185,
+          "h": 167
+        },
+        "horizontallyScrollable": false
+      },
+      {
+        "cols": "3",
+        "display": "grid",
+        "overflowX": "visible",
+        "scrollW": 357,
+        "clientW": 357,
+        "rect": {
+          "y": 363,
+          "h": 167
+        },
+        "horizontallyScrollable": false
+      },
+      {
+        "cols": "3",
+        "display": "grid",
+        "overflowX": "visible",
+        "scrollW": 357,
+        "clientW": 357,
+        "rect": {
+          "y": 542,
+          "h": 167
+        },
+        "horizontallyScrollable": false
+      },
+      {
+        "cols": "3",
+        "display": "grid",
+        "overflowX": "visible",
+        "scrollW": 357,
+        "clientW": 357,
+        "rect": {
+          "y": 720,
+          "h": 167
+        },
+        "horizontallyScrollable": false
+      },
+      {
+        "cols": "3",
+        "display": "grid",
+        "overflowX": "visible",
+        "scrollW": 357,
+        "clientW": 357,
+        "rect": {
+          "y": 899,
+          "h": 167
+        },
+        "horizontallyScrollable": false
+      },
+      {
+        "cols": "3",
+        "display": "grid",
+        "overflowX": "visible",
+        "scrollW": 357,
+        "clientW": 357,
+        "rect": {
+          "y": 1077,
+          "h": 139
+        },
+        "horizontallyScrollable": false
+      },
+      {
+        "cols": "3",
+        "display": "grid",
+        "overflowX": "visible",
+        "scrollW": 357,
+        "clientW": 357,
+        "rect": {
+          "y": 1228,
+          "h": 139
+        },
+        "horizontallyScrollable": false
+      },
+      {
+        "cols": "3",
+        "display": "grid",
+        "overflowX": "visible",
+        "scrollW": 357,
+        "clientW": 357,
+        "rect": {
+          "y": 1379,
+          "h": 139
+        },
+        "horizontallyScrollable": false
+      },
+      {
+        "cols": "3",
+        "display": "grid",
+        "overflowX": "visible",
+        "scrollW": 357,
+        "clientW": 357,
+        "rect": {
+          "y": 1529,
+          "h": 139
+        },
+        "horizontallyScrollable": false
+      },
+      {
+        "cols": "3",
+        "display": "grid",
+        "overflowX": "visible",
+        "scrollW": 357,
+        "clientW": 357,
+        "rect": {
+          "y": 1680,
+          "h": 197
+        },
+        "horizontallyScrollable": false
+      }
+    ],
+    "cellCount": 30,
+    "imgCount": 30,
+    "loadingAttrs": {
+      "lazy": 30,
+      "eager": 0
+    },
+    "complete": 30,
+    "pending": 0,
+    "shot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-portfolio-top.png"
+  },
+  "filters": [],
+  "lightbox": "NO LIGHTBOX IN DOM",
+  "lightboxShot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-lightbox-open.png"
+}

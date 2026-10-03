@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Shutterhaus Visuals — portfolio proposals</title>
+<style>
+  /* Frame this like a design review, not the site. The two panels show the
+     CURRENT page and the PROPOSED one using the site's real type scale. */
+  :root {
+    --ink: #111;
+    --muted: #8a8a8a;
+    --line: #e2e2e2;
+    --bg: #fff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: #f4f4f2; color: var(--ink);
+    font: 400 15px/1.5 "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1500px; margin: 0 auto; padding: 40px 28px 60px; }
+  h1.doc { font-size: 13px; letter-spacing: .18em; text-transform: uppercase;
+           color: var(--muted); font-weight: 400; margin: 0 0 6px; }
+  p.doc { font-size: 26px; font-weight: 400; margin: 0 0 8px; letter-spacing: -.01em; }
+  p.doc + p.doc { font-size: 15px; color: var(--muted); margin-bottom: 34px; max-width: 70ch; }
+
+  .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 1000px) { .panels { grid-template-columns: 1fr; } }
+
+  .panel { background: var(--bg); border: 1px solid var(--line); }
+  .panel > h2 {
+    font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+    margin: 0; padding: 12px 16px; border-bottom: 1px solid var(--line);
+    color: var(--muted); font-weight: 400; display: flex; gap: 8px; align-items: center;
+  }
+  .panel > h2 b { color: var(--ink); font-weight: 400; }
+  .tag { font-size: 10px; letter-spacing: .1em; padding: 2px 7px; border: 1px solid var(--line);
+         text-transform: uppercase; color: var(--muted); }
+
+  .stage { padding: 20px 18px 24px; }
+
+  /* --- current header, as shipped --- */
+  .phead { text-align: center; padding: 6px 0 22px; }
+  .eyebrow { font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+             color: var(--muted); margin: 0 0 10px; }
+  .phead__h { font-size: 30px; font-weight: 400; margin: 0 0 8px; letter-spacing: -.01em; }
+  .phead__p { font-size: 13px; color: var(--muted); margin: 0; }
+
+  /* --- PROPOSAL 1: filter bar (uses the .pfilter styles already in the CSS,
+         which no markup currently emits) --- */
+  .pfilter { display: flex; justify-content: center; gap: 22px; margin: 0 0 22px; }
+  .pfilter__item { font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+                   color: var(--muted); position: relative; padding-bottom: 3px; cursor: pointer; }
+  .pfilter__item.is-on { color: var(--ink); }
+  .pfilter__item.is-on::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0;
+                                height: 1px; background: var(--ink); width: 100%; }
+  .pfilter__item span { font-size: 10px; color: #b5b5b5; margin-left: 3px; }
+
+  /* --- the 3-up wall, both panels --- */
+  .wall { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-items: start; }
+  .wall__col { display: flex; flex-direction: column; gap: 14px; }
+  .wall img { display: block; width: 100%; height: auto;
+              filter: grayscale(1) contrast(1.06); }
+
+  /* --- PROPOSAL 2: sticky filter bar --- */
+  .sticky { position: sticky; top: 0; background: rgba(255,255,255,.94);
+            backdrop-filter: blur(6px); border-bottom: 1px solid var(--line);
+            margin: -20px -18px 22px; padding: 12px 18px; z-index: 5; }
+  .sticky .pfilter { margin: 0; }
+
+  /* --- callout annotations --- */
+  .note { border-top: 1px solid var(--line); padding: 14px 16px 16px; background: #fbfbfa; }
+  .note ol { margin: 0; padding-left: 18px; }
+  .note li { font-size: 12.5px; color: #444; margin-bottom: 7px; }
+  .note li b { color: var(--ink); font-weight: 600; }
+  .note li:last-child { margin-bottom: 0; }
+  .kicker { font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+            color: var(--muted); margin: 0 0 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="doc">Shutterhaus Visuals &middot; portfolio &middot; proposal</h1>
+  <p class="doc">Two additions. The 3&times;2 column layout is already live.</p>
+  <p class="doc">
+    Both are things the stylesheet already knows how to draw &mdash; the code is in
+    <code>editorial.css</code>, no markup emits it. Real gallery photographs, real
+    crop, no cropping applied.
+  </p>
+
+  <div class="panels">
+
+    <!-- ================= LEFT: CURRENT ================= -->
+    <div class="panel">
+      <h2><b>Now</b> <span class="tag">live &middot; b455a40</span></h2>
+      <div class="stage">
+        <div class="phead">
+          <p class="eyebrow">50 photographs &middot; Gauteng</p>
+          <h1 class="phead__h">Portfolio</h1>
+          <p class="phead__p">Portraits, couples, families and everything in between. This is the work, unfiltered.</p>
+        </div>
+        <div class="wall">
+          <div class="wall__col">
+            <img src="../public/gallery/49-img-0131-400w.webp" alt="">
+            <img src="../public/gallery/4-img-0068-400w.webp" alt="">
+            <img src="../public/gallery/15-img-0025-400w.webp" alt="">
+            <img src="../public/gallery/23-img-0240-400w.webp" alt="">
+          </div>
+          <div class="wall__col">
+            <img src="../public/gallery/29-img-0383-400w.webp" alt="">
+            <img src="../public/gallery/51-img-0145-400w.webp" alt="">
+            <img src="../public/gallery/18-img-0043-400w.webp" alt="">
+            <img src="../public/gallery/34-img-0461-400w.webp" alt="">
+          </div>
+          <div class="wall__col">
+            <img src="../public/gallery/22-img-0239-400w.webp" alt="">
+            <img src="../public/gallery/28-img-0308-400w.webp" alt="">
+            <img src="../public/gallery/14-img-0026-400w.webp" alt="">
+            <img src="../public/gallery/26-img-0253-400w.webp" alt="">
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        <p class="kicker">What it costs you</p>
+        <ol>
+          <li><b>11,395px tall.</b> Roughly 14 screens of scrolling before the price band. A visitor who wants &ldquo;couples&rdquo; has no way to skip to them.</li>
+          <li><b>All 50 frames identical in the eyes of a search engine.</b> Every one is <code>alt=&quot;Portrait, natural light&quot;</code> and <code>album: &quot;photo&quot;</code>.</li>
+          <li><b>No sense of range.</b> You shoot portraits, couples, families and social content; the page says so, then shows 50 undifferentiated frames.</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- ================= RIGHT: PROPOSED ================= -->
+    <div class="panel">
+      <h2><b>Proposed</b> <span class="tag">not built</span></h2>
+      <div class="stage">
+        <div class="phead">
+          <p class="eyebrow">50 photographs &middot; Gauteng</p>
+          <h1 class="phead__h">Portfolio</h1>
+          <p class="phead__p">Portraits, couples, families and everything in between.</p>
+        </div>
+
+        <div class="sticky">
+          <div class="pfilter">
+            <div class="pfilter__item is-on">All <span>50</span></div>
+            <div class="pfilter__item">Portraits <span>28</span></div>
+            <div class="pfilter__item">Couples <span>9</span></div>
+            <div class="pfilter__item">Families <span>7</span></div>
+            <div class="pfilter__item">Social <span>6</span></div>
+          </div>
+        </div>
+
+        <div class="wall">
+          <div class="wall__col">
+            <img src="../public/gallery/49-img-0131-400w.webp" alt="">
+            <img src="../public/gallery/4-img-0068-400w.webp" alt="">
+            <img src="../public/gallery/15-img-0025-400w.webp" alt="">
+            <img src="../public/gallery/23-img-0240-400w.webp" alt="">
+          </div>
+          <div class="wall__col">
+            <img src="../public/gallery/29-img-0383-400w.webp" alt="">
+            <img src="../public/gallery/51-img-0145-400w.webp" alt="">
+            <img src="../public/gallery/18-img-0043-400w.webp" alt="">
+            <img src="../public/gallery/34-img-0461-400w.webp" alt="">
+          </div>
+          <div class="wall__col">
+            <img src="../public/gallery/22-img-0239-400w.webp" alt="">
+            <img src="../public/gallery/28-img-0308-400w.webp" alt="">
+            <img src="../public/gallery/14-img-0026-400w.webp" alt="">
+            <img src="../public/gallery/26-img-0253-400w.webp" alt="">
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        <p class="kicker">What it changes</p>
+        <ol>
+          <li><b>Filter bar, styled from CSS that already ships.</b> <code>.pfilter</code> and <code>.pfilter__item</code> are in <code>editorial.css</code> today with no markup using them &mdash; roughly 40 lines waiting for this.</li>
+          <li><b>Sticky, so it survives the scroll.</b> 14 screens is too many to come back up for. The bar is the only thing between the visitor and the photos.</li>
+          <li><b>&ldquo;Unfiltered&rdquo; comes out of the subhead.</b> It is a nice line, but it argues against the thing you are about to do.</li>
+          <li><b>Real alt text per photo.</b> A one-line job in the admin, and it is the difference between 50 identical images to Google and 50 described ones.</li>
+        </ol>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+{
+  "portfolio_filters": "NO .pfilter ON THIS ROUTE",
+  "portfolio_lightbox": {
+    "hidden": false,
+    "display": "flex",
+    "visibility": "visible",
+    "zIndex": "100",
+    "position": "fixed",
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "w": 393,
+      "h": 852
+    },
+    "coversViewport": true,
+    "imgSrc": "49-img-0131.jpg",
+    "imgRect": {
+      "w": 362,
+      "h": 542
+    },
+    "caption": "01 / 30",
+    "buttons": [
+      {
+        "label": "Close",
+        "cls": "lb__x",
+        "w": 70,
+        "h": 44,
+        "x": 301,
+        "y": 18,
+        "display": "block",
+        "visibility": "visible",
+        "inViewport": true
+      },
+      {
+        "label": "Previous",
+        "cls": "lb__nav lb__nav--p",
+        "w": 78,
+        "h": 44,
+        "x": 14,
+        "y": 404,
+        "display": "block",
+        "visibility": "visible",
+        "inViewport": true
+      },
+      {
+        "label": "Next",
+        "cls": "lb__nav lb__nav--n",
+        "w": 78,
+        "h": 44,
+        "x": 301,
+        "y": 404,
+        "display": "block",
+        "visibility": "visible",
+        "inViewport": true
+      }
+    ],
+    "bodyOverflow": "hidden",
+    "scrollW": 393,
+    "innerW": 393,
+    "tapOffenders": []
+  },
+  "portfolio_lightboxShot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-lb-portfolio.png",
+  "portfolio_afterNext": {
+    "img": "48-img-0128.jpg",
+    "cap": "02 / 30"
+  },
+  "portfolio_afterClose": {
+    "hidden": true,
+    "display": "none",
+    "bodyOverflow": "visible",
+    "scrollY": 0
+  },
+  "portfolio_errors": [],
+  "home_filters": "NO .pfilter ON THIS ROUTE"
+}

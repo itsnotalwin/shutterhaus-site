@@ -1,0 +1,986 @@
+{
+ "/@320": {
+  "headerHTMLclass": "site-header",
+  "nav": [
+   {
+    "tag": "a",
+    "cls": "logo",
+    "txt": "SHUTTERHAUS VISUALS",
+    "href": "./",
+    "aria": "SHUTTERHAUS — home",
+    "expanded": null,
+    "w": 128,
+    "h": 46.9,
+    "visible": true,
+    "fontSize": "16px"
+   },
+   {
+    "tag": "button",
+    "cls": "burger",
+    "txt": "",
+    "href": "",
+    "aria": "Menu",
+    "expanded": "false",
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "13.3333px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link is-active",
+    "txt": "Home",
+    "href": "./",
+    "aria": null,
+    "expanded": null,
+    "w": 248,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Portfolio",
+    "href": "./portfolio.html",
+    "aria": null,
+    "expanded": null,
+    "w": 248,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "About",
+    "href": "./about.html",
+    "aria": null,
+    "expanded": null,
+    "w": 248,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Services",
+    "href": "./services.html",
+    "aria": null,
+    "expanded": null,
+    "w": 248,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Contact",
+    "href": "./contact.html",
+    "aria": null,
+    "expanded": null,
+    "w": 248,
+    "h": 45,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "social",
+    "txt": "Instagram",
+    "href": "https://instagram.com/shutterhausvisuals",
+    "aria": "Instagram",
+    "expanded": null,
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "16px"
+   },
+   {
+    "tag": "a",
+    "cls": "social",
+    "txt": "WhatsApp",
+    "href": "https://wa.me/27730958363",
+    "aria": "WhatsApp",
+    "expanded": null,
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "16px"
+   }
+  ],
+  "lastBand": {
+   "cls": "hcta__foot",
+   "text": "itsnotalwin@gmail.com +27 73 095 8363 Instagram © 2019–2026 SHUTTERHAUS VISUALS"
+  },
+  "hasHcta": true,
+  "hasForm": false,
+  "h1": [
+   "Timeless Portraiture"
+  ],
+  "allText": "PHOTOGRAPHY IS POETRY.\nTIMELESS PORTRAITURE\nReal people. Honest moments. Portraits that look beyond the now.\nVIEW PORTFOLIO\nEST. 2019 — GAUTENG, SOUTH AFRICA\nSELECTED WORK\n06 FRAMES\nSEE THE FULL PORTFOLIO\nSERVICES\nCAPTURE WHAT MATTERS.\nFROM\nR1,200\nStarter · Essential · Signature · Social\n50% deposit to book · EFT accepted\nVIEW PACKAGES →\nITSNOTALWIN@GMAIL.COM\n+27 73 095 8363\nINSTAGRAM"
+ },
+ "/@393": {
+  "headerHTMLclass": "site-header",
+  "nav": [
+   {
+    "tag": "a",
+    "cls": "logo",
+    "txt": "SHUTTERHAUS VISUALS",
+    "href": "./",
+    "aria": "SHUTTERHAUS — home",
+    "expanded": null,
+    "w": 128,
+    "h": 48.6,
+    "visible": true,
+    "fontSize": "16px"
+   },
+   {
+    "tag": "button",
+    "cls": "burger",
+    "txt": "",
+    "href": "",
+    "aria": "Menu",
+    "expanded": "false",
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "13.3333px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link is-active",
+    "txt": "Home",
+    "href": "./",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Portfolio",
+    "href": "./portfolio.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "About",
+    "href": "./about.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Services",
+    "href": "./services.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Contact",
+    "href": "./contact.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 45,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "social",
+    "txt": "Instagram",
+    "href": "https://instagram.com/shutterhausvisuals",
+    "aria": "Instagram",
+    "expanded": null,
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "16px"
+   },
+   {
+    "tag": "a",
+    "cls": "social",
+    "txt": "WhatsApp",
+    "href": "https://wa.me/27730958363",
+    "aria": "WhatsApp",
+    "expanded": null,
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "16px"
+   }
+  ],
+  "lastBand": {
+   "cls": "hcta__foot",
+   "text": "itsnotalwin@gmail.com +27 73 095 8363 Instagram © 2019–2026 SHUTTERHAUS VISUALS"
+  },
+  "hasHcta": true,
+  "hasForm": false,
+  "h1": [
+   "Timeless Portraiture"
+  ],
+  "allText": "PHOTOGRAPHY IS POETRY.\nTIMELESS PORTRAITURE\nReal people. Honest moments. Portraits that look beyond the now.\nVIEW PORTFOLIO\nEST. 2019 — GAUTENG, SOUTH AFRICA\nSELECTED WORK\n06 FRAMES\nSEE THE FULL PORTFOLIO\nSERVICES\nCAPTURE WHAT MATTERS.\nFROM\nR1,200\nStarter · Essential · Signature · Social\n50% deposit to book · EFT accepted\nVIEW PACKAGES →\nITSNOTALWIN@GMAIL.COM\n+27 73 095 8363\nINSTAGRAM"
+ },
+ "/@1440": {
+  "headerHTMLclass": "site-header",
+  "nav": [
+   {
+    "tag": "a",
+    "cls": "logo",
+    "txt": "SHUTTERHAUS VISUALS",
+    "href": "./",
+    "aria": "SHUTTERHAUS — home",
+    "expanded": null,
+    "w": 140.3,
+    "h": 54.7,
+    "visible": true,
+    "fontSize": "16px"
+   },
+   {
+    "tag": "button",
+    "cls": "burger",
+    "txt": "",
+    "href": "",
+    "aria": "Menu",
+    "expanded": "false",
+    "w": 0,
+    "h": 0,
+    "visible": false,
+    "fontSize": "13.3333px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link is-active",
+    "txt": "Home",
+    "href": "./",
+    "aria": null,
+    "expanded": null,
+    "w": 34.1,
+    "h": 44,
+    "visible": true,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Portfolio",
+    "href": "./portfolio.html",
+    "aria": null,
+    "expanded": null,
+    "w": 48.5,
+    "h": 44,
+    "visible": true,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "About",
+    "href": "./about.html",
+    "aria": null,
+    "expanded": null,
+    "w": 34.5,
+    "h": 44,
+    "visible": true,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Services",
+    "href": "./services.html",
+    "aria": null,
+    "expanded": null,
+    "w": 50.2,
+    "h": 44,
+    "visible": true,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Contact",
+    "href": "./contact.html",
+    "aria": null,
+    "expanded": null,
+    "w": 45.4,
+    "h": 44,
+    "visible": true,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "social",
+    "txt": "Instagram",
+    "href": "https://instagram.com/shutterhausvisuals",
+    "aria": "Instagram",
+    "expanded": null,
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "16px"
+   },
+   {
+    "tag": "a",
+    "cls": "social",
+    "txt": "WhatsApp",
+    "href": "https://wa.me/27730958363",
+    "aria": "WhatsApp",
+    "expanded": null,
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "16px"
+   }
+  ],
+  "lastBand": {
+   "cls": "hcta__foot",
+   "text": "itsnotalwin@gmail.com +27 73 095 8363 Instagram © 2019–2026 SHUTTERHAUS VISUALS"
+  },
+  "hasHcta": true,
+  "hasForm": false,
+  "h1": [
+   "Timeless Portraiture"
+  ],
+  "allText": "PHOTOGRAPHY IS POETRY.\nTIMELESS PORTRAITURE\nReal people. Honest moments. Portraits that look beyond the now.\nVIEW PORTFOLIO\nEST. 2019 — GAUTENG, SOUTH AFRICA\nPORTRAITS / COUPLES / FAMILIES\nSCROLL ↓\nSELECTED WORK\n06 FRAMES\nSEE THE FULL PORTFOLIO\nSERVICES\nCAPTURE WHAT MATTERS.\nFROM\nR1,200\nStarter · Essential · Signature · Social\n50% deposit to book · EFT accepted\nVIEW PACKAGES →\nITSNOTALWIN@GMAIL.COM\n+27 73 095 8363\nINSTAGRAM\n© 2019–2026 SHUTTERHAUS VISUALS"
+ },
+ "/portfolio@393": {
+  "headerHTMLclass": "site-header",
+  "nav": [
+   {
+    "tag": "a",
+    "cls": "logo",
+    "txt": "SHUTTERHAUS VISUALS",
+    "href": "./",
+    "aria": "SHUTTERHAUS — home",
+    "expanded": null,
+    "w": 128,
+    "h": 48.6,
+    "visible": true,
+    "fontSize": "16px"
+   },
+   {
+    "tag": "button",
+    "cls": "burger",
+    "txt": "",
+    "href": "",
+    "aria": "Menu",
+    "expanded": "false",
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "13.3333px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Home",
+    "href": "./",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link is-active",
+    "txt": "Portfolio",
+    "href": "./portfolio.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "About",
+    "href": "./about.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Services",
+    "href": "./services.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Contact",
+    "href": "./contact.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 45,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "social",
+    "txt": "Instagram",
+    "href": "https://instagram.com/shutterhausvisuals",
+    "aria": "Instagram",
+    "expanded": null,
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "16px"
+   },
+   {
+    "tag": "a",
+    "cls": "social",
+    "txt": "WhatsApp",
+    "href": "https://wa.me/27730958363",
+    "aria": "WhatsApp",
+    "expanded": null,
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "16px"
+   }
+  ],
+  "lastBand": {
+   "cls": "hcta__foot",
+   "text": "itsnotalwin@gmail.com +27 73 095 8363 Instagram © 2019–2026 SHUTTERHAUS VISUALS"
+  },
+  "hasHcta": true,
+  "hasForm": false,
+  "h1": [
+   "Portfolio"
+  ],
+  "allText": "30 PHOTOGRAPHS · GAUTENG\nPORTFOLIO\nBOOK A SHOOT\nLIKE WHAT YOU SEE?\nFROM\nR1,200\nStarter · Essential · Signature · Social\n50% deposit to book · EFT accepted\nGET A QUOTE →\nITSNOTALWIN@GMAIL.COM\n+27 73 095 8363\nINSTAGRAM"
+ },
+ "/about@393": {
+  "headerHTMLclass": "site-header",
+  "nav": [
+   {
+    "tag": "a",
+    "cls": "logo",
+    "txt": "SHUTTERHAUS VISUALS",
+    "href": "./",
+    "aria": "SHUTTERHAUS — home",
+    "expanded": null,
+    "w": 128,
+    "h": 48.6,
+    "visible": true,
+    "fontSize": "16px"
+   },
+   {
+    "tag": "button",
+    "cls": "burger",
+    "txt": "",
+    "href": "",
+    "aria": "Menu",
+    "expanded": "false",
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "13.3333px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Home",
+    "href": "./",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Portfolio",
+    "href": "./portfolio.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link is-active",
+    "txt": "About",
+    "href": "./about.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Services",
+    "href": "./services.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Contact",
+    "href": "./contact.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 45,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "social",
+    "txt": "Instagram",
+    "href": "https://instagram.com/shutterhausvisuals",
+    "aria": "Instagram",
+    "expanded": null,
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "16px"
+   },
+   {
+    "tag": "a",
+    "cls": "social",
+    "txt": "WhatsApp",
+    "href": "https://wa.me/27730958363",
+    "aria": "WhatsApp",
+    "expanded": null,
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "16px"
+   }
+  ],
+  "lastBand": {
+   "cls": "cta about__cta",
+   "text": "Let's create together"
+  },
+  "hasHcta": false,
+  "hasForm": false,
+  "h1": [
+   "Photography Is Poetry."
+  ],
+  "allText": "ABOUT ME\nPHOTOGRAPHY IS POETRY.\nI'm a photographer based in Gauteng, drawn to the raw, unfiltered beauty of real people and unfiltered moments. For me, photography isn't just about what you see — it's about what you feel.\nI believe the best images aren't staged. They happen. They live in the in-between, in the quiet looks, the laughter, the chaos, the stillness.\nThis is my way of telling your story — honestly, creatively, and with intention.\nLET'S CREATE TOGETHER"
+ },
+ "/services@393": {
+  "headerHTMLclass": "site-header",
+  "nav": [
+   {
+    "tag": "a",
+    "cls": "logo",
+    "txt": "SHUTTERHAUS VISUALS",
+    "href": "./",
+    "aria": "SHUTTERHAUS — home",
+    "expanded": null,
+    "w": 128,
+    "h": 48.6,
+    "visible": true,
+    "fontSize": "16px"
+   },
+   {
+    "tag": "button",
+    "cls": "burger",
+    "txt": "",
+    "href": "",
+    "aria": "Menu",
+    "expanded": "false",
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "13.3333px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Home",
+    "href": "./",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Portfolio",
+    "href": "./portfolio.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "About",
+    "href": "./about.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link is-active",
+    "txt": "Services",
+    "href": "./services.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Contact",
+    "href": "./contact.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 45,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "social",
+    "txt": "Instagram",
+    "href": "https://instagram.com/shutterhausvisuals",
+    "aria": "Instagram",
+    "expanded": null,
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "16px"
+   },
+   {
+    "tag": "a",
+    "cls": "social",
+    "txt": "WhatsApp",
+    "href": "https://wa.me/27730958363",
+    "aria": "WhatsApp",
+    "expanded": null,
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "16px"
+   }
+  ],
+  "lastBand": {
+   "cls": "invest",
+   "text": "Investment Quality over quantity. 50% deposit to book · EFT accepted"
+  },
+  "hasHcta": false,
+  "hasForm": false,
+  "h1": [
+   "Capture What Matters."
+  ],
+  "allText": "SERVICES\nCAPTURE WHAT MATTERS.\nEvery session is directed start to finish — you don't need to know how to pose. 50% deposit secures your date.\n01.\nSTARTER\n30 MIN · 1 OUTFIT · 1 LOCATION\nHeadshots, matric farewells, quick portraits.\n15 professionally edited high-res images\nPrivate online gallery (90-day access)\nHigh-res + web-optimised downloads\nClothing guide & location suggestions\nPrint release for personal use\nR1,200\nBOOK NOW\n02.\nESSENTIAL\n60 MIN · 2 OUTFITS · 1–2 LOCATIONS\nOur go-to for couples, individuals and small families.\n40 professionally edited high-res images\nReels-ready vertical crops\nPrint release + 5×7\" fine art print\nPrivate online gallery (90-day access)\nClothing guide, location scouting, shot list\nR2,200\nBOOK NOW\n03.\nSIGNATURE\n90 MIN · 2–3 OUTFITS · MULTIPLE LOCATIONS\nFamilies, maternity, engagements — the full experience.\n70 professionally edited high-res images\nB&W timeless set + Reels crops\nPrint release + 2× 5×7\" fine art prints\nPrivate online gallery (90-day access)\nFull prep: clothing guide, shot list, scouting\nR3,500\nBOOK NOW\n04.\nSOCIAL\n45 MIN · 2 OUTFITS · 1 LOCATION\nBuilt for creators — vertical-first, quick turnaround.\n30 edited images + 15 Reels-ready vertical crops\n48hr sneak peek\nVertical (4:5, 9:16) + high-res + web\nContent calendar template\nPose coaching for video & content\nR1,800\nBOOK NOW\nINVESTMENT\nQUALITY OVER QUANTITY.\n50% deposit to book · EFT accepted\nADD-ONS\nExtra 30 minutes\n+R600\nExtra location\n+R400\nRush delivery (48hr)\n+R400\nExtra 5×7\" print\n+R150\nFine art album (20pg)\n+R1,200\nTravel beyond 25km\n+R5/km\nBOOKING TERMS\n50% non-refundable deposit secures your date; balance before gallery delivery.\nRescheduling ≥7 days notice is free. Under 7 days: R500 fee, deposit transfers.\nOutdoor shoots include a backup indoor location. Severe weather = free reschedule.\nDelivery: Starter, Essential and Social in 5 business days; Signature in 7.\nPersonal use licence included. Commercial use needs a separate licence (+50–200%)."
+ },
+ "/contact@393": {
+  "headerHTMLclass": "site-header",
+  "nav": [
+   {
+    "tag": "a",
+    "cls": "logo",
+    "txt": "SHUTTERHAUS VISUALS",
+    "href": "./",
+    "aria": "SHUTTERHAUS — home",
+    "expanded": null,
+    "w": 128,
+    "h": 48.6,
+    "visible": true,
+    "fontSize": "16px"
+   },
+   {
+    "tag": "button",
+    "cls": "burger",
+    "txt": "",
+    "href": "",
+    "aria": "Menu",
+    "expanded": "false",
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "13.3333px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Home",
+    "href": "./",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Portfolio",
+    "href": "./portfolio.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "About",
+    "href": "./about.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Services",
+    "href": "./services.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 46,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link is-active",
+    "txt": "Contact",
+    "href": "./contact.html",
+    "aria": null,
+    "expanded": null,
+    "w": 321,
+    "h": 45,
+    "visible": false,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "social",
+    "txt": "Instagram",
+    "href": "https://instagram.com/shutterhausvisuals",
+    "aria": "Instagram",
+    "expanded": null,
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "16px"
+   },
+   {
+    "tag": "a",
+    "cls": "social",
+    "txt": "WhatsApp",
+    "href": "https://wa.me/27730958363",
+    "aria": "WhatsApp",
+    "expanded": null,
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "16px"
+   }
+  ],
+  "lastBand": {
+   "cls": "page contact",
+   "text": "Get in touch Let's Create Something Beautiful. Portraits, couples, families and social content — shot on location across Gauteng. Mini sessions, full "
+  },
+  "hasHcta": false,
+  "hasForm": true,
+  "h1": [
+   "Let's Create Something Beautiful."
+  ],
+  "allText": "GET IN TOUCH\nLET'S CREATE SOMETHING BEAUTIFUL.\nPortraits, couples, families and social content — shot on location across Gauteng. Mini sessions, full galleries and prints available on request.\nNAME\nEMAIL\nWHAT DO YOU NEED?\nMini session\nPortrait\nCouples / family\nSocial content\nSomething else\nMESSAGE\nSEND MESSAGE\nGauteng, South Africa\nitsnotalwin@gmail.com\n+27 73 095 8363\nWhatsApp\nEvenings & weekends, by appointment"
+ },
+ "/services@1920": {
+  "headerHTMLclass": "site-header",
+  "nav": [
+   {
+    "tag": "a",
+    "cls": "logo",
+    "txt": "SHUTTERHAUS VISUALS",
+    "href": "./",
+    "aria": "SHUTTERHAUS — home",
+    "expanded": null,
+    "w": 140.3,
+    "h": 54.7,
+    "visible": true,
+    "fontSize": "16px"
+   },
+   {
+    "tag": "button",
+    "cls": "burger",
+    "txt": "",
+    "href": "",
+    "aria": "Menu",
+    "expanded": "false",
+    "w": 0,
+    "h": 0,
+    "visible": false,
+    "fontSize": "13.3333px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Home",
+    "href": "./",
+    "aria": null,
+    "expanded": null,
+    "w": 34.1,
+    "h": 44,
+    "visible": true,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Portfolio",
+    "href": "./portfolio.html",
+    "aria": null,
+    "expanded": null,
+    "w": 48.5,
+    "h": 44,
+    "visible": true,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "About",
+    "href": "./about.html",
+    "aria": null,
+    "expanded": null,
+    "w": 34.5,
+    "h": 44,
+    "visible": true,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link is-active",
+    "txt": "Services",
+    "href": "./services.html",
+    "aria": null,
+    "expanded": null,
+    "w": 50.2,
+    "h": 44,
+    "visible": true,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "nav-link",
+    "txt": "Contact",
+    "href": "./contact.html",
+    "aria": null,
+    "expanded": null,
+    "w": 45.4,
+    "h": 44,
+    "visible": true,
+    "fontSize": "12px"
+   },
+   {
+    "tag": "a",
+    "cls": "social",
+    "txt": "Instagram",
+    "href": "https://instagram.com/shutterhausvisuals",
+    "aria": "Instagram",
+    "expanded": null,
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "16px"
+   },
+   {
+    "tag": "a",
+    "cls": "social",
+    "txt": "WhatsApp",
+    "href": "https://wa.me/27730958363",
+    "aria": "WhatsApp",
+    "expanded": null,
+    "w": 44,
+    "h": 44,
+    "visible": true,
+    "fontSize": "16px"
+   }
+  ],
+  "lastBand": {
+   "cls": "invest",
+   "text": "Investment Quality over quantity. 50% deposit to book · EFT accepted"
+  },
+  "hasHcta": false,
+  "hasForm": false,
+  "h1": [
+   "Capture What Matters."
+  ],
+  "allText": "SERVICES\nCAPTURE WHAT MATTERS.\nEvery session is directed start to finish — you don't need to know how to pose. 50% deposit secures your date.\n01.\nSTARTER\n30 MIN · 1 OUTFIT · 1 LOCATION\nHeadshots, matric farewells, quick portraits.\n15 professionally edited high-res images\nPrivate online gallery (90-day access)\nHigh-res + web-optimised downloads\nClothing guide & location suggestions\nPrint release for personal use\nR1,200\nBOOK NOW\n02.\nESSENTIAL\n60 MIN · 2 OUTFITS · 1–2 LOCATIONS\nOur go-to for couples, individuals and small families.\n40 professionally edited high-res images\nReels-ready vertical crops\nPrint release + 5×7\" fine art print\nPrivate online gallery (90-day access)\nClothing guide, location scouting, shot list\nR2,200\nBOOK NOW\n03.\nSIGNATURE\n90 MIN · 2–3 OUTFITS · MULTIPLE LOCATIONS\nFamilies, maternity, engagements — the full experience.\n70 professionally edited high-res images\nB&W timeless set + Reels crops\nPrint release + 2× 5×7\" fine art prints\nPrivate online gallery (90-day access)\nFull prep: clothing guide, shot list, scouting\nR3,500\nBOOK NOW\n04.\nSOCIAL\n45 MIN · 2 OUTFITS · 1 LOCATION\nBuilt for creators — vertical-first, quick turnaround.\n30 edited images + 15 Reels-ready vertical crops\n48hr sneak peek\nVertical (4:5, 9:16) + high-res + web\nContent calendar template\nPose coaching for video & content\nR1,800\nBOOK NOW\nINVESTMENT\nQUALITY OVER QUANTITY.\n50% deposit to book · EFT accepted\nADD-ONS\nExtra 30 minutes\n+R600\nExtra location\n+R400\nRush delivery (48hr)\n+R400\nExtra 5×7\" print\n+R150\nFine art album (20pg)\n+R1,200\nTravel beyond 25km\n+R5/km\nBOOKING TERMS\n50% non-refundable deposit secures your date; balance before gallery delivery.\nRescheduling ≥7 days notice is free. Under 7 days: R500 fee, deposit transfers.\nOutdoor shoots include a backup indoor location. Severe weather = free reschedule.\nDelivery: Starter, Essential and Social in 5 business days; Signature in 7.\nPersonal use licence included. Commercial use needs a separate licence (+50–200%)."
+ }
+}

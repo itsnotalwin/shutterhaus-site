@@ -1,0 +1,191 @@
+{
+  "scroll_home": {
+    "top": {
+      "headerPos": "absolute",
+      "headerTop": "0px",
+      "headerZ": "5",
+      "burgerY": 19,
+      "scrollY": 0
+    },
+    "after": {
+      "scrollY": 1200,
+      "headerPos": "absolute",
+      "headerRectTop": -1200,
+      "burgerY": -1181,
+      "burgerInViewport": false,
+      "hitTag": "OFFSCREEN",
+      "hitIsBurgerOrChild": false,
+      "pageScrollH": 2201
+    },
+    "shot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-scrolled-home-393.png"
+  },
+  "scroll_portfolio": {
+    "top": {
+      "headerPos": "relative",
+      "headerTop": "0px",
+      "headerZ": "auto",
+      "burgerY": 19,
+      "scrollY": 0
+    },
+    "after": {
+      "scrollY": 1200,
+      "headerPos": "relative",
+      "headerRectTop": -1200,
+      "burgerY": -1181,
+      "burgerInViewport": false,
+      "hitTag": "OFFSCREEN",
+      "hitIsBurgerOrChild": false,
+      "pageScrollH": 2532
+    },
+    "shot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-scrolled-portfolio-393.png"
+  },
+  "scroll_about": {
+    "top": {
+      "headerPos": "relative",
+      "headerTop": "0px",
+      "headerZ": "auto",
+      "burgerY": 19,
+      "scrollY": 0
+    },
+    "after": {
+      "scrollY": 354,
+      "headerPos": "relative",
+      "headerRectTop": -354,
+      "burgerY": -335,
+      "burgerInViewport": false,
+      "hitTag": "OFFSCREEN",
+      "hitIsBurgerOrChild": false,
+      "pageScrollH": 1206
+    },
+    "shot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-scrolled-about-393.png"
+  },
+  "scroll_services": {
+    "top": {
+      "headerPos": "relative",
+      "headerTop": "0px",
+      "headerZ": "auto",
+      "burgerY": 19,
+      "scrollY": 0
+    },
+    "after": {
+      "scrollY": 1200,
+      "headerPos": "relative",
+      "headerRectTop": -1200,
+      "burgerY": -1181,
+      "burgerInViewport": false,
+      "hitTag": "OFFSCREEN",
+      "hitIsBurgerOrChild": false,
+      "pageScrollH": 3976
+    },
+    "shot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-scrolled-services-393.png"
+  },
+  "scroll_contact": {
+    "top": {
+      "headerPos": "relative",
+      "headerTop": "0px",
+      "headerZ": "auto",
+      "burgerY": 19,
+      "scrollY": 0
+    },
+    "after": {
+      "scrollY": 614,
+      "headerPos": "relative",
+      "headerRectTop": -614,
+      "burgerY": -595,
+      "burgerInViewport": false,
+      "hitTag": "OFFSCREEN",
+      "hitIsBurgerOrChild": false,
+      "pageScrollH": 1466
+    },
+    "shot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-scrolled-contact-393.png"
+  },
+  "outside": {
+    "home": {
+      "geo": {
+        "navRect": {
+          "x": 18,
+          "y": 75,
+          "w": 357,
+          "h": 250
+        },
+        "innerH": 852,
+        "innerW": 393
+      },
+      "tapPoint": {
+        "x": 196,
+        "y": 600
+      },
+      "elementAtPoint": {
+        "el": "DIV.hero__meta",
+        "insideNav": false
+      },
+      "afterOutsideTap": {
+        "aria": "true",
+        "navVis": "visible",
+        "bodyClass": "nav-open"
+      },
+      "afterEscape": {
+        "aria": "false",
+        "navVis": "hidden"
+      }
+    },
+    "portfolio": {
+      "geo": {
+        "navRect": {
+          "x": 18,
+          "y": 75,
+          "w": 357,
+          "h": 250
+        },
+        "innerH": 852,
+        "innerW": 393
+      },
+      "tapPoint": {
+        "x": 196,
+        "y": 600
+      },
+      "elementAtPoint": {
+        "el": "IMG.is-loaded",
+        "insideNav": false
+      },
+      "afterOutsideTap": {
+        "aria": "true",
+        "navVis": "visible",
+        "bodyClass": "nav-open"
+      },
+      "afterEscape": {
+        "aria": "false",
+        "navVis": "hidden"
+      }
+    },
+    "contact": {
+      "geo": {
+        "navRect": {
+          "x": 18,
+          "y": 75,
+          "w": 357,
+          "h": 250
+        },
+        "innerH": 852,
+        "innerW": 393
+      },
+      "tapPoint": {
+        "x": 196,
+        "y": 600
+      },
+      "elementAtPoint": {
+        "el": "TEXTAREA.",
+        "insideNav": false
+      },
+      "afterOutsideTap": {
+        "aria": "true",
+        "navVis": "visible",
+        "bodyClass": "nav-open"
+      },
+      "afterEscape": {
+        "aria": "false",
+        "navVis": "hidden"
+      }
+    }
+  }
+}

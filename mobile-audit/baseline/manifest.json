@@ -1,0 +1,31 @@
+[
+  {
+    "route": "home",
+    "name": "before-home.png",
+    "errs": 0
+  },
+  {
+    "route": "portfolio",
+    "name": "before-portfolio.png",
+    "errs": 0
+  },
+  {
+    "route": "about",
+    "name": "before-about.png",
+    "errs": 0
+  },
+  {
+    "route": "services",
+    "name": "before-services.png",
+    "errs": 0
+  },
+  {
+    "route": "contact",
+    "name": "before-contact.png",
+    "errs": 0
+  },
+  {
+    "route": "portfolio-scrolled",
+    "name": "before-portfolio-scrolled.png"
+  }
+]

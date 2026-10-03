@@ -1,0 +1,519 @@
+{
+ "agg": {
+  "49-img-0131-1200w.webp": {
+   "bytes": 95569,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "48-img-0128-1200w.webp": {
+   "bytes": 107152,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "25-img-0249-1200w.webp": {
+   "bytes": 100285,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "14-img-0026-1200w.webp": {
+   "bytes": 154291,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "15-img-0025-1200w.webp": {
+   "bytes": 154149,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "18-img-0043-1200w.webp": {
+   "bytes": 323743,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "32-img-0404-1200w.webp": {
+   "bytes": 146907,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "37-img-0124-1200w.webp": {
+   "bytes": 181948,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "21-img-0234-1200w.webp": {
+   "bytes": 135069,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "16-img-0030-1200w.webp": {
+   "bytes": 122513,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "12-img-0019-1200w.webp": {
+   "bytes": 108506,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "13-img-0020-1200w.webp": {
+   "bytes": 124004,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "36-img-0076-1200w.webp": {
+   "bytes": 101308,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "50-img-0143-1200w.webp": {
+   "bytes": 111818,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "2-20240718114526-img-0124-1200w.webp": {
+   "bytes": 303005,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "26-img-0253-1200w.webp": {
+   "bytes": 63551,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "40-img-0092-1200w.webp": {
+   "bytes": 136934,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "42-img-0095-1200w.webp": {
+   "bytes": 88157,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "30-img-0396-1200w.webp": {
+   "bytes": 243049,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "45-img-0118-1200w.webp": {
+   "bytes": 115354,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "46-img-0119-1200w.webp": {
+   "bytes": 106745,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "19-img-0198-3-1200w.webp": {
+   "bytes": 143003,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "51-img-0145-1200w.webp": {
+   "bytes": 104164,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "28-img-0308-1200w.webp": {
+   "bytes": 112041,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "47-img-0121-1200w.webp": {
+   "bytes": 135506,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "35-img-0482-1200w.webp": {
+   "bytes": 74798,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "9-img-0269-1200w.webp": {
+   "bytes": 25516,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "24-img-0245-1200w.webp": {
+   "bytes": 107282,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "53-img-0155-1200w.webp": {
+   "bytes": 214635,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  },
+  "20-img-0202-1200w.webp": {
+   "bytes": 172238,
+   "mime": "image/webp",
+   "status": 200,
+   "reqs": 1,
+   "disk": false
+  }
+ },
+ "imgs": [
+  [
+   "49-img-0131-1200w.webp",
+   {
+    "bytes": 95569,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "48-img-0128-1200w.webp",
+   {
+    "bytes": 107152,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "25-img-0249-1200w.webp",
+   {
+    "bytes": 100285,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "14-img-0026-1200w.webp",
+   {
+    "bytes": 154291,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "15-img-0025-1200w.webp",
+   {
+    "bytes": 154149,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "18-img-0043-1200w.webp",
+   {
+    "bytes": 323743,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "32-img-0404-1200w.webp",
+   {
+    "bytes": 146907,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "37-img-0124-1200w.webp",
+   {
+    "bytes": 181948,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "21-img-0234-1200w.webp",
+   {
+    "bytes": 135069,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "16-img-0030-1200w.webp",
+   {
+    "bytes": 122513,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "12-img-0019-1200w.webp",
+   {
+    "bytes": 108506,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "13-img-0020-1200w.webp",
+   {
+    "bytes": 124004,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "36-img-0076-1200w.webp",
+   {
+    "bytes": 101308,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "50-img-0143-1200w.webp",
+   {
+    "bytes": 111818,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "2-20240718114526-img-0124-1200w.webp",
+   {
+    "bytes": 303005,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "26-img-0253-1200w.webp",
+   {
+    "bytes": 63551,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "40-img-0092-1200w.webp",
+   {
+    "bytes": 136934,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "42-img-0095-1200w.webp",
+   {
+    "bytes": 88157,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "30-img-0396-1200w.webp",
+   {
+    "bytes": 243049,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "45-img-0118-1200w.webp",
+   {
+    "bytes": 115354,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "46-img-0119-1200w.webp",
+   {
+    "bytes": 106745,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "19-img-0198-3-1200w.webp",
+   {
+    "bytes": 143003,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "51-img-0145-1200w.webp",
+   {
+    "bytes": 104164,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "28-img-0308-1200w.webp",
+   {
+    "bytes": 112041,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "47-img-0121-1200w.webp",
+   {
+    "bytes": 135506,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "35-img-0482-1200w.webp",
+   {
+    "bytes": 74798,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "9-img-0269-1200w.webp",
+   {
+    "bytes": 25516,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "24-img-0245-1200w.webp",
+   {
+    "bytes": 107282,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "53-img-0155-1200w.webp",
+   {
+    "bytes": 214635,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ],
+  [
+   "20-img-0202-1200w.webp",
+   {
+    "bytes": 172238,
+    "mime": "image/webp",
+    "status": 200,
+    "reqs": 1,
+    "disk": false
+   }
+  ]
+ ],
+ "totalImg": 4113240,
+ "allBytes": 4463686,
+ "nonImg": 350446
+}

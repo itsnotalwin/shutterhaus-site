@@ -1,0 +1,17 @@
+ROLE: images/assets auditor. Bounded task. Report in <= 8 bullets. STOP after the report.
+__REPO__/
+
+RUN and read:
+1. `python tools/check-srcset.py`
+2. Scan public/gallery/ for missing sizes (400w/800w/1200w/1600w .webp + .jpg).
+3. Scan all .html files for <img> missing srcset/sizes/alt.
+4. Regenerate missing sizes with the site's own srcset tool.
+
+Fix anything you find.
+
+REPORT:
+VERDICT: PASS   OR   VERDICT: FAIL: category: public/gallery/x.webp description
+# changed
+- ... (max 4)
+# left behind
+- ... (max 4)

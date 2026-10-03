@@ -1,0 +1,16 @@
+ROLE: CSS/layout auditor. Bounded task. Report in <= 8 bullets. STOP after the report.
+__REPO__/
+
+RUN and read:
+1. Read src/styles.css, src/editorial.css (note design tokens for colors/fonts/layout).
+2. DevTools: open index, portfolio, services, about, contact at 390px and 768px.
+3. Fix: ensure `orientationchange` not `resize` for repaints; safe-area insets; viewport-fit=cover.
+
+Repair any fixable defect. Nothing beyond styles.css/editorial.css.
+
+REPORT:
+VERDICT: PASS   OR   VERDICT: FAIL: category: src/file.css:LINE description
+# changed
+- ... (max 4)
+# left behind
+- ... (max 4)

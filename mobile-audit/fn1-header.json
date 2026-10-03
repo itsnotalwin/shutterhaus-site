@@ -1,0 +1,70 @@
+{
+  "header": {
+    "portfolio": {
+      "position": "relative",
+      "top": "0px",
+      "isSticky": false,
+      "pageHeight": 2532,
+      "viewport": 852,
+      "maxScroll": 1680,
+      "headerHeight": 92,
+      "atBottom": {
+        "scrollY": 1680,
+        "burgerBottom": -1617,
+        "burgerTop": -1661,
+        "inViewport": false,
+        "cy": -1639,
+        "hit": "OFFSCREEN"
+      },
+      "shot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-bottom-portfolio.png"
+    },
+    "services": {
+      "position": "relative",
+      "top": "0px",
+      "isSticky": false,
+      "pageHeight": 3976,
+      "viewport": 852,
+      "maxScroll": 3124,
+      "headerHeight": 92,
+      "atBottom": {
+        "scrollY": 3124,
+        "burgerBottom": -3061,
+        "burgerTop": -3105,
+        "inViewport": false,
+        "cy": -3083,
+        "hit": "OFFSCREEN"
+      },
+      "shot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-bottom-services.png"
+    },
+    "contact": {
+      "position": "relative",
+      "top": "0px",
+      "isSticky": false,
+      "pageHeight": 1466,
+      "viewport": 852,
+      "maxScroll": 614,
+      "headerHeight": 92,
+      "atBottom": {
+        "scrollY": 614,
+        "burgerBottom": -551,
+        "burgerTop": -595,
+        "inViewport": false,
+        "cy": -573,
+        "hit": "OFFSCREEN"
+      },
+      "shot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-bottom-contact.png"
+    }
+  },
+  "scrollLock": {
+    "beforeY": 800,
+    "openState": {
+      "bodyClass": "nav-open",
+      "bodyOverflow": "visible",
+      "htmlOverflow": "visible",
+      "scrollY": 800
+    },
+    "afterTouchDrag": 985,
+    "afterProgrammaticScroll": 0
+  },
+  "scrollLockShot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-menuscroll-bg.png"
+}

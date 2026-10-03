@@ -34,3 +34,20 @@ shot-*.png
 .commitmsg.txt
 commit-msg.txt
 cm.txt
+
+# The audit .gitignore rules above covered .png/.jpg only, but the scratch these
+# tools emit is overwhelmingly .webp — 31 untracked .webp were slipping past and
+# would have been swept in by `git add -A`. Same for the a11y tooling's pickle
+# cache and its raw base64 dumps.
+audit-v2/**/*.webp
+mobile-audit/**/*.webp
+audit-v2/**/*.b64
+mobile-audit/**/*.b64
+*.pkl
+# Re-downloadable copies of already-committed site assets, captured per width.
+mobile-audit/served/
+# Snapshot CSS pulled live during an audit run; the built copy is in dist/.
+audit-v2/**/tmp/
+# Stubs the verification loop creates before any worker has filled them in.
+verification/round*/
+verification/fix-queue.md

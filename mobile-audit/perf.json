@@ -1,0 +1,352 @@
+{
+ "perfColdUnthrottled": {
+  "paints": {
+   "first-paint": 216,
+   "first-contentful-paint": 284
+  },
+  "lcp": 300,
+  "lcpEl": null,
+  "lcpObserved": 300,
+  "lcpElObserved": "IMG src=27-img-0297-1600w.jpg 240909px",
+  "cls": 0,
+  "ttfb": 10,
+  "domContentLoaded": 215,
+  "loadEvent": 284,
+  "domInteractive": 21,
+  "transferSize": 2655,
+  "encodedBody": 2355,
+  "decodedBody": 2355,
+  "resources": 13,
+  "totalKB": 1218.5,
+  "byType": {
+   "link": 25831,
+   "script": 31009,
+   "other": 233175,
+   "img": 957731,
+   "fetch": 0
+  },
+  "top10": [
+   {
+    "n": "27-img-0297-1600w.jpg",
+    "t": "img",
+    "kb": 286.4,
+    "ms": 55
+   },
+   {
+    "n": "store-DcM14Yyd.js",
+    "t": "other",
+    "kb": 227.7,
+    "ms": 36
+   },
+   {
+    "n": "14-img-0026-1200w.webp",
+    "t": "img",
+    "kb": 150.7,
+    "ms": 52
+   },
+   {
+    "n": "32-img-0404-1200w.webp",
+    "t": "img",
+    "kb": 143.5,
+    "ms": 47
+   },
+   {
+    "n": "40-img-0092-1200w.webp",
+    "t": "img",
+    "kb": 133.8,
+    "ms": 40
+   },
+   {
+    "n": "49-img-0131-1200w.webp",
+    "t": "img",
+    "kb": 93.4,
+    "ms": 41
+   },
+   {
+    "n": "4-img-0068-1200w.webp",
+    "t": "img",
+    "kb": 65.2,
+    "ms": 49
+   },
+   {
+    "n": "26-img-0253-1200w.webp",
+    "t": "img",
+    "kb": 62.2,
+    "ms": 49
+   },
+   {
+    "n": "main-Bnvhenp_.js",
+    "t": "script",
+    "kb": 30.3,
+    "ms": 24
+   },
+   {
+    "n": "store-CWOSSvLN.css",
+    "t": "link",
+    "kb": 13.4,
+    "ms": 20
+   },
+   {
+    "n": "main-ZjH6rSY_.css",
+    "t": "link",
+    "kb": 10.8,
+    "ms": 20
+   },
+   {
+    "n": "css2?family=Archivo+Black&family=Inter:wght@400;50",
+    "t": "link",
+    "kb": 1,
+    "ms": 183
+   }
+  ],
+  "fonts": [
+   "Archivo Black 400 normal unloaded",
+   "Archivo Black 400 normal loaded",
+   "Inter 400 normal unloaded",
+   "Inter 400 normal unloaded",
+   "Inter 400 normal unloaded",
+   "Inter 400 normal unloaded",
+   "Inter 400 normal unloaded",
+   "Inter 400 normal unloaded",
+   "Inter 400 normal loaded",
+   "Inter 500 normal unloaded",
+   "Inter 500 normal unloaded",
+   "Inter 500 normal unloaded",
+   "Inter 500 normal unloaded",
+   "Inter 500 normal unloaded",
+   "Inter 500 normal unloaded",
+   "Inter 500 normal loaded"
+  ],
+  "imgs": 8,
+  "imgsLoaded": 7,
+  "dpr": 3,
+  "vw": 393
+ },
+ "perfColdSlow4G": {
+  "paints": {
+   "first-paint": 628,
+   "first-contentful-paint": 2008
+  },
+  "lcp": 6912,
+  "lcpEl": null,
+  "lcpObserved": 6912,
+  "lcpElObserved": "IMG src=27-img-0297-1600w.jpg 240909px",
+  "cls": 0.0268,
+  "ttfb": 11,
+  "domContentLoaded": 1842,
+  "loadEvent": 6882,
+  "domInteractive": 191,
+  "transferSize": 2655,
+  "encodedBody": 2355,
+  "decodedBody": 2355,
+  "resources": 13,
+  "totalKB": 1218.5,
+  "byType": {
+   "link": 25831,
+   "script": 31009,
+   "other": 233175,
+   "img": 957731,
+   "fetch": 0
+  },
+  "top10": [
+   {
+    "n": "27-img-0297-1600w.jpg",
+    "t": "img",
+    "kb": 286.4,
+    "ms": 5054
+   },
+   {
+    "n": "store-DcM14Yyd.js",
+    "t": "other",
+    "kb": 227.7,
+    "ms": 1579
+   },
+   {
+    "n": "14-img-0026-1200w.webp",
+    "t": "img",
+    "kb": 150.7,
+    "ms": 4389
+   },
+   {
+    "n": "32-img-0404-1200w.webp",
+    "t": "img",
+    "kb": 143.5,
+    "ms": 4311
+   },
+   {
+    "n": "40-img-0092-1200w.webp",
+    "t": "img",
+    "kb": 133.8,
+    "ms": 4167
+   },
+   {
+    "n": "49-img-0131-1200w.webp",
+    "t": "img",
+    "kb": 93.4,
+    "ms": 3363
+   },
+   {
+    "n": "4-img-0068-1200w.webp",
+    "t": "img",
+    "kb": 65.2,
+    "ms": 2696
+   },
+   {
+    "n": "26-img-0253-1200w.webp",
+    "t": "img",
+    "kb": 62.2,
+    "ms": 2603
+   },
+   {
+    "n": "main-Bnvhenp_.js",
+    "t": "script",
+    "kb": 30.3,
+    "ms": 603
+   },
+   {
+    "n": "store-CWOSSvLN.css",
+    "t": "link",
+    "kb": 13.4,
+    "ms": 428
+   },
+   {
+    "n": "main-ZjH6rSY_.css",
+    "t": "link",
+    "kb": 10.8,
+    "ms": 396
+   },
+   {
+    "n": "css2?family=Archivo+Black&family=Inter:wght@400;50",
+    "t": "link",
+    "kb": 1,
+    "ms": 225
+   }
+  ],
+  "fonts": [
+   "Archivo Black 400 normal unloaded",
+   "Archivo Black 400 normal loaded",
+   "Inter 400 normal unloaded",
+   "Inter 400 normal unloaded",
+   "Inter 400 normal unloaded",
+   "Inter 400 normal unloaded",
+   "Inter 400 normal unloaded",
+   "Inter 400 normal unloaded",
+   "Inter 400 normal loaded",
+   "Inter 500 normal unloaded",
+   "Inter 500 normal unloaded",
+   "Inter 500 normal unloaded",
+   "Inter 500 normal unloaded",
+   "Inter 500 normal unloaded",
+   "Inter 500 normal unloaded",
+   "Inter 500 normal loaded"
+  ],
+  "imgs": 8,
+  "imgsLoaded": 7,
+  "dpr": 3,
+  "vw": 393
+ },
+ "perfPortfolioSlow4G": {
+  "paints": {
+   "first-paint": 648,
+   "first-contentful-paint": 2000
+  },
+  "lcp": 2000,
+  "lcpEl": null,
+  "lcpObserved": 2000,
+  "lcpElObserved": "H1.phead__h src= 11956px",
+  "cls": 0.0006,
+  "ttfb": 11,
+  "domContentLoaded": 1831,
+  "loadEvent": 0,
+  "domInteractive": 190,
+  "transferSize": 2655,
+  "encodedBody": 2355,
+  "decodedBody": 2355,
+  "resources": 9,
+  "totalKB": 443.6,
+  "byType": {
+   "link": 25831,
+   "script": 264184,
+   "fetch": 0,
+   "img": 164248
+  },
+  "top10": [
+   {
+    "n": "store-DcM14Yyd.js",
+    "t": "script",
+    "kb": 227.7,
+    "ms": 1584
+   },
+   {
+    "n": "35-img-0482-1200w.webp",
+    "t": "img",
+    "kb": 73.2,
+    "ms": 12157
+   },
+   {
+    "n": "26-img-0253-1200w.webp",
+    "t": "img",
+    "kb": 62.2,
+    "ms": 10725
+   },
+   {
+    "n": "main-Bnvhenp_.js",
+    "t": "script",
+    "kb": 30.3,
+    "ms": 599
+   },
+   {
+    "n": "9-img-0269-1200w.webp",
+    "t": "img",
+    "kb": 25.1,
+    "ms": 4379
+   },
+   {
+    "n": "store-CWOSSvLN.css",
+    "t": "link",
+    "kb": 13.4,
+    "ms": 441
+   },
+   {
+    "n": "main-ZjH6rSY_.css",
+    "t": "link",
+    "kb": 10.8,
+    "ms": 392
+   },
+   {
+    "n": "css2?family=Archivo+Black&family=Inter:wght@400;50",
+    "t": "link",
+    "kb": 1,
+    "ms": 207
+   },
+   {
+    "n": "photos?select=*&visible=eq.true&order=sort_order.a",
+    "t": "fetch",
+    "kb": 0,
+    "ms": 772
+   }
+  ],
+  "fonts": [
+   "Archivo Black 400 normal unloaded",
+   "Archivo Black 400 normal loaded",
+   "Inter 400 normal unloaded",
+   "Inter 400 normal unloaded",
+   "Inter 400 normal unloaded",
+   "Inter 400 normal unloaded",
+   "Inter 400 normal unloaded",
+   "Inter 400 normal unloaded",
+   "Inter 400 normal loaded",
+   "Inter 500 normal unloaded",
+   "Inter 500 normal unloaded",
+   "Inter 500 normal unloaded",
+   "Inter 500 normal unloaded",
+   "Inter 500 normal unloaded",
+   "Inter 500 normal unloaded",
+   "Inter 500 normal loaded"
+  ],
+  "imgs": 31,
+  "imgsLoaded": 3,
+  "dpr": 3,
+  "vw": 393
+ }
+}

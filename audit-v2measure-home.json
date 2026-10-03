@@ -1,0 +1,2912 @@
+{
+  "320": {
+    "vw": 764,
+    "vh": 485,
+    "docH": 2552,
+    "screens": 5.26,
+    "heroH": 415.06,
+    "heroFill": 0.86,
+    "heroCleanPhotoPct": 0,
+    "heroTypeBands": {
+      "eyebrow": [
+        0,
+        13
+      ],
+      "h1": [
+        31,
+        160.06
+      ],
+      "lede": [
+        194.06,
+        245.06
+      ],
+      "cta": [
+        275.06,
+        319.06
+      ],
+      "meta": [
+        373.06,
+        415.06
+      ]
+    },
+    "heroImg": {
+      "objFit": "cover",
+      "objPos": "50% 0%",
+      "w": 1600,
+      "h": 1244,
+      "ar": 1.29,
+      "boxAr": 1.84,
+      "loading": "eager",
+      "fetchprio": "high",
+      "decoding": "async",
+      "currentSrc": "27-img-0297-1600w.webp"
+    },
+    "h1": {
+      "text": "Timeless Portraiture",
+      "fs": "73.344px",
+      "lh": "64.5427px",
+      "boxW": 712,
+      "scrollW": 712,
+      "clientW": 712,
+      "overflowsBy": 0,
+      "wrap": "normal",
+      "h": 129.06,
+      "lineCount": 2,
+      "lines": [
+        {
+          "y": 13,
+          "words": 1,
+          "right": 416.91,
+          "left": 26
+        },
+        {
+          "y": 77.53,
+          "words": 1,
+          "right": 587.86,
+          "left": 26
+        }
+      ]
+    },
+    "typeEls": [
+      {
+        "sel": "logo",
+        "txt": "SHUTTERHAUS\n        \n      \n      ",
+        "fs": "16px",
+        "lh": "13.76px",
+        "ls": "-0.32px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 140.25,
+        "h": 54.67,
+        "top": 31.66,
+        "lines": 4
+      },
+      {
+        "sel": "nav-link is-active",
+        "txt": "Home",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "0.12px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 34.11,
+        "h": 44,
+        "top": 37,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "Portfolio",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "0.12px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 48.52,
+        "h": 44,
+        "top": 37,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "About",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "0.12px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 34.45,
+        "h": 44,
+        "top": 37,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "Services",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "0.12px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 50.2,
+        "h": 44,
+        "top": 37,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "Contact",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "0.12px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 45.41,
+        "h": 44,
+        "top": 37,
+        "lines": null
+      },
+      {
+        "sel": "eyebrow",
+        "txt": "Photography is poetry.",
+        "fs": "11px",
+        "lh": "normal",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "18px",
+        "w": 712,
+        "h": 13,
+        "top": 0,
+        "lines": null
+      },
+      {
+        "sel": "hero__h",
+        "txt": "Timeless Portraiture",
+        "fs": "73.344px",
+        "lh": "64.5427px",
+        "ls": "-2.56704px",
+        "ff": "Archivo Black",
+        "mt": "0px",
+        "mb": "34px",
+        "w": 712,
+        "h": 129.06,
+        "top": 31,
+        "lines": 2
+      },
+      {
+        "sel": "hero__lede",
+        "txt": "Real people. Honest moments. Portr",
+        "fs": "15px",
+        "lh": "25.5px",
+        "ls": "normal",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "30px",
+        "w": 378.52,
+        "h": 51,
+        "top": 194.06,
+        "lines": 2
+      },
+      {
+        "sel": "cta",
+        "txt": "View portfolio",
+        "fs": "11px",
+        "lh": "normal",
+        "ls": "1.76px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 154.41,
+        "h": 44,
+        "top": 275.06,
+        "lines": null
+      },
+      {
+        "sel": "hstrip__head",
+        "txt": "Selected work06 frames",
+        "fs": "11px",
+        "lh": "11px",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "22px",
+        "w": 712,
+        "h": 24,
+        "top": 487.06,
+        "lines": 2
+      },
+      {
+        "sel": "eyebrow",
+        "txt": "Services",
+        "fs": "10.5px",
+        "lh": "normal",
+        "ls": "1.47px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "20px",
+        "w": 387.33,
+        "h": 13,
+        "top": 2175.06,
+        "lines": null
+      },
+      {
+        "sel": "hcta__h",
+        "txt": "Capture What Matters.",
+        "fs": "64.176px",
+        "lh": "57.7584px",
+        "ls": "-2.24616px",
+        "ff": "Archivo Black",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 385.2,
+        "h": 173.25,
+        "top": 2208.06,
+        "lines": 3
+      },
+      {
+        "sel": "hcta__k",
+        "txt": "From",
+        "fs": "11px",
+        "lh": "11px",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "12px",
+        "w": 276.66,
+        "h": 11,
+        "top": 2191.53,
+        "lines": 1
+      },
+      {
+        "sel": "hcta__price",
+        "txt": "R1,200",
+        "fs": "40px",
+        "lh": "40px",
+        "ls": "-0.8px",
+        "ff": "Archivo Black",
+        "mt": "0px",
+        "mb": "14px",
+        "w": 276.66,
+        "h": 40,
+        "top": 2214.53,
+        "lines": 1
+      },
+      {
+        "sel": "hcta__note",
+        "txt": "Starter · Essential · Signature · ",
+        "fs": "12px",
+        "lh": "20.4px",
+        "ls": "normal",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "28px",
+        "w": 276.66,
+        "h": 40.78,
+        "top": 2268.53,
+        "lines": 2
+      },
+      {
+        "sel": "hcta__btn",
+        "txt": "View packages →",
+        "fs": "11px",
+        "lh": "11px",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 157.83,
+        "h": 44,
+        "top": 2337.31,
+        "lines": 4
+      },
+      {
+        "sel": "hcta__foot",
+        "txt": "itsnotalwin@gmail.com\n        +27 ",
+        "fs": "11px",
+        "lh": "15.4px",
+        "ls": "1.32px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 712,
+        "h": 55,
+        "top": 2445.31,
+        "lines": 4
+      }
+    ],
+    "rhythm": [
+      {
+        "from": "hero",
+        "to": "hstrip",
+        "gapPx": null,
+        "gapAfterPad": null
+      },
+      {
+        "from": "hstrip",
+        "to": "hcta",
+        "gapPx": null,
+        "gapAfterPad": null
+      }
+    ],
+    "secs": [
+      {
+        "sel": "hero",
+        "top": 0,
+        "h": 415.06,
+        "pt": "0px",
+        "pb": "0px",
+        "mt": "0px"
+      },
+      {
+        "sel": "hstrip",
+        "top": 415.06,
+        "h": 1600,
+        "pt": "72px",
+        "pb": "0px",
+        "mt": "0px"
+      },
+      {
+        "sel": "hcta",
+        "top": 2103.06,
+        "h": 397.25,
+        "pt": "72px",
+        "pb": "0px",
+        "mt": "88px"
+      }
+    ],
+    "strip": {
+      "cols": "349px 349px",
+      "gut": "14px",
+      "cellCount": 6,
+      "cells": [
+        {
+          "w": 349,
+          "h": 523.5,
+          "ar": 0.67,
+          "top": 533.06,
+          "left": 26,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            764,
+            1146
+          ],
+          "src": "32-img-0404-800w.webp"
+        },
+        {
+          "w": 349,
+          "h": 523.5,
+          "ar": 0.67,
+          "top": 1070.56,
+          "left": 26,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            764,
+            1146
+          ],
+          "src": "14-img-0026-800w.webp"
+        },
+        {
+          "w": 349,
+          "h": 261.75,
+          "ar": 1.33,
+          "top": 1608.06,
+          "left": 26,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            764,
+            573
+          ],
+          "src": "4-img-0068-800w.webp"
+        },
+        {
+          "w": 349,
+          "h": 523.5,
+          "ar": 0.67,
+          "top": 533.06,
+          "left": 389,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            764,
+            1146
+          ],
+          "src": "49-img-0131-800w.webp"
+        },
+        {
+          "w": 349,
+          "h": 436.25,
+          "ar": 0.8,
+          "top": 1070.56,
+          "left": 389,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            764,
+            955
+          ],
+          "src": "26-img-0253-800w.webp"
+        },
+        {
+          "w": 349,
+          "h": 436.25,
+          "ar": 0.8,
+          "top": 1520.81,
+          "left": 389,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            764,
+            955
+          ],
+          "src": "40-img-0092-800w.webp"
+        }
+      ]
+    },
+    "bandTop": 2103.06,
+    "bandH": 397.25,
+    "stripHeadTop": 487.06,
+    "ctas": [
+      {
+        "txt": "Home",
+        "top": 37,
+        "w": 34.11,
+        "h": 44,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px"
+      },
+      {
+        "txt": "Portfolio",
+        "top": 37,
+        "w": 48.52,
+        "h": 44,
+        "color": "rgba(255, 255, 255, 0.82)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px"
+      },
+      {
+        "txt": "About",
+        "top": 37,
+        "w": 34.45,
+        "h": 44,
+        "color": "rgba(255, 255, 255, 0.82)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px"
+      },
+      {
+        "txt": "Services",
+        "top": 37,
+        "w": 50.2,
+        "h": 44,
+        "color": "rgba(255, 255, 255, 0.82)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px"
+      },
+      {
+        "txt": "Contact",
+        "top": 37,
+        "w": 45.41,
+        "h": 44,
+        "color": "rgba(255, 255, 255, 0.82)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px"
+      },
+      {
+        "txt": "View portfolio",
+        "top": 275.06,
+        "w": 154.41,
+        "h": 44,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "14px 0px"
+      },
+      {
+        "txt": "View packages →",
+        "top": 2337.31,
+        "w": 157.83,
+        "h": 44,
+        "color": "rgb(13, 13, 13)",
+        "bg": "rgb(255, 255, 255)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px 22px"
+      }
+    ],
+    "heroBtn": {
+      "w": 157.83,
+      "h": 44
+    },
+    "firstScreen": {
+      "heroEnd": 415.06,
+      "fold": 485,
+      "heroCoversFold": false,
+      "ctaVisibleInFold": true,
+      "ledeVisibleInFold": true,
+      "stripInFirstFold": false
+    },
+    "media": {
+      "hoverHover": true,
+      "pointerCoarse": false,
+      "reducedMotion": false,
+      "dark": true
+    },
+    "filtersApplied": 6,
+    "imgCount": 7,
+    "lazyCount": 0,
+    "headerPos": "absolute",
+    "isBw": true,
+    "hairlineColour": "#e6e6e6",
+    "dvhUsed": 0
+  },
+  "393": {
+    "vw": 393,
+    "vh": 852,
+    "docH": 2201,
+    "screens": 2.58,
+    "heroH": 613.44,
+    "heroFill": 0.72,
+    "heroCleanPhotoPct": 35.89,
+    "heroTypeBands": {
+      "eyebrow": [
+        220.14,
+        233.14
+      ],
+      "h1": [
+        251.14,
+        377.84
+      ],
+      "lede": [
+        411.84,
+        459.44
+      ],
+      "cta": [
+        489.44,
+        533.44
+      ],
+      "meta": [
+        571.44,
+        613.44
+      ]
+    },
+    "heroImg": {
+      "objFit": "cover",
+      "objPos": "50% 0%",
+      "w": 1600,
+      "h": 1244,
+      "ar": 1.29,
+      "boxAr": 0.64,
+      "loading": "eager",
+      "fetchprio": "high",
+      "decoding": "async",
+      "currentSrc": "27-img-0297-1600w.webp"
+    },
+    "h1": {
+      "text": "Timeless Portraiture",
+      "fs": "48px",
+      "lh": "42.24px",
+      "boxW": 357,
+      "scrollW": 357,
+      "clientW": 357,
+      "overflowsBy": 0,
+      "wrap": "anywhere",
+      "h": 126.7,
+      "lineCount": 3,
+      "lines": [
+        {
+          "y": 239.14,
+          "words": 1,
+          "right": 273.84,
+          "left": 18
+        },
+        {
+          "y": 281.38,
+          "words": 1,
+          "right": 352.77,
+          "left": 18
+        },
+        {
+          "y": 323.61,
+          "words": 1,
+          "right": 50.98,
+          "left": 18
+        }
+      ]
+    },
+    "typeEls": [
+      {
+        "sel": "logo",
+        "txt": "SHUTTERHAUS\n        \n      \n      ",
+        "fs": "16px",
+        "lh": "13.76px",
+        "ls": "-0.32px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 128.05,
+        "h": 48.64,
+        "top": 16.67,
+        "lines": 4
+      },
+      {
+        "sel": "nav-link is-active",
+        "txt": "Home",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "1.68px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 321,
+        "h": 46,
+        "top": 75.31,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "Portfolio",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "1.68px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 321,
+        "h": 46,
+        "top": 121.31,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "About",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "1.68px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 321,
+        "h": 46,
+        "top": 167.31,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "Services",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "1.68px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 321,
+        "h": 46,
+        "top": 213.31,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "Contact",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "1.68px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 321,
+        "h": 45,
+        "top": 259.31,
+        "lines": null
+      },
+      {
+        "sel": "eyebrow",
+        "txt": "Photography is poetry.",
+        "fs": "11px",
+        "lh": "normal",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "18px",
+        "w": 357,
+        "h": 13,
+        "top": 220.14,
+        "lines": null
+      },
+      {
+        "sel": "hero__h",
+        "txt": "Timeless Portraiture",
+        "fs": "48px",
+        "lh": "42.24px",
+        "ls": "-1.68px",
+        "ff": "Archivo Black",
+        "mt": "0px",
+        "mb": "34px",
+        "w": 357,
+        "h": 126.7,
+        "top": 251.14,
+        "lines": 3
+      },
+      {
+        "sel": "hero__lede",
+        "txt": "Real people. Honest moments. Portr",
+        "fs": "14px",
+        "lh": "23.8px",
+        "ls": "normal",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "30px",
+        "w": 353.28,
+        "h": 47.59,
+        "top": 411.84,
+        "lines": 2
+      },
+      {
+        "sel": "cta",
+        "txt": "View portfolio",
+        "fs": "11px",
+        "lh": "normal",
+        "ls": "1.76px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 154.41,
+        "h": 44,
+        "top": 489.44,
+        "lines": null
+      },
+      {
+        "sel": "hstrip__head",
+        "txt": "Selected work06 frames",
+        "fs": "11px",
+        "lh": "11px",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "22px",
+        "w": 357,
+        "h": 24,
+        "top": 685.44,
+        "lines": 2
+      },
+      {
+        "sel": "eyebrow",
+        "txt": "Services",
+        "fs": "10.5px",
+        "lh": "normal",
+        "ls": "1.47px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "20px",
+        "w": 357,
+        "h": 13,
+        "top": 1645.44,
+        "lines": null
+      },
+      {
+        "sel": "hcta__h",
+        "txt": "Capture What Matters.",
+        "fs": "48px",
+        "lh": "43.2px",
+        "ls": "-1.68px",
+        "ff": "Archivo Black",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 288.14,
+        "h": 129.56,
+        "top": 1678.44,
+        "lines": 3
+      },
+      {
+        "sel": "hcta__k",
+        "txt": "From",
+        "fs": "11px",
+        "lh": "11px",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "12px",
+        "w": 357,
+        "h": 11,
+        "top": 1844,
+        "lines": 1
+      },
+      {
+        "sel": "hcta__price",
+        "txt": "R1,200",
+        "fs": "40px",
+        "lh": "40px",
+        "ls": "-0.8px",
+        "ff": "Archivo Black",
+        "mt": "0px",
+        "mb": "14px",
+        "w": 357,
+        "h": 40,
+        "top": 1867,
+        "lines": 1
+      },
+      {
+        "sel": "hcta__note",
+        "txt": "Starter · Essential · Signature · ",
+        "fs": "12px",
+        "lh": "20.4px",
+        "ls": "normal",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "28px",
+        "w": 357,
+        "h": 40.78,
+        "top": 1921,
+        "lines": 2
+      },
+      {
+        "sel": "hcta__btn",
+        "txt": "View packages →",
+        "fs": "11px",
+        "lh": "11px",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 157.83,
+        "h": 44,
+        "top": 1989.78,
+        "lines": 4
+      },
+      {
+        "sel": "hcta__foot",
+        "txt": "itsnotalwin@gmail.com\n        +27 ",
+        "fs": "11px",
+        "lh": "15.4px",
+        "ls": "1.32px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 357,
+        "h": 83,
+        "top": 2081.78,
+        "lines": 5
+      }
+    ],
+    "rhythm": [
+      {
+        "from": "hero",
+        "to": "hstrip",
+        "gapPx": null,
+        "gapAfterPad": null
+      },
+      {
+        "from": "hstrip",
+        "to": "hcta",
+        "gapPx": null,
+        "gapAfterPad": null
+      }
+    ],
+    "secs": [
+      {
+        "sel": "hero",
+        "top": 0,
+        "h": 613.44,
+        "pt": "0px",
+        "pb": "0px",
+        "mt": "0px"
+      },
+      {
+        "sel": "hstrip",
+        "top": 613.44,
+        "h": 890,
+        "pt": "72px",
+        "pb": "0px",
+        "mt": "0px"
+      },
+      {
+        "sel": "hcta",
+        "top": 1591.44,
+        "h": 573.34,
+        "pt": "54px",
+        "pb": "0px",
+        "mt": "88px"
+      }
+    ],
+    "strip": {
+      "cols": "173.5px 173.5px",
+      "gut": "10px",
+      "cellCount": 6,
+      "cells": [
+        {
+          "w": 173.5,
+          "h": 260.25,
+          "ar": 0.67,
+          "top": 731.44,
+          "left": 18,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            393,
+            589
+          ],
+          "src": "32-img-0404-400w.webp"
+        },
+        {
+          "w": 173.5,
+          "h": 260.25,
+          "ar": 0.67,
+          "top": 1001.69,
+          "left": 18,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            393,
+            589
+          ],
+          "src": "14-img-0026-400w.webp"
+        },
+        {
+          "w": 173.5,
+          "h": 130.13,
+          "ar": 1.33,
+          "top": 1271.94,
+          "left": 18,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            393,
+            294
+          ],
+          "src": "4-img-0068-400w.webp"
+        },
+        {
+          "w": 173.5,
+          "h": 260.25,
+          "ar": 0.67,
+          "top": 731.44,
+          "left": 201.5,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            393,
+            589
+          ],
+          "src": "49-img-0131-400w.webp"
+        },
+        {
+          "w": 173.5,
+          "h": 216.88,
+          "ar": 0.8,
+          "top": 1001.69,
+          "left": 201.5,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            393,
+            491
+          ],
+          "src": "26-img-0253-400w.webp"
+        },
+        {
+          "w": 173.5,
+          "h": 216.88,
+          "ar": 0.8,
+          "top": 1228.56,
+          "left": 201.5,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            393,
+            491
+          ],
+          "src": "40-img-0092-400w.webp"
+        }
+      ]
+    },
+    "bandTop": 1591.44,
+    "bandH": 573.34,
+    "stripHeadTop": 685.44,
+    "ctas": [
+      {
+        "txt": "Home",
+        "top": 75.31,
+        "w": 321,
+        "h": 46,
+        "color": "rgb(17, 17, 17)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "15px 0px"
+      },
+      {
+        "txt": "Portfolio",
+        "top": 121.31,
+        "w": 321,
+        "h": 46,
+        "color": "rgb(107, 107, 107)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "15px 0px"
+      },
+      {
+        "txt": "About",
+        "top": 167.31,
+        "w": 321,
+        "h": 46,
+        "color": "rgb(107, 107, 107)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "15px 0px"
+      },
+      {
+        "txt": "Services",
+        "top": 213.31,
+        "w": 321,
+        "h": 46,
+        "color": "rgb(107, 107, 107)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "15px 0px"
+      },
+      {
+        "txt": "Contact",
+        "top": 259.31,
+        "w": 321,
+        "h": 45,
+        "color": "rgb(107, 107, 107)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "15px 0px"
+      },
+      {
+        "txt": "View portfolio",
+        "top": 489.44,
+        "w": 154.41,
+        "h": 44,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "14px 0px"
+      },
+      {
+        "txt": "View packages →",
+        "top": 1989.78,
+        "w": 157.83,
+        "h": 44,
+        "color": "rgb(13, 13, 13)",
+        "bg": "rgb(255, 255, 255)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px 22px"
+      }
+    ],
+    "heroBtn": {
+      "w": 157.83,
+      "h": 44
+    },
+    "firstScreen": {
+      "heroEnd": 613.44,
+      "fold": 852,
+      "heroCoversFold": false,
+      "ctaVisibleInFold": true,
+      "ledeVisibleInFold": true,
+      "stripInFirstFold": true
+    },
+    "media": {
+      "hoverHover": false,
+      "pointerCoarse": true,
+      "reducedMotion": false,
+      "dark": true
+    },
+    "filtersApplied": 6,
+    "imgCount": 7,
+    "lazyCount": 0,
+    "headerPos": "absolute",
+    "isBw": true,
+    "hairlineColour": "#e6e6e6",
+    "dvhUsed": 0
+  },
+  "430": {
+    "vw": 430,
+    "vh": 852,
+    "docH": 2247,
+    "screens": 2.64,
+    "heroH": 613.44,
+    "heroFill": 0.72,
+    "heroCleanPhotoPct": 42.77,
+    "heroTypeBands": {
+      "eyebrow": [
+        262.38,
+        275.38
+      ],
+      "h1": [
+        293.38,
+        377.84
+      ],
+      "lede": [
+        411.84,
+        459.44
+      ],
+      "cta": [
+        489.44,
+        533.44
+      ],
+      "meta": [
+        571.44,
+        613.44
+      ]
+    },
+    "heroImg": {
+      "objFit": "cover",
+      "objPos": "50% 0%",
+      "w": 1600,
+      "h": 1244,
+      "ar": 1.29,
+      "boxAr": 0.7,
+      "loading": "eager",
+      "fetchprio": "high",
+      "decoding": "async",
+      "currentSrc": "27-img-0297-1600w.webp"
+    },
+    "h1": {
+      "text": "Timeless Portraiture",
+      "fs": "48px",
+      "lh": "42.24px",
+      "boxW": 394,
+      "scrollW": 394,
+      "clientW": 394,
+      "overflowsBy": 0,
+      "wrap": "anywhere",
+      "h": 84.47,
+      "lineCount": 2,
+      "lines": [
+        {
+          "y": 281.38,
+          "words": 1,
+          "right": 273.84,
+          "left": 18
+        },
+        {
+          "y": 323.61,
+          "words": 1,
+          "right": 385.73,
+          "left": 18
+        }
+      ]
+    },
+    "typeEls": [
+      {
+        "sel": "logo",
+        "txt": "SHUTTERHAUS\n        \n      \n      ",
+        "fs": "16px",
+        "lh": "13.76px",
+        "ls": "-0.32px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 128.05,
+        "h": 48.64,
+        "top": 16.67,
+        "lines": 4
+      },
+      {
+        "sel": "nav-link is-active",
+        "txt": "Home",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "1.68px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 358,
+        "h": 46,
+        "top": 75.31,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "Portfolio",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "1.68px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 358,
+        "h": 46,
+        "top": 121.31,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "About",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "1.68px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 358,
+        "h": 46,
+        "top": 167.31,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "Services",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "1.68px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 358,
+        "h": 46,
+        "top": 213.31,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "Contact",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "1.68px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 358,
+        "h": 45,
+        "top": 259.31,
+        "lines": null
+      },
+      {
+        "sel": "eyebrow",
+        "txt": "Photography is poetry.",
+        "fs": "11px",
+        "lh": "normal",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "18px",
+        "w": 394,
+        "h": 13,
+        "top": 262.38,
+        "lines": null
+      },
+      {
+        "sel": "hero__h",
+        "txt": "Timeless Portraiture",
+        "fs": "48px",
+        "lh": "42.24px",
+        "ls": "-1.68px",
+        "ff": "Archivo Black",
+        "mt": "0px",
+        "mb": "34px",
+        "w": 394,
+        "h": 84.47,
+        "top": 293.38,
+        "lines": 2
+      },
+      {
+        "sel": "hero__lede",
+        "txt": "Real people. Honest moments. Portr",
+        "fs": "14px",
+        "lh": "23.8px",
+        "ls": "normal",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "30px",
+        "w": 353.28,
+        "h": 47.59,
+        "top": 411.84,
+        "lines": 2
+      },
+      {
+        "sel": "cta",
+        "txt": "View portfolio",
+        "fs": "11px",
+        "lh": "normal",
+        "ls": "1.76px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 154.41,
+        "h": 44,
+        "top": 489.44,
+        "lines": null
+      },
+      {
+        "sel": "hstrip__head",
+        "txt": "Selected work06 frames",
+        "fs": "11px",
+        "lh": "11px",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "22px",
+        "w": 394,
+        "h": 24,
+        "top": 685.44,
+        "lines": 2
+      },
+      {
+        "sel": "eyebrow",
+        "txt": "Services",
+        "fs": "10.5px",
+        "lh": "normal",
+        "ls": "1.47px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "20px",
+        "w": 394,
+        "h": 13,
+        "top": 1719.44,
+        "lines": null
+      },
+      {
+        "sel": "hcta__h",
+        "txt": "Capture What Matters.",
+        "fs": "48px",
+        "lh": "43.2px",
+        "ls": "-1.68px",
+        "ff": "Archivo Black",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 288.14,
+        "h": 129.56,
+        "top": 1752.44,
+        "lines": 3
+      },
+      {
+        "sel": "hcta__k",
+        "txt": "From",
+        "fs": "11px",
+        "lh": "11px",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "12px",
+        "w": 394,
+        "h": 11,
+        "top": 1918,
+        "lines": 1
+      },
+      {
+        "sel": "hcta__price",
+        "txt": "R1,200",
+        "fs": "40px",
+        "lh": "40px",
+        "ls": "-0.8px",
+        "ff": "Archivo Black",
+        "mt": "0px",
+        "mb": "14px",
+        "w": 394,
+        "h": 40,
+        "top": 1941,
+        "lines": 1
+      },
+      {
+        "sel": "hcta__note",
+        "txt": "Starter · Essential · Signature · ",
+        "fs": "12px",
+        "lh": "20.4px",
+        "ls": "normal",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "28px",
+        "w": 394,
+        "h": 40.78,
+        "top": 1995,
+        "lines": 2
+      },
+      {
+        "sel": "hcta__btn",
+        "txt": "View packages →",
+        "fs": "11px",
+        "lh": "11px",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 157.83,
+        "h": 44,
+        "top": 2063.78,
+        "lines": 4
+      },
+      {
+        "sel": "hcta__foot",
+        "txt": "itsnotalwin@gmail.com\n        +27 ",
+        "fs": "11px",
+        "lh": "15.4px",
+        "ls": "1.32px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 394,
+        "h": 55,
+        "top": 2155.78,
+        "lines": 4
+      }
+    ],
+    "rhythm": [
+      {
+        "from": "hero",
+        "to": "hstrip",
+        "gapPx": null,
+        "gapAfterPad": null
+      },
+      {
+        "from": "hstrip",
+        "to": "hcta",
+        "gapPx": null,
+        "gapAfterPad": null
+      }
+    ],
+    "secs": [
+      {
+        "sel": "hero",
+        "top": 0,
+        "h": 613.44,
+        "pt": "0px",
+        "pb": "0px",
+        "mt": "0px"
+      },
+      {
+        "sel": "hstrip",
+        "top": 613.44,
+        "h": 964,
+        "pt": "72px",
+        "pb": "0px",
+        "mt": "0px"
+      },
+      {
+        "sel": "hcta",
+        "top": 1665.44,
+        "h": 545.34,
+        "pt": "54px",
+        "pb": "0px",
+        "mt": "88px"
+      }
+    ],
+    "strip": {
+      "cols": "192px 192px",
+      "gut": "10px",
+      "cellCount": 6,
+      "cells": [
+        {
+          "w": 192,
+          "h": 288,
+          "ar": 0.67,
+          "top": 731.44,
+          "left": 18,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            429,
+            644
+          ],
+          "src": "32-img-0404-800w.webp"
+        },
+        {
+          "w": 192,
+          "h": 288,
+          "ar": 0.67,
+          "top": 1029.44,
+          "left": 18,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            429,
+            644
+          ],
+          "src": "14-img-0026-800w.webp"
+        },
+        {
+          "w": 192,
+          "h": 144,
+          "ar": 1.33,
+          "top": 1327.44,
+          "left": 18,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            429,
+            322
+          ],
+          "src": "4-img-0068-800w.webp"
+        },
+        {
+          "w": 192,
+          "h": 288,
+          "ar": 0.67,
+          "top": 731.44,
+          "left": 220,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            429,
+            644
+          ],
+          "src": "49-img-0131-800w.webp"
+        },
+        {
+          "w": 192,
+          "h": 240,
+          "ar": 0.8,
+          "top": 1029.44,
+          "left": 220,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            429,
+            537
+          ],
+          "src": "26-img-0253-800w.webp"
+        },
+        {
+          "w": 192,
+          "h": 240,
+          "ar": 0.8,
+          "top": 1279.44,
+          "left": 220,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            429,
+            537
+          ],
+          "src": "40-img-0092-800w.webp"
+        }
+      ]
+    },
+    "bandTop": 1665.44,
+    "bandH": 545.34,
+    "stripHeadTop": 685.44,
+    "ctas": [
+      {
+        "txt": "Home",
+        "top": 75.31,
+        "w": 358,
+        "h": 46,
+        "color": "rgb(17, 17, 17)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "15px 0px"
+      },
+      {
+        "txt": "Portfolio",
+        "top": 121.31,
+        "w": 358,
+        "h": 46,
+        "color": "rgb(107, 107, 107)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "15px 0px"
+      },
+      {
+        "txt": "About",
+        "top": 167.31,
+        "w": 358,
+        "h": 46,
+        "color": "rgb(107, 107, 107)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "15px 0px"
+      },
+      {
+        "txt": "Services",
+        "top": 213.31,
+        "w": 358,
+        "h": 46,
+        "color": "rgb(107, 107, 107)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "15px 0px"
+      },
+      {
+        "txt": "Contact",
+        "top": 259.31,
+        "w": 358,
+        "h": 45,
+        "color": "rgb(107, 107, 107)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "15px 0px"
+      },
+      {
+        "txt": "View portfolio",
+        "top": 489.44,
+        "w": 154.41,
+        "h": 44,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "14px 0px"
+      },
+      {
+        "txt": "View packages →",
+        "top": 2063.78,
+        "w": 157.83,
+        "h": 44,
+        "color": "rgb(13, 13, 13)",
+        "bg": "rgb(255, 255, 255)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px 22px"
+      }
+    ],
+    "heroBtn": {
+      "w": 157.83,
+      "h": 44
+    },
+    "firstScreen": {
+      "heroEnd": 613.44,
+      "fold": 852,
+      "heroCoversFold": false,
+      "ctaVisibleInFold": true,
+      "ledeVisibleInFold": true,
+      "stripInFirstFold": true
+    },
+    "media": {
+      "hoverHover": false,
+      "pointerCoarse": true,
+      "reducedMotion": false,
+      "dark": true
+    },
+    "filtersApplied": 6,
+    "imgCount": 7,
+    "lazyCount": 0,
+    "headerPos": "absolute",
+    "isBw": true,
+    "hairlineColour": "#e6e6e6",
+    "dvhUsed": 0
+  },
+  "768": {
+    "vw": 768,
+    "vh": 852,
+    "docH": 2811,
+    "screens": 3.3,
+    "heroH": 664.55,
+    "heroFill": 0.78,
+    "heroCleanPhotoPct": 37.44,
+    "heroTypeBands": {
+      "eyebrow": [
+        248.8,
+        261.8
+      ],
+      "h1": [
+        279.8,
+        409.55
+      ],
+      "lede": [
+        443.55,
+        494.55
+      ],
+      "cta": [
+        524.55,
+        568.55
+      ],
+      "meta": [
+        622.55,
+        664.55
+      ]
+    },
+    "heroImg": {
+      "objFit": "cover",
+      "objPos": "50% 0%",
+      "w": 1600,
+      "h": 1244,
+      "ar": 1.29,
+      "boxAr": 1.16,
+      "loading": "eager",
+      "fetchprio": "high",
+      "decoding": "async",
+      "currentSrc": "27-img-0297-1600w.webp"
+    },
+    "h1": {
+      "text": "Timeless Portraiture",
+      "fs": "73.728px",
+      "lh": "64.8806px",
+      "boxW": 716,
+      "scrollW": 716,
+      "clientW": 716,
+      "overflowsBy": 0,
+      "wrap": "normal",
+      "h": 129.75,
+      "lineCount": 2,
+      "lines": [
+        {
+          "y": 261.8,
+          "words": 1,
+          "right": 418.94,
+          "left": 26
+        },
+        {
+          "y": 326.67,
+          "words": 1,
+          "right": 590.78,
+          "left": 26
+        }
+      ]
+    },
+    "typeEls": [
+      {
+        "sel": "logo",
+        "txt": "SHUTTERHAUS\n        \n      \n      ",
+        "fs": "16px",
+        "lh": "13.76px",
+        "ls": "-0.32px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 140.25,
+        "h": 54.67,
+        "top": 31.66,
+        "lines": 4
+      },
+      {
+        "sel": "nav-link is-active",
+        "txt": "Home",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "0.12px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 34.11,
+        "h": 44,
+        "top": 37,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "Portfolio",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "0.12px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 48.52,
+        "h": 44,
+        "top": 37,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "About",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "0.12px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 34.45,
+        "h": 44,
+        "top": 37,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "Services",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "0.12px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 50.2,
+        "h": 44,
+        "top": 37,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "Contact",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "0.12px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 45.41,
+        "h": 44,
+        "top": 37,
+        "lines": null
+      },
+      {
+        "sel": "eyebrow",
+        "txt": "Photography is poetry.",
+        "fs": "11px",
+        "lh": "normal",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "18px",
+        "w": 716,
+        "h": 13,
+        "top": 248.8,
+        "lines": null
+      },
+      {
+        "sel": "hero__h",
+        "txt": "Timeless Portraiture",
+        "fs": "73.728px",
+        "lh": "64.8806px",
+        "ls": "-2.58048px",
+        "ff": "Archivo Black",
+        "mt": "0px",
+        "mb": "34px",
+        "w": 716,
+        "h": 129.75,
+        "top": 279.8,
+        "lines": 2
+      },
+      {
+        "sel": "hero__lede",
+        "txt": "Real people. Honest moments. Portr",
+        "fs": "15px",
+        "lh": "25.5px",
+        "ls": "normal",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "30px",
+        "w": 378.52,
+        "h": 51,
+        "top": 443.55,
+        "lines": 2
+      },
+      {
+        "sel": "cta",
+        "txt": "View portfolio",
+        "fs": "11px",
+        "lh": "normal",
+        "ls": "1.76px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 154.41,
+        "h": 44,
+        "top": 524.55,
+        "lines": null
+      },
+      {
+        "sel": "hstrip__head",
+        "txt": "Selected work06 frames",
+        "fs": "11px",
+        "lh": "11px",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "22px",
+        "w": 716,
+        "h": 24,
+        "top": 736.55,
+        "lines": 2
+      },
+      {
+        "sel": "eyebrow",
+        "txt": "Services",
+        "fs": "10.5px",
+        "lh": "normal",
+        "ls": "1.47px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "20px",
+        "w": 389.66,
+        "h": 13,
+        "top": 2432.55,
+        "lines": null
+      },
+      {
+        "sel": "hcta__h",
+        "txt": "Capture What Matters.",
+        "fs": "64.512px",
+        "lh": "58.0608px",
+        "ls": "-2.25792px",
+        "ff": "Archivo Black",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 387.25,
+        "h": 174.19,
+        "top": 2465.55,
+        "lines": 3
+      },
+      {
+        "sel": "hcta__k",
+        "txt": "From",
+        "fs": "11px",
+        "lh": "11px",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "12px",
+        "w": 278.33,
+        "h": 11,
+        "top": 2449.95,
+        "lines": 1
+      },
+      {
+        "sel": "hcta__price",
+        "txt": "R1,200",
+        "fs": "40px",
+        "lh": "40px",
+        "ls": "-0.8px",
+        "ff": "Archivo Black",
+        "mt": "0px",
+        "mb": "14px",
+        "w": 278.33,
+        "h": 40,
+        "top": 2472.95,
+        "lines": 1
+      },
+      {
+        "sel": "hcta__note",
+        "txt": "Starter · Essential · Signature · ",
+        "fs": "12px",
+        "lh": "20.4px",
+        "ls": "normal",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "28px",
+        "w": 278.33,
+        "h": 40.78,
+        "top": 2526.95,
+        "lines": 2
+      },
+      {
+        "sel": "hcta__btn",
+        "txt": "View packages →",
+        "fs": "11px",
+        "lh": "11px",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 157.83,
+        "h": 44,
+        "top": 2595.73,
+        "lines": 4
+      },
+      {
+        "sel": "hcta__foot",
+        "txt": "itsnotalwin@gmail.com\n        +27 ",
+        "fs": "11px",
+        "lh": "15.4px",
+        "ls": "1.32px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 716,
+        "h": 55,
+        "top": 2703.73,
+        "lines": 4
+      }
+    ],
+    "rhythm": [
+      {
+        "from": "hero",
+        "to": "hstrip",
+        "gapPx": null,
+        "gapAfterPad": null
+      },
+      {
+        "from": "hstrip",
+        "to": "hcta",
+        "gapPx": null,
+        "gapAfterPad": null
+      }
+    ],
+    "secs": [
+      {
+        "sel": "hero",
+        "top": 0,
+        "h": 664.55,
+        "pt": "0px",
+        "pb": "0px",
+        "mt": "0px"
+      },
+      {
+        "sel": "hstrip",
+        "top": 664.55,
+        "h": 1608,
+        "pt": "72px",
+        "pb": "0px",
+        "mt": "0px"
+      },
+      {
+        "sel": "hcta",
+        "top": 2360.55,
+        "h": 398.19,
+        "pt": "72px",
+        "pb": "0px",
+        "mt": "88px"
+      }
+    ],
+    "strip": {
+      "cols": "351px 351px",
+      "gut": "14px",
+      "cellCount": 6,
+      "cells": [
+        {
+          "w": 351,
+          "h": 526.5,
+          "ar": 0.67,
+          "top": 782.55,
+          "left": 26,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            768,
+            1152
+          ],
+          "src": "32-img-0404-800w.webp"
+        },
+        {
+          "w": 351,
+          "h": 526.5,
+          "ar": 0.67,
+          "top": 1323.05,
+          "left": 26,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            768,
+            1152
+          ],
+          "src": "14-img-0026-800w.webp"
+        },
+        {
+          "w": 351,
+          "h": 263.25,
+          "ar": 1.33,
+          "top": 1863.55,
+          "left": 26,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            768,
+            576
+          ],
+          "src": "4-img-0068-800w.webp"
+        },
+        {
+          "w": 351,
+          "h": 526.5,
+          "ar": 0.67,
+          "top": 782.55,
+          "left": 391,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            768,
+            1152
+          ],
+          "src": "49-img-0131-800w.webp"
+        },
+        {
+          "w": 351,
+          "h": 438.75,
+          "ar": 0.8,
+          "top": 1323.05,
+          "left": 391,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            768,
+            960
+          ],
+          "src": "26-img-0253-800w.webp"
+        },
+        {
+          "w": 351,
+          "h": 438.75,
+          "ar": 0.8,
+          "top": 1775.8,
+          "left": 391,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            768,
+            960
+          ],
+          "src": "40-img-0092-800w.webp"
+        }
+      ]
+    },
+    "bandTop": 2360.55,
+    "bandH": 398.19,
+    "stripHeadTop": 736.55,
+    "ctas": [
+      {
+        "txt": "Home",
+        "top": 37,
+        "w": 34.11,
+        "h": 44,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px"
+      },
+      {
+        "txt": "Portfolio",
+        "top": 37,
+        "w": 48.52,
+        "h": 44,
+        "color": "rgba(255, 255, 255, 0.82)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px"
+      },
+      {
+        "txt": "About",
+        "top": 37,
+        "w": 34.45,
+        "h": 44,
+        "color": "rgba(255, 255, 255, 0.82)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px"
+      },
+      {
+        "txt": "Services",
+        "top": 37,
+        "w": 50.2,
+        "h": 44,
+        "color": "rgba(255, 255, 255, 0.82)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px"
+      },
+      {
+        "txt": "Contact",
+        "top": 37,
+        "w": 45.41,
+        "h": 44,
+        "color": "rgba(255, 255, 255, 0.82)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px"
+      },
+      {
+        "txt": "View portfolio",
+        "top": 524.55,
+        "w": 154.41,
+        "h": 44,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "14px 0px"
+      },
+      {
+        "txt": "View packages →",
+        "top": 2595.73,
+        "w": 157.83,
+        "h": 44,
+        "color": "rgb(13, 13, 13)",
+        "bg": "rgb(255, 255, 255)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px 22px"
+      }
+    ],
+    "heroBtn": {
+      "w": 157.83,
+      "h": 44
+    },
+    "firstScreen": {
+      "heroEnd": 664.55,
+      "fold": 852,
+      "heroCoversFold": false,
+      "ctaVisibleInFold": true,
+      "ledeVisibleInFold": true,
+      "stripInFirstFold": true
+    },
+    "media": {
+      "hoverHover": true,
+      "pointerCoarse": false,
+      "reducedMotion": false,
+      "dark": true
+    },
+    "filtersApplied": 6,
+    "imgCount": 7,
+    "lazyCount": 0,
+    "headerPos": "absolute",
+    "isBw": true,
+    "hairlineColour": "#e6e6e6",
+    "dvhUsed": 0
+  },
+  "1440": {
+    "vw": 1440,
+    "vh": 852,
+    "docH": 4299,
+    "screens": 5.05,
+    "heroH": 664.55,
+    "heroFill": 0.78,
+    "heroCleanPhotoPct": 22.01,
+    "heroTypeBands": {
+      "eyebrow": [
+        146.23,
+        159.23
+      ],
+      "h1": [
+        177.23,
+        409.55
+      ],
+      "lede": [
+        443.55,
+        494.55
+      ],
+      "cta": [
+        524.55,
+        568.55
+      ],
+      "meta": [
+        622.55,
+        664.55
+      ]
+    },
+    "heroImg": {
+      "objFit": "cover",
+      "objPos": "50% 0%",
+      "w": 1600,
+      "h": 1244,
+      "ar": 1.29,
+      "boxAr": 2.17,
+      "loading": "eager",
+      "fetchprio": "high",
+      "decoding": "async",
+      "currentSrc": "27-img-0297-1600w.webp"
+    },
+    "h1": {
+      "text": "Timeless Portraiture",
+      "fs": "132px",
+      "lh": "116.16px",
+      "boxW": 990,
+      "scrollW": 1011,
+      "clientW": 990,
+      "overflowsBy": 21,
+      "wrap": "normal",
+      "h": 232.31,
+      "lineCount": 2,
+      "lines": [
+        {
+          "y": 146.23,
+          "words": 1,
+          "right": 729.56,
+          "left": 26
+        },
+        {
+          "y": 262.39,
+          "words": 1,
+          "right": 1037.27,
+          "left": 26
+        }
+      ]
+    },
+    "typeEls": [
+      {
+        "sel": "logo",
+        "txt": "SHUTTERHAUS\n        \n      \n      ",
+        "fs": "16px",
+        "lh": "13.76px",
+        "ls": "-0.32px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 140.25,
+        "h": 54.67,
+        "top": 31.66,
+        "lines": 4
+      },
+      {
+        "sel": "nav-link is-active",
+        "txt": "Home",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "0.12px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 34.11,
+        "h": 44,
+        "top": 37,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "Portfolio",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "0.12px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 48.52,
+        "h": 44,
+        "top": 37,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "About",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "0.12px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 34.45,
+        "h": 44,
+        "top": 37,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "Services",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "0.12px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 50.2,
+        "h": 44,
+        "top": 37,
+        "lines": null
+      },
+      {
+        "sel": "nav-link",
+        "txt": "Contact",
+        "fs": "12px",
+        "lh": "normal",
+        "ls": "0.12px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 45.41,
+        "h": 44,
+        "top": 37,
+        "lines": null
+      },
+      {
+        "sel": "eyebrow",
+        "txt": "Photography is poetry.",
+        "fs": "11px",
+        "lh": "normal",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "18px",
+        "w": 1388,
+        "h": 13,
+        "top": 146.23,
+        "lines": null
+      },
+      {
+        "sel": "hero__h",
+        "txt": "Timeless Portraiture",
+        "fs": "132px",
+        "lh": "116.16px",
+        "ls": "-4.62px",
+        "ff": "Archivo Black",
+        "mt": "0px",
+        "mb": "34px",
+        "w": 990,
+        "h": 232.31,
+        "top": 177.23,
+        "lines": 2
+      },
+      {
+        "sel": "hero__lede",
+        "txt": "Real people. Honest moments. Portr",
+        "fs": "15px",
+        "lh": "25.5px",
+        "ls": "normal",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "30px",
+        "w": 378.52,
+        "h": 51,
+        "top": 443.55,
+        "lines": 2
+      },
+      {
+        "sel": "cta",
+        "txt": "View portfolio",
+        "fs": "11px",
+        "lh": "normal",
+        "ls": "1.76px",
+        "ff": "Inter",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 154.41,
+        "h": 44,
+        "top": 524.55,
+        "lines": null
+      },
+      {
+        "sel": "hstrip__head",
+        "txt": "Selected work06 frames",
+        "fs": "11px",
+        "lh": "11px",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "22px",
+        "w": 1388,
+        "h": 24,
+        "top": 736.55,
+        "lines": 2
+      },
+      {
+        "sel": "eyebrow",
+        "txt": "Services",
+        "fs": "10.5px",
+        "lh": "normal",
+        "ls": "1.47px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "20px",
+        "w": 781.66,
+        "h": 13,
+        "top": 3776.55,
+        "lines": null
+      },
+      {
+        "sel": "hcta__h",
+        "txt": "Capture What Matters.",
+        "fs": "118px",
+        "lh": "106.2px",
+        "ls": "-4.13px",
+        "ff": "Archivo Black",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 708.34,
+        "h": 318.56,
+        "top": 3809.55,
+        "lines": 3
+      },
+      {
+        "sel": "hcta__k",
+        "txt": "From",
+        "fs": "11px",
+        "lh": "11px",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "12px",
+        "w": 558.33,
+        "h": 11,
+        "top": 3914.33,
+        "lines": 1
+      },
+      {
+        "sel": "hcta__price",
+        "txt": "R1,200",
+        "fs": "64px",
+        "lh": "64px",
+        "ls": "-1.28px",
+        "ff": "Archivo Black",
+        "mt": "0px",
+        "mb": "14px",
+        "w": 558.33,
+        "h": 64,
+        "top": 3937.33,
+        "lines": 1
+      },
+      {
+        "sel": "hcta__note",
+        "txt": "Starter · Essential · Signature · ",
+        "fs": "12px",
+        "lh": "20.4px",
+        "ls": "normal",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "28px",
+        "w": 558.33,
+        "h": 40.78,
+        "top": 4015.33,
+        "lines": 2
+      },
+      {
+        "sel": "hcta__btn",
+        "txt": "View packages →",
+        "fs": "11px",
+        "lh": "11px",
+        "ls": "1.54px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 157.83,
+        "h": 44,
+        "top": 4084.11,
+        "lines": 4
+      },
+      {
+        "sel": "hcta__foot",
+        "txt": "itsnotalwin@gmail.com\n        +27 ",
+        "fs": "11px",
+        "lh": "15.4px",
+        "ls": "1.32px",
+        "ff": "ui-monospace",
+        "mt": "0px",
+        "mb": "0px",
+        "w": 1388,
+        "h": 55,
+        "top": 4192.11,
+        "lines": 4
+      }
+    ],
+    "rhythm": [
+      {
+        "from": "hero",
+        "to": "hstrip",
+        "gapPx": null,
+        "gapAfterPad": null
+      },
+      {
+        "from": "hstrip",
+        "to": "hcta",
+        "gapPx": null,
+        "gapAfterPad": null
+      }
+    ],
+    "secs": [
+      {
+        "sel": "hero",
+        "top": 0,
+        "h": 664.55,
+        "pt": "0px",
+        "pb": "0px",
+        "mt": "0px"
+      },
+      {
+        "sel": "hstrip",
+        "top": 664.55,
+        "h": 2952,
+        "pt": "72px",
+        "pb": "0px",
+        "mt": "0px"
+      },
+      {
+        "sel": "hcta",
+        "top": 3704.55,
+        "h": 542.56,
+        "pt": "72px",
+        "pb": "0px",
+        "mt": "88px"
+      }
+    ],
+    "strip": {
+      "cols": "687px 687px",
+      "gut": "14px",
+      "cellCount": 6,
+      "cells": [
+        {
+          "w": 687,
+          "h": 1030.5,
+          "ar": 0.67,
+          "top": 782.55,
+          "left": 26,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            1440,
+            2160
+          ],
+          "src": "32-img-0404-1600w.webp"
+        },
+        {
+          "w": 687,
+          "h": 1030.5,
+          "ar": 0.67,
+          "top": 1827.05,
+          "left": 26,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            1440,
+            2160
+          ],
+          "src": "14-img-0026-1600w.webp"
+        },
+        {
+          "w": 687,
+          "h": 515.25,
+          "ar": 1.33,
+          "top": 2871.55,
+          "left": 26,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            1440,
+            1080
+          ],
+          "src": "4-img-0068-1600w.webp"
+        },
+        {
+          "w": 687,
+          "h": 1030.5,
+          "ar": 0.67,
+          "top": 782.55,
+          "left": 727,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            1440,
+            2160
+          ],
+          "src": "49-img-0131-1600w.webp"
+        },
+        {
+          "w": 687,
+          "h": 858.75,
+          "ar": 0.8,
+          "top": 1827.05,
+          "left": 727,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            1440,
+            1800
+          ],
+          "src": "26-img-0253-1600w.webp"
+        },
+        {
+          "w": 687,
+          "h": 858.75,
+          "ar": 0.8,
+          "top": 2699.8,
+          "left": 727,
+          "loading": "eager",
+          "filter": "grayscale(1) contrast(1.06)",
+          "natural": [
+            1440,
+            1800
+          ],
+          "src": "40-img-0092-1600w.webp"
+        }
+      ]
+    },
+    "bandTop": 3704.55,
+    "bandH": 542.56,
+    "stripHeadTop": 736.55,
+    "ctas": [
+      {
+        "txt": "Home",
+        "top": 37,
+        "w": 34.11,
+        "h": 44,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px"
+      },
+      {
+        "txt": "Portfolio",
+        "top": 37,
+        "w": 48.52,
+        "h": 44,
+        "color": "rgba(255, 255, 255, 0.82)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px"
+      },
+      {
+        "txt": "About",
+        "top": 37,
+        "w": 34.45,
+        "h": 44,
+        "color": "rgba(255, 255, 255, 0.82)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px"
+      },
+      {
+        "txt": "Services",
+        "top": 37,
+        "w": 50.2,
+        "h": 44,
+        "color": "rgba(255, 255, 255, 0.82)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px"
+      },
+      {
+        "txt": "Contact",
+        "top": 37,
+        "w": 45.41,
+        "h": 44,
+        "color": "rgba(255, 255, 255, 0.82)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px"
+      },
+      {
+        "txt": "View portfolio",
+        "top": 524.55,
+        "w": 154.41,
+        "h": 44,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "14px 0px"
+      },
+      {
+        "txt": "View packages →",
+        "top": 4084.11,
+        "w": 157.83,
+        "h": 44,
+        "color": "rgb(13, 13, 13)",
+        "bg": "rgb(255, 255, 255)",
+        "deco": "none",
+        "minH": "44px",
+        "pad": "0px 22px"
+      }
+    ],
+    "heroBtn": {
+      "w": 157.83,
+      "h": 44
+    },
+    "firstScreen": {
+      "heroEnd": 664.55,
+      "fold": 852,
+      "heroCoversFold": false,
+      "ctaVisibleInFold": true,
+      "ledeVisibleInFold": true,
+      "stripInFirstFold": true
+    },
+    "media": {
+      "hoverHover": true,
+      "pointerCoarse": false,
+      "reducedMotion": false,
+      "dark": true
+    },
+    "filtersApplied": 6,
+    "imgCount": 7,
+    "lazyCount": 0,
+    "headerPos": "absolute",
+    "isBw": true,
+    "hairlineColour": "#e6e6e6",
+    "dvhUsed": 0
+  },
+  "headerScroll": [
+    {
+      "y": 0,
+      "top": 0,
+      "pos": "absolute",
+      "bg": "rgba(0, 0, 0, 0)",
+      "cls": "site-header"
+    },
+    {
+      "y": 200,
+      "top": -200,
+      "pos": "absolute",
+      "bg": "rgba(0, 0, 0, 0)",
+      "cls": "site-header"
+    },
+    {
+      "y": 600,
+      "top": -600,
+      "pos": "absolute",
+      "bg": "rgba(0, 0, 0, 0)",
+      "cls": "site-header"
+    },
+    {
+      "y": 1200,
+      "top": -1200,
+      "pos": "absolute",
+      "bg": "rgba(0, 0, 0, 0)",
+      "cls": "site-header"
+    },
+    {
+      "y": 1349,
+      "top": -1349,
+      "pos": "absolute",
+      "bg": "rgba(0, 0, 0, 0)",
+      "cls": "site-header"
+    }
+  ],
+  "heroContrast": {
+    "scrimImage": "linear-gradient(rgba(0, 0, 0, 0.36), rgba(0, 0, 0, 0.12) 22%, rgba(0, 0, 0, 0.62) 34%, rgba(0, 0, 0, 0.66) 40%, rgba(0, 0, 0, 0.7) 66%, rgba(0, 0, 0, 0.76) 80%, rgba(0, 0, 0, 0.86))"
+  },
+  "network": {
+    "reqCount": 13,
+    "totalKB": 556.63,
+    "imageKB": 270.06,
+    "biggest": [
+      {
+        "n": "store-CopFagkt.js",
+        "kb": 227.77,
+        "start": 13.2,
+        "end": 59.9
+      },
+      {
+        "n": "27-img-0297-1600w.webp",
+        "kb": 177.35,
+        "start": 208.4,
+        "end": 240.3
+      },
+      {
+        "n": "main-VusXOdZL.js",
+        "kb": 32.52,
+        "start": 13.3,
+        "end": 42.4
+      },
+      {
+        "n": "14-img-0026-400w.webp",
+        "kb": 25.44,
+        "start": 208.5,
+        "end": 247.4
+      },
+      {
+        "n": "32-img-0404-400w.webp",
+        "kb": 23.51,
+        "start": 208.5,
+        "end": 239.4
+      },
+      {
+        "n": "49-img-0131-400w.webp",
+        "kb": 14.51,
+        "start": 208.6,
+        "end": 243.3
+      },
+      {
+        "n": "store-BD9Gc7V4.css",
+        "kb": 14.11,
+        "start": 13.3,
+        "end": 35.8
+      },
+      {
+        "n": "26-img-0253-400w.webp",
+        "kb": 11.47,
+        "start": 208.7,
+        "end": 239.8
+      }
+    ],
+    "domContentLoaded": 209.2,
+    "load": 252.2,
+    "fcp": 228,
+    "lcp": null
+  }
+}

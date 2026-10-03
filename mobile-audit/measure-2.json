@@ -1,0 +1,456 @@
+{
+ "portfolio": {
+  "gridCls": "page portfolio",
+  "gridTag": "SECTION",
+  "display": "block",
+  "cols": "none",
+  "gap": "normal",
+  "w": 357,
+  "childrenCount": 3,
+  "kids": [
+   {
+    "cls": "phead",
+    "tag": "HEADER",
+    "w": 357,
+    "h": 92.6,
+    "left": 18,
+    "top": 92
+   },
+   {
+    "cls": "pf-rows",
+    "tag": "DIV",
+    "w": 357,
+    "h": 1692.8,
+    "left": 18,
+    "top": 184.6
+   },
+   {
+    "cls": "hcta",
+    "tag": "SECTION",
+    "w": 393,
+    "h": 530.2,
+    "left": 0,
+    "top": 1965.4
+   }
+  ],
+  "tileH": [
+   93,
+   1693,
+   530
+  ],
+  "tileW": [
+   357,
+   393
+  ],
+  "figureAspect": "1600 / 2400",
+  "imgLoading": [
+   "lazy",
+   "auto"
+  ],
+  "imgSizes": [
+   {
+    "src": "49-img-0131-1200w.webp",
+    "natW": 393,
+    "natH": 589,
+    "renderW": 111
+   },
+   {
+    "src": "48-img-0128-1200w.webp",
+    "natW": 393,
+    "natH": 589,
+    "renderW": 111
+   },
+   {
+    "src": "25-img-0249-1200w.webp",
+    "natW": 393,
+    "natH": 589,
+    "renderW": 111
+   },
+   {
+    "src": "14-img-0026-1200w.webp",
+    "natW": 393,
+    "natH": 589,
+    "renderW": 111
+   },
+   {
+    "src": "15-img-0025-1200w.webp",
+    "natW": 393,
+    "natH": 589,
+    "renderW": 111
+   }
+  ]
+ },
+ "portfolioTaps": [
+  {
+   "tag": "a",
+   "cls": "logo",
+   "txt": "SHUTTERHAUS\n        \n     ",
+   "w": 128,
+   "h": 48.6,
+   "tapH": 48.6
+  },
+  {
+   "tag": "button",
+   "cls": "burger",
+   "txt": "",
+   "w": 44,
+   "h": 44,
+   "tapH": 44
+  },
+  {
+   "tag": "a",
+   "cls": "nav-link",
+   "txt": "Home",
+   "w": 321,
+   "h": 46,
+   "tapH": 46
+  },
+  {
+   "tag": "a",
+   "cls": "nav-link is-active",
+   "txt": "Portfolio",
+   "w": 321,
+   "h": 46,
+   "tapH": 46
+  },
+  {
+   "tag": "a",
+   "cls": "nav-link",
+   "txt": "About",
+   "w": 321,
+   "h": 46,
+   "tapH": 46
+  },
+  {
+   "tag": "a",
+   "cls": "nav-link",
+   "txt": "Services",
+   "w": 321,
+   "h": 46,
+   "tapH": 46
+  },
+  {
+   "tag": "a",
+   "cls": "nav-link",
+   "txt": "Contact",
+   "w": 321,
+   "h": 45,
+   "tapH": 45
+  },
+  {
+   "tag": "a",
+   "cls": "social",
+   "txt": "",
+   "w": 44,
+   "h": 44,
+   "tapH": 44
+  },
+  {
+   "tag": "a",
+   "cls": "social",
+   "txt": "",
+   "w": 44,
+   "h": 44,
+   "tapH": 44
+  },
+  {
+   "tag": "a",
+   "cls": "hcta__btn",
+   "txt": "Get a quote →",
+   "w": 142.7,
+   "h": 44,
+   "tapH": 44
+  },
+  {
+   "tag": "a",
+   "cls": "",
+   "txt": "itsnotalwin@gmail.com",
+   "w": 154.7,
+   "h": 44,
+   "tapH": 44
+  },
+  {
+   "tag": "a",
+   "cls": "",
+   "txt": "+27 73 095 8363",
+   "w": 110.5,
+   "h": 44,
+   "tapH": 44
+  },
+  {
+   "tag": "a",
+   "cls": "",
+   "txt": "Instagram",
+   "w": 66.3,
+   "h": 44,
+   "tapH": 44
+  }
+ ],
+ "header": {
+  "rect": {
+   "w": 393,
+   "h": 92
+  },
+  "position": "relative",
+  "bg": "rgba(0, 0, 0, 0)",
+  "backdrop": "none",
+  "classes": "site-header",
+  "links": [
+   {
+    "txt": "SHUTTERHAUS\n  ",
+    "w": 128,
+    "h": 48.6
+   },
+   {
+    "txt": "",
+    "w": 44,
+    "h": 44
+   },
+   {
+    "txt": "Home",
+    "w": 321,
+    "h": 46
+   },
+   {
+    "txt": "Portfolio",
+    "w": 321,
+    "h": 46
+   },
+   {
+    "txt": "About",
+    "w": 321,
+    "h": 46
+   },
+   {
+    "txt": "Services",
+    "w": 321,
+    "h": 46
+   },
+   {
+    "txt": "Contact",
+    "w": 321,
+    "h": 45
+   },
+   {
+    "txt": "",
+    "w": 44,
+    "h": 44
+   },
+   {
+    "txt": "",
+    "w": 44,
+    "h": 44
+   }
+  ]
+ },
+ "rhythm_home": [
+  {
+   "cls": "page home",
+   "top": 0,
+   "h": 2183,
+   "pt": "0px",
+   "pb": "18px",
+   "mt": "0px"
+  },
+  {
+   "cls": "hstrip",
+   "top": 613,
+   "h": 890,
+   "pt": "72px",
+   "pb": "0px",
+   "mt": "0px"
+  },
+  {
+   "cls": "hcta",
+   "top": 1591,
+   "h": 573,
+   "pt": "54px",
+   "pb": "0px",
+   "mt": "88px"
+  }
+ ],
+ "rhythm_services": [
+  {
+   "cls": "page services",
+   "top": 92,
+   "h": 3866,
+   "pt": "0px",
+   "pb": "18px",
+   "mt": "0px"
+  },
+  {
+   "cls": "invest",
+   "top": 3127,
+   "h": 208,
+   "pt": "40px",
+   "pb": "44px",
+   "mt": "76px"
+  }
+ ],
+ "rhythm_contact": [
+  {
+   "cls": "page contact",
+   "top": 92,
+   "h": 1356,
+   "pt": "0px",
+   "pb": "18px",
+   "mt": "0px"
+  }
+ ],
+ "rhythm_about": [
+  {
+   "cls": "page about",
+   "top": 92,
+   "h": 1096,
+   "pt": "0px",
+   "pb": "18px",
+   "mt": "0px"
+  }
+ ],
+ "form": [
+  {
+   "tag": "BUTTON",
+   "type": "button",
+   "cls": "burger",
+   "w": 44,
+   "h": 44,
+   "fs": "13.3333px",
+   "lh": "normal",
+   "ph": "",
+   "phColor": ""
+  },
+  {
+   "tag": "LABEL",
+   "type": "",
+   "cls": "",
+   "w": 357,
+   "h": 64,
+   "fs": "11px",
+   "lh": "normal",
+   "ph": "",
+   "phColor": ""
+  },
+  {
+   "tag": "INPUT",
+   "type": "text",
+   "cls": "",
+   "w": 357,
+   "h": 44,
+   "fs": "16px",
+   "lh": "normal",
+   "ph": "",
+   "phColor": ""
+  },
+  {
+   "tag": "LABEL",
+   "type": "",
+   "cls": "",
+   "w": 357,
+   "h": 64,
+   "fs": "11px",
+   "lh": "normal",
+   "ph": "",
+   "phColor": ""
+  },
+  {
+   "tag": "INPUT",
+   "type": "email",
+   "cls": "",
+   "w": 357,
+   "h": 44,
+   "fs": "16px",
+   "lh": "normal",
+   "ph": "",
+   "phColor": ""
+  },
+  {
+   "tag": "LABEL",
+   "type": "",
+   "cls": "",
+   "w": 357,
+   "h": 64,
+   "fs": "11px",
+   "lh": "normal",
+   "ph": "",
+   "phColor": ""
+  },
+  {
+   "tag": "SELECT",
+   "type": "select-one",
+   "cls": "",
+   "w": 357,
+   "h": 44,
+   "fs": "16px",
+   "lh": "normal",
+   "ph": "",
+   "phColor": ""
+  },
+  {
+   "tag": "LABEL",
+   "type": "",
+   "cls": "",
+   "w": 357,
+   "h": 122,
+   "fs": "11px",
+   "lh": "normal",
+   "ph": "",
+   "phColor": ""
+  },
+  {
+   "tag": "TEXTAREA",
+   "type": "textarea",
+   "cls": "",
+   "w": 357,
+   "h": 102,
+   "fs": "16px",
+   "lh": "normal",
+   "ph": "",
+   "phColor": ""
+  },
+  {
+   "tag": "BUTTON",
+   "type": "submit",
+   "cls": "",
+   "w": 138.1,
+   "h": 48,
+   "fs": "12px",
+   "lh": "normal",
+   "ph": "",
+   "phColor": ""
+  },
+  {
+   "tag": "BUTTON",
+   "type": "button",
+   "cls": "lb__x",
+   "w": 0,
+   "h": 0,
+   "fs": "34px",
+   "lh": "34px",
+   "ph": "",
+   "phColor": ""
+  },
+  {
+   "tag": "BUTTON",
+   "type": "button",
+   "cls": "lb__nav lb__nav--p",
+   "w": 0,
+   "h": 0,
+   "fs": "30px",
+   "lh": "30px",
+   "ph": "",
+   "phColor": ""
+  },
+  {
+   "tag": "BUTTON",
+   "type": "button",
+   "cls": "lb__nav lb__nav--n",
+   "w": 0,
+   "h": 0,
+   "fs": "30px",
+   "lh": "30px",
+   "ph": "",
+   "phColor": ""
+  }
+ ],
+ "formPlaceholder": "rgb(17, 17, 17) / 1 / font 16px"
+}

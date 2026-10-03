@@ -1,0 +1,131 @@
+{
+  "home": {
+    "closed": {
+      "navClass": "site-nav",
+      "burgerClass": "burger",
+      "aria": "false",
+      "bodyClass": "",
+      "vis": "hidden",
+      "op": "0",
+      "disp": "flex",
+      "pe": "auto",
+      "pos": "absolute",
+      "top": "0px",
+      "rect": {
+        "x": 18,
+        "y": 69,
+        "w": 357,
+        "h": 250
+      },
+      "matchesIsOpen": false,
+      "mediaMQ640": true
+    },
+    "afterTouch": {
+      "navClass": "site-nav is-open",
+      "burgerClass": "burger is-on",
+      "aria": "true",
+      "bodyClass": "nav-open",
+      "vis": "visible",
+      "op": "1",
+      "disp": "flex",
+      "pe": "auto",
+      "pos": "absolute",
+      "top": "0px",
+      "rect": {
+        "x": 18,
+        "y": 75,
+        "w": 357,
+        "h": 250
+      },
+      "matchesIsOpen": true,
+      "mediaMQ640": true
+    },
+    "shot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-root-home.png"
+  },
+  "portfolio": {
+    "closed": {
+      "navClass": "site-nav",
+      "burgerClass": "burger",
+      "aria": "false",
+      "bodyClass": "nav-open",
+      "vis": "hidden",
+      "op": "0",
+      "disp": "flex",
+      "pe": "auto",
+      "pos": "absolute",
+      "top": "0px",
+      "rect": {
+        "x": 18,
+        "y": 69,
+        "w": 357,
+        "h": 250
+      },
+      "matchesIsOpen": false,
+      "mediaMQ640": true
+    },
+    "afterTouch": {
+      "navClass": "site-nav is-open",
+      "burgerClass": "burger is-on",
+      "aria": "true",
+      "bodyClass": "nav-open",
+      "vis": "visible",
+      "op": "1",
+      "disp": "flex",
+      "pe": "auto",
+      "pos": "absolute",
+      "top": "0px",
+      "rect": {
+        "x": 18,
+        "y": 75,
+        "w": 357,
+        "h": 250
+      },
+      "matchesIsOpen": true,
+      "mediaMQ640": true
+    },
+    "shot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-root-portfolio.png"
+  },
+  "about": {
+    "closed": {
+      "navClass": "site-nav",
+      "burgerClass": "burger",
+      "aria": "false",
+      "bodyClass": "nav-open",
+      "vis": "hidden",
+      "op": "0",
+      "disp": "flex",
+      "pe": "auto",
+      "pos": "absolute",
+      "top": "0px",
+      "rect": {
+        "x": 18,
+        "y": 69,
+        "w": 357,
+        "h": 250
+      },
+      "matchesIsOpen": false,
+      "mediaMQ640": true
+    },
+    "afterTouch": {
+      "navClass": "site-nav is-open",
+      "burgerClass": "burger is-on",
+      "aria": "true",
+      "bodyClass": "nav-open",
+      "vis": "visible",
+      "op": "1",
+      "disp": "flex",
+      "pe": "auto",
+      "pos": "absolute",
+      "top": "0px",
+      "rect": {
+        "x": 18,
+        "y": 75,
+        "w": 357,
+        "h": 250
+      },
+      "matchesIsOpen": true,
+      "mediaMQ640": true
+    },
+    "shot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-root-about.png"
+  }
+}

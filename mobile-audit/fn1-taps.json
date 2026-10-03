@@ -1,0 +1,636 @@
+{
+  "hit": {
+    "home": {
+      "navVis": "visible",
+      "navRect": {
+        "x": 18,
+        "y": 75,
+        "w": 357,
+        "h": 250
+      },
+      "navRight": 375,
+      "innerWidth": 393,
+      "overflowsRight": false,
+      "links": [
+        {
+          "text": "Home",
+          "href": "#/home",
+          "rect": {
+            "x": 36,
+            "y": 81,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link is-active",
+          "reachable": true,
+          "stack": [
+            "A.nav-link is-active",
+            "NAV.site-nav is-open",
+            "IMG.",
+            "FIGURE.hero__fig"
+          ]
+        },
+        {
+          "text": "Portfolio",
+          "href": "#/portfolio",
+          "rect": {
+            "x": 36,
+            "y": 127,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "IMG.",
+            "FIGURE.hero__fig"
+          ]
+        },
+        {
+          "text": "About",
+          "href": "#/about",
+          "rect": {
+            "x": 36,
+            "y": 173,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "IMG.",
+            "FIGURE.hero__fig"
+          ]
+        },
+        {
+          "text": "Services",
+          "href": "#/services",
+          "rect": {
+            "x": 36,
+            "y": 219,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "DIV.hero__body",
+            "IMG."
+          ]
+        },
+        {
+          "text": "Contact",
+          "href": "#/contact",
+          "rect": {
+            "x": 36,
+            "y": 265,
+            "w": 321,
+            "h": 45
+          },
+          "tapPx": "321x45",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "H1.hero__h",
+            "DIV.hero__body"
+          ]
+        }
+      ],
+      "blocked": 0,
+      "shot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-hit-home.png"
+    },
+    "portfolio": {
+      "navVis": "visible",
+      "navRect": {
+        "x": 18,
+        "y": 75,
+        "w": 357,
+        "h": 250
+      },
+      "navRight": 375,
+      "innerWidth": 393,
+      "overflowsRight": false,
+      "links": [
+        {
+          "text": "Home",
+          "href": "#/home",
+          "rect": {
+            "x": 36,
+            "y": 81,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "HEADER.phead",
+            "SECTION.page portfolio"
+          ]
+        },
+        {
+          "text": "Portfolio",
+          "href": "#/portfolio",
+          "rect": {
+            "x": 36,
+            "y": 127,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link is-active",
+          "reachable": true,
+          "stack": [
+            "A.nav-link is-active",
+            "NAV.site-nav is-open",
+            "H1.phead__h",
+            "HEADER.phead"
+          ]
+        },
+        {
+          "text": "About",
+          "href": "#/about",
+          "rect": {
+            "x": 36,
+            "y": 173,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "IMG.is-loaded",
+            "PICTURE."
+          ]
+        },
+        {
+          "text": "Services",
+          "href": "#/services",
+          "rect": {
+            "x": 36,
+            "y": 219,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "IMG.is-loaded",
+            "PICTURE."
+          ]
+        },
+        {
+          "text": "Contact",
+          "href": "#/contact",
+          "rect": {
+            "x": 36,
+            "y": 265,
+            "w": 321,
+            "h": 45
+          },
+          "tapPx": "321x45",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "IMG.is-loaded",
+            "PICTURE."
+          ]
+        }
+      ],
+      "blocked": 0,
+      "shot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-hit-portfolio.png"
+    },
+    "about": {
+      "navVis": "visible",
+      "navRect": {
+        "x": 18,
+        "y": 75,
+        "w": 357,
+        "h": 250
+      },
+      "navRight": 375,
+      "innerWidth": 393,
+      "overflowsRight": false,
+      "links": [
+        {
+          "text": "Home",
+          "href": "#/home",
+          "rect": {
+            "x": 36,
+            "y": 81,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "DIV.about__body",
+            "SECTION.page about"
+          ]
+        },
+        {
+          "text": "Portfolio",
+          "href": "#/portfolio",
+          "rect": {
+            "x": 36,
+            "y": 127,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "DIV.about__body",
+            "SECTION.page about"
+          ]
+        },
+        {
+          "text": "About",
+          "href": "#/about",
+          "rect": {
+            "x": 36,
+            "y": 173,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link is-active",
+          "reachable": true,
+          "stack": [
+            "A.nav-link is-active",
+            "NAV.site-nav is-open",
+            "H1.about__h",
+            "DIV.about__body"
+          ]
+        },
+        {
+          "text": "Services",
+          "href": "#/services",
+          "rect": {
+            "x": 36,
+            "y": 219,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "DIV.about__body",
+            "SECTION.page about"
+          ]
+        },
+        {
+          "text": "Contact",
+          "href": "#/contact",
+          "rect": {
+            "x": 36,
+            "y": 265,
+            "w": 321,
+            "h": 45
+          },
+          "tapPx": "321x45",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "P.about__p",
+            "DIV.prose about__prose"
+          ]
+        }
+      ],
+      "blocked": 0,
+      "shot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-hit-about.png"
+    },
+    "services": {
+      "navVis": "visible",
+      "navRect": {
+        "x": 18,
+        "y": 75,
+        "w": 357,
+        "h": 250
+      },
+      "navRight": 375,
+      "innerWidth": 393,
+      "overflowsRight": false,
+      "links": [
+        {
+          "text": "Home",
+          "href": "#/home",
+          "rect": {
+            "x": 36,
+            "y": 81,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "HEADER.shead",
+            "SECTION.page services"
+          ]
+        },
+        {
+          "text": "Portfolio",
+          "href": "#/portfolio",
+          "rect": {
+            "x": 36,
+            "y": 127,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "DIV.shead__col",
+            "HEADER.shead"
+          ]
+        },
+        {
+          "text": "About",
+          "href": "#/about",
+          "rect": {
+            "x": 36,
+            "y": 173,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "H1.shead__h",
+            "DIV.shead__col"
+          ]
+        },
+        {
+          "text": "Services",
+          "href": "#/services",
+          "rect": {
+            "x": 36,
+            "y": 219,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link is-active",
+          "reachable": true,
+          "stack": [
+            "A.nav-link is-active",
+            "NAV.site-nav is-open",
+            "HEADER.shead",
+            "SECTION.page services"
+          ]
+        },
+        {
+          "text": "Contact",
+          "href": "#/contact",
+          "rect": {
+            "x": 36,
+            "y": 265,
+            "w": 321,
+            "h": 45
+          },
+          "tapPx": "321x45",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "P.shead__p",
+            "HEADER.shead"
+          ]
+        }
+      ],
+      "blocked": 0,
+      "shot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-hit-services.png"
+    },
+    "contact": {
+      "navVis": "visible",
+      "navRect": {
+        "x": 18,
+        "y": 75,
+        "w": 357,
+        "h": 250
+      },
+      "navRight": 375,
+      "innerWidth": 393,
+      "overflowsRight": false,
+      "links": [
+        {
+          "text": "Home",
+          "href": "#/home",
+          "rect": {
+            "x": 36,
+            "y": 81,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "P.eyebrow",
+            "DIV.contact__col"
+          ]
+        },
+        {
+          "text": "Portfolio",
+          "href": "#/portfolio",
+          "rect": {
+            "x": 36,
+            "y": 127,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "H1.contact__h",
+            "DIV.contact__col"
+          ]
+        },
+        {
+          "text": "About",
+          "href": "#/about",
+          "rect": {
+            "x": 36,
+            "y": 173,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "H1.contact__h",
+            "DIV.contact__col"
+          ]
+        },
+        {
+          "text": "Services",
+          "href": "#/services",
+          "rect": {
+            "x": 36,
+            "y": 219,
+            "w": 321,
+            "h": 46
+          },
+          "tapPx": "321x46",
+          "inViewport": true,
+          "hitTag": "A.nav-link",
+          "reachable": true,
+          "stack": [
+            "A.nav-link",
+            "NAV.site-nav is-open",
+            "P.contact__p",
+            "DIV.contact__col"
+          ]
+        },
+        {
+          "text": "Contact",
+          "href": "#/contact",
+          "rect": {
+            "x": 36,
+            "y": 265,
+            "w": 321,
+            "h": 45
+          },
+          "tapPx": "321x45",
+          "inViewport": true,
+          "hitTag": "A.nav-link is-active",
+          "reachable": true,
+          "stack": [
+            "A.nav-link is-active",
+            "NAV.site-nav is-open",
+            "P.contact__p",
+            "DIV.contact__col"
+          ]
+        }
+      ],
+      "blocked": 0,
+      "shot": "C:\\Users\\Operations 3\\Documents\\HERMES\\01_Projects\\shutterhaus-site\\mobile-audit\\shots\\fn1-hit-contact.png"
+    }
+  },
+  "taps": {
+    "home": {
+      "closed": {
+        "totalInteractive": 10,
+        "offenders": []
+      },
+      "drawerOpen": {
+        "totalInteractive": 15,
+        "offenders": []
+      }
+    },
+    "portfolio": {
+      "closed": {
+        "totalInteractive": 38,
+        "offenders": []
+      },
+      "drawerOpen": {
+        "totalInteractive": 43,
+        "offenders": []
+      }
+    },
+    "about": {
+      "closed": {
+        "totalInteractive": 5,
+        "offenders": []
+      },
+      "drawerOpen": {
+        "totalInteractive": 10,
+        "offenders": []
+      }
+    },
+    "services": {
+      "closed": {
+        "totalInteractive": 8,
+        "offenders": []
+      },
+      "drawerOpen": {
+        "totalInteractive": 13,
+        "offenders": []
+      }
+    },
+    "contact": {
+      "closed": {
+        "totalInteractive": 12,
+        "offenders": []
+      },
+      "drawerOpen": {
+        "totalInteractive": 17,
+        "offenders": []
+      }
+    }
+  }
+}

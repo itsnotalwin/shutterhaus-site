@@ -1,0 +1,1233 @@
+{
+  "images": {
+    "home": {
+      "count": 7,
+      "rows": [
+        {
+          "file": "27-img-0297-1600w.jpg",
+          "trueW": 1600,
+          "trueH": 1244,
+          "reportedNatural": "1600x1244",
+          "cssBox": "393x613",
+          "neededAtDPR3": "1179x1840",
+          "wasteRatio": 0.92,
+          "tooSmallForDPR3": false,
+          "loading": "eager",
+          "fp": "high",
+          "alt": "Black and white portrait of a woman seated on the ground, legs to one side",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": false,
+          "pictureSources": []
+        },
+        {
+          "file": "32-img-0404-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "174x260",
+          "neededAtDPR3": "521x781",
+          "wasteRatio": 5.32,
+          "tooSmallForDPR3": false,
+          "loading": "eager",
+          "fp": "high",
+          "alt": "Black and white portrait of a woman seated on the floor in a patterned skirt",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/32-img-0404-400w.webp 400w, gallery/32-img-0404-800w",
+            "|image/jpeg|gallery/32-img-0404-400w.jpg 400w, gallery/32-img-0404-800w."
+          ]
+        },
+        {
+          "file": "14-img-0026-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "174x260",
+          "neededAtDPR3": "521x781",
+          "wasteRatio": 5.32,
+          "tooSmallForDPR3": false,
+          "loading": "eager",
+          "fp": "high",
+          "alt": "Black and white portrait of a woman with a hand in her hair",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/14-img-0026-400w.webp 400w, gallery/14-img-0026-800w",
+            "|image/jpeg|gallery/14-img-0026-400w.jpg 400w, gallery/14-img-0026-800w."
+          ]
+        },
+        {
+          "file": "4-img-0068-1200w.webp",
+          "trueW": 1200,
+          "trueH": 900,
+          "reportedNatural": "393x294",
+          "cssBox": "174x130",
+          "neededAtDPR3": "521x390",
+          "wasteRatio": 5.32,
+          "tooSmallForDPR3": false,
+          "loading": "eager",
+          "fp": "high",
+          "alt": "Black and white portrait of a young man in a beanie and sweatshirt",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/4-img-0068-400w.webp 400w, gallery/4-img-0068-800w.w",
+            "|image/jpeg|gallery/4-img-0068-400w.jpg 400w, gallery/4-img-0068-800w.jp"
+          ]
+        },
+        {
+          "file": "49-img-0131-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "174x260",
+          "neededAtDPR3": "521x781",
+          "wasteRatio": 5.32,
+          "tooSmallForDPR3": false,
+          "loading": "eager",
+          "fp": "high",
+          "alt": "Portrait of a woman in a black top and pale skirt, standing against a dark background",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/49-img-0131-400w.webp 400w, gallery/49-img-0131-800w",
+            "|image/jpeg|gallery/49-img-0131-400w.jpg 400w, gallery/49-img-0131-800w."
+          ]
+        },
+        {
+          "file": "26-img-0253-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1500,
+          "reportedNatural": "393x491",
+          "cssBox": "174x217",
+          "neededAtDPR3": "521x651",
+          "wasteRatio": 5.32,
+          "tooSmallForDPR3": false,
+          "loading": "eager",
+          "fp": "high",
+          "alt": "Portrait of a woman outdoors, backlit by low sun",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/26-img-0253-400w.webp 400w, gallery/26-img-0253-800w",
+            "|image/jpeg|gallery/26-img-0253-400w.jpg 400w, gallery/26-img-0253-800w."
+          ]
+        },
+        {
+          "file": "40-img-0092-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1500,
+          "reportedNatural": "393x491",
+          "cssBox": "174x217",
+          "neededAtDPR3": "521x651",
+          "wasteRatio": 5.32,
+          "tooSmallForDPR3": false,
+          "loading": "eager",
+          "fp": "high",
+          "alt": "Portrait of a woman in a black top and pale skirt, lit from the front against a dark wall",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/40-img-0092-400w.webp 400w, gallery/40-img-0092-800w",
+            "|image/jpeg|gallery/40-img-0092-400w.jpg 400w, gallery/40-img-0092-800w."
+          ]
+        }
+      ],
+      "imageResponses": [
+        {
+          "f": "27-img-0297-1600w.jpg",
+          "status": 200
+        },
+        {
+          "f": "32-img-0404-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "14-img-0026-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "4-img-0068-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "49-img-0131-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "26-img-0253-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "40-img-0092-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "27-img-0297-1600w.jpg",
+          "status": 200
+        },
+        {
+          "f": "32-img-0404-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "14-img-0026-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "4-img-0068-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "49-img-0131-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "26-img-0253-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "40-img-0092-1200w.webp",
+          "status": 200
+        }
+      ]
+    },
+    "portfolio": {
+      "count": 30,
+      "rows": [
+        {
+          "file": "49-img-0131-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "111x167",
+          "neededAtDPR3": "333x500",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Portrait of a woman in a black top and pale skirt, standing against a dark background",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/49-img-0131-400w.webp 400w, gallery/49-img-0131-800w",
+            "|image/jpeg|gallery/49-img-0131-400w.jpg 400w, gallery/49-img-0131-800w."
+          ]
+        },
+        {
+          "file": "48-img-0128-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "111x167",
+          "neededAtDPR3": "333x500",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Portrait of a woman in a black top and pale skirt, standing in low indoor light",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/48-img-0128-400w.webp 400w, gallery/48-img-0128-800w",
+            "|image/jpeg|gallery/48-img-0128-400w.jpg 400w, gallery/48-img-0128-800w."
+          ]
+        },
+        {
+          "file": "25-img-0249-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "111x167",
+          "neededAtDPR3": "333x500",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Black and white close portrait of a woman",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/25-img-0249-400w.webp 400w, gallery/25-img-0249-800w",
+            "|image/jpeg|gallery/25-img-0249-400w.jpg 400w, gallery/25-img-0249-800w."
+          ]
+        },
+        {
+          "file": "14-img-0026-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "111x167",
+          "neededAtDPR3": "333x500",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Black and white portrait of a woman with a hand in her hair",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/14-img-0026-400w.webp 400w, gallery/14-img-0026-800w",
+            "|image/jpeg|gallery/14-img-0026-400w.jpg 400w, gallery/14-img-0026-800w."
+          ]
+        },
+        {
+          "file": "15-img-0025-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "111x167",
+          "neededAtDPR3": "333x500",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Black and white portrait of a woman with her hair caught by the wind",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/15-img-0025-400w.webp 400w, gallery/15-img-0025-800w",
+            "|image/jpeg|gallery/15-img-0025-400w.jpg 400w, gallery/15-img-0025-800w."
+          ]
+        },
+        {
+          "file": "18-img-0043-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "111x167",
+          "neededAtDPR3": "333x500",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Black and white portrait of a woman outdoors, looking down",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/18-img-0043-400w.webp 400w, gallery/18-img-0043-800w",
+            "|image/jpeg|gallery/18-img-0043-400w.jpg 400w, gallery/18-img-0043-800w."
+          ]
+        },
+        {
+          "file": "32-img-0404-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "111x167",
+          "neededAtDPR3": "333x500",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Black and white portrait of a woman seated on the floor in a patterned skirt",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/32-img-0404-400w.webp 400w, gallery/32-img-0404-800w",
+            "|image/jpeg|gallery/32-img-0404-400w.jpg 400w, gallery/32-img-0404-800w."
+          ]
+        },
+        {
+          "file": "37-img-0124-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "111x167",
+          "neededAtDPR3": "333x500",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Black and white portrait of a woman resting her chin on her hand",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/37-img-0124-400w.webp 400w, gallery/37-img-0124-800w",
+            "|image/jpeg|gallery/37-img-0124-400w.jpg 400w, gallery/37-img-0124-800w."
+          ]
+        },
+        {
+          "file": "21-img-0234-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "111x167",
+          "neededAtDPR3": "333x500",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Black and white portrait of a woman outdoors in a thin-strapped top",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/21-img-0234-400w.webp 400w, gallery/21-img-0234-800w",
+            "|image/jpeg|gallery/21-img-0234-400w.jpg 400w, gallery/21-img-0234-800w."
+          ]
+        },
+        {
+          "file": "16-img-0030-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "111x167",
+          "neededAtDPR3": "333x500",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Black and white portrait of a woman outdoors",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/16-img-0030-400w.webp 400w, gallery/16-img-0030-800w",
+            "|image/jpeg|gallery/16-img-0030-400w.jpg 400w, gallery/16-img-0030-800w."
+          ]
+        },
+        {
+          "file": "12-img-0019-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "111x167",
+          "neededAtDPR3": "333x500",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Black and white portrait of a woman facing the camera",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/12-img-0019-400w.webp 400w, gallery/12-img-0019-800w",
+            "|image/jpeg|gallery/12-img-0019-400w.jpg 400w, gallery/12-img-0019-800w."
+          ]
+        },
+        {
+          "file": "13-img-0020-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "111x167",
+          "neededAtDPR3": "333x500",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Full-length portrait of a woman walking beside the water",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/13-img-0020-400w.webp 400w, gallery/13-img-0020-800w",
+            "|image/jpeg|gallery/13-img-0020-400w.jpg 400w, gallery/13-img-0020-800w."
+          ]
+        },
+        {
+          "file": "36-img-0076-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "111x167",
+          "neededAtDPR3": "333x500",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Black and white close portrait of a woman, tightly cropped",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/36-img-0076-400w.webp 400w, gallery/36-img-0076-800w",
+            "|image/jpeg|gallery/36-img-0076-400w.jpg 400w, gallery/36-img-0076-800w."
+          ]
+        },
+        {
+          "file": "50-img-0143-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "111x167",
+          "neededAtDPR3": "333x500",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Portrait of a woman in warm low light, looking directly at the camera",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/50-img-0143-400w.webp 400w, gallery/50-img-0143-800w",
+            "|image/jpeg|gallery/50-img-0143-400w.jpg 400w, gallery/50-img-0143-800w."
+          ]
+        },
+        {
+          "file": "2-20240718114526-img-0124-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "111x167",
+          "neededAtDPR3": "333x500",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Portrait of a woman in a white top outdoors, hair pulled back, in bright light",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/2-20240718114526-img-0124-400w.webp 400w, gallery/2-",
+            "|image/jpeg|gallery/2-20240718114526-img-0124-400w.jpg 400w, gallery/2-2"
+          ]
+        },
+        {
+          "file": "26-img-0253-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1500,
+          "reportedNatural": "393x491",
+          "cssBox": "111x139",
+          "neededAtDPR3": "333x416",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Portrait of a woman outdoors, backlit by low sun",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/26-img-0253-400w.webp 400w, gallery/26-img-0253-800w",
+            "|image/jpeg|gallery/26-img-0253-400w.jpg 400w, gallery/26-img-0253-800w."
+          ]
+        },
+        {
+          "file": "40-img-0092-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1500,
+          "reportedNatural": "393x491",
+          "cssBox": "111x139",
+          "neededAtDPR3": "333x416",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Portrait of a woman in a black top and pale skirt, lit from the front against a dark wall",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/40-img-0092-400w.webp 400w, gallery/40-img-0092-800w",
+            "|image/jpeg|gallery/40-img-0092-400w.jpg 400w, gallery/40-img-0092-800w."
+          ]
+        },
+        {
+          "file": "42-img-0095-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1500,
+          "reportedNatural": "393x491",
+          "cssBox": "111x139",
+          "neededAtDPR3": "333x416",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Portrait of a woman in a black top and pale skirt, arm raised overhead against a green backdrop",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/42-img-0095-400w.webp 400w, gallery/42-img-0095-800w",
+            "|image/jpeg|gallery/42-img-0095-400w.jpg 400w, gallery/42-img-0095-800w."
+          ]
+        },
+        {
+          "file": "30-img-0396-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1500,
+          "reportedNatural": "393x491",
+          "cssBox": "111x139",
+          "neededAtDPR3": "333x416",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Black and white portrait of a woman seated with both arms raised",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/30-img-0396-400w.webp 400w, gallery/30-img-0396-800w",
+            "|image/jpeg|gallery/30-img-0396-400w.jpg 400w, gallery/30-img-0396-800w."
+          ]
+        },
+        {
+          "file": "45-img-0118-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1500,
+          "reportedNatural": "393x491",
+          "cssBox": "111x139",
+          "neededAtDPR3": "333x416",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Portrait of a woman in a black top and pale skirt, standing with one hand at her hip",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/45-img-0118-400w.webp 400w, gallery/45-img-0118-800w",
+            "|image/jpeg|gallery/45-img-0118-400w.jpg 400w, gallery/45-img-0118-800w."
+          ]
+        },
+        {
+          "file": "46-img-0119-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1500,
+          "reportedNatural": "393x491",
+          "cssBox": "111x139",
+          "neededAtDPR3": "333x416",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Portrait of a woman in a black top and pale skirt, both arms raised overhead",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/46-img-0119-400w.webp 400w, gallery/46-img-0119-800w",
+            "|image/jpeg|gallery/46-img-0119-400w.jpg 400w, gallery/46-img-0119-800w."
+          ]
+        },
+        {
+          "file": "19-img-0198-3-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1500,
+          "reportedNatural": "393x491",
+          "cssBox": "111x139",
+          "neededAtDPR3": "333x416",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Close portrait of a woman smiling, lit by warm afternoon light",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/19-img-0198-3-400w.webp 400w, gallery/19-img-0198-3-",
+            "|image/jpeg|gallery/19-img-0198-3-400w.jpg 400w, gallery/19-img-0198-3-8"
+          ]
+        },
+        {
+          "file": "51-img-0145-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1500,
+          "reportedNatural": "393x491",
+          "cssBox": "111x139",
+          "neededAtDPR3": "333x416",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Portrait of a woman in a black top and pale skirt, hand resting on her head against a green backdrop",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/51-img-0145-400w.webp 400w, gallery/51-img-0145-800w",
+            "|image/jpeg|gallery/51-img-0145-400w.jpg 400w, gallery/51-img-0145-800w."
+          ]
+        },
+        {
+          "file": "28-img-0308-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1500,
+          "reportedNatural": "393x491",
+          "cssBox": "111x139",
+          "neededAtDPR3": "333x416",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Close portrait of a woman looking at the camera, soft neutral light",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/28-img-0308-400w.webp 400w, gallery/28-img-0308-800w",
+            "|image/jpeg|gallery/28-img-0308-400w.jpg 400w, gallery/28-img-0308-800w."
+          ]
+        },
+        {
+          "file": "47-img-0121-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1500,
+          "reportedNatural": "393x491",
+          "cssBox": "111x139",
+          "neededAtDPR3": "333x416",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Portrait of a woman in a black top and pale skirt, one arm raised against a green backdrop",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/47-img-0121-400w.webp 400w, gallery/47-img-0121-800w",
+            "|image/jpeg|gallery/47-img-0121-400w.jpg 400w, gallery/47-img-0121-800w."
+          ]
+        },
+        {
+          "file": "35-img-0482-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1500,
+          "reportedNatural": "393x491",
+          "cssBox": "111x139",
+          "neededAtDPR3": "333x416",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Black and white portrait of a woman crouching, looking at the camera",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/35-img-0482-400w.webp 400w, gallery/35-img-0482-800w",
+            "|image/jpeg|gallery/35-img-0482-400w.jpg 400w, gallery/35-img-0482-800w."
+          ]
+        },
+        {
+          "file": "9-img-0269-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1500,
+          "reportedNatural": "393x491",
+          "cssBox": "111x139",
+          "neededAtDPR3": "333x416",
+          "wasteRatio": 12.99,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Masts of boats in a harbour under a flat grey sky",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/9-img-0269-400w.webp 400w, gallery/9-img-0269-800w.w",
+            "|image/jpeg|gallery/9-img-0269-400w.jpg 400w, gallery/9-img-0269-800w.jp"
+          ]
+        },
+        {
+          "file": "24-img-0245-1200w.webp",
+          "trueW": 1200,
+          "trueH": 2133,
+          "reportedNatural": "393x698",
+          "cssBox": "111x197",
+          "neededAtDPR3": "333x592",
+          "wasteRatio": 12.98,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Portrait of a woman standing by the water under an overcast sky",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/24-img-0245-400w.webp 400w, gallery/24-img-0245-800w",
+            "|image/jpeg|gallery/24-img-0245-400w.jpg 400w, gallery/24-img-0245-800w."
+          ]
+        },
+        {
+          "file": "53-img-0155-1200w.webp",
+          "trueW": 1200,
+          "trueH": 2133,
+          "reportedNatural": "393x698",
+          "cssBox": "111x197",
+          "neededAtDPR3": "333x592",
+          "wasteRatio": 12.98,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Full-length portrait of a woman in a black top and pale skirt against a green backdrop",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/53-img-0155-400w.webp 400w, gallery/53-img-0155-800w",
+            "|image/jpeg|gallery/53-img-0155-400w.jpg 400w, gallery/53-img-0155-800w."
+          ]
+        },
+        {
+          "file": "20-img-0202-1200w.webp",
+          "trueW": 1200,
+          "trueH": 2133,
+          "reportedNatural": "393x698",
+          "cssBox": "111x197",
+          "neededAtDPR3": "333x592",
+          "wasteRatio": 12.98,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Portrait of a woman seated on a chair in a black top, lit warmly",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/20-img-0202-400w.webp 400w, gallery/20-img-0202-800w",
+            "|image/jpeg|gallery/20-img-0202-400w.jpg 400w, gallery/20-img-0202-800w."
+          ]
+        }
+      ],
+      "imageResponses": [
+        {
+          "f": "49-img-0131-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "14-img-0026-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "32-img-0404-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "26-img-0253-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "40-img-0092-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "25-img-0249-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "48-img-0128-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "15-img-0025-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "47-img-0121-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "28-img-0308-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "46-img-0119-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "13-img-0020-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "16-img-0030-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "12-img-0019-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "21-img-0234-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "45-img-0118-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "37-img-0124-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "30-img-0396-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "18-img-0043-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "53-img-0155-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "20-img-0202-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "36-img-0076-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "9-img-0269-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "2-20240718114526-img-0124-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "24-img-0245-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "35-img-0482-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "51-img-0145-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "42-img-0095-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "50-img-0143-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "19-img-0198-3-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "49-img-0131-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "48-img-0128-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "25-img-0249-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "14-img-0026-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "15-img-0025-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "18-img-0043-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "32-img-0404-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "37-img-0124-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "21-img-0234-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "16-img-0030-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "12-img-0019-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "13-img-0020-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "36-img-0076-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "50-img-0143-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "2-20240718114526-img-0124-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "26-img-0253-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "40-img-0092-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "42-img-0095-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "30-img-0396-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "45-img-0118-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "46-img-0119-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "19-img-0198-3-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "51-img-0145-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "28-img-0308-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "47-img-0121-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "35-img-0482-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "9-img-0269-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "24-img-0245-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "53-img-0155-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "20-img-0202-1200w.webp",
+          "status": 200
+        }
+      ]
+    },
+    "about": {
+      "count": 1,
+      "rows": [
+        {
+          "file": "49-img-0131-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "357x536",
+          "neededAtDPR3": "1071x1607",
+          "wasteRatio": 1.26,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Portrait of a woman in a black top and pale skirt, standing against a dark background",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/49-img-0131-400w.webp 400w, gallery/49-img-0131-800w",
+            "|image/jpeg|gallery/49-img-0131-400w.jpg 400w, gallery/49-img-0131-800w."
+          ]
+        }
+      ],
+      "imageResponses": [
+        {
+          "f": "49-img-0131-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "49-img-0131-1200w.webp",
+          "status": 200
+        }
+      ]
+    },
+    "services": {
+      "count": 4,
+      "rows": [
+        {
+          "file": "32-img-0404-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "357x268",
+          "neededAtDPR3": "1071x803",
+          "wasteRatio": 2.51,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Black and white portrait of a woman seated on the floor in a patterned skirt",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/32-img-0404-400w.webp 400w, gallery/32-img-0404-800w",
+            "|image/jpeg|gallery/32-img-0404-400w.jpg 400w, gallery/32-img-0404-800w."
+          ]
+        },
+        {
+          "file": "14-img-0026-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1800,
+          "reportedNatural": "393x589",
+          "cssBox": "357x268",
+          "neededAtDPR3": "1071x803",
+          "wasteRatio": 2.51,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Black and white portrait of a woman with a hand in her hair",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/14-img-0026-400w.webp 400w, gallery/14-img-0026-800w",
+            "|image/jpeg|gallery/14-img-0026-400w.jpg 400w, gallery/14-img-0026-800w."
+          ]
+        },
+        {
+          "file": "26-img-0253-1200w.webp",
+          "trueW": 1200,
+          "trueH": 1500,
+          "reportedNatural": "393x491",
+          "cssBox": "357x268",
+          "neededAtDPR3": "1071x803",
+          "wasteRatio": 2.09,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Portrait of a woman outdoors, backlit by low sun",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/26-img-0253-400w.webp 400w, gallery/26-img-0253-800w",
+            "|image/jpeg|gallery/26-img-0253-400w.jpg 400w, gallery/26-img-0253-800w."
+          ]
+        },
+        {
+          "file": "",
+          "trueW": 1600,
+          "trueH": 2000,
+          "reportedNatural": "0x0",
+          "cssBox": "357x268",
+          "neededAtDPR3": "1071x803",
+          "wasteRatio": 3.72,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Portrait of a woman in a black top and pale skirt, lit from the front against a dark wall",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": true,
+          "pictureSources": [
+            "|image/webp|gallery/40-img-0092-400w.webp 400w, gallery/40-img-0092-800w",
+            "|image/jpeg|gallery/40-img-0092-400w.jpg 400w, gallery/40-img-0092-800w."
+          ]
+        }
+      ],
+      "imageResponses": [
+        {
+          "f": "32-img-0404-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "14-img-0026-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "26-img-0253-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "32-img-0404-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "14-img-0026-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "26-img-0253-1200w.webp",
+          "status": 200
+        },
+        {
+          "f": "40-img-0092-1600w.jpg",
+          "status": 200
+        }
+      ]
+    },
+    "contact": {
+      "count": 1,
+      "rows": [
+        {
+          "file": "49-img-0131.jpg",
+          "trueW": 1600,
+          "trueH": 2400,
+          "reportedNatural": "1600x2400",
+          "cssBox": "277x324",
+          "neededAtDPR3": "831x971",
+          "wasteRatio": 4.76,
+          "tooSmallForDPR3": false,
+          "loading": "lazy",
+          "fp": null,
+          "alt": "Portrait of a woman in a black top and pale skirt, standing against a dark background",
+          "altMissing": false,
+          "hasSrcset": false,
+          "inPicture": false,
+          "pictureSources": []
+        }
+      ],
+      "imageResponses": [
+        {
+          "f": "49-img-0131.jpg",
+          "status": 200
+        },
+        {
+          "f": "49-img-0131.jpg",
+          "status": 200
+        }
+      ]
+    }
+  }
+}
