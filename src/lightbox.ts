@@ -125,6 +125,26 @@ function lightboxSrc(frame: HTMLImageElement): string {
 export function initLightbox(): void {
   markLoadedImages();
 
+  // Page-wide save blocking, installed once rather than per-lightbox-open,
+  // because the photographs are reachable without ever opening the lightbox:
+  // the hero, the package cards and the portfolio wall are all plain <img>.
+  // Alwin asked for this on the hero specifically ("the hero is also affected
+  // by this"), and the same reasoning applies to every other frame.
+  //
+  // `contextmenu` covers right-click on desktop. `dragstart` covers drag-to-a-
+  // new-tab, which is a separate path to the same result and is NOT covered by
+  // the CSS alone. Both are cancellable; cancelling them is the whole extent of
+  // what is being claimed here. See the longer note on the lightbox's own
+  // handlers for what this does not do.
+  document.addEventListener("contextmenu", (e) => {
+    const el = e.target as HTMLElement;
+    if (el.tagName === "IMG") e.preventDefault();
+  });
+  document.addEventListener("dragstart", (e) => {
+    const el = e.target as HTMLElement;
+    if (el.tagName === "IMG") e.preventDefault();
+  });
+
   const box = document.createElement("div");
   box.className = "lb";
   box.setAttribute("role", "dialog");
@@ -193,10 +213,27 @@ export function initLightbox(): void {
     document.body.style.overflow = "hidden";
   }
 
+  // Declared before close() so the reset inside it can reach them; hoisted from
+  // the deterrence block further down, which is where they are used.
+  let zoomed = false;
+  const stage = document.createElement("div");
+  stage.className = "lb__stage";
+  stage.appendChild(img);
+  box.insertBefore(stage, box.querySelector(".lb__cap"));
+  const applyZoom = () => {
+    img.style.transform = zoomed ? "scale(2)" : "";
+    stage.classList.toggle("is-zoomed", zoomed);
+  };
+
   function close(): void {
     box.hidden = true;
     img.src = "";
     document.body.style.overflow = "";
+    // Reset zoom on close, or the next frame opens pre-zoomed and the visitor
+    // cannot tell why it is cropped with no way back to fit.
+    zoomed = false;
+    img.style.transform = "";
+    stage.classList.remove("is-zoomed");
   }
 
   // ---- swipe ---------------------------------------------------------------
@@ -303,6 +340,37 @@ export function initLightbox(): void {
     img.style.transform = "";
   });
 
+  // ---- image theft deterrence ---------------------------------------------
+  //
+  // HONEST LIMIT, stated once so nobody reads this as a guarantee: **this does
+  // not make the images impossible to take.** A browser is a program that has
+  // already been handed the bytes to paint the picture. Anyone can open
+  // DevTools, read the network panel, screenshot the canvas, or right-click
+  // Save on a machine where the menu is restored. No client-side code can
+  // prevent that, and any site claiming otherwise is lying.
+  //
+  // What this DOES do is remove every casual, one-tap path. Alwin,
+  // 2026-10-03: "we can save and download images, which is a huge issue, we
+  // should not be able to hold images and just save them." The realistic goal
+  // is that an ordinary visitor on a phone cannot save a photo by accident,
+  // and a scraper has to work for it.
+  //
+  // Long-press is the one that actually mattered here. On iOS Safari a
+  // long-press on an <img> raises the system callout with "Save Image", and
+  // that is the gesture a phone user reaches for without thinking.
+  const noSave = (e: Event) => e.preventDefault();
+  box.addEventListener("contextmenu", noSave);
+  box.addEventListener("dragstart", noSave);
+  // `user-select` stops the iOS callout selecting the image as text first.
+  box.style.userSelect = "none";
+  box.style.webkitUserSelect = "none";
+  img.setAttribute("draggable", "false");
+
+  // Tap the photo to toggle a 2x zoom. `touch-action: none` is already set on
+  // the overlay above for the swipe handler, so this reuses it rather than
+  // fighting it. Applied to a wrapper rather than to the img itself so the
+  // swipe handler's `translateX` and this `scale` cannot both write to one
+  // `transform` property and cancel each other out.
   document.addEventListener("click", (e) => {
     // The click a completed swipe leaves behind. Swallowed before anything
     // else, so it cannot reach the branches below.
@@ -319,6 +387,11 @@ export function initLightbox(): void {
       show(at + 1);
     } else if (t.closest(".lb__nav--p")) {
       show(at - 1);
+    } else if (t === img || t === stage) {
+      // Tap the photo itself to zoom. Checked last so it cannot swallow the
+      // close / nav taps, which all sit outside the stage.
+      zoomed = !zoomed;
+      applyZoom();
     }
   });
 

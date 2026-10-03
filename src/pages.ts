@@ -646,7 +646,9 @@ export function homeBand(): string {
       </div>
       <div class="hcta__foot">
         <a href="mailto:${escapeHtml(SITE.contact.email)}">${escapeHtml(SITE.contact.email)}</a>
-        <a href="tel:${escapeHtml(SITE.contact.phone.replace(/[^+0-9]/g, ""))}">${escapeHtml(SITE.contact.phone)}</a>
+        ${/* Phone removed 2026-10-03 at Alwin's instruction: not taking calls
+           for now. This was a `tel:` link, so on a phone it raised a dial
+           prompt. WhatsApp in the header is the only direct channel now. */""}
         ${insta ? `<a href="${escapeHtml(insta.url)}" target="_blank" rel="noopener">Instagram</a>` : ""}
         <span>© ${escapeHtml(SITE.home.est)}–${new Date().getFullYear()} ${escapeHtml(SITE.nameTop)} ${escapeHtml(SITE.nameBig2)}</span>
       </div>
@@ -726,7 +728,7 @@ export function homePage(photos: Photo[], cols: number): string {
         <a class="cta" href="./portfolio.html">${escapeHtml(h.cta)}</a>
       </div>
       <div class="hero__meta">
-        <span>Est. ${escapeHtml(h.est)} — ${escapeHtml(SITE.contact.location)}</span>
+        <span>Est. ${escapeHtml(h.est)} | ${escapeHtml(SITE.contact.location)}</span>
         <span class="hero__meta-tags">${h.tags.map(escapeHtml).join(" / ")}</span>
         <span class="hero__meta-cue" aria-hidden="true">Scroll ↓</span>
       </div>

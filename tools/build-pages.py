@@ -46,32 +46,32 @@ ROUTES = [
     (
         "home",
         "index.html",
-        "Shutterhaus Visuals — photography in Gauteng",
+        "Shutterhaus Visuals | photography in Gauteng",
         "Portraits, couples, families and social content, shot on location across Gauteng by Alwin Newman. Shutterhaus Visuals, Pretoria.",
     ),
     (
         "portfolio",
         "portfolio.html",
-        "Portfolio — Shutterhaus Visuals",
+        "Portfolio | Shutterhaus Visuals",
         "Selected portrait and place photography from sessions shot around Gauteng. Portraits, couples, families and social content.",
     ),
     (
         "about",
         "about.html",
-        "About — Shutterhaus Visuals",
+        "About | Shutterhaus Visuals",
         "Alwin Newman is a photographer working across Gauteng, shooting portraits, couples, families and social content on location.",
     ),
     (
         "services",
         "services.html",
-        "Services & pricing — Shutterhaus Visuals",
+        "Services & pricing | Shutterhaus Visuals",
         "Photography packages and pricing for portraits, couples, families and social content, shot on location across Gauteng, South Africa.",
     ),
     (
         "contact",
         "contact.html",
-        "Contact — Shutterhaus Visuals",
-        "Enquire about a photography session in Gauteng. WhatsApp, phone or email Alwin Newman at Shutterhaus Visuals — evenings and weekends by appointment.",
+        "Contact | Shutterhaus Visuals",
+        "Enquire about a photography session in Gauteng. WhatsApp or email Alwin Newman at Shutterhaus Visuals. Evenings and weekends by appointment.",
     ),
 ]
 
@@ -295,7 +295,7 @@ def json_ld(filename: str, title: str, description: str) -> str:
                     {
                         "@type": "ListItem",
                         "position": 2,
-                        "name": title.split(" — ")[0],
+                        "name": title.split(" | ")[0],
                         "item": url,
                     },
                 ],

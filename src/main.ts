@@ -112,7 +112,7 @@ function setTitle(r: string): void {
   const label = r.charAt(0).toUpperCase() + r.slice(1);
   document.title =
     r === "home"
-      ? `${SITE.nameTop} ${SITE.nameBig2} — photography in Gauteng`
+      ? `${SITE.nameTop} ${SITE.nameBig2} | photography in Gauteng`
       : `${label} — ${SITE.nameTop} ${SITE.nameBig2}`;
 }
 
@@ -328,6 +328,26 @@ function wireBurger(): void {
 function wireContact(): void {
   const form = document.getElementById("cform") as HTMLFormElement | null;
   const note = document.getElementById("cform-note");
+
+  // Preselect the package the visitor tapped "Book now" on.
+  //
+  // "Book now" on a tier card links to `contact.html?package=<tier name>`, so
+  // arriving from a card arrives already having chosen that package. Matched
+  // against the select's own options rather than assigning a value outright:
+  // setting an unknown value silently leaves the select on option 0, which
+  // would show "Starter" for someone who tapped "Signature". A no-match is
+  // therefore a no-op, not a wrong answer.
+  //
+  // Only runs on arrival, not on the contact route's second paint. paint()
+  // redraws the page once live photos land, and re-running this would discard
+  // anything the visitor had already typed.
+  const wanted = new URLSearchParams(location.search).get("package");
+  const kind = document.getElementById("cform-kind") as HTMLSelectElement | null;
+  if (wanted && kind) {
+    const hit = Array.from(kind.options).find((o) => o.value === wanted);
+    if (hit) kind.value = wanted;
+  }
+
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const fd = new FormData(form);
@@ -338,7 +358,7 @@ function wireContact(): void {
     // told "sent" learns to retry with the field left empty, whereas an error
     // tells it the trap exists. Nothing is posted either way.
     if (get("_website")) {
-      if (note) note.textContent = "Thanks — got it, I'll reply shortly.";
+      if (note) note.textContent = "Thanks, got it. I'll reply shortly.";
       form.reset();
       return;
     }
@@ -352,7 +372,7 @@ function wireContact(): void {
     // dead address. Deliberately loose — real validation is the mail server's
     // job; this only rejects things that are definitely not addresses.
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(get("email"))) {
-      if (note) note.textContent = "That email address doesn't look right — check it?";
+      if (note) note.textContent = "That email address doesn't look right. Check it?";
       return;
     }
 
@@ -364,7 +384,7 @@ function wireContact(): void {
           body: fd,
         });
         if (!res.ok) throw new Error(`form endpoint ${res.status}`);
-        if (note) note.textContent = "Thanks — got it, I'll reply shortly.";
+        if (note) note.textContent = "Thanks, got it. I'll reply shortly.";
         form.reset();
         return;
       } catch {

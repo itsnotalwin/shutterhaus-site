@@ -1,4 +1,5 @@
 import { SITE } from "./config";
+import { WHATSAPP_PATH } from "./layout";
 import { escapeHtml } from "./layout";
 import { homeBand } from "./pages";
 import { pictureFor, bestDerivative } from "./pages";
@@ -96,7 +97,7 @@ export function servicesPage(photos: Photo[] = []): string {
       ${t.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}
     </ul>
     <p class="pkg__price">${escapeHtml(t.price)}</p>
-    <a class="cta cta--sm" href="./contact.html">Book now</a>
+    <a class="cta cta--sm" href="./contact.html?package=${encodeURIComponent(t.name)}">Book now</a>
   </article>`;
   };
 
@@ -180,8 +181,18 @@ const HONEYPOT_FIELD =
 
 export function contactPage(_photos: Photo[] = []): string {
   const c = SITE.contact;
-  const wa = `https://wa.me/${c.phone.replace(/\D/g, "")}`;
-  const tel = c.phone.replace(/\s/g, "");
+  const p0 = SITE.pricing;
+  /*
+   * The package names lead the "What do you need?" list and are generated from
+   * the pricing config, so "Book now" on a tier card can preselect exactly that
+   * tier. They were absent before: the list held only generic descriptions, so
+   * a visitor who tapped "Book now" on Signature still had to re-state the
+   * package by hand, which is the part they had just decided. The generic
+   * options are kept below as fallbacks for a visitor not booking a package.
+   */
+  // Built from the social config, not from contact.phone, which no longer
+  // exists. The number is the only thing WhatsApp needs and it is not shown.
+  const wa = SITE.social.find((x) => x.id === "whatsapp")?.url ?? "";
 
 
   return `<section class="page contact">
@@ -195,12 +206,13 @@ export function contactPage(_photos: Photo[] = []): string {
         <label>Name<input name="name" type="text" required autocomplete="name" /></label>
         <label>Email<input name="email" type="email" required autocomplete="email" /></label>
         <label>What do you need?
-          <select name="kind">
-            <option>Mini session</option>
-            <option>Portrait</option>
-            <option>Couples / family</option>
-            <option>Social content</option>
-            <option>Something else</option>
+          <select name="kind" id="cform-kind">
+            ${p0.tiers.map((t) => `<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)} package (${escapeHtml(t.price)})</option>`).join("\n            ")}
+            <option value="Mini session">Mini session</option>
+            <option value="Portrait">Portrait</option>
+            <option value="Couples / family">Couples / family</option>
+            <option value="Social content">Social content</option>
+            <option value="Something else">Something else</option>
           </select>
         </label>
         <label>Message<textarea name="message" rows="4" required></textarea></label>
@@ -214,7 +226,9 @@ export function contactPage(_photos: Photo[] = []): string {
       <ul class="contact__list">
         <li>${icon("pin")}<span>${escapeHtml(c.location)}</span></li>
         <li>${icon("mail")}<a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></li>
-        <li>${icon("phone")}<a href="tel:${escapeHtml(tel)}">${escapeHtml(c.phone)}</a></li>
+        ${/* Phone row removed 2026-10-03 at Alwin's instruction: not taking
+           calls for now. It was a `tel:` link, so on a phone it raised a dial
+           prompt. WhatsApp below is the only direct channel. */""}
         <li>${icon("whatsapp")}<a href="${escapeHtml(wa)}" target="_blank" rel="noopener">WhatsApp</a></li>
       </ul>
       <p class="contact__hours dim">${escapeHtml(c.hours)}</p>
@@ -244,12 +258,14 @@ function icon(id: string): string {
   };
   // Solid WhatsApp mark: a rounded speech bubble with the handset cut out of it.
   const solid: Record<string, string> = {
-    whatsapp:
-      "M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m0 1.67c2.2 0 4.27.86 5.83 2.42a8.2 8.2 0 0 1 2.41 5.82c0 4.54-3.7 8.24-8.25 8.24a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24m4.52 5.03c-.24-.12-1.4-.69-1.62-.77-.22-.08-.37-.12-.53.12-.16.24-.61.77-.75.93-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.92-1.19-.71-.63-1.19-1.41-1.33-1.65-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3.02-.42-.02-.12-.53-1.28-.72-1.75-.19-.45-.38-.39-.53-.4h-.45c-.12 0-.32.05-.49.24-.17.19-.64.63-.64 1.53s.66 1.77.75 1.89c.09.12 1.29 1.96 3.12 2.75.44.19.78.3 1.04.39.44.14.83.12 1.15.07.35-.05 1.08-.44 1.23-.87.15-.43.15-.79.11-.87-.04-.08-.24-.12-.48-.24",
+    whatsapp: WHATSAPP_PATH,
   };
 
   if (solid[id]) {
-    return `<svg class="cico cico--fill" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${solid[id]}" /></svg>`;
+    // `fill-rule` on the path, matching layout.ts: the handset has to knock out
+    // of the bubble on this renderer too, and winding-independent evenodd is the
+    // only way to guarantee that across two different svg wrappers.
+    return `<svg class="cico cico--fill" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${solid[id]}" fill-rule="evenodd" /></svg>`;
   }
   return `<svg class="cico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${outline[id] ?? ""}" /></svg>`;
 }

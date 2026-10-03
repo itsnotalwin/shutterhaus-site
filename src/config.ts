@@ -14,7 +14,7 @@ export interface SiteConfig {
   /** render the gallery in monochrome, as in the reference design */
   nav: { id: string; label: string }[];
   social: { id: IconId; label: string; url: string }[];
-  contact: { email: string; phone: string; location: string; hours: string; formEndpoint: string };
+  contact: { email: string; location: string; hours: string; formEndpoint: string };
   blurb: string;
   /** Shown on the pricing page. Set showPricing to false to hide the nav item. */
   pricing: PricingConfig;
@@ -127,8 +127,15 @@ export const SITE: SiteConfig = {
 
   contact: {
     email: "alwin@shutterhausvisuals.co.za",
-    phone: "+27 73 095 8363",
-    location: "Gauteng, South Africa",
+    /**
+         * Phone is deliberately absent from this object. Alwin, 2026-10-03: "remove
+         * my cell completely, I won't be taking calls for now either." The number
+         * used to render as a `tel:` link on the contact page, which is the one
+         * affordance that makes a visitor's phone prompt to dial it. Removing the
+         * field removes the affordance; keeping a visible-but-inert string would
+         * still read as "call me". Re-add `phone` here if that changes.
+         */
+        location: "Gauteng, South Africa",
     hours: "Evenings & weekends, by appointment",
     /**
      * Formspree endpoint. Set means the form POSTs here and works on any
@@ -139,15 +146,15 @@ export const SITE: SiteConfig = {
   },
 
   blurb:
-    "Portraits, couples, families and social content — shot on location across Gauteng. " +
-    "Mini sessions and full galleries, with prints as add-ons.",
+    "Portraits, couples, families and social content, shot on location across Gauteng. " +
+    "Mini sessions and full galleries, with digital delivery.",
 
   // ---- pricing (source: Shutterhaus_Pricing_Packages.pdf) ----
   pricing: {
     show: true,
     heading: "Packages",
     intro:
-      "Every session is directed start to finish — you don't need to know how to pose. " +
+      "Every session is directed start to finish, you don't need to know how to pose. " +
       "50% deposit secures your date.",
 
     tiers: [
@@ -164,7 +171,6 @@ export const SITE: SiteConfig = {
           "15 professionally edited photos",
           "Private online gallery",
           "Clothing guide & location suggestions",
-          "Print release for personal use",
           "High-res and web-optimised downloads",
         ],
       },
@@ -180,7 +186,6 @@ export const SITE: SiteConfig = {
         bullets: [
           "40 professionally edited photos",
           "Private online gallery (90-day access)",
-          "Print release for personal use",
           "Clothing guide, location scouting, shot list",
         ],
         popular: true,
@@ -188,7 +193,7 @@ export const SITE: SiteConfig = {
       {
         name: "Signature",
         price: "R2,500",
-        fit: "Families, maternity, engagements — the full experience.",
+        fit: "Families, maternity and engagements: the full experience.",
         spec: "90 min · 2–3 outfits · multiple locations",
         photo: "54-img-0164.jpg",
         focal: "50% 50%",
@@ -197,14 +202,13 @@ export const SITE: SiteConfig = {
         bullets: [
           "40 professionally edited photos",
           "Private online gallery (90-day access)",
-          "Print release for personal use",
           "Full prep: clothing guide, shot list, scouting",
         ],
       },
       {
         name: "Social",
         price: "R1,500",
-        fit: "Built for creators — quick turnaround, same-day previews.",
+        fit: "Built for creators: quick turnaround, same-day previews.",
         spec: "45 min · 2 outfits · 1 location",
         photo: "20-img-0202.jpg",
         focal: "50% 17%",
@@ -217,25 +221,26 @@ export const SITE: SiteConfig = {
         bullets: [
           "20 professionally edited photos",
           "Private online gallery (90-day access)",
-          "Print release for personal use",
-          "48hr sneak peek — 10 images, not the full set",
+          "48hr sneak peek, 10 images, not the full set",
           "High-res and web-optimised downloads",
+          "Commercial licence for social and paid ads included",
         ],
       },
     ],
 
     addonsTitle: "Add-ons",
-    // Add-ons only. Prints and albums are NOT included in any tier since
-    // 2026-10-02, so they belong here as paid extras rather than as a promise
-    // buried in a package bullet. "Rush delivery" only ever applied to Social's
-    // 48hr sneak peek, which it now qualifies instead of duplicating.
+    // Prints and albums are gone entirely at Alwin's instruction, 2026-10-03:
+    // "remove the prints completely, we won't be doing those for now." They
+    // were not merely removed from this list; the "Print release for personal
+    // use" bullet is gone from all four tiers too, so nothing on the page
+    // promises a physical product. Re-adding means restoring both.
+    // "Rush delivery" only ever applied to Social's 48hr sneak peek, which it
+    // now qualifies instead of duplicating.
     addons: [
       { label: "Extra 30 minutes on the shoot", price: "+R300" },
       { label: "Extra location", price: "+R400" },
       { label: "Extra outfit change", price: "+R300" },
       { label: "Full gallery within 48hr", price: "+R400" },
-      { label: "5×7\" fine art print", price: "+R150" },
-      { label: "Fine art album (20 pages)", price: "+R1,200" },
       { label: "Travel beyond 25km", price: "+R5/km" },
     ],
 
@@ -244,7 +249,7 @@ export const SITE: SiteConfig = {
       "Rescheduling ≥7 days notice is free. Under 7 days: R500 fee, deposit transfers.",
       "Outdoor shoots include a backup indoor location. Severe weather = free reschedule.",
       "Delivery: Starter and Social in 5 business days; Essential and Signature in 7.",
-      "Personal use licence included. Commercial use needs a separate licence, +50–200% of the package fee.",
+      "Commercial licence included with Social. Personal use licence with all other packages. Own-brand commercial use on any other package needs a separate licence, +50–200% of the package fee.",
     ],
 
     depositNote: "50% deposit to book · EFT accepted",
@@ -270,9 +275,9 @@ export const SITE: SiteConfig = {
     heading: "Photography is poetry.",
     /** paragraphs, in order, on the left column beside the portrait */
     body: [
-      "I'm a photographer based in Gauteng, drawn to the raw, unfiltered beauty of real people and unfiltered moments. For me, photography isn't just about what you see — it's about what you feel.",
+      "I'm a photographer based in Gauteng, drawn to the raw, unfiltered beauty of real people and unfiltered moments. For me, photography isn't just about what you see, it's about what you feel.",
       "I believe the best images aren't staged. They happen. They live in the in-between, in the quiet looks, the laughter, the chaos, the stillness.",
-      "This is my way of telling your story — honestly, creatively, and with intention.",
+      "This is my way of telling your story, honestly, creatively, and with intention.",
     ],
     cta: "Let's create together",
     // A man walking a beach with a metal detector, black and white. Ratio 4:5

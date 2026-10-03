@@ -466,7 +466,11 @@ check("all package names present", pr.names.every(Boolean), pr.names.join("/"));
 check("every package has a price", pr.prices.every(p => /^R[\\s]?[0-9]/.test(p)), pr.prices.join(" "));
 check("exactly one 'most popular'", pr.popular === 1, String(pr.popular));
 check("each package has a photo", pr.figs === pr.tiers, `${pr.figs}/${pr.tiers}`);
-check("add-ons listed", pr.addons >= 6, `${pr.addons} add-ons`);
+// Asserts the add-ons list is non-empty and contains no print or album.
+// The floor was 6 while prints were on the menu; with prints removed the
+// count is 5, so the floor follows the product rather than gating on a number
+// that only means something in combination with the print check below.
+check("add-ons listed", pr.addons >= 4, `${pr.addons} add-ons`);
 check("booking terms listed", pr.terms >= 4, String(pr.terms));
 
 // Alwin, 2026-10-02: "no reels at all". Reels and vertical crops came out of
@@ -486,22 +490,33 @@ const reelsGone = (() => {
 })();
 check("no reels or vertical crops promised anywhere", reelsGone);
 
-// Two copies can contradict each other and both render perfectly. The contact
-// blurb promised "prints available on request" while every tier had dropped
-// prints to a paid add-on — correct individually, contradictory together. This
-// asserts the specific promise rather than the whole file, so it stays useful.
-const printsConsistent = (() => {
+// Prints are gone ENTIRELY, not merely de-promoted to an add-on.
+//
+// Alwin, 2026-10-03: "remove the prints completely, we won't be doing those for
+// now." So the old distinction this check drew -- a PAID ADD-ON is fine, only a
+// promise that prints are INCLUDED is wrong -- no longer holds. Any surviving
+// mention is now a defect, in either form.
+//
+// This replaced a check that asserted `addons >= 6`, which had to be lowered
+// rather than reasoned about: removing two add-ons failed the gate without the
+// gate ever asking whether the removal was intended. Asserting the ABSENCE of
+// prints is the stronger claim and cannot be satisfied by adding more.
+const printsGone = (() => {
   const copy = readFileSync(new URL("../src/config.ts", import.meta.url), "utf8")
     .replace(/\/\*[\s\S]*?\*\//g, " ")
     .replace(/\/\/.*$/gm, " ");
-  // Only the CONTRADICTION matters. Listing a 5x7 print as a PAID ADD-ON is
-  // correct and must not trip this; what is wrong is prose that tells a client
-  // prints come with the session while every tier dropped them to an add-on.
-  const claimsPrintsIncluded = /prints?\s+available on request|print\s+release\s*\+/i.test(copy);
-  return !claimsPrintsIncluded;
+  return !/print|album/i.test(copy);
 })();
-check("print copy does not contradict the packages", printsConsistent);
-check("every package links to contact", pr.ctas.length > 0 && pr.ctas.every(h => /(^|\/)contact(\.html)?$/.test(h)), pr.ctas.join(","));
+check("no prints or albums promised anywhere", printsGone);
+
+// "Book now" now carries the tier it belongs to, so the contact form can
+// preselect it. The regex allows the optional `?package=<name>` query rather
+// than pinning the exact string: the NAME is what matters, and asserting one
+// literal would fail every time a tier is renamed, which trains the gate to be
+// ignored.
+check("every package links to contact with its name",
+  pr.ctas.length > 0 && pr.ctas.every(h => /contact\.html(\?package=.+)?$/.test(h)),
+  pr.ctas.join(","));
 // The editorial package cards carry no fill — they sit on the white page
 // separated by whitespace, not by a card background. The old check asserted
 // rgb(255,255,255); the meaningful assertion now is that they are NOT a

@@ -522,7 +522,62 @@ img { display: block; max-width: 100%; }
   z-index: 100;
 }
 .lb[hidden] { display: none; }
-.lb__img { max-width: 92vw; max-height: 86vh; object-fit: contain; }
+/* The zoom stage and its image.
+ *
+ * `.lb__stage` exists so the swipe handler's `translateX` and the zoom's
+ * `scale` cannot both write to one `transform`. They are separate elements:
+ * the stage takes the zoom, the image keeps the drag. Before this, both wrote
+ * to `.lb__img` and whichever ran last won, so a zoomed photo could not be
+ * swiped and a swiped photo snapped back to unzoomed.
+ *
+ * `overflow: hidden` clips the 2x scale to the viewport, which is what makes
+ * the zoom read as "closer" instead of as a photo that has grown and pushed
+ * the layout around. */
+.lb__stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transform: scale(1);
+  transition: transform 180ms ease;
+  /* Stacking, measured with elementFromPoint rather than assumed.
+   *
+   * The stage was originally an in-flow flex child while Close and the arrows
+   * are `position: absolute`. An absolutely positioned box paints ABOVE an
+   * in-flow one regardless of DOM order, so the stage covered all three
+   * controls -- elementFromPoint returned IMG.lb__img for close, prev and next,
+   * BOTH unzoomed and zoomed. Tapping Close still worked when done via
+   * element.click(), which dispatches straight at the node, which is exactly why
+   * an automated check missed it: it bypasses hit-testing entirely.
+   *
+   * The first attempt raised `.lb` to z-index 1002 while zoomed. That was the
+   * wrong lever: `.lb` is the containing block, so raising it changes nothing
+   * about stacking among its own children. Giving the stage and the controls
+   * explicit z-indexes in the same context fixes it in both states. */
+  z-index: 0;
+}
+.lb__x,
+.lb__nav { z-index: 2; }
+.lb__cap { z-index: 1; }
+/* No transition while dragging: the photo must track the finger 1:1 with no
+ * easing, the same rule the swipe handler already follows. */
+.lb__stage.is-zoomed { transform: scale(2); }
+
+@media (prefers-reduced-motion: reduce) {
+  .lb__stage { transition: none; }
+}
+
+.lb__img {
+  max-width: 92vw;
+  max-height: 86vh;
+  object-fit: contain;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+}
 .lb__cap {
   position: absolute;
   /* 18px + the home-indicator inset. The caption was measured at 18px from
@@ -1067,3 +1122,24 @@ code {
       ground and force the whole set of measured ratios to be re-derived.
    If it is ever wanted, the work is: re-run mobile-audit/a11y/contrast.py
    with a prefers-color-scheme: dark capture and hold the same thresholds. */
+
+
+/* ---- image theft deterrence, page-wide ----------------------------------
+ *
+ * HONEST LIMIT: this cannot stop anyone who is determined. The bytes are
+ * already in the browser; DevTools, the network panel and a screenshot all
+ * still work. What it removes is the ACCIDENTAL save — the long-press on a
+ * phone that a visitor reaches for without thinking.
+ *
+ * `-webkit-touch-callout: none` is the one that matters on iOS: it is what
+ * suppresses the system "Save Image / Copy" callout on a long press. It has no
+ * effect in Chrome or Firefox, which is why `contextmenu` and `dragstart` are
+ * also cancelled in JS.
+ *
+ * `-webkit-user-drag` stops desktop drag-to-a-new-tab, which is otherwise a
+ * second one-gesture save path alongside right-click. */
+img,
+.hero__fig img {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+}
