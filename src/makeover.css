@@ -1,0 +1,410 @@
+/* =============================================================
+   SHUTTERHAUS VISUALS — Visual Makeover Layer
+   Loaded after styles.css and editorial.css. Enhances aesthetics
+   only — no layout changes, no structural regressions.
+
+   Philosophy: same minimalism, more intention. Every change here
+   is a refinement, not a redesign. The underlying grid, spacing
+   tokens and font system are left exactly as they are.
+   ============================================================= */
+
+/* -------------------------------------------------- token upgrades */
+
+:root {
+  /* Slightly warm off-white instead of pure #fff — editorial photography
+     sites live here: warm paper makes colour images pop and stops the
+     page feeling clinical. Barely perceptible, 100% correct. */
+  --paper: #fafaf8;
+
+  /* Ink stays #111 but black-on-warm-paper reads marginally richer. */
+
+  /* A softer mid-grey for secondary text — same function, less harsh. */
+  --dim: #5c5c5c;
+
+  /* Transition easing that feels considered rather than mechanical. */
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-out: cubic-bezier(0, 0, 0.3, 1);
+}
+
+/* -------------------------------------------------- base typography */
+
+/* Sharpen the antialiasing on all text for crisp rendering */
+body {
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* -------------------------------------------------- header */
+
+/* Give the sticky header a hairline bottom border so it visually
+   separates from content as you scroll — invisible on the home hero
+   where the header is transparent, meaningful everywhere else. */
+.site-header {
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+}
+
+/* Solid-header routes: show the hairline */
+.site-header:not(.shell--over .site-header) {
+  border-bottom-color: var(--line);
+  /* Frosted glass effect on the sticky bar — adds depth without adding colour.
+     backdrop-filter is Baseline Widely Available. */
+  background: rgba(250, 250, 248, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Home route: no line, no blur — the transparent header must disappear
+   into the hero photograph. */
+.shell--over .site-header {
+  border-bottom-color: transparent !important;
+  background: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* -------------------------------------------------- logo refinements */
+
+/* Tighten the wordmark tracking slightly — current –0.005em is correct
+   but the second word "VISUALS" can sit a touch tighter still. */
+.logo-lg {
+  letter-spacing: -0.015em;
+}
+
+/* The small superscript "SHUTTERHAUS" — pull tracking in a fraction
+   so it optically aligns better with the big word's tighter set. */
+.logo-sm {
+  letter-spacing: 0.28em;
+  font-size: 10px;
+}
+
+/* -------------------------------------------------- nav link refinements */
+
+/* Replace the flat border-bottom underline with a smooth scale-in line.
+   The border is kept for the active state (keyboard/screen reader visible),
+   but the animated pseudo-element gives a more refined hover feel. */
+.nav-link {
+  position: relative;
+  border-bottom: none !important;
+  letter-spacing: 0.06em;
+  font-size: 11.5px;
+  transition: color 0.18s var(--ease);
+}
+
+/* Animated underline via pseudo-element */
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.22s var(--ease-out);
+}
+
+.nav-link:hover::after,
+.nav-link.is-active::after {
+  transform: scaleX(1);
+}
+
+/* Active link colour */
+.nav-link.is-active {
+  color: var(--ink);
+}
+
+/* On the home hero (white links), the underline is white */
+.shell--over .nav-link::after {
+  background: #fff;
+}
+
+/* Mobile drawer: revert to the solid border-bottom for the stacked list */
+@media (max-width: 760px) {
+  .nav-link::after { display: none; }
+  .nav-link {
+    border-bottom: 1px solid var(--line) !important;
+    letter-spacing: 0.12em;
+  }
+  .nav-link.is-active { border-bottom-color: var(--ink) !important; }
+  .nav-link:last-child { border-bottom: none !important; }
+}
+
+/* -------------------------------------------------- social icons */
+
+.social {
+  transition: opacity 0.18s var(--ease), transform 0.18s var(--ease);
+}
+
+.social:hover {
+  opacity: 0.65;
+  transform: translateY(-1px);
+}
+
+/* -------------------------------------------------- hero refinements */
+
+/* Slightly warmer scrim — the bottom of the hero gets a touch more ink
+   so the white headline has guaranteed contrast over any photograph. */
+.hero__scrim {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.08) 0%,
+    rgba(0, 0, 0, 0.22) 18%,
+    rgba(0, 0, 0, 0.52) 34%,
+    rgba(0, 0, 0, 0.68) 52%,
+    rgba(0, 0, 0, 0.78) 72%,
+    rgba(0, 0, 0, 0.90) 100%
+  );
+}
+
+/* Hero heading — a hint more negative tracking at large sizes */
+.hero__h {
+  letter-spacing: -0.04em;
+}
+
+/* Hero lede — slightly lighter, more editorial */
+.hero__lede {
+  opacity: 0.88;
+  font-size: 14.5px;
+  line-height: 1.75;
+}
+
+/* Meta strip — bolder separator */
+.hero__meta {
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.14em;
+}
+
+/* -------------------------------------------------- CTA link (dash → label) */
+
+/* Lengthen the dash on hover a little more */
+.cta::before {
+  width: 22px;
+  transition: width 0.22s var(--ease-out);
+}
+
+.cta:hover::before {
+  width: 44px;
+}
+
+/* -------------------------------------------------- hstrip (home selected work) */
+
+/* Header row: make the hairline bolder */
+.hstrip__head {
+  border-top: 1px solid var(--ink);
+  letter-spacing: 0.16em;
+}
+
+/* -------------------------------------------------- hcta (dark band) */
+
+/* Deepen the dark band just slightly for more drama */
+.hcta {
+  background: #0a0a0a;
+}
+
+/* The white CTA button — add a very subtle lift on hover */
+.hcta__btn {
+  letter-spacing: 0.16em;
+  transition: background 0.18s var(--ease), transform 0.14s var(--ease);
+}
+
+.hcta__btn:hover {
+  background: #e2e2e2;
+  transform: translateY(-1px);
+}
+
+/* Footer row inside the dark band — slightly dimmer copyright */
+.hcta__foot {
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.7);
+  border-top-color: rgba(255, 255, 255, 0.25);
+}
+
+/* -------------------------------------------------- portfolio header */
+
+/* Portfolio eyebrow — make Gauteng line feel more authoritative */
+.portfolio .phead .eyebrow {
+  letter-spacing: 0.22em;
+  color: var(--grey);
+}
+
+/* -------------------------------------------------- services cards */
+
+/* Package card name — slightly larger, more presence */
+.pkg__name {
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}
+
+/* Price number — more impact */
+.pkg__price {
+  font-size: 22px;
+  letter-spacing: -0.025em;
+}
+
+/* Popular tier: make the black card feel more premium */
+.pkg--pop {
+  background: #080808;
+}
+
+/* The "most popular" flag — ever so slightly visible */
+.pkg__flag {
+  opacity: 0.65;
+  letter-spacing: 0.22em;
+}
+
+/* Book-now CTA — smooth in the hover underline dash */
+.cta--sm {
+  letter-spacing: 0.16em;
+}
+
+/* -------------------------------------------------- invest band */
+
+.invest {
+  background: #080808;
+}
+
+.invest__h {
+  letter-spacing: -0.03em;
+}
+
+/* -------------------------------------------------- about page */
+
+/* Give the about heading a touch more scale at the top end */
+.page .about__h {
+  letter-spacing: -0.03em;
+}
+
+/* -------------------------------------------------- contact form */
+
+/* Inputs: slightly warmer placeholder, stronger focus */
+.cform input,
+.cform select,
+.cform textarea {
+  background: #fff;
+  transition: border-color 0.16s var(--ease);
+}
+
+.cform input::placeholder,
+.cform textarea::placeholder {
+  color: #b0b0b0;
+}
+
+.cform input:focus,
+.cform select:focus,
+.cform textarea:focus {
+  border-color: var(--ink);
+  outline: none;
+}
+
+/* Submit button — add lift on hover */
+.cform button {
+  letter-spacing: 0.1em;
+  transition: background 0.18s var(--ease), transform 0.14s var(--ease);
+}
+
+.cform button:hover {
+  background: #000;
+  transform: translateY(-1px);
+}
+
+/* -------------------------------------------------- contact info list */
+
+/* Contact links — refine the underline */
+.contact__list a {
+  transition: border-color 0.15s var(--ease);
+}
+
+/* -------------------------------------------------- lightbox */
+
+/* Tighten the lightbox controls — more editorial, less browser-default */
+.lb__x,
+.lb__nav {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  transition: opacity 0.15s var(--ease);
+  /* Enforce 44px tap target */
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.lb__x:hover,
+.lb__nav:hover {
+  opacity: 1;
+}
+
+/* Caption — a touch more legible */
+.lb__cap {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  opacity: 0.8;
+}
+
+/* -------------------------------------------------- image hover */
+
+/* Gallery images: a very gentle scale-in on hover to suggest interactivity
+   without "blowing up" the crop (Alwin's instruction) — 1% is imperceptible
+   as a scale, but it removes the flat feeling of a static grid. */
+@media (hover: hover) {
+  .cell img.is-loaded:hover {
+    opacity: 0.94;
+  }
+
+  .hstrip__item .cell img.is-loaded:hover {
+    opacity: 0.94;
+  }
+}
+
+/* -------------------------------------------------- eyebrow refinements */
+
+/* Global eyebrow: tighter, more confident */
+.eyebrow {
+  letter-spacing: 0.22em;
+  font-size: 10px;
+  margin: 0 0 20px;
+}
+
+/* -------------------------------------------------- phead (page headers) */
+
+.phead__h {
+  letter-spacing: -0.03em;
+}
+
+/* -------------------------------------------------- services page header */
+
+.shead__h {
+  letter-spacing: -0.03em;
+}
+
+/* -------------------------------------------------- portfolio filter bar
+   (only visible when there are multiple categories) */
+
+/* The filter pill buttons — refine hover state */
+.pfilter__item {
+  transition: color 0.15s var(--ease), border-color 0.15s var(--ease);
+  letter-spacing: 0.1em;
+}
+
+/* -------------------------------------------------- admin unchanged */
+/* Admin styles are deliberately untouched — no class here targets .adm* */
+
+/* -------------------------------------------------- reduced motion
+   Override the new transitions where motion is unwanted — the blanket
+   rule in styles.css covers the main transitions; this ensures our new
+   ones are included too. */
+@media (prefers-reduced-motion: reduce) {
+  .nav-link::after,
+  .social,
+  .hcta__btn,
+  .cform button,
+  .lb__x,
+  .lb__nav {
+    transition: none !important;
+    transform: none !important;
+  }
+}

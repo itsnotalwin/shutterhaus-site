@@ -1,5 +1,6 @@
 import "./styles.css";
 import "./editorial.css";
+import "./makeover.css";
 import { SITE } from "./config";
 import { renderShell } from "./layout";
 import { portfolioPage, homePage, emptyGallery } from "./pages";
@@ -198,20 +199,33 @@ async function paint(): Promise<void> {
   }
 
   /**
- * Adopt the Supabase set only if every frame it names is actually shipped.
- *
- * A database row can outlive its file: when the bundled gallery was replaced
- * with Alwin's favourites, the `photos` table still listed the nine old
- * `finals-*.jpg` rows. Those overrode the bundled set and rendered as 404s on
- * every page — a whole-site breakage from nine stale rows. The DB is optional
- * data, so it only wins when it is fully coherent; a partial match is worse
- * than no match and is rejected outright.
- */
-function adoptable(live: AdminPhoto[] | null | undefined): AdminPhoto[] | null {
-  if (!live?.length) return null;
-  const known = new Set(DEMO_PHOTOS.map((p) => p.filename));
-  return live.every((p) => p.filename && known.has(p.filename)) ? live : null;
-}
+     * Adopt the Supabase set only if every row it names is actually reachable.
+     *
+     * A row can name a file that isn't there: when the bundled gallery was
+     * replaced with Alwin's favourites, the `photos` table still listed the nine
+     * old `finals-*.jpg` rows. Those overrode the bundled set and rendered as
+     * 404s on every page — a whole-site breakage from nine stale rows. The DB is
+     * optional data, so it only wins when it is fully coherent; a partial match is
+     * worse than no match and is rejected outright.
+     *
+     * Two kinds of row, and they get opposite verdicts:
+     *   - bundled  (`gallery/…`, committed to the repo): must be in DEMO_PHOTOS.
+     *     Checking the manifest is what catches the stale-row case above.
+     *   - uploaded (a Supabase storage URL): accepted on trust. The file went up
+     *     with the row in the same request, so there is no gap for it to rot in,
+     *     and requiring it in DEMO_PHOTOS would reject every photo added through
+     *     /admin — the upload would succeed and silently never appear.
+     */
+  function adoptable(live: AdminPhoto[] | null | undefined): AdminPhoto[] | null {
+      if (!live?.length) return null;
+      const known = new Set(DEMO_PHOTOS.map((p) => p.filename));
+      const ok = live.every((p) => {
+        if (!p.url) return false;
+        if (/^https?:\/\//.test(p.url)) return true; // uploaded: file is in the bucket
+        return !!p.filename && known.has(p.filename); // bundled: must be shipped
+      });
+      return ok ? live : null;
+    }
 
 // home + portfolio — the two routes built around the wall of frames.
   //
