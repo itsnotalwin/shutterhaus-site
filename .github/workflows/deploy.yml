@@ -48,6 +48,7 @@ jobs:
         run: |
           google-chrome --headless=new --remote-debugging-port=9222 \
             --hide-scrollbars --disable-gpu --no-first-run \
+            --no-sandbox --disable-dev-shm-usage \
             --user-data-dir=/tmp/ci-chrome about:blank &
           for i in $(seq 1 40); do
             curl -sf http://127.0.0.1:9222/json/version >/dev/null && break
