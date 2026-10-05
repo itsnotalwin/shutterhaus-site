@@ -197,8 +197,9 @@ export function initLightbox(): void {
     // Wall: "02 / 50", using the frame's permanent number and the TOTAL wall
     // size, so it matches the number printed on the tile. Elsewhere (the home
     // strip) the caption is the alt text, exactly as before.
+    const totalVisible = document.querySelectorAll(".pf-cell:not([hidden])").length;
     cap.textContent = cell
-      ? `${pad2(Number(cell.dataset.n))} / ${pad2(document.querySelectorAll(".pf-cell").length)}`
+      ? `${pad2(Number(cell.dataset.n))} / ${pad2(totalVisible)}`
       : (f.dataset.alt ?? "");
   }
 
