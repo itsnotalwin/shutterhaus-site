@@ -397,6 +397,28 @@ function figure(p: Photo, index: number, sizes?: string): string {
  }
 
 /**
+ * How many columns the portfolio wall renders at the current width.
+ *
+ * Alwin, 2026-10-05: THREE columns on desktop, TWO on a phone. Desktop-only
+ * three-up; the phone count is unchanged from 2026-10-02, when three columns at
+ * 393px measured 111px tiles — too small to read a face.
+ *
+ * The boundary is 760px, the same one the wall's CSS media queries use, so the
+ * packer and the stylesheet agree about where the phone starts.
+ *
+ * This is evaluated at PAINT time, not at module load, which is why it reads
+ * `innerWidth` here rather than caching a constant. main.ts re-paints on
+ * `orientationchange` so a phone that turns gets a new count. It deliberately
+ * does NOT listen for `resize`: iOS Safari fires that on every scroll, and
+ * repacking 30 frames each time is exactly the thrash that rule exists to
+ * avoid. A desktop window dragged across 760px therefore keeps its count until
+ * reload — the same trade the home strip already makes at 640/1000px.
+ */
+function wallCols(): number {
+  return innerWidth <= 760 ? 2 : 3;
+}
+
+/**
  * The portfolio filter bar.
  *
  * The `.pfilter` stylesheet shipped in src/editorial.css with nothing emitting
@@ -480,45 +502,66 @@ export function portfolioPage(photos: Photo[]): string {
   // offender rather than leaving a gap for someone to photograph.
   const missing: string[] = [];
 
-  let n = 1; // 1-based: the lightbox prints it as "07 / 28"
-  const shown: string[] = [];
-  // The cell width the browser is told about, derived from the SAME frame count
-  // the CSS will render with — which is the number of frames in a row, not a
-  // column count derived from the viewport. Those two disagreed on desktop and
-  // blanked the page; see the guard below. Computed once and passed to each cell.
-  const sizes = wallSizes(PHOTO_ROWS[0]?.length ?? 2);
-
-  const rows = PHOTO_ROWS.map((row, ri) => {
-    const cells: string[] = [];
-    for (const id of row) {
-      const p = byId.get(id);
-      if (!p) {
-        missing.push(`row ${ri + 1}/${id}`);
-        continue;
+    const shown: string[] = [];
+    // The frames, in the curated order from rows.ts, resolved to Photo objects.
+    // The row shape is still enforced below — a row that lost a frame is dropped
+    // whole, because a partial row is a hole and a hole is the one defect this
+    // page is not allowed to ship.
+    //
+    // This must mean "drop the whole row", NOT "drop to fewer cells". The
+    // distinction was load-bearing once: treating the threshold as the column
+    // count made `cells.length < cols` true for all 15 rows (every row holds TWO
+    // frames, cols is 3 on a wide screen), so every row was discarded and the
+    // desktop rendered 0 photos at 1920/1440/1280/1100/1024/900/820/768/700/600px
+    // while the phone at 2 columns was fine. The threshold is the row's OWN
+    // length; the column count is never consulted here.
+    const ordered: Photo[] = [];
+    PHOTO_ROWS.forEach((row, ri) => {
+      const got: Photo[] = [];
+      for (const id of row) {
+        const p = byId.get(id);
+        if (!p) {
+          missing.push(`row ${ri + 1}/${id}`);
+          continue;
+        }
+        shown.push(p.id);
+        got.push(p);
       }
-      shown.push(p.id);
-      cells.push(wallCell(p, n++, sizes));
-    }
-    // A row renders a hole if it is missing a frame, so a short row is dropped
-    // rather than shipped with a gap.
+      if (got.length < row.length) return; // short row: dropped whole, no hole
+      ordered.push(...got);
+    });
+
+    // Pack into real columns — 3 on desktop, 2 on a phone (wallCols()).
     //
-    // The threshold is the row's OWN length, NOT `cols`. These are two different
-    // numbers and conflating them blanked the entire portfolio on desktop:
-    // `cols` is the grid track count (3 on a wide screen), while every row in
-    // rows.ts holds 2 frames, so `cells.length < cols` was true for all 14 rows
-    // and every one was discarded — 0 photos at 1920px, 0 at 1440px, the whole
-    // desktop range, while the phone at 2 columns rendered fine. Measured before
-    // this fix: 0 `.pf-row` elements at 1920/1440/1280/1100/1024/900/820/768/700/
-    // 600px, with the page heading present and the wall height 0.
+    // This replaces the `.pf-row` wrapper entirely. A row of TWO frames cannot be
+    // a column of THREE: rendering it inside a 3-track grid left the third track
+    // empty, which is the dead space at the right edge that was measured and
+    // rejected at 1440px. Columns are the shape the data actually wants.
     //
-    // The CSS owns the column count: 2 up on a phone, 3 from 761px. It used to
-    // be derived from `row.length` and written to an inline `--row-cols`, which
-    // meant the phone fix silently dragged the desktop to 2 columns too and
-    // produced a 14,582px-tall page. The row length now says nothing about the
-    // layout, so nothing inline is emitted.
-    if (cells.length < row.length) return "";
-    return `<div class="pf-row">${cells.join("")}</div>`;
-  }).join("");
+    // `packByHeight` is the same largest-remainder packer the locked home strip
+    // runs, and it is what keeps the three column bottoms level. CSS
+    // multi-column was tried first and measured 478px of ragged bottom at 1920:
+    // it balances for total height, not for an even last row. Calling the packer
+    // is the whole point.
+    //
+    // The rows.py pairing survives as SEQUENCE: the frames are still emitted in
+    // the curated order and `data-n` still runs 1..30 in that order, so the
+    // lightbox counter and stepping order are unchanged. Only the visual
+    // arrangement into columns is new.
+    const cols = wallCols();
+    const packed = packByHeight(ordered, cols);
+
+    // `sizes` is derived from the column count that will actually render, so the
+    // browser is never told a two-across width for a three-across layout.
+    const sizes = wallSizes(cols);
+
+    let n = 1; // 1-based: the lightbox prints it as "07 / 30"
+    const wall = packed
+      .map(
+        (col) =>
+          `<div class="pf-col">${col.map((p) => wallCell(p, n++, sizes)).join("")}</div>`,
+      )
+      .join("");
 
   if (missing.length) {
     throw new Error(
@@ -533,9 +576,9 @@ export function portfolioPage(photos: Photo[]): string {
       <h1 class="phead__h">Portfolio</h1>
       <p class="phead__p">Portraits and places, shot around Gauteng.</p>
     </header>
-    <div class="pf-rows">${rows}</div>
-    ${pfBand()}
-  </section>`;
+    <div class="pf-rows" style="--pf-cols:${cols}">${wall}</div>
+        ${pfBand()}
+      </section>`;
 }
 
 /**

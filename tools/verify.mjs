@@ -153,29 +153,63 @@ await goto("/#/portfolio", 2400);
 // no scroll, no numbering, 3 per row, "no spacing issues at all"). It is no
 // longer .grid--wall, no longer packed by height, and no longer 50 frames, so
 // every assertion that read those was rewritten rather than loosened.
+// The wall is 30 chosen frames in 3 packed COLUMNS on desktop, 2 on a phone
+// (Alwin, 2026-10-05: "3 columns on portfolio on desktop version only"). It is
+// no longer `.pf-row` rows of 2 — that shape cannot make three columns, because
+// a row of two frames leaves the third track empty (measured at 1440px as 467px
+// of dead space at the right edge).
+//
+// Rows.ts still supplies the frames and their ORDER, and the short-row guard
+// still drops a row whole; only the arrangement changed. `packByHeight()` in
+// pages.ts does the packing, so this probe reads columns, not rows.
 const grid = await evaluate(`(() => {
-  const rows = [...document.querySelectorAll('.pf-row')];
+  const cols = [...document.querySelectorAll('.pf-col')];
   const cells = [...document.querySelectorAll('.pf-cell')];
-  const heights = rows.map(r =>
-    [...r.querySelectorAll('.pf-cell')].map(c => c.getBoundingClientRect().height));
+  // Spacing metric for a COLUMN wall. There are no rows to compare against, so
+  // the equivalent of the old rowSpread is the gap between consecutive frames
+  // INSIDE a column: it must equal the gutter, with no white notch under a
+  // short frame. Any frame shorter than the gutter + 1px would mean a gap.
+  const gaps = [];
+  for (const col of cols) {
+    const boxes = [...col.querySelectorAll('.pf-cell')].map(c => {
+      const r = c.getBoundingClientRect();
+      return { top: r.top, bottom: r.bottom };
+    }).sort((a, b) => a.top - b.top);
+    for (let i = 1; i < boxes.length; i++) gaps.push(boxes[i].top - boxes[i - 1].bottom);
+  }
+  const colBottoms = cols.map(c => {
+    const b = [...c.querySelectorAll('.pf-cell')].map(x => x.getBoundingClientRect().bottom);
+    return b.length ? Math.round(Math.max(...b)) : 0;
+  });
+  const gut = parseFloat(getComputedStyle(cols[0] ?? document.body).rowGap || '0');
   return {
-    rows: rows.length,
-    perRow: rows.map(r => r.querySelectorAll('.pf-cell').length),
-    tracks: rows.length ? getComputedStyle(rows[0]).gridTemplateColumns.split(' ').filter(Boolean).length : 0,
+    cols: cols.length,
+    perCol: cols.map(c => c.querySelectorAll('.pf-cell').length),
     cells: cells.length,
     imgs: document.querySelectorAll('.pf-cell img').length,
-    // THE spacing metric: how far apart the tallest and shortest cell of a row
-    // are. 0 means every row is exactly one height, which is only true because
-    // each row holds three frames of the same aspect ratio.
-    rowSpread: Math.max(0, ...heights.map(hs => hs.length ? Math.max(...hs) - Math.min(...hs) : 0)),
+    tracks: cols.length ? getComputedStyle(document.querySelector('.pf-rows')).gridTemplateColumns.split(' ').filter(Boolean).length : 0,
+    cellW: Math.round(cols[0]?.querySelector('.pf-cell')?.getBoundingClientRect().width ?? 0),
+    gutter: gut,
+    // Worst under-gap between stacked frames. ~0 or less means frames are
+    // touching/overlapping; anything meaningfully above the gutter means a
+    // white notch opened up under a short frame.
+    worstGap: gaps.length ? Math.round(Math.max(...gaps) * 100) / 100 : 0,
+    // How level the column bottoms are. Masonry cannot be 0 here the way
+    // ratio-grouped rows were, because a frame cannot be split between columns.
+    bottomSpread: colBottoms.length ? Math.max(...colBottoms) - Math.min(...colBottoms) : 0,
     // Nothing on this page may be its own scroller.
-    scrollables: [...document.querySelectorAll('.pf-row, .pf-rows, .pf-cell')]
+    scrollables: [...document.querySelectorAll('.pf-col, .pf-rows, .pf-cell')]
       .filter(e => e.scrollHeight > e.clientHeight + 1).length,
+    // No horizontal page scroll at the current viewport.
+    overflowX: document.documentElement.scrollWidth - window.innerWidth,
     // No printed numbers, and no filter bar — both removed on request.
     printedNumbers: document.querySelectorAll('.pf-cell__n').length,
     filterBar: !!document.querySelector('.pfilter'),
     // data-n must survive: the lightbox counter reads it ("07 / 30").
     dataN: cells.filter(c => c.dataset.n).length,
+    // data-n must be a contiguous 1..30 run, or the lightbox counter shows gaps
+        // and stepping order skips a frame.
+        nSeq: cells.map(c => Number(c.dataset.n)).sort((a, b) => a - b).every((v, i) => v === i + 1),
     band: !!document.querySelector('.hcta'),
     bandCta: document.querySelector('.hcta__btn')?.getAttribute('href') ?? null,
     bandLinks: document.querySelectorAll('.hcta__foot a').length,
@@ -227,22 +261,37 @@ const ix = JSON.parse(viaIndex);
 check("index.html serves the homepage, not the wall", ix.hero && ix.cells === 0, viaIndex);
 check("index.html has the homepage title", !/^Index/i.test(ix.title), ix.title);
 await goto("/#/portfolio", 2400);
-// The curated static wall: 30 frames, 15 rows of 2, nothing scrolls, no numbers.
-// Two per row, not three, since 2026-10-02 (41baf55): three columns at a 393px
-// phone gave 111px tiles, too small to read a face. rows.ts owns the count.
-check("fifteen rows of two", grid.rows === 15 && grid.perRow.every(n => n === 2),
-  grid.rows + " rows, " + grid.perRow.join("/"));
+// The packed wall: 30 frames in THREE columns on desktop (Alwin, 2026-10-05:
+// "3 columns on portfolio on desktop version only"), two on a phone. The phone
+// count is unchanged since 2026-10-02, when three columns at 393px gave 111px
+// tiles — too small to read a face. wallCols() in pages.ts owns the count.
+check("three columns on desktop", grid.cols === 3, grid.cols + " columns, " + grid.perCol.join("/"));
 check("30 frames in the wall", grid.cells === 30, String(grid.cells));
 check("one image per frame", grid.imgs === 30, String(grid.imgs));
-check("two CSS tracks per row", grid.tracks === 2, String(grid.tracks));
-// "No spacing issues at all" — measured, not eyeballed. 1px of tolerance is
-// fractional layout rounding; a photo at a different ratio would show as more.
-check("every row is exactly one height (no gap under any photo)", grid.rowSpread <= 1,
-  "worst spread " + grid.rowSpread.toFixed(2) + "px");
+check("three CSS tracks", grid.tracks === 3, String(grid.tracks));
+// "No spacing issues at all" — measured, not eyeballed. In a COLUMN wall the
+// metric is the gap between stacked frames inside a column: it must be exactly
+// the gutter. A short frame in a ratio-mixed stack cannot open a notch here,
+// which is the property the old ratio-grouped rows existed to buy; this asserts
+// it directly rather than trusting that.
+check("no gap under any photo (frames butt up to the gutter)",
+  grid.worstGap <= grid.gutter + 1,
+  `worst under-gap ${grid.worstGap}px vs gutter ${grid.gutter}px`);
+// The column bottoms are as level as masonry allows. A frame cannot be split
+// between columns, so this is a bound, not zero — the packer got 112px at 1440
+// against 478px for CSS multi-column. Above ~400px it is the ragged edge the
+// packer exists to prevent and this should fail.
+check("column bottoms are level enough", grid.bottomSpread <= 400,
+  `spread ${grid.bottomSpread}px`);
+// Cells must stay photo-sized. Three columns across a 1378px cap is ~450px;
+// the 111px that was rejected on a phone would show up here as a collapse.
+check("cells are photo-sized", grid.cellW >= 300, grid.cellW + "px");
 check("nothing on the page scrolls", grid.scrollables === 0, String(grid.scrollables));
+check("no horizontal page scroll", grid.overflowX <= 0, grid.overflowX + "px");
 check("no numbers printed on the images", grid.printedNumbers === 0, String(grid.printedNumbers));
 check("no filter bar", !grid.filterBar);
 check("data-n kept for the lightbox counter", grid.dataN === 30, String(grid.dataN));
+check("data-n is a contiguous 1..30 run", grid.nSeq, String(grid.nSeq));
 
 // The closing band. Measured missing on this route on 2026-10-01: the page ended
 // on `.page.portfolio`, so a visitor who liked a frame had no way to enquire.

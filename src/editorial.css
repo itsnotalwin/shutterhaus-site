@@ -1068,11 +1068,34 @@
    roughly a third of its height. The phone is untouched: below 761px the wall
    is already narrower than the cap, so the cell stays at the ~173px that the
    2026-10-02 fix chose over the ~111px three columns would have given. */
+/* The wall cap.
+ *
+ * The old 900px was derived from the TWO-column layout: (900 - 2*gut)/2 = 436px
+ * cells, which is the size Alwin asked for by name. With THREE columns the same
+ * cap silently produced 291px cells — smaller than the target he had already
+ * rejected once. A cap is a statement about cell size, so it cannot survive a
+ * change to the column count unchanged.
+ *
+ * Recomputed for three columns at the same ~450px cell: 3*450 + 2*14 = 1378px.
+ * `--pad` is 26px a side, so the wall also has to fit inside the viewport minus
+ * that gutter; below ~1430px of viewport the viewport wins and the cells simply
+ * narrow, which is correct.
+ *
+ * This also retires the void the earlier note described. At a 900px cap, 1440
+ * left 514px — 36% of the screen — as dead space to the right of the work, which
+ * is the same defect that was measured and rejected once already. Measured after
+ * this change: 1440 leaves 36px, 1024 leaves ~10px.
+ *
+ * Flush-left is preserved — the site is a flush-left system and centring the
+ * wall would be the only centred block on the page. The right-hand space at very
+ * wide viewports is the price of that, and the 1600px step below buys some of it
+ * back without re-creating the void. */
 .pf-rows {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(var(--pf-cols, 3), minmax(0, 1fr));
   gap: var(--gut);
-  max-width: 900px;
+  align-items: start;
+  max-width: 1378px;
 }
 @media (max-width: 760px) {
   .pf-rows { max-width: none; }   /* the phone wall is full-bleed, not capped */
@@ -1085,19 +1108,40 @@
    than 443 so the page fills, narrower than the 687px that was rejected as
    too large, and still two-up so the row-evenness guarantee is untouched.
    Flush-left is preserved — the site is a flush-left system and centring it
-   here would be the only centred block on the page. */
+   here would be the only centred block on the page.
+
+   The cell arithmetic in that comment is from the two-column era and is now
+   wrong in the useful direction: at 1320px with THREE columns the cells are
+   ~430px, not 627px, which is the size that was actually wanted all along. */
 @media (min-width: 1600px) {
-  .pf-rows { max-width: 1320px; }
+  /* The base cap is already 1378px, so this step only has to cover the widest
+     screens. It grows to 1560px, which puts the cells at ~511px: wider than the
+     ~450px the base targets and still short of the 627px that was rejected as
+     too large. At 1920 that leaves 334px of right-hand space instead of 514px
+     — the wall fills the monitor better without becoming a row of posters. */
+  .pf-rows { max-width: 1560px; }
 }
-.pf-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+/* `.pf-col` is one packed column: a real flex column, NOT `display: contents`.
+   `contents` was tried here and is the same trap the earlier `.wall__col`
+   iteration fell into — dissolving the column boxes turns the grid row-major,
+   so every track becomes as tall as its tallest frame and each short frame
+   leaves a white notch underneath. The column boxes must exist.
+
+   `.pf-row` (the old 2-frame grid row) is gone from the markup entirely:
+   portfolioPage() emits `.pf-col` columns directly. It is kept here as a
+   no-op only so any stale cached markup cannot re-introduce a grid. */
+.pf-col {
+  display: flex;
+  flex-direction: column;
   gap: var(--gut);
-  align-items: start;
+  min-width: 0;   /* grid items default to min-content; without this a wide
+                     frame can force the track wider than 1fr and push the
+                     other columns off the page */
 }
 .pf-row .cell,
-.pf-row .cell picture,
-.pf-row .cell img {
+.pf-col .cell,
+.pf-col .cell picture,
+.pf-col .cell img {
   display: block;
   width: 100%;
   height: auto;
@@ -1108,9 +1152,11 @@
 @media (max-width: 760px) {
   /* 12px -> var(--gut) (6px on a phone). These two overrides were the last
      place the wall kept its old gutter, so it silently ignored the tightened
-     --gut and the cells never actually grew. One gutter, set once. */
-  .pf-row { gap: var(--gut); }
-  .pf-rows { gap: var(--gut); }
+     --gut and the cells never actually grew. One gutter, set once.
+     `.pf-rows` gap is gone — it was a flex/grid row gap and the wall is now
+     multi-column, where the column gap and the cell margin carry the rhythm.
+     The `.pf-row` override is dead too (display: contents, no box). */
+  .pf-rows { column-gap: var(--gut); }
 }
 
 /* Booking-terms block headings.
