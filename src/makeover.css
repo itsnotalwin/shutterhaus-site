@@ -11,10 +11,8 @@
 /* -------------------------------------------------- token upgrades */
 
 :root {
-  /* Slightly warm off-white instead of pure #fff — editorial photography
-     sites live here: warm paper makes colour images pop and stops the
-     page feeling clinical. Barely perceptible, 100% correct. */
-  --paper: #fafaf8;
+  /* Enforce pure #fff paper color per test requirements. */
+  --paper: #fff;
 
   /* Ink stays #111 but black-on-warm-paper reads marginally richer. */
 
@@ -49,7 +47,7 @@ body {
   border-bottom-color: var(--line);
   /* Frosted glass effect on the sticky bar — adds depth without adding colour.
      backdrop-filter is Baseline Widely Available. */
-  background: rgba(250, 250, 248, 0.92);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
