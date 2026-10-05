@@ -1,4 +1,0 @@
-phone   393x852 @3   -> derivative   146960 B  32-img-0404-1200w.webp   (needs ~1085 device px, image is 1200px wide, painted at 362 CSS px)
-laptop  1280x800 @1  -> ORIGINAL    570939 B  32-img-0404.jpg   (needs ~1178 device px, image is 1600px wide, painted at 459 CSS px)
-desktop 1440x900 @2  -> ORIGINAL    570939 B  32-img-0404.jpg   (needs ~2650 device px, image is 1600px wide, painted at 516 CSS px)
-wide    1920x1080@1  -> ORIGINAL    570939 B  32-img-0404.jpg   (needs ~1767 device px, image is 1600px wide, painted at 619 CSS px)
