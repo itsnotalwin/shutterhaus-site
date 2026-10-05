@@ -5,7 +5,7 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import { setTimeout as sleep } from "node:timers/promises";
 
 const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
-const PAGE_URL = "http://127.0.0.1:4173/";
+const PAGE_URL = "http://localhost:5173/";
 const PORT = 9333;
 const OUT = new URL(".", import.meta.url).pathname
   .replace(/^\/([A-Za-z]:)/, "$1")
