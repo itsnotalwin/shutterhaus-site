@@ -20,6 +20,13 @@ audit2*-chrome-profile*/
 audit-v2chrome-profile/
 *.chrome-profile/
 
+# Audit tool output folders (generated locally, not for commit)
+audit-v2/
+mobile-audit/
+mockups/
+mockups-v2/
+verification/
+
 # Audit scratch. The reports themselves are committed (AUDIT.md, RESOLVED.md,
 # the .json measurements); the screenshots they point at are not. mobile-audit
 # alone is 172MB of a11y before/after captures from a previous pass.
