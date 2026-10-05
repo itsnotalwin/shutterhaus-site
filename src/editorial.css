@@ -193,6 +193,17 @@
   object-fit: cover;
   object-position: 50% 0%;
 }
+/* Phone-only focal shift for the hero. On a 390px box the cover crop is
+   HORIZONTAL: the visible band is srcX 401->1199 of 1600 (25.1% sliced off
+   each side), and the pinned subject (face x1000-1200, cheek at the band's
+   right edge) ends up pressed against the frame with 44% of the image wasted
+   on overexposed sky. Anchoring the crop on the face — 87% puts the window at
+   srcX 701->1499 — centres her and drops most of the dead sky. Desktop never
+   sees this: the 1440 crop is vertical (full width visible), so 50% 0% is
+   untouched there. */
+@media (max-width: 760px) {
+  .hero__fig img { object-position: 87% 0%; }
+}
 /* The headline sits on the photograph, so it needs a scrim to stay legible
    over a bright frame. A gradient, not a flat wash — the reference keeps the
    top of the image clean. */
