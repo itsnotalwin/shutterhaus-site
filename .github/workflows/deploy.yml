@@ -50,7 +50,11 @@ jobs:
             --hide-scrollbars --disable-gpu --no-first-run \
             --no-sandbox --disable-dev-shm-usage \
             --user-data-dir=/tmp/ci-chrome about:blank &
-          for i in $(seq 1 40); do
+          for i in $(seq 1 120); do
+            # 120 x 0.5s = 60s window. Chrome cold starts are flaky on the
+            # runner: observed 20.4s from launch to "DevTools listening" on one
+            # run, which outlasted the old 40-iteration (20s) window and failed
+            # the gate with curl exit 7.
             curl -sf http://127.0.0.1:9222/json/version >/dev/null && break
             sleep 0.5
           done
