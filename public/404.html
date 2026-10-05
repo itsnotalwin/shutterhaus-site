@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Redirecting…</title>
+    <script>
+      // GitHub Pages has no server-side redirects, so a mistyped path is a 404.
+      // The one that matters is the admin: "/admin/" and "/ADMIN.HTML" both
+      // 404, and after a Google login the browser lands back on whatever URL
+      // the flow came from — so a trailing slash silently turned a successful
+      // sign-in into a dead end.
+      //
+      // Send only admin-ish paths here. A genuine missing public page should not
+      // be quietly turned into a trip to /admin.html.
+      var p = location.pathname.toLowerCase();
+      if (/^\/admin(\/|\.html)?$/.test(p) || /^\/admin\//.test(p)) {
+        location.replace("/admin.html");
+      }
+    </script>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #fff;
+        color: #111;
+        font: 14px/1.6 system-ui, sans-serif;
+        text-align: center;
+      }
+      a { color: #111; }
+    </style>
+  </head>
+  <body>
+    <p>
+      Nothing here. <a href="/">Back to the site</a>
+    </p>
+    <noscript>
+      <p>If you were signing in to the admin, <a href="/admin.html">open it here</a>.</p>
+    </noscript>
+  </body>
+</html>
