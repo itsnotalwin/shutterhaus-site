@@ -22,7 +22,17 @@ import type { PhotoRow } from "./types";
  *
  * Gallery fingerprint: dfd93a5a1b0883bb
  */
-export const PHOTO_ROWS: PhotoRow[] = [
+/**
+ * The committed wall, as frame IDs — 15 rows of 2.
+ *
+ * This is the FALLBACK, not the live value. Alwin now chooses the wall in
+ * /admin and it arrives from public.composition, so PHOTO_ROWS below is only
+ * what the page uses when the database cannot be read. Keep it correct.
+ *
+ * GENERATED originally by tools/build-rows-ts.py from tools/rows.py; the live
+ * version is set at runtime by setLiveRows().
+ */
+export const COMMITTED_ROWS: PhotoRow[] = [
   ["c47", "c44"] as PhotoRow,
   ["c34", "c39"] as PhotoRow,
   ["c38", "c42"] as PhotoRow,
@@ -39,3 +49,29 @@ export const PHOTO_ROWS: PhotoRow[] = [
   ["c20", "c30"] as PhotoRow,
   ["c51", "c22"] as PhotoRow,
 ];
+
+/**
+ * The wall the page is rendering.
+ *
+ * A `let` rather than a re-export so the composition read can replace it
+ * without pages.ts changing shape. It starts as the committed rows, so a
+ * visitor who never waits for the database sees exactly what they saw before.
+ */
+export let PHOTO_ROWS: PhotoRow[] = COMMITTED_ROWS;
+
+/**
+ * Swap in the wall Alwin chose, given as rows of frame ids.
+ *
+ * Rejects anything that is not a whole number of same-length rows, because
+ * portfolioPage() throws on a short row and a throw here would blank the whole
+ * page. A malformed composition must never reach the renderer.
+ */
+export function setLiveRows(rows: PhotoRow[] | null | undefined): void {
+  if (!rows?.length) return;
+  const cols = rows[0].length;
+  if (!cols || rows.some((r) => r.length !== cols)) return;
+  if (rows.length === PHOTO_ROWS.length && rows.every((r, i) => r.join() === PHOTO_ROWS[i].join())) {
+    return; // identical — don't churn the DOM for nothing
+  }
+  PHOTO_ROWS = rows;
+}

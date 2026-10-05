@@ -6,6 +6,9 @@ import { renderShell } from "./layout";
 import { portfolioPage, homePage, emptyGallery } from "./pages";
 import { contactPage, servicesPage, aboutPage } from "./pages-more";
 import { publicPhotosOrNull, type AdminPhoto } from "./store";
+import { readComposition, type Composition } from "./composition";
+import { setLiveHome } from "./config";
+import { setLiveRows, COMMITTED_ROWS } from "./rows";
 import { DEMO_PHOTOS } from "./demo";
 import { initLightbox, markLoadedImages } from "./lightbox";
 
@@ -227,6 +230,41 @@ async function paint(): Promise<void> {
       return ok ? live : null;
     }
 
+/**
+ * The committed choices, as the fallback for every composition read.
+ *
+ * Derived from the same git files the site shipped with, so "the database is
+ * unreachable" and "Alwin has changed nothing" render identically — which is
+ * the point: a visitor cannot tell whether the fallback fired.
+ */
+const idToFile = new Map(DEMO_PHOTOS.map((p) => [p.id, p.filename]));
+const FALLBACK = {
+  strip: [...SITE.homeStrip],
+  hero: SITE.heroPhoto,
+  rows: COMMITTED_ROWS.map((r) => r.map((id) => idToFile.get(id) ?? "")),
+};
+
+/**
+ * Push a resolved composition into the renderers.
+ *
+ * The wall arrives as filenames and has to become frame ids, because
+ * portfolioPage() looks photos up by id and THROWS on an id it cannot find.
+ * Converting here — rather than loosening that check — keeps the guard that
+ * stopped the nine-stale-rows outage intact.
+ */
+function applyComposition(comp: Composition): void {
+  const fileToId = new Map(
+    DEMO_PHOTOS.filter((p) => p.filename).map((p) => [p.filename!, p.id]),
+  );
+  setLiveHome(comp.homeStrip, comp.heroPhoto);
+  const asIds = comp.wallRows.map((row) =>
+    row.map((f) => fileToId.get(f)).filter((id): id is string => !!id),
+  );
+  // setLiveRows rejects a ragged wall, so a composition that lost a frame cannot
+  // reach the renderer as a short row.
+  setLiveRows(asIds);
+}
+
 // home + portfolio — the two routes built around the wall of frames.
   //
   // The gallery must NEVER depend on a network call succeeding. Two failure
@@ -256,32 +294,75 @@ async function paint(): Promise<void> {
 
   {
     const TIMEOUT_MS = 2500;
-    let t: ReturnType<typeof setTimeout> | undefined;
-    const timeout = new Promise<null>((res) => {
-      t = setTimeout(() => res(null), TIMEOUT_MS);
-    });
-    try {
-      const live = await Promise.race([publicPhotosOrNull(), timeout]);
-      if (myPaint !== paintSeq) return; // a newer route won
-      if (live === null) {
-        console.warn("[gallery] timed out, keeping bundled set");
-        return; // bundled set already on screen
-      }
+    // One budget PER QUERY, not one shared promise. A single shared timeout means
+    // the composition read starts its clock when the gallery read started, so it
+        // inherits whatever the first one already spent and can only ever resolve
+        // already-expired. That is not a theoretical race: it made the composition
+        // read time out every time, which is how the hero and strip still rendered
+        // (they fall back to git) while nothing was actually coming from the DB.
+        const budget = () =>
+          new Promise<null>((res) => {
+            setTimeout(() => res(null), TIMEOUT_MS);
+          });
+        let t: ReturnType<typeof setTimeout> | undefined;
+        const timeout = new Promise<null>((res) => {
+          t = setTimeout(() => res(null), TIMEOUT_MS);
+        });
+        try {
+          const live = await Promise.race([publicPhotosOrNull(), timeout]);
+          if (myPaint !== paintSeq) return; // a newer route won
+          if (live === null) {
+                  console.warn("[gallery] timed out, keeping bundled set");
+                  // NOT an early return any more. The composition is a different table,
+                  // and the two have genuinely different failure modes: `photos` can be
+                  // empty or slow (it holds one row per upload) while `composition` holds
+                  // the 37 rows that decide which images appear where. Returning here
+                  // meant a slow gallery read silently also discarded Alwin's choices.
+                }
       // An empty table is a legitimate state (nothing published yet) — keep the
-      // bundled set so the site is never empty. `adoptable` additionally rejects
-      // a table whose rows name files we no longer ship.
-      const ok = adoptable(live);
-      if (ok) {
-        photos = ok;
-        draw();
-      } else if (live.length) {
-        console.warn(
-          `[gallery] ignoring ${live.length} DB row(s) naming files that are not bundled`,
-        );
-      }
-    } catch (err) {
-      console.warn("[gallery] Supabase unreachable, keeping bundled set:", err);
-    } finally {
+            // bundled set so the site is never empty. `adoptable` additionally rejects
+            // a table whose rows name files we no longer ship.
+            // `live` can be null here (the race resolved to the timeout), so this is
+            // gated on a real array rather than on truthiness.
+            if (Array.isArray(live)) {
+              const ok = adoptable(live);
+              if (ok) {
+                photos = ok;
+                draw();
+              } else if (live.length) {
+                console.warn(
+                  `[gallery] ignoring ${live.length} DB row(s) naming files that are not bundled`,
+                );
+              }
+            }
+
+            // The composition is a SEPARATE read from the gallery, and it is what
+            // makes Alwin's choices in /admin reach the page. Reordering the gallery
+            // would not do it: which photo sits in the hero, and which 30 make the
+            // wall, is a decision about slots, not about sort_order.
+            //
+            // Same rule as the gallery read above — never wait long enough to hold the
+            // page, and never let a bad row blank it. readComposition() resolves each
+            // slot against `known` and falls back per slot, so the worst case here is
+            // the committed defaults, which is what the site served before any of this.
+            if (myPaint !== paintSeq) return;
+                        // The gallery the page is actually rendering — bundled plus
+                        // anything live — so a slot naming a file we do not ship falls back
+                        // instead of rendering a hole. Same set the admin resolves against.
+                        const known = new Set<string>(photos.map((p) => p.filename).filter((f): f is string => !!f));
+                        const comp = await Promise.race([readComposition(known, FALLBACK), budget()]);
+            if (!comp) {
+              console.warn("[composition] timed out, keeping committed defaults");
+              return;
+            }
+            if (comp.problems.length) {
+              console.warn(`[composition] ${comp.problems.length} slot(s) fell back:`, comp.problems);
+            }
+            applyComposition(comp);
+            draw();
+          } catch (err) {
+            console.warn("[gallery] Supabase unreachable, keeping bundled set:", err);
+          } finally {
       if (t !== undefined) clearTimeout(t);
     }
   }

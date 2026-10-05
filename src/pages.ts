@@ -1,8 +1,9 @@
 import { escapeHtml } from "./layout";
 import { SITE } from "./config";
 import type { Photo } from "./types";
-import { PHOTO_ROWS } from "./rows";
+import { PHOTO_ROWS, setLiveRows } from "./rows";
 import { SHOOT_OF } from "./shoots";
+import { setLiveHome } from "./config";
 // src/rows.ts (justified rows) went away with the row layout — the wall uses
 // `packByHeight()` from this file now, the same packer the home strip uses.
 

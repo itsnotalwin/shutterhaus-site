@@ -847,6 +847,136 @@ code {
 .card__acts button:hover { background: #e9e9e9; }
 .card__acts .is-danger { color: #b3261e; }
 
+/* ------------------------------------------------------- admin: page mock
+   A scaled preview of each page with the chosen images as slots. The point is
+   to answer "what does my site look like", so the proportions match the real
+   page rather than being a convenient grid. */
+
+.mock { display: grid; gap: 40px; }
+.mock__page { border-top: 1px solid var(--line); padding-top: 18px; }
+.mock__h {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+
+.mock__hero { position: relative; }
+.mock__cap {
+  display: block;
+  font-size: 11px;
+  color: var(--dim);
+  margin-top: 7px;
+}
+
+.mock__strip {
+  display: grid;
+  /* The live strip is 3 across on desktop, 2 on a phone. The preview mirrors
+     that rather than showing six at once, because "how will this read" is the
+     question and the desktop answer is not it. */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.mock__wall { display: grid; gap: 8px; }
+.mock__row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.mslot {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 1px solid var(--line);
+  background: #f1f1f1;
+  cursor: pointer;
+  overflow: hidden;
+  width: 100%;
+}
+.mslot img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+}
+.mslot--hero img { aspect-ratio: 3/2; }
+.mslot:hover { border-color: var(--ink); }
+.mslot:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* The held slot. This is the only place the mock uses an overlay, so the eye
+   goes straight to the one place the next tap lands. */
+.mslot.is-held {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px var(--ink);
+}
+.mslot.is-held::after {
+  content: "pick a photo";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.62);
+  color: #fff;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mslot--empty {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4/5;
+  border-style: dashed;
+  color: var(--dim);
+  font-size: 11px;
+}
+.mslot--hero.mslot--empty { aspect-ratio: 3/2; }
+
+.mslot__n {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 9px;
+  background: #fff;
+  color: var(--ink);
+  padding: 2px 5px;
+}
+
+.publishbar--warn { background: #fdf1e6; color: #8a4b12; }
+
+.picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 8px;
+}
+.picker__i {
+  padding: 0;
+  border: 1px solid var(--line);
+  background: #f1f1f1;
+  cursor: pointer;
+  overflow: hidden;
+}
+.picker__i:hover { border-color: var(--ink); }
+.picker__i img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+}
+
+@media (max-width: 620px) {
+  /* The real strip drops to 2 across on a phone, so the preview must too —
+     otherwise he approves a 3-across layout he will never see. */
+  .mock__strip { grid-template-columns: repeat(2, 1fr); }
+  .mock { gap: 32px; }
+  .picker { grid-template-columns: repeat(3, 1fr); }
+  .picker__i, .mslot { min-height: 44px; }
+  .mock__h { font-size: 12px; }
+}
+
 /* ------------------------------------------------- admin: phone layout ---
    The admin bar is one row by design on a laptop. At 390px that row is
    logo + tabs + email + links, and it wraps or clips. The alt input is 12px,

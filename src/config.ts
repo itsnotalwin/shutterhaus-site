@@ -382,6 +382,22 @@ export const FONTS = {
  * go to alwin@shutterhausvisuals.co.za, but that address is deliberately NOT
  * here: Alwin signs in to the gallery with his personal Google account, and
  * is_admin() matches on whatever email Google returns. The database copy in
- * supabase/schema.sql is therefore unchanged and needs no migration.
- */
+  * supabase/schema.sql is therefore unchanged and needs no migration.
+  */
+
+ /**
+  * Replace the home strip and hero with what Alwin chose in /admin.
+  *
+  * Mutates SITE in place rather than threading a new parameter through every
+  * render function. The alternative touches homePage(), the hero block and the
+  * strip builder for no benefit: the live values are always a whole-page redraw,
+  * so there is no moment where a stale and a live value coexist in one render.
+  *
+  * Only ever called from a resolved composition that has already fallen back
+  * per slot, so `strip` is a complete, validated list — never a partial patch.
+  */
+ export function setLiveHome(strip: string[], hero: string | null): void {
+   if (strip.length) SITE.homeStrip = strip;
+   if (hero) SITE.heroPhoto = hero;
+ }
 export const ADMIN_EMAILS = ["itsnotalwin@gmail.com"];

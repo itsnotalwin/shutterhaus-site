@@ -15,16 +15,20 @@ import {
   uploadPhoto,
   type AdminPhoto,
 } from "./store";
+import { readComposition, setSlot, createSlot, type Composition } from "./composition";
+import { DEMO_PHOTOS } from "./demo";
+import { PHOTO_ROWS } from "./rows";
 
 const app = document.getElementById("app")!;
 
 const TABS = [
+  { id: "mock", label: "page mock" },
   { id: "photos", label: "photos" },
   { id: "details", label: "site details" },
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
 
-let tab: TabId = "photos";
+let tab: TabId = "mock";
 let items: AdminPhoto[] = [];
 let email: string | null = null;
 // Upload in flight. Guards against a second batch starting on top of the first
@@ -33,6 +37,13 @@ let busy = false;
 // Ids uploaded this session but not yet made visible. Kept across the repaint
 // so "publish them" is one tap instead of one tap per photo.
 let pending: string[] = [];
+// The live composition, mirrored from public.composition. Kept in state so the
+// mock can render without a round trip on every repaint.
+let comp: Composition = { homeStrip: [], heroPhoto: null, wallRows: [], problems: [] };
+// The slot he has tapped, waiting for a photo. null = nothing held. This is what
+// makes it a two-tap swap instead of a drag, which is the interaction that works
+// with one thumb on a phone.
+let held: { page: string; slot: string; order: number } | null = null;
 
 /* ------------------------------------------------------------------ views */
 
@@ -138,6 +149,113 @@ function detailsView(): string {
     </p>`;
 }
 
+/**
+ * A scaled, honest preview of each page, with every chosen image as a slot.
+ *
+ * Shown at the same proportions the real page uses rather than as a flat grid,
+ * because the question he is answering is "what does my site look like", not
+ * "which files exist". A 1:1 contact sheet would answer the wrong question.
+ *
+ * Each slot carries its own position in the page's data attributes so the
+ * click handler can write to exactly one row — see assign().
+ */
+function mockView(msg?: { kind: "ok" | "err"; text: string }): string {
+  const byFile = new Map(items.map((p) => [p.filename, p]));
+
+  // Resolve a filename to an <img>, or name the gap. A slot that cannot be
+  // filled is shown as a hole rather than hidden, because a hole in the preview
+  // is a hole on the site.
+  const slot = (
+    filename: string | null,
+    page: string,
+    group: string,
+    order: number,
+    cls: string,
+  ): string => {
+    const p = filename ? byFile.get(filename) : undefined;
+    const url = p?.url ?? (filename ? `gallery/${filename}` : "");
+    const isHeld =
+      held?.page === page && held?.slot === group && held?.order === order;
+    const clsFull = `${cls}${isHeld ? " is-held" : ""}`;
+    if (!filename) {
+      return `<button type="button" class="mslot mslot--empty ${clsFull}" data-slot="${page}|${group}|${order}">
+        <span>empty</span></button>`;
+    }
+    return `<button type="button" class="mslot ${clsFull}" data-slot="${page}|${group}|${order}" title="${escapeHtml(filename)} — tap to swap">
+      <img src="${escapeHtml(url)}" alt="" loading="lazy" />
+      <span class="mslot__n">${order + 1}</span>
+    </button>`;
+  };
+
+  const hero = comp.heroPhoto;
+  const strip = comp.homeStrip;
+
+  return `
+    ${msg ? `<p class="notice notice--${msg.kind}">${escapeHtml(msg.text)}</p>` : ""}
+    ${
+      comp.problems.length
+        ? `<div class="publishbar publishbar--warn">
+             <span>${comp.problems.length} slot${comp.problems.length > 1 ? "s" : ""} couldn't be read — the site fell back to its defaults.</span>
+           </div>`
+        : ""
+    }
+
+    <div class="mock">
+      <section class="mock__page">
+        <h2 class="mock__h">home — hero</h2>
+        <div class="mock__hero">
+          ${slot(hero, "home", "hero", 0, "mslot--hero")}
+          <span class="mock__cap">the first thing a visitor sees</span>
+        </div>
+
+        <h2 class="mock__h">home — strip below the hero</h2>
+        <div class="mock__strip">
+          ${strip.map((f, i) => slot(f, "home", "strip", i, "")).join("")}
+        </div>
+        ${
+          strip.length < 6
+            ? `<p class="pad pad--dim">${strip.length} of 6 filled. The home strip is art direction, not a sample — a short one shows fewer images.</p>`
+            : ""
+        }
+      </section>
+
+      <section class="mock__page">
+        <h2 class="mock__h">portfolio wall — ${comp.wallRows.length} rows of ${comp.wallRows[0]?.length ?? 2}</h2>
+        <p class="pad pad--dim">
+          Each row holds ${comp.wallRows[0]?.length ?? 2} frames of the same shape, so a row
+          reads as one clean line. Dropping a photo here leaves a gap in its row.
+        </p>
+        <div class="mock__wall">
+          ${comp.wallRows
+            .map(
+              (row, ri) =>
+                `<div class="mock__row">${row
+                  .map((f, i) => slot(f, "portfolio", "wall", ri * (comp.wallRows[0]?.length ?? 2) + i, ""))
+                  .join("")}</div>`,
+            )
+            .join("")}
+        </div>
+      </section>
+
+      <section class="mock__page">
+        <h2 class="mock__h">choose a different photo</h2>
+        <p class="pad pad--dim">
+          Tap a slot above, then tap the photo you want in it. Or tap a photo
+          first and it will fill the next slot you're holding.
+        </p>
+        <div class="picker">
+          ${items
+            .map(
+              (p) => `<button type="button" class="picker__i" data-pick="${escapeHtml(p.filename ?? "")}" title="${escapeHtml(p.alt || p.filename || "")}">
+            <img src="${escapeHtml(p.url)}" alt="" loading="lazy" />
+          </button>`,
+            )
+            .join("")}
+        </div>
+      </section>
+    </div>`;
+}
+
 function notConfigured(): string {
   return `<div class="gate"><div class="gate__card">
     <h1 class="gate__h">admin</h1>
@@ -152,7 +270,7 @@ function notConfigured(): string {
 
 function paint(msg?: { kind: "ok" | "err"; text: string }): void {
   const body =
-    tab === "photos" ? photosView(msg) : detailsView();
+    tab === "mock" ? mockView(msg) : tab === "photos" ? photosView(msg) : detailsView();
   app.innerHTML = shell(body);
   wire();
 }
@@ -212,6 +330,40 @@ function wire(): void {
       paint({
         kind: "err",
         text: `Couldn't publish: ${err instanceof Error ? err.message : "unknown error"}.`,
+      });
+    });
+  });
+
+  // --- page mock: pick a slot, then pick a photo ------------------
+  // Two taps rather than drag-and-drop. Drag on a phone is fiddly with one
+  // thumb and impossible with two photos in the other hand; tap-tap-then-tap is
+  // the interaction that survives contact with a real shoot.
+  document.querySelectorAll<HTMLButtonElement>("[data-slot]").forEach((b) => {
+    b.addEventListener("click", () => {
+      const [page, slot, orderRaw] = (b.dataset.slot ?? "").split("|");
+      const order = Number(orderRaw);
+      if (!page || !slot || Number.isNaN(order)) return;
+      held = { page, slot, order };
+      paint({
+        kind: "ok",
+        text: "Now tap the photo you want in that spot.",
+      });
+    });
+  });
+
+  document.querySelectorAll<HTMLButtonElement>("[data-pick]").forEach((b) => {
+    b.addEventListener("click", () => {
+      const filename = b.dataset.pick ?? "";
+      if (!filename) return;
+      // No slot held yet: fill the hero. Picking a photo before a slot is the
+      // natural first move, and "nothing happened" would be the wrong answer.
+      const target = held ?? { page: "home", slot: "hero", order: 0 };
+      assign(target, filename).catch((err) => {
+        console.error("[admin] assign failed", err);
+        paint({
+          kind: "err",
+          text: `Couldn't save that: ${err instanceof Error ? err.message : "unknown error"}.`,
+        });
       });
     });
   });
@@ -361,6 +513,55 @@ async function publishPending(): Promise<void> {
   });
 }
 
+/**
+ * Point one slot at one photo, then re-read the composition.
+ *
+ * Re-reading rather than patching the local copy is deliberate: the site reads
+ * this table too, so what the mock shows after the write must come from the same
+ * place the public page will read. A local patch would let the mock and the site
+ * disagree — which is the failure mode this whole feature exists to remove.
+ */
+async function assign(
+  target: { page: string; slot: string; order: number },
+  filename: string,
+): Promise<void> {
+  const photo = items.find((p) => p.filename === filename) ?? null;
+
+  // A wall slot past the end of the seeded rows has no row to update. Create it,
+  // because "add a 16th row" is a thing he will want and failing it would be
+  // inexplicable from his side.
+  try {
+    await setSlot(target.page, target.slot, target.order, photo?.id ?? null, filename);
+  } catch {
+    await createSlot(target.page, target.slot, target.order, photo?.id ?? null, filename);
+  }
+
+  comp = await loadComposition();
+  held = null;
+  paint({ kind: "ok", text: "Saved — that's on the site now." });
+}
+
+/** The committed choices, so the mock is never empty and never wrong. */
+function fallbackComposition(): { strip: string[]; hero: string | null; rows: string[][] } {
+  const strip: string[] = [];
+  for (const f of SITE.homeStrip) strip.push(f);
+  const idToFile = new Map(DEMO_PHOTOS.map((p) => [p.id, p.filename]));
+  const rows = PHOTO_ROWS.map((r) => r.map((id) => idToFile.get(id) ?? ""));
+  return { strip, hero: SITE.heroPhoto, rows };
+}
+
+async function loadComposition(): Promise<Composition> {
+  // filename is optional on the Photo type, and a Set<string> will not take
+  // undefined — so an unnamed row is filtered rather than coerced to "".
+  // Coercing would put an empty string in `known`, which would then resolve as
+  // a valid "file" and let an empty slot render as a real image.
+  const known = new Set<string>([
+    ...items.map((p) => p.filename).filter((f): f is string => !!f),
+    ...DEMO_PHOTOS.map((p) => p.filename).filter((f): f is string => !!f),
+  ]);
+  return readComposition(known, fallbackComposition());
+}
+
 async function act(action: string, id: string): Promise<void> {
   const i = items.findIndex((p) => p.id === id);
   if (i < 0) return;
@@ -422,6 +623,7 @@ async function boot(): Promise<void> {
   }
 
   items = await listAllPhotos();
+  comp = await loadComposition();
   paint();
 }
 
