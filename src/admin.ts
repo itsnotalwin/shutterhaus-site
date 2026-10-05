@@ -8,7 +8,13 @@ import {
   getSession,
   isSupabaseConfigured,
 } from "./supabase";
-import { listAllPhotos, updatePhoto, deletePhoto, type AdminPhoto } from "./store";
+import {
+  listAllPhotos,
+  updatePhoto,
+  deletePhoto,
+  uploadPhoto,
+  type AdminPhoto,
+} from "./store";
 
 const app = document.getElementById("app")!;
 
@@ -21,6 +27,12 @@ type TabId = (typeof TABS)[number]["id"];
 let tab: TabId = "photos";
 let items: AdminPhoto[] = [];
 let email: string | null = null;
+// Upload in flight. Guards against a second batch starting on top of the first
+// and double-uploading the same files.
+let busy = false;
+// Ids uploaded this session but not yet made visible. Kept across the repaint
+// so "publish them" is one tap instead of one tap per photo.
+let pending: string[] = [];
 
 /* ------------------------------------------------------------------ views */
 
@@ -85,22 +97,32 @@ function photosView(msg?: { kind: "ok" | "err"; text: string }): string {
 
   return `
     ${msg ? `<p class="notice notice--${msg.kind}">${escapeHtml(msg.text)}</p>` : ""}
-    <section class="drop drop--static">
-      <strong>Adding new photos</strong>
-      <span>Image files live in the GitHub repository, not in a database.</span>
-      <p class="drop__how">
-        From your machine, run
-        <code>python tools/add-photos.py "C:/path/to/your/shoot"</code> —
-        it resizes, optimises, drops the files into
-        <code>public/gallery/</code> and prints the commit command. Everything
-        you do <em>often</em> — alt text, order, hide and show — is right here
-        below and saves instantly, with no deploy.
-      </p>
-    </section>
+    ${
+      pending.length
+        ? `<div class="publishbar">
+             <span>${pending.length} new photo${pending.length > 1 ? "s" : ""} not on the site yet.</span>
+             <button type="button" class="publishbar__go" data-publish>Put them live</button>
+           </div>`
+        : ""
+    }
+    <label class="drop" id="drop" for="adm-file">
+      <strong>Add photos</strong>
+      <span>Tap to choose from your phone, or drag files in. They go live the moment you press the button.</span>
+      <!--
+        accept="image/*" with NO capture attribute is deliberate: capture forces
+        iOS straight into the camera and removes the photo library, which is the
+        half of the job that matters. Without it Safari offers "Take Photo",
+        "Photo Library" and "Browse" itself. multiple is honoured on iOS too.
+      -->
+      <input id="adm-file" type="file" accept="image/*" multiple hidden />
+      <span class="drop__prog"><i></i></span>
+    </label>
     <p class="pad pad--dim">
-      Left to right is the order visitors see. “hide” keeps an image in your library
-      but off the public site. “delete” removes the row only — the file itself
-      stays in the repository, so a deleted photo can always be brought back.
+      Everything here saves instantly — no commit, no deploy, no waiting. Big
+      camera files are shrunk to 1800px on your device before they leave it, so
+      this stays quick on mobile data. Left to right is the order visitors see.
+      “hide” keeps an image in your library but off the public site. “delete”
+      removes it from the site; the original file stays in your library folder.
     </p>
     <section class="cards">${cards}</section>`;
 }
@@ -150,8 +172,49 @@ function wire(): void {
     });
   });
 
-  // No file-input wiring: image files live in git, not in a bucket, so there is
-  // nothing for the browser to upload. See the "Adding new photos" panel.
+  // --- upload ---------------------------------------------------------
+  // Both paths funnel into the same runUpload: the input is how a phone hands
+  // over a camera roll, the drop zone is how a laptop hands over a shoot folder.
+  const input = document.getElementById("adm-file") as HTMLInputElement | null;
+  input?.addEventListener("change", () => {
+    if (input.files?.length) void runUpload(Array.from(input.files));
+    // Reset so picking the same file twice in a row still fires a change event.
+    input.value = "";
+  });
+
+  const drop = document.getElementById("drop");
+  if (drop) {
+    // dragover must preventDefault or the browser just navigates to the file.
+    for (const ev of ["dragenter", "dragover"] as const) {
+      drop.addEventListener(ev, (e) => {
+        e.preventDefault();
+        drop.classList.add("is-over");
+      });
+    }
+    for (const ev of ["dragleave", "dragend"] as const) {
+      drop.addEventListener(ev, () => drop.classList.remove("is-over"));
+    }
+    drop.addEventListener("drop", (e) => {
+      e.preventDefault();
+      drop.classList.remove("is-over");
+      const files = Array.from(e.dataTransfer?.files ?? []).filter((f) =>
+        f.type.startsWith("image/"),
+      );
+      if (files.length) void runUpload(files);
+    });
+  }
+
+  // data-publish, not data-act: the generic handler below assumes every
+  // data-act button has a photo id, and this one deliberately has none.
+  document.querySelector<HTMLButtonElement>("[data-publish]")?.addEventListener("click", () => {
+    publishPending().catch((err) => {
+      console.error("[admin] publish failed", err);
+      paint({
+        kind: "err",
+        text: `Couldn't publish: ${err instanceof Error ? err.message : "unknown error"}.`,
+      });
+    });
+  });
 
   document.querySelectorAll<HTMLButtonElement>("[data-act]").forEach((b) => {
     b.addEventListener("click", () => {
@@ -189,11 +252,114 @@ function wire(): void {
   });
 }
 
-/* ------------------------------------------------------------------ logic */
+/* ------------------------------------------------------------------- logic */
 
-// No upload path: image bytes are committed to the repo, not written to a
-// bucket from the browser. See the "Adding new photos" panel in photosView()
-// and tools/add-photos.py.
+// Matches tools/add-photos.py so a photo looks the same whichever way it
+// arrived — phone or laptop.
+const MAX_EDGE = 1800;
+const QUALITY = 0.82;
+
+/**
+ * Downscale in the browser, before anything is sent.
+ *
+ * A 24MP phone original is 8-12MB; the site's largest frame renders at 1800px.
+ * Uploading the original would burn a photographer's mobile data to deliver
+ * bytes nobody ever sees.
+ */
+async function shrink(file: File): Promise<{ blob: Blob; width: number; height: number }> {
+  // imageOrientation is the point: phone photos carry an EXIF rotation flag and
+  // decode sideways if it's ignored, which is the whole reason a camera roll
+  // upload would otherwise land rotated.
+  const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" }).catch(() =>
+    createImageBitmap(file),
+  );
+  const scale = Math.min(1, MAX_EDGE / Math.max(bitmap.width, bitmap.height));
+  const w = Math.max(1, Math.round(bitmap.width * scale));
+  const h = Math.max(1, Math.round(bitmap.height * scale));
+
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("This browser can't resize images.");
+  ctx.drawImage(bitmap, 0, 0, w, h);
+
+  const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, "image/jpeg", QUALITY));
+  if (!blob) throw new Error("Couldn't re-encode that image.");
+
+  return { blob, width: w, height: h };
+}
+
+/**
+ * Upload a batch one file at a time.
+ *
+ * Sequential on purpose. Parallel uploads on a phone share one connection, so
+ * eight at once is slower overall, eight times more likely to time out, and one
+ * failure loses the whole batch.
+ */
+async function runUpload(files: File[]): Promise<void> {
+  if (busy) return;
+  busy = true;
+
+  // The bar is updated in place. Calling paint() mid-upload would replace the
+  // DOM holding it and the input still holding the chosen files.
+  const bar = document.querySelector<HTMLElement>(".drop__prog i");
+
+  const added: string[] = [];
+  const failed: string[] = [];
+
+  for (const [i, file] of files.entries()) {
+    try {
+      const { blob, width, height } = await shrink(file);
+      // Re-extension to .jpg because the bytes are now JPEG whatever the source
+      // was, and a .HEIC name on JPEG content confuses the CDN's content-type.
+      const out = new File([blob], file.name.replace(/\.[^.]+$/, "") + ".jpg", {
+        type: "image/jpeg",
+      });
+      const row = await uploadPhoto(out, { width, height });
+      added.push(row.id);
+    } catch (err) {
+      // One unreadable file must not abandon the rest of the shoot.
+      console.error("[admin] upload failed", file.name, err);
+      failed.push(file.name);
+    }
+    if (bar) bar.style.width = `${Math.round(((i + 1) / files.length) * 100)}%`;
+  }
+
+  busy = false;
+  items = await listAllPhotos();
+  pending = added;
+
+  if (!added.length) {
+    paint({
+      kind: "err",
+      text: `Nothing uploaded. ${failed.slice(0, 3).join(", ")} — ${
+        failed.length === 1 ? "this browser" : "these files"
+      } couldn't be read as an image.`,
+    });
+    return;
+  }
+
+  paint({
+    kind: failed.length ? "err" : "ok",
+    text: failed.length
+      ? `Added ${added.length} photo${added.length > 1 ? "s" : ""}, but ${failed.length} failed: ${failed
+          .slice(0, 3)
+          .join(", ")}.`
+      : `Added ${added.length} photo${added.length > 1 ? "s" : ""}. They stay hidden until you publish them.`,
+  });
+}
+
+async function publishPending(): Promise<void> {
+  const ids = pending;
+  pending = [];
+  for (const id of ids) await updatePhoto(id, { visible: true });
+  items = await listAllPhotos();
+  paint({
+    kind: "ok",
+    text: `Published ${ids.length} photo${ids.length > 1 ? "s" : ""} — they're on the site now.`,
+  });
+}
 
 async function act(action: string, id: string): Promise<void> {
   const i = items.findIndex((p) => p.id === id);

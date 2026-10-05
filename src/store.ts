@@ -66,8 +66,17 @@ export interface PhotoPatch {
   sort_order?: number;
 }
 
-/** Stores the file, then writes the metadata row. New uploads start hidden. */
-export async function uploadPhoto(file: File): Promise<AdminPhoto> {
+/**
+ * Stores the file, then writes the metadata row. New uploads start hidden.
+ *
+ * `dims` carries the real pixel size measured in the browser before the bytes
+ * were compressed. The public wall lays out from width/height, so a row that
+ * arrives without them is a row that lays out wrong.
+ */
+export async function uploadPhoto(
+  file: File,
+  dims?: { width: number; height: number },
+): Promise<AdminPhoto> {
   guard();
 
   const safe = file.name.toLowerCase().replace(/[^a-z0-9._-]+/g, "-");
@@ -95,6 +104,8 @@ export async function uploadPhoto(file: File): Promise<AdminPhoto> {
       filename: safe,
       storage_path: path,
       url: pub.publicUrl,
+      width: dims?.width ?? null,
+      height: dims?.height ?? null,
       alt: file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " "),
       album: "photo",
       visible: false,
