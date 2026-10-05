@@ -634,7 +634,7 @@
   gap: 40px 24px;
   padding: 52px 0 0;
 }
-.pkg { display: flex; flex-direction: column; }
+.pkg { display: flex; flex-direction: column; padding: 0 0 28px; }
 /* The card photograph.
    Every card gets the SAME 3:2 slot. Before this, each figure kept its natural
    height, so the four cards came out 662 / 295 / 276 / 662 — a 386px spread on
@@ -709,7 +709,7 @@
      was the only thing on the entire site not flush to the shared left edge.
      Alignment beats the full-bleed flourish on a card that sits in a row. */
   padding: 0 0 28px;
-}
+  }
 /* The side padding above inset the photograph 24px on each side, so the
    recommended card's figure came out 48px narrower than its neighbours and
    32px shorter — the four cards stopped lining up even once they shared a
@@ -775,11 +775,18 @@
 .pkg__price {
   font-family: var(--font-display);
   font-size: 20px;
-  margin: 0 0 18px;
+  margin: auto 0 18px;
   letter-spacing: -0.01em;
 }
-/* Pushed to the bottom so the book buttons line up across cards. */
-.pkg .cta { margin-top: auto; align-self: flex-start; }
+/* The price is the flex-ender: everything above it is content of variable
+   height (tier desc + bullet list), so margin-top:auto on the price pins both
+   the price and the CTA below it to the card bottom together, keeping price
+   baselines and book buttons aligned across the four cards regardless of how
+   many bullets a tier lists. The pop card's own 28px bottom padding used to
+   lift its price+CTA 28px above the other three (measured ctaTop 923 vs 951);
+   bottom padding now lives on `.pkg` so every card's bottom row sits on the
+   same line. */
+.pkg .cta { align-self: flex-start; }
 /* 10.5px -> 11px. This is the "Book now" button on every package card --
    the control the money page actually exists to be pressed -- and it was
    the smallest text on the site, a full 1.5px below every other .cta.
