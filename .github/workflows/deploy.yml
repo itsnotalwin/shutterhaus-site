@@ -71,6 +71,14 @@ jobs:
           curl -sf -o /dev/null -w 'preview %{http_code}\n' http://127.0.0.1:4173/
       - name: Rendered-design gate
         run: node tools/verify.mjs http://127.0.0.1:4173
+      - name: Save rendered screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rendered-screenshots
+          path: shots/verify/*.png
+          if-no-files-found: ignore
+          retention-days: 7
 
   build:
     needs: verify

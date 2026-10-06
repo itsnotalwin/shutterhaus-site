@@ -532,10 +532,12 @@ const reelsGone = (() => {
   // Strip comments and type declarations: the assertion is about what a CUSTOMER
   // reads, and an engineer's note about an image's 4:5 ratio is not a promise.
   const copy = readFileSync(new URL("../src/config.ts", import.meta.url), "utf8")
+    + readFileSync(new URL("../src/pricing.json", import.meta.url), "utf8");
+  const visibleCopy = copy
     .replace(/\/\*[\s\S]*?\*\//g, " ")      // block comments
     .replace(/\/\/.*$/gm, " ")                // line comments
     .replace(/vertically|vertical-first/gi, "");
-  return !/reel|9:16|\b4:5\b/i.test(copy);
+  return !/reel|9:16|\b4:5\b/i.test(visibleCopy);
 })();
 check("no reels or vertical crops promised anywhere", reelsGone);
 
@@ -552,9 +554,11 @@ check("no reels or vertical crops promised anywhere", reelsGone);
 // prints is the stronger claim and cannot be satisfied by adding more.
 const printsGone = (() => {
   const copy = readFileSync(new URL("../src/config.ts", import.meta.url), "utf8")
+    + readFileSync(new URL("../src/pricing.json", import.meta.url), "utf8");
+  const visibleCopy = copy
     .replace(/\/\*[\s\S]*?\*\//g, " ")
     .replace(/\/\/.*$/gm, " ");
-  return !/print|album/i.test(copy);
+  return !/print|album/i.test(visibleCopy);
 })();
 check("no prints or albums promised anywhere", printsGone);
 
@@ -596,6 +600,41 @@ for (const w of [360, 390, 768]) {
 }
 await send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
 await shot("shot-pricing-mobile.png");
+
+// Fresh review evidence from this exact build. Legacy shots above describe
+// intermediate test states; these numbered captures explicitly name the page
+// and viewport and wait for fonts and photographs to finish loading.
+for (const width of [1440, 390]) {
+  await viewport(width, 900);
+  await send("Emulation.setTouchEmulationEnabled", { enabled: width === 390 });
+  for (const [index, route] of ["home", "portfolio", "about", "services", "contact"].entries()) {
+    await goto(route === "home" ? "/" : `/${route}.html`, 1000);
+    await evaluate(`(async () => {
+      await document.fonts.ready;
+      const images = [...document.querySelectorAll('main img')];
+      // Decode lazy frames for a full-page screenshot as well as the viewport.
+      images.forEach(img => { img.loading = 'eager'; });
+      await Promise.all(images.map(img => img.decode().catch(() => {})));
+    })()`);
+    const state = await evaluate(`({
+      heading: document.querySelector('main h1')?.textContent,
+      broken: [...document.querySelectorAll('main img')].filter(img => !img.naturalWidth).length,
+      overflow: document.documentElement.scrollWidth - innerWidth,
+    })`);
+    check(`review ${route} ${width}: page loaded`, !!state.heading, state.heading);
+    check(`review ${route} ${width}: no broken images`, state.broken === 0, state.broken);
+    check(`review ${route} ${width}: no overflow`, state.overflow <= 0, state.overflow);
+    const metrics = await send("Page.getLayoutMetrics");
+    const size = metrics.result.cssContentSize;
+    const capture = await send("Page.captureScreenshot", {
+      format: "png", captureBeyondViewport: true,
+      clip: { x: 0, y: 0, width, height: Math.ceil(size.height), scale: 1 },
+    });
+    const name = `${String(index + 1).padStart(2, "0")}-${route}-${width}.png`;
+    writeFileSync(`${OUT}/${name}`, Buffer.from(capture.result.data, "base64"));
+    console.log("      review screenshot:", name);
+  }
+}
 
 // ============================================== console
 const errs = consoleErrors();
