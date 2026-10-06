@@ -487,7 +487,7 @@
  *
  * `.page` prefixes are deliberate: `.page h1` (0,1,1) sets margin/line-height
  * and would beat a bare `.phead__h` (0,1,0). Same trap as the home heading,
- * see HOME-LOCKED.md. */
+ * see README → Design invariants. */
 .portfolio .phead {
   max-width: none;
   padding: 28px 0 0;
@@ -594,7 +594,7 @@
 /* The `.page` prefix is required, not decoration.
  *
  * `.page h1` (0,1,1) sets `margin: 0`, and that beats a bare `.about__h`
- * (0,1,0) — the same trap as the home heading documented in HOME-LOCKED.md and
+ * (0,1,0) — the same trap as the home heading (README → Design invariants) and
  * in the `.portfolio .phead` note below. Without the prefix, the computed
  * margin-bottom was 0px at BOTH 390 and 1440, so the 58px heading sat flush
  * against the first line of copy with zero gap:

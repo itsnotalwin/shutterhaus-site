@@ -46,8 +46,8 @@ export interface SiteConfig {
    * Which frame carries the home hero, by filename. Auto-detection picks the
    * first landscape shot, but that is a guess — this pins it so the choice is
    * deliberate and changeable without touching page code. Set to null to fall
-   * back to auto-detection. **HOME IS LOCKED** (see HOME-LOCKED.md): changing
-   * this needs Alwin to reopen the home route.
+   * fall back to auto-detection. **HOME IS PINNED** (README → Design
+      * invariants): changing this needs a deliberate home-route pass.
    */
   heroPhoto: string | null;
   /** heading block on the services route, reused by the home page CTA */
@@ -319,8 +319,8 @@ export const SITE: SiteConfig = {
   // and 9 both strand a column and are what created the white hole in the
   // first place — 8 divides by neither width.
   //
-  // **HOME IS LOCKED** (see HOME-LOCKED.md). Do not "tidy" this number or the
-  // column count in stripCols() without Alwin reopening the home route.
+  // **HOME IS PINNED** (README → Design invariants). Do not "tidy" this number
+    // or the column count in stripCols() without a deliberate home-route pass.
   homeGalleryCount: 6,
 
   /**
