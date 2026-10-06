@@ -49,6 +49,7 @@ only needed to upload real work.
 ```bash
 npm run build     # typecheck + generate pages + row/srcset checks + vite build → dist/
 npm run preview   # serve the production build at http://127.0.0.1:4173
+npm run test      # pricing, enquiry and photo-viewer DOM regressions
 npm run verify    # rendered-design gate (see below)
 ```
 
@@ -68,6 +69,18 @@ npm run preview &
 node tools/verify.mjs http://127.0.0.1:4173
 ```
 
+## Package prices and regression checks
+
+`src/pricing.json` supplies Services, Contact, the Home price and generated
+search metadata. Package prices are numeric rand amounts, for example `2500`.
+Run `npm run build` after editing it. Social includes 40 edited images and a
+10-image sneak peek within 48 hours; full galleries arrive in 7–14 days.
+
+`npm run test` checks pricing consistency, Social deliverables, form validation,
+draft preservation during rotation, duplicate submission protection, failure
+recovery and photo-viewer keyboard focus using a simulated DOM and mocked
+requests. `npm run verify` remains the browser layout gate.
+
 ## Project layout
 
 ```
@@ -76,7 +89,9 @@ portfolio.html        real document per route (about, services, contact, admin t
 src/
   main.ts             router + wiring
   admin.ts            admin panel UI
-  config.ts           brand, nav, contact, pricing  ← your content edits live here
+  config.ts           brand, nav and contact
+  pricing.json        packages, numeric ZAR prices, add-ons and booking terms
+  pricing.ts          shared currency formatting
   layout.ts           header / footer chrome, icons
   pages.ts            the column gallery and page bodies
   pages-more.ts       video + contact routes

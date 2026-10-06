@@ -5,6 +5,7 @@ import { homeBand } from "./pages";
 import { pictureFor, bestDerivative } from "./pages";
 import type { Photo } from "./types";
 import type { PricingTier } from "./config";
+import { formatPrice } from "./pricing";
 
 /**
  * The about route: prose on the left, a tall portrait on the right, exactly
@@ -65,7 +66,7 @@ export function servicesPage(photos: Photo[] = []): string {
   // actively wrong for the tier that sells families. A pinned photo the gallery
   // does not have falls back to the rotation rather than rendering a broken img.
   const shotFor = (t: PricingTier, i: number): Photo | undefined => {
-    if (i > 0 && t.photo) {
+    if (t.photo) {
       const pinned = photos.find((p) => p.filename === t.photo);
       if (pinned) return pinned;
     }
@@ -77,9 +78,9 @@ export function servicesPage(photos: Photo[] = []): string {
   // anything other than prose, so it belongs on the card next to the name —
   // not behind a separate pricing route (there isn't one).
   const card = (t: PricingTier, i: number): string => {
-    const ph = shotFor(t, i + 1);
+    const ph = shotFor(t, i);
     return `<article class="pkg${t.popular ? " pkg--pop" : ""}">
-    ${ph ? `<figure class="pkg__fig" style="--focal:${escapeHtml(t.focal ?? "50% 50%")};--ar:${escapeHtml(t.ar ?? "3 / 2")}"><picture>${pictureFor(ph.url, "(max-width: 760px) 100vw, 33vw", ph.width)}
+    ${ph ? `<figure class="pkg__fig" style="--focal:${escapeHtml(t.focal ?? "50% 50%")};--ar:${escapeHtml(t.ar ?? "3 / 2")}"><picture>${pictureFor(ph.url, "(max-width: 760px) 100vw, (max-width: 1000px) 50vw, 25vw", ph.width)}
         <img src="${escapeHtml(bestDerivative(ph.url, "jpg", ph.width))}" alt="${escapeHtml(ph.alt || ph.filename || "")}"
              loading="lazy" decoding="async" /></picture></figure>` : ""}
     <p class="pkg__num">${String(i + 1).padStart(2, "0")}.${
@@ -90,14 +91,14 @@ export function servicesPage(photos: Photo[] = []): string {
       // card's photo ~50px lower than the other three and broke the row.
       t.popular ? ' <span class="pkg__flag">Most popular</span>' : ""
     }</p>
-    <h3 class="pkg__name">${escapeHtml(t.name)}</h3>
+    <h2 class="pkg__name">${escapeHtml(t.name)}</h2>
     <p class="pkg__spec">${escapeHtml(t.spec)}</p>
     <p class="pkg__desc">${escapeHtml(t.fit)}</p>
     <ul class="pkg__list">
       ${t.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}
     </ul>
-    <p class="pkg__price">${escapeHtml(t.price)}</p>
-    <a class="cta cta--sm" href="./contact.html?package=${encodeURIComponent(t.name)}">Book now</a>
+    <p class="pkg__price">${escapeHtml(formatPrice(t.price))}</p>
+    <a class="cta cta--sm" href="./contact.html?package=${encodeURIComponent(t.name)}" aria-label="Book now: ${escapeHtml(t.name)} package">Book now</a>
   </article>`;
   };
 
@@ -107,7 +108,10 @@ export function servicesPage(photos: Photo[] = []): string {
         <p class="eyebrow">${escapeHtml(SITE.services.eyebrow)}</p>
         <h1 class="shead__h">${escapeHtml(SITE.services.heading)}</h1>
       </div>
-      <p class="shead__p">${escapeHtml(p.intro)}</p>
+      <div>
+        <p class="shead__p">${escapeHtml(p.intro)}</p>
+        <p class="shead__note">Prices in South African rand (ZAR). Optional add-ons are charged separately.</p>
+      </div>
     </header>
 
     <div class="pkgrow">${p.tiers.map(card).join("")}</div>
@@ -211,14 +215,14 @@ export function contactPage(_photos: Photo[] = []): string {
         <label>Email<input name="email" type="email" required autocomplete="email" /></label>
         <label>What do you need?
           <select name="kind" id="cform-kind">
-            ${p0.tiers.map((t) => `<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)} package (${escapeHtml(t.price)})</option>`).join("\n            ")}
+            ${p0.tiers.map((t) => `<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)} package (${escapeHtml(formatPrice(t.price))})</option>`).join("\n            ")}
             <option value="Something else">Something else</option>
           </select>
         </label>
         <label>Message<textarea name="message" rows="4" required></textarea></label>
         ${HONEYPOT_FIELD}
         <button type="submit">Send message</button>
-        <p class="cform__note dim" id="cform-note"></p>
+        <p class="cform__note dim" id="cform-note" role="status" aria-live="polite" aria-atomic="true"></p>
       </form>
       </div>
 

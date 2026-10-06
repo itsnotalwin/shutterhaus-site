@@ -32,6 +32,7 @@ src/config.ts has a matching document.
 """
 import datetime as dt
 import json
+import math
 import re
 import sys
 from pathlib import Path
@@ -39,6 +40,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 SITE = "https://shutterhausvisuals.co.za"
+
+# The same numeric prices power visible cards, booking options and metadata.
+pricing = json.loads((ROOT / "src" / "pricing.json").read_text(encoding="utf-8"))
+package_prices = [tier["price"] for tier in pricing["tiers"]]
+if not package_prices or any(
+    isinstance(price, bool) or not isinstance(price, (int, float)) or not math.isfinite(price) or price <= 0
+    for price in package_prices
+):
+    raise SystemExit("FAIL: package prices must be positive numeric ZAR amounts")
+if len({tier["name"] for tier in pricing["tiers"]}) != len(package_prices):
+    raise SystemExit("FAIL: package names must be unique for booking links")
+
+
+def rand(amount: float) -> str:
+    return "R" + f"{amount:,.2f}".rstrip("0").rstrip(".")
 
 # id, filename, <title>, meta description
 # The title/description here is what a crawler or a WhatsApp preview reads.
@@ -192,10 +208,7 @@ def esc(s: str) -> str:
 # is worse than no price at all. priceRange below is the only price claim, and
 # it is derived from the four tiers actually listed.
 #
-# Every value below is read out of src/config.ts or the page copy, so the
-# structured data cannot drift from the visible page. If you change the phone
-# number in config.ts, change it here too — the mismatch is the failure mode
-# markup introduces that plain text does not have.
+# Business identity below is maintained here; prices come from pricing.json.
 ALWIN = {
     "@type": "Person",
     "@id": f"{SITE}/#alwin",
@@ -215,11 +228,8 @@ BIZ = {
     ),
     "url": f"{SITE}/",
     "email": "alwin@shutterhausvisuals.co.za",
-    "telephone": "+27730958363",
     "image": f"{SITE}/og-card.jpg",
-    # R800 / R1,500 / R2,000 / R2,500 are the four packages on /services.
-    # The range is the cheapest and dearest of those, nothing invented.
-    "priceRange": "R800–R2,500",
+    "priceRange": f"{rand(min(package_prices))}–{rand(max(package_prices))}",
     "areaServed": [
         {"@type": "City", "name": "Pretoria"},
         {"@type": "City", "name": "Johannesburg"},
@@ -241,8 +251,7 @@ def json_ld(filename: str, title: str, description: str) -> str:
     Every page carries the same business node plus a WebPage node describing
     that specific page. Repeating the business on all five is deliberate, not
     sloppy: the @id is identical everywhere, so these merge into one entity
-    rather than becoming five competing businesses. A page that described only
-    itself would leave the contact page with no phone number in its markup.
+    rather than becoming five competing businesses.
 
     BreadcrumbList is on the subpages only, and the homepage is omitted from it
     because the breadcrumb trail has to start at Home for the last item to be

@@ -41,6 +41,8 @@ jobs:
           BASE_PATH: ./
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+      - name: Pricing and enquiry regressions
+        run: npm run test
       # verify.mjs drives a real Chrome over CDP on 9222 and renders the built
       # site. Start Chrome and the preview server, then assert on the real
       # rendered output rather than on the source.

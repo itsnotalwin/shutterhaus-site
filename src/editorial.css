@@ -634,6 +634,7 @@
 }
 .shead__h { font-size: clamp(36px, 5.4vw, 62px); }
 .shead__p { font-size: 14.5px; line-height: 1.72; color: var(--dim); margin: 0; max-width: 46ch; }
+.shead__note { font-size: 12px; line-height: 1.6; color: var(--dim); margin: 12px 0 0; max-width: 46ch; }
 
 .pkgrow {
   display: grid;
@@ -767,7 +768,7 @@
   color: var(--grey);
   margin: 0 0 10px;
 }
-.pkg__name {
+.page .pkg__name {
   font-family: var(--font-display);
   font-weight: 400;
   font-size: 19px;
@@ -797,7 +798,7 @@
    lift its price+CTA 28px above the other three (measured ctaTop 923 vs 951);
    bottom padding now lives on `.pkg` so every card's bottom row sits on the
    same line. */
-.pkg .cta { align-self: flex-start; }
+.pkg .cta { align-self: flex-start; min-height: 44px; }
 /* 10.5px -> 11px. This is the "Book now" button on every package card --
    the control the money page actually exists to be pressed -- and it was
    the smallest text on the site, a full 1.5px below every other .cta.

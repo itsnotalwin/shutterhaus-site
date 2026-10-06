@@ -230,7 +230,7 @@ body {
 /* -------------------------------------------------- services cards */
 
 /* Package card name — slightly larger, more presence */
-.pkg__name {
+.page .pkg__name {
   font-size: 20px;
   letter-spacing: -0.02em;
 }
@@ -293,8 +293,11 @@ body {
 .cform select:focus,
 .cform textarea:focus {
   border-color: var(--ink);
-  outline: none;
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
 }
+
+.cform button:disabled { opacity: 0.6; cursor: wait; }
 
 /* Submit button — add lift on hover */
 .cform button {

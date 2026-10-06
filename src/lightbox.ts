@@ -149,6 +149,7 @@ export function initLightbox(): void {
   box.className = "lb";
   box.setAttribute("role", "dialog");
   box.setAttribute("aria-modal", "true");
+  box.setAttribute("aria-label", "Photo viewer");
   box.hidden = true;
   // Each control carries BOTH a glyph and a word; CSS shows one. The glyphs (×
   // ‹ ›) are what the home page's lightbox has always shown, and the home page
@@ -165,6 +166,11 @@ export function initLightbox(): void {
   const cap = box.querySelector<HTMLElement>(".lb__cap")!;
   let frames: HTMLImageElement[] = [];
   let at = 0;
+  let returnFocus: HTMLElement | null = null;
+  let backgroundWasInert = false;
+  let previousOverflow = "";
+  const background = document.getElementById("app");
+  cap.setAttribute("aria-live", "polite");
 
   const pad2 = (n: number) => String(n).padStart(2, "0");
 
@@ -204,6 +210,12 @@ export function initLightbox(): void {
   }
 
   function open(target: HTMLImageElement): void {
+    if (box.hidden) {
+      returnFocus = target.closest<HTMLElement>('[role="button"]')
+        ?? (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+      backgroundWasInert = background?.inert ?? false;
+      previousOverflow = document.body.style.overflow;
+    }
     const fromWall = !!target.closest(".pf-cell");
     frames = fromWall
       ? wallFrames()
@@ -212,6 +224,8 @@ export function initLightbox(): void {
     show(Math.max(0, frames.indexOf(target)));
     box.hidden = false;
     document.body.style.overflow = "hidden";
+    if (background) background.inert = true;
+    box.querySelector<HTMLButtonElement>(".lb__x")?.focus();
   }
 
   // Declared before close() so the reset inside it can reach them; hoisted from
@@ -227,9 +241,12 @@ export function initLightbox(): void {
   };
 
   function close(): void {
+    if (box.hidden) return;
     box.hidden = true;
     img.src = "";
-    document.body.style.overflow = "";
+    document.body.style.overflow = previousOverflow;
+    if (background) background.inert = backgroundWasInert;
+    if (returnFocus?.isConnected) returnFocus.focus();
     // Reset zoom on close, or the next frame opens pre-zoomed and the visitor
     // cannot tell why it is cropped with no way back to fit.
     zoomed = false;
@@ -407,7 +424,7 @@ export function initLightbox(): void {
   // intact (an <img> inside a button has neither).
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Enter" && e.key !== " ") return;
-    const cell = (e.target as HTMLElement | null)?.closest?.(".pf-cell");
+    const cell = (e.target as HTMLElement | null)?.closest?.('.pf-cell, .hstrip__item[role="button"]');
     if (!cell) return;
     e.preventDefault();
     const target = cell.querySelector<HTMLImageElement>(".cell img[data-full]");
@@ -417,6 +434,18 @@ export function initLightbox(): void {
 
   document.addEventListener("keydown", (e) => {
     if (box.hidden) return;
+    if (e.key === "Tab") {
+      const controls = Array.from(box.querySelectorAll<HTMLButtonElement>("button"));
+      const first = controls[0]!;
+      const last = controls[controls.length - 1]!;
+      if (e.shiftKey && (document.activeElement === first || !box.contains(document.activeElement))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (document.activeElement === last || !box.contains(document.activeElement))) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
     if (e.key === "Escape") close();
     if (e.key === "ArrowRight") show(at + 1);
     if (e.key === "ArrowLeft") show(at - 1);

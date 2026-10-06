@@ -133,26 +133,13 @@ async function paint(): Promise<void> {
   }
 
   if (r === "contact") {
-    // The reference puts a photograph beside the form, so this page needs a
-    // photo too — same non-blocking pattern as about.
-    let photos = DEMO_PHOTOS;
-    const draw = () => {
-      app.innerHTML = renderShell("contact", contactPage(photos));
-      markLoadedImages();
-      wireContact();
-      wireBurger();
-      scrollTo(0, 0);
-    };
-    draw();
+    // Contact has no photographs. A gallery response must never replace a
+    // form while the visitor is typing or waiting for their enquiry to send.
+    app.innerHTML = renderShell("contact", contactPage());
+    wireContact();
+    wireBurger();
+    scrollTo(0, 0);
     setTitle("contact");
-    {
-      const live = adoptable(await publicPhotosOrNull());
-      if (myPaint !== paintSeq) return; // a newer route won
-      if (live) {
-        photos = live;
-        draw();
-      }
-    }
     return;
   }
 
@@ -423,6 +410,8 @@ function wireBurger(): void {
 function wireContact(): void {
   const form = document.getElementById("cform") as HTMLFormElement | null;
   const note = document.getElementById("cform-note");
+  const submit = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+  let sending = false;
 
   // Preselect the package the visitor tapped "Book now" on.
   //
@@ -433,9 +422,7 @@ function wireContact(): void {
   // would show "Starter" for someone who tapped "Signature". A no-match is
   // therefore a no-op, not a wrong answer.
   //
-  // Only runs on arrival, not on the contact route's second paint. paint()
-  // redraws the page once live photos land, and re-running this would discard
-  // anything the visitor had already typed.
+  // Runs on arrival; the contact page is not repainted by gallery responses.
   const wanted = new URLSearchParams(location.search).get("package");
   const kind = document.getElementById("cform-kind") as HTMLSelectElement | null;
   if (wanted && kind) {
@@ -445,6 +432,7 @@ function wireContact(): void {
 
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (sending) return;
     const fd = new FormData(form);
     const get = (k: string) => String(fd.get(k) ?? "").trim();
 
@@ -460,23 +448,35 @@ function wireContact(): void {
 
     if (!get("name") || !get("email") || !get("message")) {
       if (note) note.textContent = "Please fill in name, email and message.";
+      const missing = ["name", "email", "message"].find((key) => !get(key));
+      form.querySelector<HTMLElement>(`[name="${missing}"]`)?.focus();
       return;
     }
 
-    // Catch typos like "name@gamil.com" before the enquiry disappears into a
-    // dead address. Deliberately loose — real validation is the mail server's
+    // Reject malformed addresses. Domain spelling and delivery are the server's
     // job; this only rejects things that are definitely not addresses.
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(get("email"))) {
       if (note) note.textContent = "That email address doesn't look right. Check it?";
+      form.querySelector<HTMLElement>('[name="email"]')?.focus();
       return;
     }
 
     if (SITE.contact.formEndpoint) {
+      sending = true;
+      form.setAttribute("aria-busy", "true");
+      if (submit) {
+        submit.disabled = true;
+        submit.textContent = "Sending…";
+      }
+      if (note) note.textContent = "Sending your message…";
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
       try {
         const res = await fetch(SITE.contact.formEndpoint, {
           method: "POST",
           headers: { Accept: "application/json" },
           body: fd,
+          signal: controller.signal,
         });
         if (!res.ok) throw new Error(`form endpoint ${res.status}`);
         if (note) note.textContent = "Thanks, got it. I'll reply shortly.";
@@ -485,6 +485,14 @@ function wireContact(): void {
       } catch {
         if (note) note.textContent = "That didn't send. Email me directly instead.";
         return;
+      } finally {
+        clearTimeout(timeout);
+        sending = false;
+        form.removeAttribute("aria-busy");
+        if (submit) {
+          submit.disabled = false;
+          submit.textContent = "Send message";
+        }
       }
     }
 
@@ -530,6 +538,9 @@ function wireContact(): void {
 addEventListener("orientationchange", () => {
   // A beat, because iOS reports the new dimensions a frame or two after the
   // event. Repainting synchronously here would read the old innerWidth.
+  // The contact form and package grid already reflow through CSS. Repainting
+  // these on rotation loses form contents and unnecessarily jumps to the top.
+  if ((ALIASES[route()] ?? route()) === "contact" || (ALIASES[route()] ?? route()) === "services") return;
   setTimeout(() => void paint(), 250);
 });
 

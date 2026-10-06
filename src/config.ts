@@ -3,6 +3,7 @@
  * Change something here, commit, and the site redeploys itself.
  */
 import type { IconId } from "./types";
+import pricingData from "./pricing.json";
 
 export interface SiteConfig {
   /** small word, sits inline before nameBig1 */
@@ -56,7 +57,8 @@ export interface SiteConfig {
 
 export interface PricingTier {
   name: string;
-  price: string;
+  /** Package total in South African rand, before optional add-ons. */
+  price: number;
   /** the one-line positioning line, e.g. "headshots & matric farewells" */
   fit: string;
   /** duration / outfits / locations, shown as a compact spec line */
@@ -151,127 +153,8 @@ export const SITE: SiteConfig = {
     "Portraits, couples, families and social content, shot on location across Gauteng. " +
     "Mini sessions and full galleries, with digital delivery.",
 
-  // ---- pricing (source: Shutterhaus_Pricing_Packages.pdf) ----
-  pricing: {
-    show: true,
-    heading: "Packages",
-    intro:
-      "Every session is directed start to finish, you don't need to know how to pose. " +
-      "50% deposit secures your date.",
-
-    tiers: [
-      {
-        name: "Starter",
-        price: "R800",
-        fit: "Headshots, matric farewells, quick portraits.",
-        spec: "30 min · 1 outfit · 1 location",
-        // Alwin, 2026-10-03: "the red haired woman replaces starter" — she is a
-        // distinct model from the other three tiers; the previous Starter frame
-        // shared a face with Signature, so the row read as one person repeated.
-        // He then supplied this frame himself, same rooftop shoot and same white
-        // zip top, as a tighter alternative: head and shoulders at 2048x1152.
-        photo: "56-img-0126.jpg",
-        // A tight head-and-shoulders crop leaves almost no room to move the
-        // window: the face occupies the middle band, so any vertical bias crops
-        // either her chin or the top of her head. 50% keeps the window on the
-        // face, and the horizontal centre is already right.
-        focal: "50% 50%",
-        // slot matches the frame: 16:9 landscape, 1.778
-        //
-        // This was 4/5, then 2/3, across two earlier attempts at this slot, and
-        // it is worth saying why the value moves rather than being a fixed
-        // "phone-shaped" portrait: `ar` is the DESKTOP card aspect, and the
-        // phone layout derives its own slot from the frame's real ratio. Pinning
-        // a guess here is what put a 2:3 frame inside a 4:5 window and cropped
-        // her hair off.
-        ar: "16 / 9",
-        bullets: [
-          "15 edited photos",
-          "Private online gallery",
-          "Clothing guide & location suggestions",
-          "High-res and web-optimised downloads",
-        ],
-      },
-      {
-        name: "Essential",
-        price: "R2,000",
-        fit: "Our go-to for couples, individuals and small families.",
-        spec: "60 min · 2 outfits · 1–2 locations",
-        photo: "19-img-0198-3.jpg",
-        focal: "50% 50%",
-        // slot matches the frame: 4:5 portrait, 0.800
-        ar: "4 / 5",
-        bullets: [
-          "20 edited photos",
-          "Private online gallery (90-day access)",
-          "Clothing guide, location scouting, shot list",
-        ],
-        popular: true,
-      },
-      {
-        name: "Signature",
-        price: "R2,500",
-        fit: "Families, maternity and engagements: the full experience.",
-        spec: "90 min · 2–3 outfits · multiple locations",
-        photo: "54-img-0164.jpg",
-        focal: "50% 50%",
-        // slot matches the frame: landscape, 1.601
-        ar: "3 / 2",
-        bullets: [
-          "40 edited photos",
-          "Private online gallery (90-day access)",
-          "Full prep: clothing guide, shot list, scouting",
-        ],
-      },
-      {
-        name: "Social",
-        price: "R2,500",
-        fit: "Built for creators: quick turnaround, same-day previews.",
-        spec: "45 min · 2 outfits · 1 location",
-        photo: "20-img-0202.jpg",
-        focal: "50% 17%",
-        // slot matches the frame: 9:16 vertical, 0.563
-        ar: "9 / 16",
-        // Focal is high because the DESKTOP slot is the uniform 3/2, which
-        // keeps only 38% of a 9:16 frame. Centred, that window shows her
-        // torso instead of her face. Irrelevant on the phone, where the
-        // 9/16 slot keeps ~94%.
-        bullets: [
-          "20 edited photos",
-          "Private online gallery (90-day access)",
-          "48hr sneak peek, 10 images, not the full set",
-          "High-res and web-optimised downloads",
-          "Commercial licence included",
-        ],
-      },
-    ],
-
-    addonsTitle: "Add-ons",
-    // Prints and albums are gone entirely at Alwin's instruction, 2026-10-03:
-    // "remove the prints completely, we won't be doing those for now." They
-    // were not merely removed from this list; the "Print release for personal
-    // use" bullet is gone from all four tiers too, so nothing on the page
-    // promises a physical product. Re-adding means restoring both.
-    // "Rush delivery" only ever applied to Social's 48hr sneak peek, which it
-    // now qualifies instead of duplicating.
-    addons: [
-      { label: "Extra 30 minutes on the shoot", price: "+R300" },
-      { label: "Extra location", price: "+R400" },
-      { label: "Extra outfit change", price: "+R300" },
-      { label: "Full gallery within 48hr", price: "+R400" },
-      { label: "Travel beyond 25km", price: "+R5/km" },
-    ],
-
-    terms: [
-      "50% non-refundable deposit secures your date; balance before gallery delivery.",
-      "Rescheduling ≥7 days notice is free. Under 7 days: R500 fee, deposit transfers.",
-      "Outdoor shoots include a backup indoor location. Severe weather = free reschedule.",
-      "Delivery: 7 to 14 days for every package. Social can be faster, ask about the 48hr sneak peek.",
-      "Personal use licence with every package. The Social package includes a commercial licence.",
-    ],
-
-    depositNote: "50% deposit to book · EFT accepted",
-  },
+  // Package details and numeric ZAR prices also feed generated search metadata.
+  pricing: pricingData,
 
   // ---- editorial copy for the five-page reference layout ----
   /**

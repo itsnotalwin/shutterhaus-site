@@ -1,5 +1,6 @@
 import { escapeHtml } from "./layout";
 import { SITE } from "./config";
+import { formatPrice } from "./pricing";
 import type { Photo } from "./types";
 import { PHOTO_ROWS, setLiveRows } from "./rows";
 import { SHOOT_OF } from "./shoots";
@@ -681,7 +682,7 @@ export function homeBand(): string {
           ${
             from
               ? `<p class="hcta__k">From</p>
-          <p class="hcta__price">${escapeHtml(from.price)}</p>`
+          <p class="hcta__price">${escapeHtml(formatPrice(from.price))}</p>`
               : ""
           }
           <p class="hcta__note">${escapeHtml(names)}<br>${escapeHtml(SITE.pricing.depositNote)}</p>
@@ -704,14 +705,12 @@ export function homeBand(): string {
  *
  * Read from the pricing config rather than typed in, so changing a tier price
  * on the Services page can never leave the home page quoting a stale figure.
- * Prices are display strings ("R1,200"); the digits decide which is cheapest
- * and the original string is what gets shown.
+ * Numeric rand amounts avoid parsing formatted display strings.
  */
-function cheapestTier(): { name: string; price: string } | null {
-  const tiers = SITE.pricing.tiers.filter((t) => /\d/.test(t.price));
+function cheapestTier(): { name: string; price: number } | null {
+  const tiers = SITE.pricing.tiers.filter((t) => Number.isFinite(t.price) && t.price > 0);
   if (!tiers.length) return null;
-  const n = (t: { price: string }) => parseInt(t.price.replace(/[^0-9]/g, ""), 10);
-  return [...tiers].sort((a, b) => n(a) - n(b))[0]!;
+  return [...tiers].sort((a, b) => a.price - b.price)[0]!;
 }
 
 /**
@@ -815,7 +814,7 @@ export function homePage(photos: Photo[], cols: number): string {
                     // like the number on my photos". The strip does not need
                     // numbering to read as a curated set, and the digit sitting in
                     // the corner of every photograph was the thing he objected to.
-                    .map((p) => `<div class="hstrip__item">${figure(p, 0)}</div>`)
+                    .map((p) => `<div class="hstrip__item" role="button" tabindex="0" aria-label="View ${escapeHtml(p.alt || "photograph")}">${figure(p, 0)}</div>`)
                     .join("")}</div>`,
               )
               .join("")}</div>
