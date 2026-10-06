@@ -80,7 +80,7 @@ export function servicesPage(photos: Photo[] = []): string {
   const card = (t: PricingTier, i: number): string => {
     const ph = shotFor(t, i);
     return `<article class="pkg${t.popular ? " pkg--pop" : ""}">
-    ${ph ? `<figure class="pkg__fig" style="--focal:${escapeHtml(t.focal ?? "50% 50%")};--ar:${escapeHtml(t.ar ?? "3 / 2")}"><picture>${pictureFor(ph.url, "(max-width: 760px) 100vw, (max-width: 1000px) 50vw, 25vw", ph.width)}
+    ${ph ? `<figure class="pkg__fig${ph.width && ph.height && ph.width > ph.height ? " pkg__fig--landscape" : ""}" style="--focal:${escapeHtml(t.focal ?? "50% 50%")};--ar:${escapeHtml(t.ar ?? "3 / 2")}"><picture>${pictureFor(ph.url, "(max-width: 760px) 100vw, (max-width: 1000px) 50vw, 25vw", ph.width)}
         <img src="${escapeHtml(bestDerivative(ph.url, "jpg", ph.width))}" alt="${escapeHtml(ph.alt || ph.filename || "")}"
              loading="lazy" decoding="async" /></picture></figure>` : ""}
     <p class="pkg__num">${String(i + 1).padStart(2, "0")}.${
@@ -124,6 +124,7 @@ export function servicesPage(photos: Photo[] = []): string {
       <p class="invest__p">${escapeHtml(p.depositNote)}</p>
     </section>
 
+    <div class="service-details">
     <div class="sterms">
       <h2 class="sterms__h">${escapeHtml(p.addonsTitle)}</h2>
       <ul class="addons">
@@ -142,7 +143,8 @@ export function servicesPage(photos: Photo[] = []): string {
         ${p.terms.map((t) => `<li>${escapeHtml(t)}</li>`).join("")}
       </ul>
     </div>
-${homeBand()}
+    </div>
+${homeBand({ eyebrow: "Next step", heading: "Let's plan your session.", cta: "Enquire about a session", href: "./contact.html" })}
   </section>`;
 }
 
@@ -207,7 +209,7 @@ export function contactPage(_photos: Photo[] = []): string {
     <div class="contact__col">
       <div class="contact__main">
       <p class="eyebrow">Get in touch</p>
-      <h1 class="contact__h">Let's Create Something Beautiful.</h1>
+      <h1 class="contact__h">Let's create something beautiful.</h1>
       <p class="contact__p">${escapeHtml(SITE.blurb)}</p>
 
       <form class="cform" id="cform" novalidate>

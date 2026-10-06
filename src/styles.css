@@ -3,6 +3,28 @@
    Tokens first, then site chrome, gallery, lightbox, admin.
    ============================================================= */
 
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/inter-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/inter-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Archivo Black";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/archivo-black-latin-400-normal.woff2") format("woff2");
+}
+
 :root {
   --ink: #111;
   /* Inactive nav was #8c8c8c — only 3.36:1 on white, failing WCAG AA at 12px.

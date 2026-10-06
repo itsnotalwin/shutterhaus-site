@@ -498,12 +498,15 @@ const pr = await evaluate(`(() => ({
   ctas: [...document.querySelectorAll('.pkg .cta')].map(a=>a.getAttribute('href')),
   overflow: document.documentElement.scrollWidth - window.innerWidth,
   bg: document.querySelector('.pkg') ? getComputedStyle(document.querySelector('.pkg')).backgroundColor : null,
-  // Which cards actually carry a fill, and is the popular one among them?
+  // All columns sit on paper; the recommended name and label remain distinct.
   filled: [...document.querySelectorAll('.pkg')].map(p => getComputedStyle(p).backgroundColor)
             .filter(b => b !== 'rgba(0, 0, 0, 0)').length,
-  popularFilled: (() => {
+  popularMarked: (() => {
     const p = document.querySelector('.pkg--pop');
-    return p ? getComputedStyle(p).backgroundColor !== 'rgba(0, 0, 0, 0)' : false;
+    const flag = p?.querySelector('.pkg__flag');
+    return !!flag && /most popular/i.test(flag.textContent) &&
+      getComputedStyle(flag).opacity === '1' &&
+      getComputedStyle(flag).borderBottomStyle === 'solid';
   })(),
   specs: [...document.querySelectorAll('.pkg__spec')].map(e => e.textContent.trim()),
 }))()`);
@@ -575,14 +578,8 @@ check("every package links to contact with its name",
 // rgb(255,255,255); the meaningful assertion now is that they are NOT a
 // filled/tinted box, which is what would fight the photography.
 check("package cards are unfilled", pr.bg === "rgba(0, 0, 0, 0)", pr.bg);
-// ...with exactly one deliberate exception: the recommended tier inverts to the
-// site's black, the same move `.invest` already makes. `.pkg--pop` shipped
-// with NO css rule at all for months, so the "most popular" package was
-// pixel-identical to the other three on the page that exists to make a sale.
-// Assert both halves: the popular card IS filled, and no OTHER card is, so a
-// future change can neither drop the treatment nor spread it to every tier.
-check("the popular tier is visually distinct", pr.popularFilled === true, String(pr.popularFilled));
-check("only the popular tier is filled", pr.filled === 1, `${pr.filled} filled of ${pr.tiers}`);
+check("the popular tier has a visible recommendation", pr.popularMarked === true, String(pr.popularMarked));
+check("all package columns are unfilled", pr.filled === 0, `${pr.filled} filled of ${pr.tiers}`);
 // Every tier carries its config `spec` line ("30 min · 1 outfit · 1 location"),
 // which used to be defined in config.ts and rendered only by pricingPage() — a
 // function nothing routed, so the content was never actually shown to anyone.
@@ -624,6 +621,10 @@ for (const width of [1440, 390]) {
       heading: document.querySelector('main h1')?.textContent,
       broken: [...document.querySelectorAll('main img')].filter(img => !img.naturalWidth).length,
       overflow: document.documentElement.scrollWidth - innerWidth,
+      headingsFit: [...document.querySelectorAll('main h1, main h2')].every(heading => heading.scrollWidth <= heading.clientWidth + 1),
+      fontsLoaded: ['Inter', 'Archivo Black'].every(family => [...document.fonts].some(face => face.family.replace(/["']/g, '') === family && face.status === 'loaded')),
+      priceTops: [...document.querySelectorAll('.pkg__price')].map(price => price.getBoundingClientRect().top),
+      bandHref: document.querySelector('.hcta__btn')?.getAttribute('href'),
       bandFits: [...document.querySelectorAll('main .hcta')].every(band => {
         const edge = band.getBoundingClientRect();
         return [...band.querySelectorAll('.hcta__h, .hcta__side, .hcta__btn')].every(item => {
@@ -635,7 +636,13 @@ for (const width of [1440, 390]) {
     check(`review ${route} ${width}: page loaded`, !!state.heading, state.heading);
     check(`review ${route} ${width}: no broken images`, state.broken === 0, state.broken);
     check(`review ${route} ${width}: no overflow`, state.overflow <= 0, state.overflow);
+    check(`review ${route} ${width}: headings fit`, state.headingsFit);
+    check(`review ${route} ${width}: local fonts loaded`, state.fontsLoaded);
     check(`review ${route} ${width}: booking band fits`, state.bandFits);
+    if (route === 'services') {
+      check(`review services ${width}: closing enquiry goes to contact`, state.bandHref === './contact.html', state.bandHref);
+      if (width === 1440) check('desktop package prices align', Math.max(...state.priceTops) - Math.min(...state.priceTops) <= 1);
+    }
     const metrics = await send("Page.getLayoutMetrics");
     const size = metrics.result.cssContentSize;
     const capture = await send("Page.captureScreenshot", {
@@ -644,6 +651,10 @@ for (const width of [1440, 390]) {
     });
     const name = `${String(index + 1).padStart(2, "0")}-${route}-${width}.png`;
     writeFileSync(`${OUT}/${name}`, Buffer.from(capture.result.data, "base64"));
+    if (route === 'home') {
+      const firstScreen = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
+      writeFileSync(`${OUT}/01-home-${width}-viewport.png`, Buffer.from(firstScreen.result.data, 'base64'));
+    }
     console.log("      review screenshot:", name);
   }
 }

@@ -1,411 +1,179 @@
-/* =============================================================
-   SHUTTERHAUS VISUALS — Visual Makeover Layer
-   Loaded after styles.css and editorial.css. Enhances aesthetics
-   only — no layout changes, no structural regressions.
-
-   Philosophy: same minimalism, more intention. Every change here
-   is a refinement, not a redesign. The underlying grid, spacing
-   tokens and font system are left exactly as they are.
-   ============================================================= */
-
-/* -------------------------------------------------- token upgrades */
-
+/* Public editorial hierarchy. Gallery geometry and behaviour live in the base
+   layers; Archivo remains the Shutterhaus wordmark face. */
 :root {
-  /* Enforce pure #fff paper color per test requirements. */
   --paper: #fff;
+  --dim: #595959;
+  --grey: #666;
+  --line: #dedede;
+  --pad: clamp(26px, 4.4vw, 72px);
+  --gut: 22px;
+  --head: 112px;
+  --font-editorial: var(--font-body);
+  --ease: cubic-bezier(.25, .1, .25, 1);
+}
+body { -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+.page { padding-bottom: 0; }
+.page h1, .page h2 { font-family: var(--font-editorial); font-weight: 400; line-height: 1.08; letter-spacing: -.055em; text-transform: none; }
+.eyebrow { font: 500 10px/1.5 var(--font-body); letter-spacing: .18em; margin-bottom: 24px; }
+.prose, .phead__p, .shead__p { font-size: 15px; line-height: 1.85; }
+.prose p { margin-bottom: 24px; }
 
-  /* Ink stays #111 but black-on-warm-paper reads marginally richer. */
-
-  /* A softer mid-grey for secondary text — same function, less harsh. */
-  --dim: #5c5c5c;
-
-  /* Transition easing that feels considered rather than mechanical. */
-  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
-  --ease-out: cubic-bezier(0, 0, 0.3, 1);
+/* Solid chrome on text pages; keep the home photograph's clear top edge. */
+.site-header { border-bottom: 1px solid var(--line); background: var(--paper); }
+.shell--over .site-header { border-bottom: 0; }
+.logo-lg { letter-spacing: -.02em; }
+.logo-sm { letter-spacing: .28em; }
+.site-nav { gap: 28px; }
+.nav-link { font-size: 12px; letter-spacing: .025em; }
+.social { transition: opacity .18s var(--ease); }
+@media (min-width: 761px) {
+  /* The pinned frame has bright sky behind the desktop chrome. */
+  .shell--over .logo, .shell--over .nav-link, .shell--over .social { color: var(--ink); text-shadow: none; }
+  .shell--over .nav-link { color: #404040; }
+  .shell--over .nav-link:hover, .shell--over .nav-link.is-active { color: var(--ink); }
+  .shell--over .nav-link.is-active { border-bottom-color: var(--ink); }
+  .shell--over .social { --social-bg: #aaa; }
 }
 
-/* -------------------------------------------------- base typography */
+/* Established photograph and scrim, lighter display type. */
+.hero { min-height: min(88svh, 820px); }
+.hero__body { padding-bottom: 112px; }
+.page .hero__h { font-size: clamp(44px, 7.8vw, 112px); line-height: 1.02; letter-spacing: -.055em; margin-bottom: 28px; width: auto; max-width: 9.5em; }
+.hero__body .eyebrow { font: 500 10px/1.5 var(--font-body); letter-spacing: .18em; }
+.hero__lede { max-width: 36ch; font-size: 15px; line-height: 1.8; margin-bottom: 24px; }
+.hero__meta { font: 400 10px/1.5 var(--font-body); letter-spacing: .12em; }
+.cta { font-size: 11px; letter-spacing: .12em; gap: 12px; }
+.cta::before { width: 24px; transition: width .18s var(--ease); }
+.cta:hover::before { width: 36px; }
+.hstrip { padding-top: 88px; }
+.hstrip__head { border-color: var(--line); font: 500 10px/1.5 var(--font-body); letter-spacing: .15em; margin-bottom: 28px; }
+.hstrip__grid { margin-bottom: 28px; }
+.portfolio .phead { padding: 64px 0 40px; gap: 20px; }
+.portfolio .phead .eyebrow { color: var(--grey); }
+.page.portfolio .phead__h { font-size: clamp(44px, 5.4vw, 76px); line-height: 1.08; }
 
-/* Sharpen the antialiasing on all text for crisp rendering */
-body {
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+/* Paper footer: one invitation, one price, one next step. */
+.hcta { margin-top: 96px; padding-top: 64px; background: var(--paper); color: var(--ink); border-top: 1px solid var(--line); }
+.hcta__grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 64px; padding-bottom: 64px; }
+.hcta .eyebrow { color: var(--grey); opacity: 1; font-family: var(--font-body); letter-spacing: .18em; }
+.page .hcta__h { font-size: clamp(40px, 4.5vw, 66px); line-height: 1.08; letter-spacing: -.055em; max-width: 14ch; }
+.hcta__k { font: 500 10px/1.5 var(--font-body); color: var(--grey); opacity: 1; }
+.hcta__price { font: 400 42px/1.1 var(--font-body); letter-spacing: -.05em; }
+.hcta__note { font: 400 13px/1.8 var(--font-body); color: var(--dim); opacity: 1; margin-bottom: 22px; }
+.hcta__btn { font: 500 11px/1.5 var(--font-body); letter-spacing: .12em; background: var(--ink); color: #fff; padding: 14px 22px; transition: background .18s var(--ease); }
+.hcta__btn:hover { background: #333; }
+.hcta__foot { border-top-color: var(--line); color: var(--dim); font: 400 10px/1.6 var(--font-body); letter-spacing: .08em; padding: 24px 0; }
+.hcta__foot a:hover { color: var(--ink); }
+.about { gap: 72px; padding-top: 64px; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); }
+.about__body { padding-top: 20px; }
+.page .about__h { font-size: clamp(40px, 4.6vw, 66px); margin-bottom: 36px; max-width: 12ch; }
+.about__prose { max-width: 44ch; }
+.about__cta { margin-top: 28px; }
+.about > .hcta { margin-top: 16px; }
+
+/* Recommendation is a readable label, with shared price/button baselines. */
+.shead { padding-top: 64px; gap: 80px; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); }
+.page .shead__h { font-size: clamp(44px, 5vw, 72px); max-width: 13ch; }
+.shead__note { font-size: 12px; line-height: 1.75; margin-top: 16px; }
+.pkgrow { gap: 40px 28px; padding-top: 64px; }
+.pkg, .pkg--pop { background: transparent; color: var(--ink); padding-bottom: 0; }
+.pkg__fig, .pkg--pop .pkg__fig { margin-bottom: 28px; }
+.pkg__fig { aspect-ratio: 4 / 3; }
+.pkg__fig img { object-position: 50% 0%; }
+/* Preserve the complete group in the landscape frame. */
+.pkg__fig--landscape img { object-fit: contain; object-position: 50% 50%; }
+.pkg__num, .pkg--pop .pkg__num { color: var(--grey); margin-bottom: 14px; font: 500 10px/1.5 var(--font-body); letter-spacing: .12em; }
+.pkg__flag, .pkg--pop .pkg__flag { color: var(--ink); opacity: 1; font: 500 9px/1.5 var(--font-body); letter-spacing: .1em; }
+.page .pkg__name { font: 400 28px/1.15 var(--font-editorial); letter-spacing: -.04em; text-transform: none; margin-bottom: 18px; }
+.pkg__spec, .pkg--pop .pkg__spec { font: 400 10px/1.7 var(--font-body); letter-spacing: .06em; color: var(--grey); margin-bottom: 16px; }
+.pkg__desc, .pkg--pop .pkg__desc { color: var(--dim); opacity: 1; font-size: 14px; line-height: 1.8; margin-bottom: 20px; }
+.pkg__list, .pkg--pop .pkg__list { color: var(--dim); opacity: 1; font-size: 13px; line-height: 1.7; margin-bottom: 32px; }
+.pkg__list li, .pkg--pop .pkg__list li { border-top: 0; padding: 4px 0; }
+.pkg__price { font: 400 30px/1.2 var(--font-body); letter-spacing: -.04em; margin-bottom: 12px; }
+.pkg .cta, .pkg--pop .cta { color: var(--ink); font-size: 11px; }
+.pkg--pop .cta::before { background: var(--ink); }
+.pkg--pop .pkg__flag { border-bottom: 1px solid var(--ink); padding-bottom: 3px; }
+
+/* Terms are separated by rules, without another dark section. */
+.invest { margin: 64px 0 0; padding: 36px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); }
+.invest__label { font: 500 10px/1.5 var(--font-body); color: var(--grey); opacity: 1; }
+.page .invest__h { font-size: clamp(26px, 2.6vw, 36px); letter-spacing: -.035em; }
+.invest__p { color: var(--dim); opacity: 1; margin: 0; }
+.service-details { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 80px; margin-top: 48px; }
+.service-details .sterms { margin: 0; }
+.page .sterms__h { font-size: 24px; letter-spacing: -.03em; margin-bottom: 24px; }
+.addons li { padding: 14px 0; font-size: 13px; line-height: 1.7; }
+.addons__p { font-family: var(--font-body); font-weight: 500; }
+.terms { font-size: 13px; line-height: 1.85; }
+.terms li { margin-bottom: 14px; }
+
+.page.contact { padding-top: 64px; padding-bottom: 64px; }
+.page .contact__h { font-size: clamp(40px, 4.4vw, 64px); line-height: 1.1; margin-bottom: 28px; max-width: 15ch; }
+.contact__p { font-size: 15px; line-height: 1.8; max-width: 43ch; margin-bottom: 36px; }
+.contact__col { gap: 80px; }
+.contact__aside { border-top: 1px solid var(--line); }
+.contact__list { font-size: 14px; margin-top: 24px; }
+.contact__hours { font-size: 13px; line-height: 1.8; }
+.cform { gap: 24px; }
+.cform label { font-size: 10px; letter-spacing: .1em; gap: 10px; }
+.cform input, .cform select, .cform textarea { border-color: #ccc; padding: 12px; transition: border-color .18s var(--ease); }
+.cform input:focus, .cform select:focus, .cform textarea:focus { border-color: var(--ink); outline: 2px solid var(--ink); outline-offset: 3px; }
+.cform button { font-size: 11px; letter-spacing: .12em; padding: 16px 24px; }
+.cform button:disabled { opacity: .6; cursor: wait; }
+
+@media (max-width: 1100px) {
+  :root { --pad: 32px; --gut: 16px; }
+  .shead { gap: 32px; }
+  .about { gap: 48px; }
+  .service-details { gap: 40px; }
 }
-
-/* -------------------------------------------------- header */
-
-/* Give the sticky header a hairline bottom border so it visually
-   separates from content as you scroll — invisible on the home hero
-   where the header is transparent, meaningful everywhere else. */
-.site-header {
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+@media (max-width: 1000px) {
+  .about, .shead { grid-template-columns: 1fr; }
+  .about__fig { max-width: 560px; }
+  .about__body { padding-top: 0; }
+  .shead__p { max-width: 52ch; }
+  .hcta__grid { gap: 36px; }
+  .contact__aside { margin-top: 40px; padding-top: 0; }
 }
-
-/* Solid-header routes: show the hairline */
-.site-header:not(.shell--over .site-header) {
-  border-bottom-color: var(--line);
-  /* Frosted glass effect on the sticky bar — adds depth without adding colour.
-     backdrop-filter is Baseline Widely Available. */
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-/* Home route: no line, no blur — the transparent header must disappear
-   into the hero photograph. */
-.shell--over .site-header {
-  border-bottom-color: transparent !important;
-  background: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-/* -------------------------------------------------- logo refinements */
-
-/* Tighten the wordmark tracking slightly — current –0.005em is correct
-   but the second word "VISUALS" can sit a touch tighter still. */
-.logo-lg {
-  letter-spacing: -0.015em;
-}
-
-/* The small superscript "SHUTTERHAUS" — pull tracking in a fraction
-   so it optically aligns better with the big word's tighter set. */
-.logo-sm {
-  letter-spacing: 0.28em;
-  font-size: 10px;
-}
-
-/* -------------------------------------------------- nav link refinements */
-
-/* Replace the flat border-bottom underline with a smooth scale-in line.
-   The border is kept for the active state (keyboard/screen reader visible),
-   but the animated pseudo-element gives a more refined hover feel. */
-.nav-link {
-  position: relative;
-  border-bottom: none !important;
-  letter-spacing: 0.06em;
-  font-size: 11.5px;
-  transition: color 0.18s var(--ease);
-}
-
-/* Animated underline via pseudo-element */
-.nav-link::after {
-  content: "";
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 0.22s var(--ease-out);
-}
-
-.nav-link:hover::after,
-.nav-link.is-active::after {
-  transform: scaleX(1);
-}
-
-/* Active link colour */
-.nav-link.is-active {
-  color: var(--ink);
-}
-
-/* On the home hero (white links), the underline is white */
-.shell--over .nav-link::after {
-  background: #fff;
-}
-
-/* Mobile drawer: revert to the solid border-bottom for the stacked list */
 @media (max-width: 760px) {
-  .nav-link::after { display: none; }
-  .nav-link {
-    border-bottom: 1px solid var(--line) !important;
-    letter-spacing: 0.12em;
-  }
-  .nav-link.is-active { border-bottom-color: var(--ink) !important; }
-  .nav-link:last-child { border-bottom: none !important; }
+  :root { --pad: 20px; --gut: 12px; --head: 92px; }
+  .nav-link { display: block; padding: 16px 0; letter-spacing: .08em; }
+  .hstrip { padding-top: 56px; }
+  .portfolio .phead { padding-top: 40px; padding-bottom: 32px; }
+  .about, .shead, .page.contact { padding-top: 40px; }
+  .pkgrow { padding-top: 40px; gap: 48px; }
+  .pkg__fig, .pkg--pop .pkg__fig { margin-bottom: 24px; }
+  .pkg__fig { aspect-ratio: var(--ar, 3 / 2); }
+  .pkg__fig img { object-position: var(--focal, 50% 50%); }
+  .pkg__list { font-size: 14px; margin-bottom: 24px; }
+  .pkg__price { margin-top: 0; }
+  .service-details { grid-template-columns: 1fr; gap: 40px; margin-top: 40px; }
+  .invest { grid-template-columns: 1fr; gap: 20px; margin: 48px 0 0; }
+  .hcta { margin-top: 64px; padding-top: 40px; }
+  .hcta__grid { grid-template-columns: 1fr; gap: 32px; padding-bottom: 40px; }
+  .hcta__price { font-size: 36px; }
+  .hcta__foot { gap: 16px; }
+  .hcta__foot span { display: none; }
 }
-
-/* -------------------------------------------------- social icons */
-
-.social {
-  transition: opacity 0.18s var(--ease), transform 0.18s var(--ease);
+@media (max-width: 640px) {
+  :root { --pad: 16px; --gut: 8px; }
+  .site-header { column-gap: 8px; }
+  .logo-lg { font-size: 24px; }
+  .logo-sm { font-size: 10px; }
+  .site-social { gap: 0; }
+  .hero { min-height: max(620px, 85svh); }
+  .hero__body { padding-bottom: 92px; }
+  .page .hero__h { font-size: clamp(36px, 10.8vw, 60px); max-width: 9.5em; margin-bottom: 24px; }
+  .hero__lede { font-size: 14px; }
+  .hero__meta { font-size: 9px; letter-spacing: .08em; padding-bottom: 18px; }
+  .hstrip__head { margin-bottom: 20px; }
+  .page .shead__h, .page .about__h, .page .contact__h { font-size: 42px; }
+  .page .hcta__h { font-size: 40px; }
+  .contact__list { font-size: 13px; }
+  .contact__list li { gap: 10px; }
+  .contact__list a { overflow-wrap: anywhere; }
+  .hcta__foot a { overflow-wrap: anywhere; letter-spacing: .02em; }
 }
-
-.social:hover {
-  opacity: 0.65;
-  transform: translateY(-1px);
-}
-
-/* -------------------------------------------------- hero refinements */
-
-/* Slightly warmer scrim — the bottom of the hero gets a touch more ink
-   so the white headline has guaranteed contrast over any photograph. */
-.hero__scrim {
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.08) 0%,
-    rgba(0, 0, 0, 0.22) 18%,
-    rgba(0, 0, 0, 0.52) 34%,
-    rgba(0, 0, 0, 0.68) 52%,
-    rgba(0, 0, 0, 0.78) 72%,
-    rgba(0, 0, 0, 0.90) 100%
-  );
-}
-
-/* Hero heading — a hint more negative tracking at large sizes */
-.hero__h {
-  letter-spacing: -0.04em;
-}
-
-/* Hero lede — slightly lighter, more editorial */
-.hero__lede {
-  opacity: 0.88;
-  font-size: 14.5px;
-  line-height: 1.75;
-}
-
-/* Meta strip — bolder separator */
-.hero__meta {
-  border-top: 1px solid rgba(255, 255, 255, 0.6);
-  letter-spacing: 0.14em;
-}
-
-/* -------------------------------------------------- CTA link (dash → label) */
-
-/* Lengthen the dash on hover a little more */
-.cta::before {
-  width: 22px;
-  transition: width 0.22s var(--ease-out);
-}
-
-.cta:hover::before {
-  width: 44px;
-}
-
-/* -------------------------------------------------- hstrip (home selected work) */
-
-/* Header row: make the hairline bolder */
-.hstrip__head {
-  border-top: 1px solid var(--ink);
-  letter-spacing: 0.16em;
-}
-
-/* -------------------------------------------------- hcta (dark band) */
-
-/* Deepen the dark band just slightly for more drama */
-.hcta {
-  background: #0a0a0a;
-}
-
-/* The white CTA button — add a very subtle lift on hover */
-.hcta__btn {
-  letter-spacing: 0.16em;
-  transition: background 0.18s var(--ease), transform 0.14s var(--ease);
-}
-
-.hcta__btn:hover {
-  background: #e2e2e2;
-  transform: translateY(-1px);
-}
-
-/* Footer row inside the dark band — slightly dimmer copyright */
-.hcta__foot {
-  letter-spacing: 0.14em;
-  color: rgba(255, 255, 255, 0.7);
-  border-top-color: rgba(255, 255, 255, 0.25);
-}
-
-/* -------------------------------------------------- portfolio header */
-
-/* Portfolio eyebrow — make Gauteng line feel more authoritative */
-.portfolio .phead .eyebrow {
-  letter-spacing: 0.22em;
-  color: var(--grey);
-}
-
-/* -------------------------------------------------- services cards */
-
-/* Package card name — slightly larger, more presence */
-.page .pkg__name {
-  font-size: 20px;
-  letter-spacing: -0.02em;
-}
-
-/* Price number — more impact */
-.pkg__price {
-  font-size: 22px;
-  letter-spacing: -0.025em;
-}
-
-/* Popular tier: make the black card feel more premium */
-.pkg--pop {
-  background: #080808;
-}
-
-/* The "most popular" flag — ever so slightly visible */
-.pkg__flag {
-  opacity: 0.65;
-  letter-spacing: 0.22em;
-}
-
-/* Book-now CTA — smooth in the hover underline dash */
-.cta--sm {
-  letter-spacing: 0.16em;
-}
-
-/* -------------------------------------------------- invest band */
-
-.invest {
-  background: #080808;
-}
-
-.invest__h {
-  letter-spacing: -0.03em;
-}
-
-/* -------------------------------------------------- about page */
-
-/* Give the about heading a touch more scale at the top end */
-.page .about__h {
-  letter-spacing: -0.03em;
-}
-
-/* -------------------------------------------------- contact form */
-
-/* Inputs: slightly warmer placeholder, stronger focus */
-.cform input,
-.cform select,
-.cform textarea {
-  background: #fff;
-  transition: border-color 0.16s var(--ease);
-}
-
-.cform input::placeholder,
-.cform textarea::placeholder {
-  color: #b0b0b0;
-}
-
-.cform input:focus,
-.cform select:focus,
-.cform textarea:focus {
-  border-color: var(--ink);
-  outline: 2px solid var(--ink);
-  outline-offset: 2px;
-}
-
-.cform button:disabled { opacity: 0.6; cursor: wait; }
-
-/* Submit button — add lift on hover */
-.cform button {
-  letter-spacing: 0.1em;
-  transition: background 0.18s var(--ease), transform 0.14s var(--ease);
-}
-
-.cform button:hover {
-  background: #000;
-  transform: translateY(-1px);
-}
-
-/* -------------------------------------------------- contact info list */
-
-/* Contact links — refine the underline */
-.contact__list a {
-  transition: border-color 0.15s var(--ease);
-}
-
-/* -------------------------------------------------- lightbox */
-
-/* Tighten the lightbox controls — more editorial, less browser-default */
-.lb__x,
-.lb__nav {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  opacity: 0.75;
-  transition: opacity 0.15s var(--ease);
-  /* Enforce 44px tap target */
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-}
-
-.lb__x:hover,
-.lb__nav:hover {
-  opacity: 1;
-}
-
-/* Caption — a touch more legible */
-.lb__cap {
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  opacity: 0.8;
-}
-
-/* -------------------------------------------------- image hover */
-
-/* Gallery images: a very gentle scale-in on hover to suggest interactivity
-   without "blowing up" the crop (Alwin's instruction) — 1% is imperceptible
-   as a scale, but it removes the flat feeling of a static grid. */
-@media (hover: hover) {
-  .cell img.is-loaded:hover {
-    opacity: 0.94;
-  }
-
-  .hstrip__item .cell img.is-loaded:hover {
-    opacity: 0.94;
-  }
-}
-
-/* -------------------------------------------------- eyebrow refinements */
-
-/* Global eyebrow: tighter, more confident */
-.eyebrow {
-  letter-spacing: 0.22em;
-  font-size: 10px;
-  margin: 0 0 20px;
-}
-
-/* -------------------------------------------------- phead (page headers) */
-
-.phead__h {
-  letter-spacing: -0.03em;
-}
-
-/* -------------------------------------------------- services page header */
-
-.shead__h {
-  letter-spacing: -0.03em;
-}
-
-/* -------------------------------------------------- portfolio filter bar
-   (only visible when there are multiple categories) */
-
-/* The filter pill buttons — refine hover state */
-.pfilter__item {
-  transition: color 0.15s var(--ease), border-color 0.15s var(--ease);
-  letter-spacing: 0.1em;
-}
-
-/* -------------------------------------------------- admin unchanged */
-/* Admin styles are deliberately untouched — no class here targets .adm* */
-
-/* -------------------------------------------------- reduced motion
-   Override the new transitions where motion is unwanted — the blanket
-   rule in styles.css covers the main transitions; this ensures our new
-   ones are included too. */
 @media (prefers-reduced-motion: reduce) {
-  .nav-link::after,
-  .social,
-  .hcta__btn,
-  .cform button,
-  .lb__x,
-  .lb__nav {
-    transition: none !important;
-    transform: none !important;
-  }
+  .social, .cta::before, .hcta__btn, .cform input, .cform select, .cform textarea { transition: none; }
 }

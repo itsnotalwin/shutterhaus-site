@@ -165,7 +165,7 @@ export const SITE: SiteConfig = {
    */
   home: {
     eyebrow: "Photography is poetry.",
-    heading: "Timeless Portraiture",
+    heading: "Timeless portraiture",
     lede: "Real people. Honest moments. Portraits that look beyond the now.",
     cta: "View portfolio",
     est: "2019",
@@ -247,7 +247,7 @@ export const SITE: SiteConfig = {
   // the lower-left for the white headline. Chosen from a side-by-side of all
   // six landscape frames cropped to the hero ratio.
   heroPhoto: "27-img-0297.jpg",
-  services: { eyebrow: "Services", heading: "Capture What Matters.", cta: "View packages" },
+  services: { eyebrow: "Services", heading: "Capture what matters.", cta: "View packages" },
 };
 
 /** Fonts loaded in index.html. Change these to re-skin the type. */

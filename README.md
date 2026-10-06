@@ -81,6 +81,18 @@ draft preservation during rotation, duplicate submission protection, failure
 recovery and photo-viewer keyboard focus using a simulated DOM and mocked
 requests. `npm run verify` remains the browser layout gate.
 
+## Editorial presentation
+
+`src/makeover.css` owns the public presentation: sentence-case Inter headings,
+generous page margins, white closing sections and a subtle recommendation on
+Essential. The Archivo Black wordmark and curated photograph order remain the
+brand anchors. Services closes with an enquiry link to Contact.
+
+Inter 400/500 and Archivo Black 400 are served from `public/fonts/`; their OFL
+licenses are included there. The browser gate checks font loading, heading
+overflow, aligned desktop prices and the closing enquiry destination, and saves
+fresh desktop and phone screenshots for all five public pages.
+
 ## Project layout
 
 ```
@@ -101,11 +113,12 @@ src/
   demo.ts             placeholder gallery + DEMO_VIDEOS
   styles.css          base design
   editorial.css       the current visual layer (most layout rules)
-  makeover.css        earlier visual layer, still loaded
+  makeover.css        public editorial typography, spacing and page refinement
 tools/                Python/MJS build + verification tools (see below)
 public/               static assets copied verbatim into dist/
   gallery/            the committed photo files + their -<width>w derivatives
   CNAME               custom domain (must match Settings → Pages)
+  fonts/              self-hosted Inter / Archivo Black WOFF2 + OFL licenses
   _headers            security headers — only honoured if ever fronted by Cloudflare
   robots.txt, sitemap.xml, 404.html
 supabase/
@@ -172,7 +185,7 @@ row and the file.
 | Email, phone, location, hours | `src/config.ts` → `contact` |
 | Contact form endpoint | `src/config.ts` → `contact.formEndpoint` |
 | About paragraph | `src/config.ts` → `blurb` |
-| Pricing packages | `src/config.ts` pricing tiers |
+| Pricing packages | `src/pricing.json` tiers |
 | Hero / home strip picks | `src/config.ts` → `heroPhoto`, `homeGalleryCount` (see **Design invariants**) |
 | Videos | `src/demo.ts` → `DEMO_VIDEOS` (host the files on Supabase Storage or Cloudinary and paste the URL) |
 

@@ -605,25 +605,11 @@ export const WALL_MIN_FRAME_PX = 175;
  * with what Services charges. It also inherits the deliberate choice recorded
  * there: ONE contact line inside the band, not a site-wide footer.
  *
- * The three replacements match on markup that `homeBand()` controls, so a
- * wording change there that breaks one of them fails silently into an unchanged
- * string rather than an error. `verify.mjs` asserts the band and its CTA are
- * present on this route, which is what catches that.
+ * Text and destination are passed as options, so copy edits cannot silently
+ * break the route's enquiry link. The browser gate checks the destination.
  */
 function pfBand(): string {
-  return homeBand()
-    .replace(
-      `<p class="eyebrow">${escapeHtml(SITE.services.eyebrow)}</p>`,
-      `<p class="eyebrow">Book a shoot</p>`,
-    )
-    .replace(
-      `<h2 class="hcta__h">${escapeHtml(SITE.services.heading)}</h2>`,
-      `<h2 class="hcta__h">Like what you see?</h2>`,
-    )
-    .replace(
-      `<a class="hcta__btn" href="./services.html">${escapeHtml(SITE.services.cta)} →</a>`,
-      `<a class="hcta__btn" href="./contact.html">Get a quote →</a>`,
-    );
+  return homeBand({ eyebrow: "Book a shoot", heading: "Like what you see?", cta: "Get a quote", href: "./contact.html" });
 }
 
 /** The shared empty state — reachable from home and portfolio alike. */
@@ -668,15 +654,15 @@ function stripCols(frameCount: number): number {
  * back up to the nav. The contact row is deliberately ONE line inside the band,
  * not a site-wide footer (an earlier footer was reverted).
  */
-export function homeBand(): string {
+export function homeBand(options: { eyebrow?: string; heading?: string; cta?: string; href?: string } = {}): string {
   const from = cheapestTier();
   const insta = SITE.social.find((x) => x.id === "instagram");
   const names = SITE.pricing.tiers.map((t) => t.name).join(" · ");
   return `<section class="hcta">
       <div class="hcta__grid">
         <div class="hcta__main">
-          <p class="eyebrow">${escapeHtml(SITE.services.eyebrow)}</p>
-          <h2 class="hcta__h">${escapeHtml(SITE.services.heading)}</h2>
+          <p class="eyebrow">${escapeHtml(options.eyebrow ?? SITE.services.eyebrow)}</p>
+          <h2 class="hcta__h">${escapeHtml(options.heading ?? SITE.services.heading)}</h2>
         </div>
         <div class="hcta__side">
           ${
@@ -686,7 +672,7 @@ export function homeBand(): string {
               : ""
           }
           <p class="hcta__note">${escapeHtml(names)}<br>${escapeHtml(SITE.pricing.depositNote)}</p>
-          <a class="hcta__btn" href="./services.html">${escapeHtml(SITE.services.cta)} →</a>
+          <a class="hcta__btn" href="${escapeHtml(options.href ?? "./services.html")}">${escapeHtml(options.cta ?? SITE.services.cta)} →</a>
         </div>
       </div>
       <div class="hcta__foot">
