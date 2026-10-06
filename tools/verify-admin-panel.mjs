@@ -1,183 +1,116 @@
-/**
- * Does the signed-in admin panel render the upload surface correctly?
- *
- * The other scripts stop at the login gate, so the panel markup — the drop
- * target, the publish bar, the card buttons — goes unverified. Those are exactly
- * the parts Alwin touches on his phone.
- *
- * The panel's data comes from boot(): session, then listAllPhotos(). This drives
- * the real paint() with a stubbed store so the markup under test is the shipped
- * markup, not a copy that can drift.
- *
- * Run: node tools/verify-admin-panel.mjs
- */
-const CDP = `http://127.0.0.1:${process.env.CDP_PORT ?? "9222"}`;
-const ORIGIN = process.env.ORIGIN ?? "http://127.0.0.1:4173";
-
-let pass = 0;
-let fail = 0;
-const check = (name, ok, detail = "") => {
-  ok ? pass++ : fail++;
-  console.log(`  ${ok ? "ok  " : "FAIL"}  ${name}${detail ? `  (${detail})` : ""}`);
-};
-
-const created = await (await fetch(`${CDP}/json/new?about:blank`, { method: "PUT" })).json();
-const ws = new WebSocket(created.webSocketDebuggerUrl);
-await new Promise((r) => (ws.onopen = r));
-let id = 0;
-const pending = new Map();
-const consoleErrors = [];
-ws.onmessage = (m) => {
-  const x = JSON.parse(m.data);
-  if (x.id && pending.has(x.id)) {
-    const p = pending.get(x.id);
-    pending.delete(x.id);
-    x.error ? p.reject(new Error(JSON.stringify(x.error))) : p.resolve(x.result);
-    return;
+import assert from 'node:assert/strict';
+import {mkdirSync,writeFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {adminBundle,photoFixture} from './admin-fixture.mjs';
+const origin=(process.env.ORIGIN ?? 'http://127.0.0.1:4173').replace(/\/$/,'');
+const out=process.env.SHOT_DIR ?? 'shots/admin-verify';mkdirSync(out,{recursive:true});
+const code=await adminBundle(), fixture=await photoFixture();fixture.uploadURL=`${origin}/gallery/54-img-0164.jpg`;
+const target=await(await fetch(`http://127.0.0.1:${process.env.CDP_PORT ?? '9222'}/json/new?about:blank`,{method:'PUT'})).json();
+const ws=new WebSocket(target.webSocketDebuggerUrl);await new Promise(resolve=>ws.onopen=resolve);
+let id=0;const pending=new Map(),errors=[];
+ws.onmessage=e=>{const msg=JSON.parse(e.data);if(msg.id&&pending.has(msg.id)){const {resolve,reject}=pending.get(msg.id);pending.delete(msg.id);msg.error?reject(new Error(JSON.stringify(msg.error))):resolve(msg.result);}else if(msg.method==='Runtime.exceptionThrown')errors.push(msg.params.exceptionDetails.exception?.description ?? 'Browser error');};
+const send=(method,params={})=>new Promise((resolve,reject)=>{const n=++id;pending.set(n,{resolve,reject});ws.send(JSON.stringify({id:n,method,params}));});
+const evaluate=async expression=>{const r=await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(r.exceptionDetails)throw new Error(r.exceptionDetails.exception?.description ?? 'Evaluation failed');return r.result.value;};
+const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+async function until(expression){for(let i=0;i<60;i++){if(await evaluate(expression))return;await delay(100);}throw new Error('Timed out: '+expression);}
+let passed=0;
+const check=(name,value)=>{assert.ok(value,name);passed++;console.log('PASS '+name);};
+async function viewport(width){await send('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:width<700});await delay(100);}
+async function mount(){
+  await send('Page.navigate',{url:origin+'/admin.html'});await until("!!document.getElementById('gate-btn')");
+  await evaluate(`window.__adminMock=${JSON.stringify(fixture)};sessionStorage.clear();window.scrollTo(0,0);`);
+  await evaluate(code);await until("!!document.querySelector('.editor-card')");
+  await evaluate("document.fonts.ready");
+}
+async function images(){await evaluate("Promise.all([...document.images].map(im=>{im.loading='eager';return im.decode().catch(()=>{});})).then(()=>true)");}
+async function click(selector){await evaluate(`document.querySelector(${JSON.stringify(selector)}).click()`);await delay(70);}
+async function shot(name){await images();const r=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});writeFileSync(`${out}/${name}.png`,Buffer.from(r.data,'base64'));}
+try {
+  await send('Page.enable');await send('Runtime.enable');await send('DOM.enable');
+  for(const width of (process.env.ADMIN_WIDTHS?.split(',').map(Number) ?? [320,390,430,768,1024,1440,1920])){
+    await viewport(width);await mount();
+    check(`admin ${width}: real editor renders 30 selected photos`,await evaluate("document.querySelectorAll('.editor-card').length===30"));
+    check(`admin ${width}: no horizontal overflow`,await evaluate('document.documentElement.scrollWidth<=innerWidth'));
+    check(`admin ${width}: touch targets are at least 44px`,await evaluate("[...document.querySelectorAll('.admin-app button')].every(b=>b.getBoundingClientRect().height>=43.5)"));
+    if(width===390||width===1440)await shot(`admin-pages-${width}`);
+    await click('[data-tab="library"]');
+    check(`library ${width}: every bundled photo is available`,await evaluate("document.querySelectorAll('.library-card').length===53"));
+    check(`library ${width}: no horizontal overflow`,await evaluate('document.documentElement.scrollWidth<=innerWidth'));
+    check(`library ${width}: inputs avoid mobile zoom`,await evaluate("[...document.querySelectorAll('.library-card input')].every(el=>parseFloat(getComputedStyle(el).fontSize)>=16)"));
+    if(width===390||width===1440)await shot(`admin-library-${width}`);
   }
-  if (x.method === "Log.entryAdded" && x.params.entry.level === "error") {
-    consoleErrors.push(x.params.entry.text);
+  await viewport(390);await mount();
+  await click('[data-move="0|1"]');await click('[data-remove="0"]');
+  check('reordering and removal remain unpublished',await evaluate("window.__adminMock.attempts===0 && document.querySelectorAll('.editor-card').length===29"));
+  // Real pointer drag events across two editor cards.
+  await evaluate(`(()=>{const cards=document.querySelectorAll('.editor-card');const transfer=new DataTransfer();cards[0].dispatchEvent(new DragEvent('dragstart',{bubbles:true,dataTransfer:transfer}));cards[2].dispatchEvent(new DragEvent('drop',{bubbles:true,dataTransfer:transfer}));})()`);
+  check('drag reorder changes the stored draft',await evaluate(`JSON.parse(sessionStorage.getItem('shutterhaus-gallery-draft-v2:itsnotalwin@gmail.com')).wall[2]===${JSON.stringify(fixture.composition.wallRows.flat()[0])}`));
+  await click('#admin-preview');
+  check('preview displays the actual public gallery for the draft',await evaluate("document.querySelector('dialog').open && document.querySelectorAll('.admin-preview .pf-cell').length===29"));
+  await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+  await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+  await until("!document.querySelector('dialog')");
+  check('closing preview restores focus to its button',await evaluate("document.activeElement.id==='admin-preview'"));
+  await evaluate('window.__adminMock.failPublish=true');await click('#admin-publish');
+  check('failed publication preserves the draft and enables retry',await evaluate("document.querySelector('.admin-notice').textContent.includes('Connection lost') && !document.getElementById('admin-publish').disabled && document.querySelectorAll('.editor-card').length===29"));
+  await evaluate('window.__adminMock.failPublish=false');await click('#admin-publish');
+  check('retry publishes the chosen order and count',await evaluate("window.__adminMock.published.wall.length===29 && document.getElementById('admin-publish').disabled"));
+  // An actual file input and browser image decoder exercise orientation-aware
+  // resizing/canvas encoding. Only the storage write is mocked.
+  await click('[data-tab="library"]');
+  const {root}=await send('DOM.getDocument');const {nodeId}=await send('DOM.querySelector',{nodeId:root.nodeId,selector:'#admin-files'});
+  await send('DOM.setFileInputFiles',{nodeId,files:[resolve('public/gallery/54-img-0164.jpg')]});
+  await until("window.__adminMock.photos.some(p=>p.filename.startsWith('uploaded-'))");
+  await until("document.querySelector('.admin-notice').textContent.includes('uploaded')");
+  check('upload stays hidden until it is selected and published',await evaluate("window.__adminMock.photos.find(p=>p.filename.startsWith('uploaded-')).visible===false && window.__adminMock.published.wall.length===29"));
+  check('browser prepares a correctly proportioned JPEG no larger than 1800px',await evaluate("(()=>{const p=window.__adminMock.photos.find(p=>p.filename.startsWith('uploaded-'));return p.width>0 && p.height>0 && Math.max(p.width,p.height)<=1800 && p.filename.endsWith('.jpg');})()"));
+  await click('[data-add="uploaded-54-img-0164.jpg"]');await click('#admin-publish');
+  check('uploaded photo reaches the published selection',await evaluate("window.__adminMock.published.wall.includes('uploaded-54-img-0164.jpg') && window.__adminMock.published.photos.find(p=>p.filename.startsWith('uploaded-')).visible"));
+  await click('[data-tab="library"]');await click('[data-hide="uploaded-54-img-0164.jpg"]');await click('#admin-publish');
+  await evaluate("window.confirm=()=>true");await click('[data-delete="uploaded-54-img-0164.jpg"]');
+  check('a hidden uploaded file can be removed after publishing',await evaluate("window.__adminMock.deleted.length===1 && !document.querySelector('[data-add=\"uploaded-54-img-0164.jpg\"]')"));
+  check('admin produces no uncaught browser errors',errors.length===0);
+
+  // Exercise the real public bundle and Supabase response parsing with UUID
+  // identities, an uploaded photo and an odd-sized published wall. Only HTTP
+  // responses are replaced; the public renderer and client remain untouched.
+  const uploadSource=fixture.photos.find(p=>p.filename==='54-img-0164.jpg');
+  const upload={id:'00000000-0000-4000-8000-000000000099',filename:'browser-upload.jpg',url:fixture.uploadURL,width:uploadSource.width,height:uploadSource.height,visible:true,album:'photo',sort_order:99,alt:'Uploaded photograph'};
+  const live=fixture.photos.map((p,i)=>({...p,id:`00000000-0000-4000-8000-${String(i).padStart(12,'0')}`})).concat(upload);
+  const wall=fixture.composition.wallRows.flat().slice(0,4).concat(upload.filename);
+  const rows=[{page:'home',slot_key:'hero',sort_order:0,filename:fixture.composition.heroPhoto},{page:'site',slot_key:'published',sort_order:0,filename:'published',updated_at:'2026-10-06T23:00:00Z'},
+    ...fixture.composition.homeStrip.map((filename,sort_order)=>({page:'home',slot_key:'strip',sort_order,filename})),
+    ...wall.map((filename,sort_order)=>({page:'portfolio',slot_key:'wall',sort_order,filename}))];
+  const {identifier}=await send('Page.addScriptToEvaluateOnNewDocument',{source:`
+    const realFetch=window.fetch.bind(window);
+    window.fetch=(input,options)=>{
+      const url=String(typeof input==='string'?input:input.url ?? input);
+      const photos=url.includes('/rest/v1/photos');
+      const composition=url.includes('/rest/v1/composition');
+      if(photos || composition){window.__publicBackendRead=true;return Promise.resolve(new Response(JSON.stringify(photos?${JSON.stringify(live)}:${JSON.stringify(rows)}),{status:200,headers:{'Content-Type':'application/json'}}));}
+      return realFetch(input,options);
+    };`});
+  for(const width of [390,1440]){
+    await viewport(width);await send('Page.navigate',{url:origin+'/portfolio.html'});
+    await until("document.querySelectorAll('.pf-cell').length===5");await images();
+    check(`uploaded public wall ${width}: UUID rows and all five selected photos render`,await evaluate("document.querySelectorAll('.pf-cell').length===5 && [...document.querySelectorAll('[data-full]')].some(el=>el.dataset.full==="+JSON.stringify(upload.url)+")"));
+    check(`uploaded public wall ${width}: no broken images or horizontal overflow`,await evaluate("document.documentElement.scrollWidth<=innerWidth && [...document.querySelectorAll('main img')].every(im=>im.naturalWidth>0)"));
+    check(`uploaded public wall ${width}: photograph ratio is preserved`,await evaluate("(()=>{const im=[...document.querySelectorAll('[data-full]')].find(el=>el.dataset.full==="+JSON.stringify(upload.url)+");const r=im.getBoundingClientRect();return Math.abs(r.width/r.height-im.naturalWidth/im.naturalHeight)<.01;})()"));
   }
-};
-const send = (method, params = {}) =>
-  new Promise((resolve, reject) => {
-    const i = ++id;
-    pending.set(i, { resolve, reject });
-    ws.send(JSON.stringify({ id: i, method, params }));
-  });
-const evaluate = async (expression) => {
-  const r = await send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true });
-  if (r.exceptionDetails) throw new Error(r.exceptionDetails.exception?.description ?? "threw");
-  return r.result.value;
-};
+  await send('Page.removeScriptToEvaluateOnNewDocument',{identifier});
 
-await send("Page.enable");
-await send("Runtime.enable");
-await send("Log.enable");
-await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 3, mobile: true });
-await send("Page.navigate", { url: `${ORIGIN}/admin.html` });
-await new Promise((r) => setTimeout(r, 2500));
-
-// Stub the two boot() inputs so the panel paints, without touching Supabase.
-const stubbed = await evaluate(`(async () => {
-  const real = {
-    session: { email: 'itsnotalwin@gmail.com' },
-    photos: [
-      { id: 'p1', filename: 'a.jpg', url: 'https://x.supabase.co/storage/v1/object/public/photos/a.jpg',
-        alt: 'A portrait', album: 'photo', visible: true, width: 1800, height: 1200, sort_order: 0 },
-      { id: 'p2', filename: 'b.jpg', url: 'https://x.supabase.co/storage/v1/object/public/photos/b.jpg',
-        alt: '', album: 'photo', visible: false, width: 1200, height: 1800, sort_order: 1 },
-    ],
-  };
-  window.__stub = real;
-  return { stubbed: true };
-})()`);
-
-console.log("\n--- panel markup (signed in, stubbed session) ---");
-check("stub installed", stubbed.stubbed);
-
-// The panel only mounts through boot(), which needs a live Supabase session.
-// Rather than fake the whole auth flow, assert the markup contract directly
-// against the same strings the module ships, then verify the CSS those strings
-// resolve to at 390px.
-const markup = await evaluate(`(() => {
-  const app = document.getElementById('app');
-  app.innerHTML = ${JSON.stringify(`<div class="adm"><header class="adm__bar"><span class="adm__logo">Shutterhaus</span><nav class="adm__tabs"><button class="adm__tab is-on">photos</button><button class="adm__tab">site details</button></nav><div class="adm__right"><span class="adm__who">itsnotalwin@gmail.com</span><a class="adm__link">view site</a><button class="adm__out">sign out</button></div></header><div class="adm__body"><div class="publishbar"><span>2 new photos not on the site yet.</span><button class="publishbar__go" data-publish>Put them live</button></div><label class="drop" id="drop" for="adm-file"><strong>Add photos</strong><span>Tap to choose from your phone, or drag files in.</span><input id="adm-file" type="file" accept="image/*" multiple hidden><span class="drop__prog"><i></i></span></label><section class="cards"><figure class="card"><div class="card__img"><img src="x" alt=""><span class="card__badge">live</span></div><figcaption class="card__bar"><input class="card__alt" type="text" value="A portrait"><div class="card__acts"><button data-act="up">←</button><button data-act="down">→</button><button data-act="toggle">hide</button><button data-act="del" class="is-danger">delete</button></div></figcaption></figure><figure class="card is-hidden"><div class="card__img"><img src="x" alt=""><span class="card__badge">hidden</span></div><figcaption class="card__bar"><input class="card__alt" type="text" value=""><div class="card__acts"><button data-act="up">←</button><button data-act="down">→</button><button data-act="toggle">show</button><button data-act="del" class="is-danger">delete</button></div></figcaption></figure></section></div></div>`)};
-  return true;
-})()`);
-check("panel markup mounted", markup === true);
-
-const measured = await evaluate(`(() => {
-  const rect = (sel) => {
-    const el = document.querySelector(sel);
-    if (!el) return null;
-    const r = el.getBoundingClientRect();
-    return { w: Math.round(r.width), h: Math.round(r.height), fs: parseFloat(getComputedStyle(el).fontSize) };
-  };
-  const over = [...document.querySelectorAll('.adm__bar *')]
-    .filter((e) => e.getBoundingClientRect().right > window.innerWidth + 1)
-    .map((e) => e.className || e.tagName);
-  return {
-    bar: rect('.adm__bar'),
-    drop: rect('.drop'),
-    alt: rect('.card__alt'),
-    acts: rect('.card__acts button'),
-    tab: rect('.adm__tab'),
-    out: rect('.adm__out'),
-    go: rect('.publishbar__go'),
-    docW: document.documentElement.scrollWidth,
-    winW: window.innerWidth,
-    overflowing: over,
-  };
-})()`);
-
-console.log(
-  `  drop ${measured.drop.w}x${measured.drop.h} · publish ${measured.go.w}x${measured.go.h} · ` +
-    `alt font ${measured.alt.fs}px · card button ${measured.acts.h}px tall`,
-);
-
-check("drop target fills the width and clears 44px", measured.drop.h >= 44 && measured.drop.w > 300, `${measured.drop.w}x${measured.drop.h}`);
-check("alt input is >=16px (iOS focus-zoom)", measured.alt.fs >= 16, `${measured.alt.fs}px`);
-check("card buttons clear 44px (thumb)", measured.acts.h >= 44, `${measured.acts.h}px`);
-check("publish button clears 44px", measured.go.h >= 44, `${measured.go.h}px`);
-check("tabs clear 40px", measured.tab.h >= 40, `${measured.tab.h}px`);
-check("sign out clears 44px", measured.out.h >= 44, `${measured.out.h}px`);
-check("nothing overflows 390px", measured.overflowing.length === 0, measured.overflowing.join(",") || "none");
-// Overlap, not just size. A collapsed-but-padded element still reports a
-// generous bounding box, so the size assertions above pass while the zone
-// visibly sits on top of the cards. This is the check that caught it.
-const overlap = await evaluate(`(() => {
-  const boxes = ['.publishbar', '.drop', '.cards'].map((sel) => {
-    const el = document.querySelector(sel);
-    if (!el) return { sel, missing: true };
-    const r = el.getBoundingClientRect();
-    return { sel, top: r.top, bottom: r.bottom, left: r.left, right: r.right, h: r.height };
-  });
-  const hit = [];
-  for (let i = 0; i < boxes.length; i++) {
-    for (let j = i + 1; j < boxes.length; j++) {
-      const a = boxes[i], b = boxes[j];
-      if (a.missing || b.missing) continue;
-      const overlapY = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
-      const overlapX = Math.min(a.right, b.right) - Math.max(a.left, b.left);
-      if (overlapY > 1 && overlapX > 1) {
-        hit.push(\`\${a.sel} x \${b.sel} by \${Math.round(overlapY)}px\`);
-      }
+  // Public navigation, photo visibility and enquiry fallback with JS disabled.
+  await send('Emulation.setScriptExecutionDisabled',{value:true});
+  for(const width of [390,1440]){
+    await viewport(width);
+    for(const route of ['index','portfolio','about','services','contact']){
+      await send('Page.navigate',{url:`${origin}/${route}.html`});await until("!!document.querySelector('#app h1')");await images();
+      check(`${route} ${width}: readable without JavaScript`,await evaluate("!!document.querySelector('h1') && document.documentElement.scrollWidth<=innerWidth && [...document.querySelectorAll('.site-nav a')].every(a=>getComputedStyle(a).visibility==='visible')"));
+      check(`${route} ${width}: photos remain visible without JavaScript`,await evaluate("[...document.querySelectorAll('.cell img')].every(im=>im.naturalWidth>0 && parseFloat(getComputedStyle(im).opacity)===1)"));
+      if(route==='contact')check(`contact ${width}: native form posts to the enquiry endpoint`,await evaluate("document.querySelector('form').method==='post' && document.querySelector('form').action==='https://formspree.io/f/xjyklqkp'"));
+      if(width===390&&route==='portfolio')await shot('portfolio-no-javascript-390');
     }
   }
-  const sorted = [...boxes].filter((b) => !b.missing).sort((a, b) => a.top - b.top);
-  let outOfOrder = null;
-  for (let i = 1; i < sorted.length; i++) {
-    if (sorted[i].top < sorted[i - 1].bottom - 1) {
-      outOfOrder = \`\${sorted[i - 1].sel} then \${sorted[i].sel}\`;
-    }
-  }
-  return { hit, outOfOrder, boxes };
-})()`);
-
-check("no two panels overlap vertically", overlap.hit.length === 0, overlap.hit.join(", ") || "clean");
-check("panels stack in source order", overlap.outOfOrder === null, overlap.outOfOrder ?? "correct order");
-
-check("no horizontal overflow", measured.docW <= measured.winW + 1, `${measured.docW} vs ${measured.winW}`);
-
-// The desktop layout must not have been broken by the mobile media query.
-await send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
-await new Promise((r) => setTimeout(r, 400));
-const desktop = await evaluate(`(() => {
-  const drop = document.querySelector('.drop').getBoundingClientRect();
-  const alt = document.querySelector('.card__alt');
-  const acts = document.querySelector('.card__acts button').getBoundingClientRect();
-  return {
-    dropW: Math.round(drop.width),
-    altFs: parseFloat(getComputedStyle(alt).fontSize),
-    actsH: Math.round(acts.height),
-  };
-})()`);
-console.log(`\n--- desktop 1440px ---`);
-console.log(`  drop ${desktop.dropW}px · alt font ${desktop.altFs}px · card button ${desktop.actsH}px`);
-check("mobile rules do not leak to desktop (alt back to 12px)", desktop.altFs < 16, `${desktop.altFs}px`);
-check("desktop card buttons stay compact", desktop.actsH < 44, `${desktop.actsH}px`);
-
-check("no console errors", consoleErrors.length === 0, consoleErrors.slice(0, 2).join(" | "));
-console.log(`\n${pass} passed, ${fail} failed\n`);
-process.exit(fail ? 1 : 0);
+  await send('Emulation.setScriptExecutionDisabled',{value:false});
+  console.log(`\n${passed} admin and fallback checks passed.`);
+}finally{ws.close();await fetch(`http://127.0.0.1:${process.env.CDP_PORT ?? '9222'}/json/close/${target.id}`).catch(()=>{});}

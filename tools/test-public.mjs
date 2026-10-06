@@ -15,15 +15,15 @@ const mainBundle = await build({
       b.onResolve({ filter: /^\.\/(store|composition)$/ }, (args) => ({ path: args.path, namespace: "mock" }));
       b.onLoad({ filter: /.*/, namespace: "mock" }, (args) => ({
         contents: args.path === "./store"
-          ? "export function publicPhotosOrNull(){ window.__galleryReads++; return new Promise(()=>{}); }"
-          : "export async function readComposition(){ return null; }",
+          ? "export function publicPhotosOrNull(){ window.__galleryReads++; return new Promise(resolve=>{window.__resolveGallery=resolve;}); }"
+          : "export function readComposition(known,fallback){ window.__knownFiles=[...known]; window.__fallback=fallback; return new Promise(resolve=>{window.__resolveComposition=resolve;}); }",
       }));
     },
   }],
 });
 const pagesBundle = await build({
   stdin: {
-    contents: 'export { SITE } from "./src/config"; export { servicesPage, contactPage } from "./src/pages-more"; export { homePage, homeBand } from "./src/pages"; export { DEMO_PHOTOS } from "./src/demo"; export { initLightbox } from "./src/lightbox";',
+    contents: 'export { mergePhotos, fallbackComposition } from "./src/gallery-model"; export { SITE } from "./src/config"; export { servicesPage, contactPage } from "./src/pages-more"; export { homePage, homeBand } from "./src/pages"; export { DEMO_PHOTOS } from "./src/demo"; export { initLightbox } from "./src/lightbox";',
     resolveDir: process.cwd(),
   },
   bundle: true, write: false, format: "iife", globalName: "PublicPages",
@@ -32,7 +32,7 @@ const pagesBundle = await build({
 function fixture(url = "https://shutterhausvisuals.co.za/contact.html?package=Social", main = true) {
   const dom = new JSDOM('<div id="app"></div>', { url, runScripts: "outside-only" });
   const w = dom.window;
-  w.scrollTo = () => {};
+  w.scrollTo = (x,y) => {w.scrollY=y;};
   w.matchMedia = () => ({ matches: true });
   w.__galleryReads = 0;
   w.eval(pagesBundle.outputFiles[0].text);
@@ -169,4 +169,94 @@ test("home photographs open by keyboard, trap focus, and restore focus", () => {
     assert.equal(w.document.getElementById("app").inert, false);
     assert.equal(w.document.activeElement, frame);
   } finally { dom.window.close(); }
+});
+
+
+test("same-route history restores the existing form, scroll and draft", async () => {
+  const dom=fixture();
+  try {
+    const w=dom.window;fill(w);
+    const form=w.document.querySelector('form');
+    w.scrollY=240;
+    w.dispatchEvent(new w.PopStateEvent('popstate'));
+    assert.equal(w.document.querySelector('form'),form);
+    assert.equal(w.document.querySelector('[name="message"]').value,'A test enquiry');
+    assert.equal(w.scrollY,240);
+    w.document.querySelector('[name="message"]').dispatchEvent(new w.Event('input',{bubbles:true}));
+    const storage=w.sessionStorage.getItem('shutterhaus-enquiry-draft-v1');
+    assert.match(storage,/A test enquiry/);
+    w.document.getElementById('app').innerHTML=w.PublicPages.contactPage();
+    // A fresh document boot reads the saved session draft.
+    const restored=new JSDOM('<div id="app"></div>',{url:w.location.href,runScripts:'outside-only'});
+    try {
+      const next=restored.window;next.scrollTo=()=>{};next.matchMedia=()=>({matches:true});
+      next.sessionStorage.setItem('shutterhaus-enquiry-draft-v1',storage);
+      next.eval(mainBundle.outputFiles[0].text);
+      assert.equal(next.document.querySelector('[name="message"]').value,'A test enquiry');
+      assert.equal(next.document.querySelector('[name="kind"]').value,'Social');
+    } finally {restored.window.close();}
+  } finally {dom.window.close();}
+});
+
+test("an identical late gallery response preserves an open menu and scroll",async()=>{
+  const dom=fixture('https://shutterhausvisuals.co.za/services.html');
+  try {
+    const w=dom.window;const main=w.document.querySelector('.main');
+    w.scrollY=550;w.document.querySelector('.burger').click();
+    const focus=w.document.activeElement;
+    w.__resolveGallery(w.PublicPages.DEMO_PHOTOS);await tick();
+    assert.equal(w.document.querySelector('.main'),main);
+    assert.equal(w.scrollY,550);
+    assert.equal(w.document.querySelector('.burger').getAttribute('aria-expanded'),'true');
+    assert.equal(w.document.activeElement,focus);
+  } finally {dom.window.close();}
+});
+
+test("UUID gallery rows and an uploaded wall photo render without replacing the menu",async()=>{
+  const dom=fixture('https://shutterhausvisuals.co.za/portfolio.html');
+  try {
+    const w=dom.window;
+    const upload={id:'00000000-0000-4000-8000-000000000099',filename:'new-upload.jpg',url:'https://example.supabase.co/storage/v1/object/public/photos/new-upload.jpg',visible:true,album:'photo',width:1200,height:1800,sort_order:100,alt:'A new portrait'};
+    const live=w.PublicPages.DEMO_PHOTOS.map((p,i)=>({...p,id:`00000000-0000-4000-8000-${String(i).padStart(12,'0')}`}));
+    const menu=w.document.querySelector('.site-header');w.scrollY=450;
+    w.__resolveGallery([...live,upload]);await tick();
+    assert.ok(w.__knownFiles.includes('new-upload.jpg'));
+    const fallback=w.__fallback;
+    const wall=fallback.rows.flat();wall[0]='new-upload.jpg';
+    w.__resolveComposition({homeStrip:fallback.strip,heroPhoto:fallback.hero,wallRows:[wall],problems:[]});await tick();
+    assert.equal(w.document.querySelectorAll('.pf-cell').length,30);
+    assert.ok(w.document.querySelector('[data-full="'+upload.url+'"]'));
+    assert.equal(w.document.querySelector('.pf-col [data-full]').dataset.full,upload.url,'The first manually chosen photo must display first.');
+    assert.equal(w.document.querySelector('.site-header'),menu);
+    assert.equal(w.scrollY,450);
+  } finally {dom.window.close();}
+});
+
+test("a stale composition response cannot overwrite a newer enquiry route",async()=>{
+  const dom=fixture('https://shutterhausvisuals.co.za/');
+  try {
+    const w=dom.window;w.__resolveGallery(null);await tick();
+    const resolve=w.__resolveComposition;const fallback=w.__fallback;
+    w.location.hash='/contact';await tick();await tick();fill(w);
+    const form=w.document.querySelector('form');
+    resolve({homeStrip:fallback.strip,heroPhoto:fallback.hero,wallRows:fallback.rows,problems:[]});await tick();
+    assert.equal(w.document.querySelector('form'),form);
+    assert.equal(w.document.querySelector('[name="message"]').value,'A test enquiry');
+    assert.equal(w.document.querySelector('h1').textContent,'Book a session.');
+  } finally {dom.window.close();}
+});
+
+test("every built public document has readable content, navigation and contact without JavaScript",async()=>{
+  for (const file of ['index','portfolio','about','services','contact']) {
+    const html=await readFile(`dist/${file}.html`,'utf8');
+    const dom=new JSDOM(html);
+    try {
+      assert.ok(dom.window.document.querySelector('#app h1'),file);
+      assert.ok(dom.window.document.querySelector('a[href="./contact.html"]'),file);
+      assert.ok(dom.window.document.querySelector('a[href^="mailto:"]'),file);
+      assert.match(html,/Kempton Park/);
+      if(file==='contact')assert.equal(dom.window.document.querySelector('form').action,'https://formspree.io/f/xjyklqkp');
+      if(file==='portfolio')assert.equal(dom.window.document.querySelectorAll('.pf-cell').length,30);
+    }finally{dom.window.close();}
+  }
 });

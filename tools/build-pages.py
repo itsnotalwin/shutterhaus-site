@@ -1,40 +1,15 @@
-"""
-Generate one HTML file per route from a single head template.
+"""Build route metadata and HTML using the shared public TypeScript renderers.
 
-    python tools/build-pages.py && npm run build
-
-WHY THIS EXISTS
----------------
-The site was a hash-routed SPA: ONE index.html, and `main.ts` read
-`location.hash` to swap `#app`. Everything Google could see was a single
-document, so the portfolio, about, services and contact copy were all
-invisible to search — one canonical URL for the entire site, and no sitemap.
-
-Alwin asked for the pages split so each is a real document. That is what
-this emits: portfolio.html, about.html, services.html, contact.html and
-admin.html alongside index.html, each carrying its own title, description,
-og:url and canonical.
-
-WHAT THIS DOES NOT DO
---------------------
-It does NOT change how a page RENDERS. Every file boots the same
-`src/main.ts`, and `route()` reads the FILENAME first (falling back to the
-hash, so an old `#/portfolio` link still works). One renderer, many
-documents — so there is no second implementation that can drift.
-
-The per-page <title> is also written by the client after load (setTitle in
-main.ts), so the static tag matters for crawlers and social scrapers that
-never run JS, while a human sees the same string either way.
-
-Keep the route list in one place: ROUTES below is the single source, and
-`tools/verify.mjs` asserts every emitted file exists and every nav link in
-src/config.ts has a matching document.
+Each document contains its complete default content before JavaScript runs.
+The browser binds navigation/form controls and loads published gallery edits.
+Prices are shared with visible cards and booking choices through pricing.json.
 """
 import datetime as dt
 import json
 import math
 import re
 import sys
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -63,7 +38,7 @@ ROUTES = [
         "home",
         "index.html",
         "Shutterhaus Visuals | photography in Gauteng",
-        "Portraits, couples, families and social content, shot on location across Gauteng by Alwin Newman. Shutterhaus Visuals, Pretoria.",
+        "Portraits, couples, families and social content by Alwin Newman. Based in Kempton Park, with on-location photography across Gauteng.",
     ),
     (
         "portfolio",
@@ -173,7 +148,10 @@ HEAD = """<!doctype html>
     </script>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app" data-route="{route}">{body}</div>
+    <noscript>
+      <style>.burger {{ display:none!important }} .site-nav {{ position:static!important; visibility:visible!important; opacity:1!important; transform:none!important; width:auto!important; display:flex!important; flex-direction:row!important; flex-wrap:wrap; align-items:center; gap:14px!important; height:auto!important; padding:0!important; background:#fff!important }} .site-nav {{ flex-basis:100%; }} .site-nav a {{ color:#111!important; width:auto!important; padding:12px 0!important; border:0!important; font-size:11px!important; min-height:44px; }} .site-header {{ display:flex!important; flex-wrap:wrap; height:auto!important; gap:16px!important; position:relative!important; background:#fff!important; color:#111!important }} .site-header .logo,.site-header .site-social {{ color:#111!important }} .site-header .logo {{ order:0; }} .site-header .site-social {{ order:1; margin-left:auto; }} .site-header .site-nav {{ order:2; }} .shell--over .site-header {{ margin-bottom:0!important }} .main {{ padding-top:0!important }} .pf-rows {{ display:block; column-count:3; column-gap:var(--gut); }} .pf-col {{ display:contents; }} .pf-cell {{ break-inside:avoid; margin-bottom:var(--gut); }} @media(max-width:760px) {{ .pf-rows {{ column-count:2; }} }}</style>
+    </noscript>
     <script type="module" src="./src/main.ts"></script>
   </body>
 </html>
@@ -227,12 +205,13 @@ BIZ = {
     "image": f"{SITE}/og-card.jpg",
     "priceRange": f"{rand(min(package_prices))}–{rand(max(package_prices))}",
     "areaServed": [
-        {"@type": "City", "name": "Pretoria"},
+        {"@type": "City", "name": "Kempton Park"},
         {"@type": "City", "name": "Johannesburg"},
         {"@type": "AdministrativeArea", "name": "Gauteng"},
     ],
     "address": {
         "@type": "PostalAddress",
+        "addressLocality": "Kempton Park",
         "addressRegion": "Gauteng",
         "addressCountry": "ZA",
     },
@@ -325,6 +304,7 @@ def json_ld(filename: str, title: str, description: str) -> str:
     )
 
 
+bodies = json.loads(subprocess.check_output(["node", "tools/prerender.mjs"], cwd=ROOT, text=True))
 written = []
 for rid, filename, title, description in ROUTES:
     # `index.html` and `/` are the same document. The homepage declares the bare
@@ -342,6 +322,8 @@ for rid, filename, title, description in ROUTES:
     # without changing what JSON.parse sees.
     ld = json_ld(filename, title, description).replace("</", "<\\/")
     html = HEAD.format(
+        route=rid,
+        body=bodies[rid],
         title=esc(title),
         description=esc(description),
         og_title=esc(og_title),
@@ -349,6 +331,7 @@ for rid, filename, title, description in ROUTES:
         site=SITE,
         ld=ld,
     )
+    html = "\n".join(line.rstrip() for line in html.splitlines()) + "\n"
     (ROOT / filename).write_text(html, encoding="utf-8")
     written.append((filename, rid, title, description))
 

@@ -80,7 +80,7 @@ export async function uploadPhoto(
   guard();
 
   const safe = file.name.toLowerCase().replace(/[^a-z0-9._-]+/g, "-");
-  const path = `${Date.now()}-${safe}`;
+  const path = `${crypto.randomUUID()}-${safe}`;
 
   const { error: upErr } = await db().storage
     .from("photos")
@@ -101,7 +101,7 @@ export async function uploadPhoto(
   const { data, error } = await db()
     .from(TABLE)
     .insert({
-      filename: safe,
+      filename: path,
       storage_path: path,
       url: pub.publicUrl,
       width: dims?.width ?? null,
@@ -113,24 +113,31 @@ export async function uploadPhoto(
     })
     .select()
     .single();
-  if (error) throw new Error(error.message);
-
+  if (error) {
+    const cleanup = await db().storage.from('photos').remove([path]);
+    throw new Error(error.message + (cleanup.error ? ' The uploaded file could not be cleaned up.' : ''));
+  }
   return data as AdminPhoto;
 }
 
 export async function updatePhoto(id: string, patch: PhotoPatch): Promise<void> {
-  if (!isSupabaseConfigured) return;
-  const { error } = await db().from(TABLE).update(patch).eq("id", id);
-  if (error) throw new Error(error.message);
+  guard();
+  const { data, error } = await db().from(TABLE).update(patch).eq('id', id).select('id').single();
+  if (error || !data) throw new Error(error?.message ?? 'The photo was not updated.');
 }
 
-/** Removes the row and the underlying file. */
+/** Only uploaded files can be permanently deleted. Selected photos must be removed and published first. */
 export async function deletePhoto(id: string): Promise<void> {
   guard();
-  const { data } = await db().from(TABLE).select("storage_path").eq("id", id).single();
-  if (data?.storage_path) {
-    await db().storage.from("photos").remove([data.storage_path]);
-  }
-  const { error } = await db().from(TABLE).delete().eq("id", id);
-  if (error) throw new Error(error.message);
+  const { data, error: lookupError } = await db().from(TABLE).select('*').eq('id',id).single();
+  if (lookupError || !data) throw new Error(lookupError?.message ?? 'Photo not found.');
+  if (!data.storage_path) throw new Error('Bundled photos can be hidden, but their original files are kept.');
+  if (data.visible) throw new Error('Hide this photo and publish before deleting its file.');
+  const {data:slots,error:slotError} = await db().from('composition').select('id').eq('filename',data.filename).limit(1);
+  if (slotError) throw new Error(slotError.message);
+  if (slots?.length) throw new Error('Remove this photo from the pages and publish before deleting it.');
+  const {error:storageError} = await db().storage.from('photos').remove([data.storage_path]);
+  if (storageError) throw new Error(storageError.message);
+  const {error:deleteError} = await db().from(TABLE).delete().eq('id',id);
+  if (deleteError) throw new Error('The file was deleted, but its hidden library entry remains. Try deleting it again: ' + deleteError.message);
 }

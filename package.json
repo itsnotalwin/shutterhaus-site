@@ -6,7 +6,7 @@
   "engines": {
     "node": ">=22"
   },
-  "description": "Shutterhaus Visuals — photography portfolio with a Google-auth admin gallery",
+  "description": "Shutterhaus Visuals \u2014 photography portfolio with a Google-auth admin gallery",
   "scripts": {
     "dev": "python tools/build-pages.py && vite",
     "build": "tsc --noEmit && python tools/build-pages.py && python tools/check-rows.py && python tools/check-srcset.py && vite build",
@@ -15,7 +15,8 @@
     "preview": "vite preview --host 127.0.0.1 --port 4173 --strictPort",
     "typecheck": "tsc --noEmit",
     "probe:packer": "node tools/probe-packer.mjs",
-    "test": "node tools/test-public.mjs"
+    "test": "node tools/test-public.mjs && node tools/test-admin.mjs",
+    "verify:admin": "node tools/verify-admin-panel.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.58.0"

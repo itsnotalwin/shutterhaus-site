@@ -139,7 +139,7 @@ export const SITE: SiteConfig = {
          * field removes the affordance; keeping a visible-but-inert string would
          * still read as "call me". Re-add `phone` here if that changes.
          */
-        location: "Gauteng, South Africa",
+        location: "Kempton Park, Gauteng",
     hours: "Evenings & weekends, by appointment",
     /**
      * Formspree endpoint. Set means the form POSTs here and works on any
@@ -176,7 +176,7 @@ export const SITE: SiteConfig = {
     heading: "Alwin Newman.",
     /** paragraphs, in order, on the left column beside the portrait */
     body: [
-      "I'm Alwin, a photographer based in Gauteng. I shoot portraits, couples, families and social content on location.",
+      "I'm Alwin, a photographer based in Kempton Park. I shoot portraits, couples, families and social content on location.",
       "I'll help you choose a location and clothing, and guide you through the shoot. You don't need to know how to pose.",
       "Sessions are available in the evenings and on weekends, by appointment.",
     ],

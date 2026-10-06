@@ -2,7 +2,7 @@ import { escapeHtml } from "./layout";
 import { SITE } from "./config";
 import { formatPrice } from "./pricing";
 import type { Photo } from "./types";
-import { PHOTO_ROWS, setLiveRows } from "./rows";
+import { PHOTO_ROWS, COMMITTED_ROWS, setLiveRows } from "./rows";
 import { SHOOT_OF } from "./shoots";
 import { setLiveHome } from "./config";
 // src/rows.ts (justified rows) went away with the row layout — the wall uses
@@ -14,6 +14,20 @@ export function columnise<T>(items: T[], cols: number): T[][] {
   items.forEach((it, i) => out[i % cols].push(it));
   return out;
 }
+
+/** Published edits retain the chosen sequence, including the first photo. */
+export function packInOrder<T extends Photo>(items: T[], cols: number): T[][] {
+  const count = Math.max(1, Math.min(cols, items.length || 1));
+  const columns: T[][] = Array.from({length:count},()=>[]);
+  const heights = Array(count).fill(0);
+  for (const photo of items) {
+    const column = heights.indexOf(Math.min(...heights));
+    columns[column].push(photo);
+    heights[column] += photo.width && photo.height ? photo.height / photo.width : 1;
+  }
+  return columns;
+}
+const shippedHomeStrip = [...SITE.homeStrip];
 
 /**
  * Pack frames into columns by RENDERED HEIGHT, shortest column first.
@@ -413,7 +427,7 @@ function figure(p: Photo, index: number, sizes?: string): string {
  * phone's address bar or keyboard leave the markup and scroll position alone.
  */
 function wallCols(): number {
-  return innerWidth <= 760 ? 2 : 3;
+  return typeof innerWidth !== 'undefined' && innerWidth <= 760 ? 2 : 3;
 }
 
 /**
@@ -547,7 +561,8 @@ export function portfolioPage(photos: Photo[]): string {
     // lightbox counter and stepping order are unchanged. Only the visual
     // arrangement into columns is new.
     const cols = wallCols();
-    const packed = packByHeight(ordered, cols);
+    const manual = PHOTO_ROWS.flat().join('|') !== COMMITTED_ROWS.flat().join('|');
+    const packed = manual ? packInOrder(ordered, cols) : packByHeight(ordered, cols);
 
     // `sizes` is derived from the column count that will actually render, so the
     // browser is never told a two-across width for a three-across layout.
@@ -743,7 +758,7 @@ export function homePage(photos: Photo[], cols: number): string {
   // pinned frame, and shadowing it is how this briefly compiled into two
   // different variables with the same name.
   const pinnedStrip: Photo[] = SITE.homeStrip
-    .map((name) => photos.find((p) => p.filename === name && p.id !== usedHero))
+    .map((name) => photos.find((p) => p.filename === name))
     .filter((p): p is Photo => !!p)
     .slice(0, SITE.homeGalleryCount);
   const strip: Photo[] = pinnedStrip.length
@@ -786,7 +801,8 @@ export function homePage(photos: Photo[], cols: number): string {
     ${
       strip.length
         ? (() => {
-            const columns = packByHeight(strip, stripCols(strip.length));
+            const manual = SITE.homeStrip.join('|') !== shippedHomeStrip.join('|');
+            const columns = manual ? packInOrder(strip, stripCols(strip.length)) : packByHeight(strip, stripCols(strip.length));
             return `<section class="hstrip">
             <div class="hstrip__head"><span>Selected work</span><span>${String(strip.length).padStart(2, "0")} frames</span></div>
             <div class="hstrip__grid" style="--strip-cols:${stripCols(strip.length)}">${columns

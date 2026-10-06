@@ -64,6 +64,8 @@ await send("Runtime.enable");
 await send("Log.enable");
 await send("Network.enable");
 await send("Network.setCacheDisabled", { cacheDisabled: true });
+// Deployment checks use the committed baseline; admin selections evolve independently.
+if (process.env.OFFLINE_GALLERY) await send("Network.setBlockedURLs", { urls: ["*.supabase.co/*"] });
 
 const results = [];
 const check = (name, pass, detail = "") => {
@@ -445,7 +447,7 @@ const adm = await evaluate(`(() => ({
   title: document.title,
   root: !!document.querySelector('#app') && document.querySelector('#app').children.length > 0,
   html: document.querySelector('#app')?.innerHTML.slice(0, 120),
-  google: !!document.querySelector('.gbtn, .gate__btn'),
+  google: !!document.querySelector('.gbtn, .gate__btn, #gate-btn'),
   // A signed-out visitor must NOT be told they're on the wrong allowlist.
   spuriousAllowlistError: /isn't on the admin allowlist/.test(document.body.innerText),
   // NB: "\\s" must stay escaped — an unescaped \s in this template literal
@@ -457,7 +459,7 @@ const adm = await evaluate(`(() => ({
   // is_admin() in the database matches that. Keep this tied to
   // ADMIN_EMAILS in src/config.ts, not to SITE.contact.email.
   allowlist: document.body.innerText.includes('itsnotalwin@gmail.com'),
-  notConfigured: document.body.innerText.includes("isn't connected yet"),
+  notConfigured: /not connected|isn't connected yet/.test(document.body.innerText),
   overflow: document.documentElement.scrollWidth - window.innerWidth,
 }))()`);
 console.log("\n--- admin ---\n" + JSON.stringify(adm, null, 2));
@@ -468,9 +470,9 @@ const gateOk = adm.notConfigured || adm.google;
 check("admin gate is correct for this config", gateOk, adm.notConfigured ? "not-configured notice" : `google=${adm.google}`);
 if (!adm.notConfigured) {
   check("admin shows Google sign-in", adm.google || /google/i.test(adm.text ?? ""));
-  check("admin names the allowed account", adm.allowlist);
+  check("signed-out admin does not claim an account mismatch", !adm.spuriousAllowlistError);
 } else {
-  check("admin explains the .env step", /env/i.test(adm.text ?? ""), (adm.text ?? "").slice(0, 60));
+  check("admin explains connection is unavailable", /not connected|connected yet/i.test(adm.text ?? ""), (adm.text ?? "").slice(0, 60));
   // Regression guard: getSession() once returned {email:null} when signed out,
   // which fell through to the allowlist branch and showed a false error.
   check(

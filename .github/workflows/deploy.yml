@@ -1,27 +1,23 @@
-name: Deploy to GitHub Pages
+name: Verify and deploy
 
 on:
   push:
+    branches: [main]
+  pull_request:
     branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: site-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   verify:
-    # The gate the build never ran. On 2026-10-02 `npm run verify` was sitting
-    # at 59/67 — eight assertions still describing the pre-split hash-routed
-    # SPA — and nothing executed it, so the portfolio wall silently went 2-up on
-    # desktop (a 14,582px-tall page) with a green deploy behind it. A gate nobody
-    # runs is worse than no gate, because it still looks like it passes.
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -31,87 +27,74 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      # Node 22 minimum: tools/verify.mjs connects to Chrome over CDP using the
-      # global WebSocket, which does not exist on Node 20. On 20 the gate dies
-      # with "ReferenceError: WebSocket is not defined" before it asserts a
-      # single thing — which would have blocked every deploy, green or not.
       - run: npm ci
-      - run: npm run build
+      - name: Require the production photo connection
+        if: github.event_name != 'pull_request'
+        env:
+          PHOTO_URL: ${{ vars.VITE_SUPABASE_URL }}
+          PHOTO_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          test -n "$PHOTO_URL" && test -n "$PHOTO_KEY" || {
+            echo 'Supabase public build variables are missing; refusing to deploy a disconnected photo manager.'
+            exit 1
+          }
+      - name: Build the public pages and admin
+        run: npm run build
         env:
           BASE_PATH: ./
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
-      - name: Pricing and enquiry regressions
-        run: npm run test
-      # verify.mjs drives a real Chrome over CDP on 9222 and renders the built
-      # site. Start Chrome and the preview server, then assert on the real
-      # rendered output rather than on the source.
-      - name: Start headless Chrome on 9222
+      - name: Pricing, enquiries, delayed data, and admin drafts
+        run: npm test
+      - name: Start headless Chrome
         run: |
           google-chrome --headless=new --remote-debugging-port=9222 \
             --hide-scrollbars --disable-gpu --no-first-run \
             --no-sandbox --disable-dev-shm-usage \
             --user-data-dir=/tmp/ci-chrome about:blank &
           for i in $(seq 1 120); do
-            # 120 x 0.5s = 60s window. Chrome cold starts are flaky on the
-            # runner: observed 20.4s from launch to "DevTools listening" on one
-            # run, which outlasted the old 40-iteration (20s) window and failed
-            # the gate with curl exit 7.
             curl -sf http://127.0.0.1:9222/json/version >/dev/null && break
             sleep 0.5
           done
           curl -sf http://127.0.0.1:9222/json/version
-      - name: Serve the built site
+      - name: Serve the exact build that will be deployed
         run: |
           npx vite preview --host 127.0.0.1 --port 4173 --strictPort &
           for i in $(seq 1 40); do
             curl -sf http://127.0.0.1:4173/ >/dev/null && break
             sleep 0.5
           done
-          curl -sf -o /dev/null -w 'preview %{http_code}\n' http://127.0.0.1:4173/
-      - name: Rendered-design gate
-        run: node tools/verify.mjs http://127.0.0.1:4173
-      - name: Save rendered screenshots
+          curl -sf -o /dev/null http://127.0.0.1:4173/
+      - name: Public layouts and navigation at seven widths
+        run: npm run verify -- http://127.0.0.1:4173
+        env:
+          OFFLINE_GALLERY: 1
+          REVIEW_WIDTHS: 320,390,430,768,1024,1440,1920
+      - name: Real admin UI, image uploads, publishing retries, and no-JavaScript pages
+        run: npm run verify:admin
+      - name: Save public and admin screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: rendered-screenshots
-          path: shots/verify/*.png
-          if-no-files-found: ignore
+          path: |
+            shots/verify/*.png
+            shots/admin-verify/*.png
+          if-no-files-found: error
           retention-days: 7
-
-  build:
-    needs: verify
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: npm ci
-      - run: npm run build
-        env:
-          # Relative base: assets resolve against the document, so the SAME
-          # build works at both addresses — the domain root ("/") and the
-          # github.io project subpath ("/shutterhaus-site/"). A single absolute
-          # base can only ever be correct for one of them, which is how the
-          # domain rollout broke the github.io site on 2026-09-29.
-          BASE_PATH: ./
-          # Public values only — RLS on the Supabase side is the real gate.
-          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - name: Save the verified build for deployment
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
   deploy:
-    needs: build
+    if: github.event_name != 'pull_request'
+    needs: verify
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

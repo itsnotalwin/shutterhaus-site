@@ -297,8 +297,8 @@ img { display: block; max-width: 100%; }
   cursor: zoom-in;
   transition: opacity 0.25s;
 }
-/* Fade in on decode so a slow frame never pops in at full contrast. */
-.cell img:not(.is-loaded) { opacity: 0; }
+/* Photographs remain visible if JavaScript fails or is disabled. */
+.cell img:not(.is-loaded) { opacity: 1; }
 .cell img.is-loaded { opacity: 1; }
 /* Only dim a frame that has actually loaded, and only where hover exists —
    :hover never fires on touch, and an un-fired rule would leave the frame

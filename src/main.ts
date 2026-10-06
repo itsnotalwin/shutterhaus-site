@@ -2,13 +2,14 @@ import "./styles.css";
 import "./editorial.css";
 import "./makeover.css";
 import { SITE } from "./config";
-import { renderShell } from "./layout";
-import { portfolioPage, homePage, emptyGallery } from "./pages";
+import { escapeHtml, renderShell } from "./layout";
+import { portfolioPage, homePage } from "./pages";
 import { contactPage, servicesPage, aboutPage } from "./pages-more";
-import { publicPhotosOrNull, type AdminPhoto } from "./store";
-import { readComposition, type Composition } from "./composition";
+import { publicPhotosOrNull } from "./store";
+import { mergePhotos, fallbackComposition } from "./gallery-model";
+import { readComposition } from "./composition";
 import { setLiveHome } from "./config";
-import { setLiveRows, COMMITTED_ROWS } from "./rows";
+import { setLiveRows } from "./rows";
 import { DEMO_PHOTOS } from "./demo";
 import { initLightbox, markLoadedImages } from "./lightbox";
 
@@ -79,8 +80,6 @@ const ALIASES: Record<string, string> = {
   pricing: "services",
 };
 
-/** Routes that need the photo set rather than just static copy. */
-const GALLERY_ROUTES = new Set(["home", "portfolio", "about"]);
 
 /**
  * Close the live burger drawer, if there is one.
@@ -126,251 +125,83 @@ function setTitle(r: string): void {
       : `${label} — ${SITE.nameTop} ${SITE.nameBig2}`;
 }
 
-async function paint(): Promise<void> {
-  refreshPortfolioLayout = null;
-  const r = ALIASES[route()] ?? route();
-  const cols = columnsFor(innerWidth);
-  // Abandon this paint the moment a newer one starts — see `paintSeq`.
-  const myPaint = ++paintSeq;
+let displayedRoute: string | null = null;
 
-  if (r === "admin") {
-    // The admin is a separate bundle (admin.html) — bounce across.
-    location.replace("./admin.html");
-    return;
-  }
-
-  if (r === "contact") {
-    // Contact has no photographs. A gallery response must never replace a
-    // form while the visitor is typing or waiting for their enquiry to send.
-    app.innerHTML = renderShell("contact", contactPage());
-    wireContact();
-    wireBurger();
-    scrollTo(0, 0);
-    setTitle("contact");
-    return;
-  }
-
-  if (r === "services") {
-    // Package cards carry a photograph each, same non-blocking pattern.
-    let photos = DEMO_PHOTOS;
-    const draw = () => {
-      app.innerHTML = renderShell("services", servicesPage(photos));
-      markLoadedImages();
-      wireBurger();
-      scrollTo(0, 0);
-    };
-    draw();
-    setTitle("services");
-    {
-      const live = adoptable(await publicPhotosOrNull());
-      if (myPaint !== paintSeq) return; // a newer route won
-      if (live) {
-        photos = live;
-        draw();
-      }
-    }
-    return;
-  }
-
-  if (r === "about") {
-    // The about page shows one portrait beside the prose, so it needs a photo
-    // but must never wait on the network for it.
-    let photos = DEMO_PHOTOS;
-    const draw = () => {
-      app.innerHTML = renderShell("about", aboutPage(photos));
-      markLoadedImages();
-      wireBurger();
-      scrollTo(0, 0);
-    };
-    draw();
-    setTitle("about");
-    {
-      const live = adoptable(await publicPhotosOrNull());
-      if (myPaint !== paintSeq) return; // a newer route won
-      if (live) {
-        photos = live;
-        draw();
-      }
-    }
-    return;
-  }
-
-  /**
-     * Adopt the Supabase set only if every row it names is actually reachable.
-     *
-     * A row can name a file that isn't there: when the bundled gallery was
-     * replaced with Alwin's favourites, the `photos` table still listed the nine
-     * old `finals-*.jpg` rows. Those overrode the bundled set and rendered as
-     * 404s on every page — a whole-site breakage from nine stale rows. The DB is
-     * optional data, so it only wins when it is fully coherent; a partial match is
-     * worse than no match and is rejected outright.
-     *
-     * Two kinds of row, and they get opposite verdicts:
-     *   - bundled  (`gallery/…`, committed to the repo): must be in DEMO_PHOTOS.
-     *     Checking the manifest is what catches the stale-row case above.
-     *   - uploaded (a Supabase storage URL): accepted on trust. The file went up
-     *     with the row in the same request, so there is no gap for it to rot in,
-     *     and requiring it in DEMO_PHOTOS would reject every photo added through
-     *     /admin — the upload would succeed and silently never appear.
-     */
-  function adoptable(live: AdminPhoto[] | null | undefined): AdminPhoto[] | null {
-      if (!live?.length) return null;
-      const known = new Set(DEMO_PHOTOS.map((p) => p.filename));
-      const ok = live.every((p) => {
-        if (!p.url) return false;
-        if (/^https?:\/\//.test(p.url)) return true; // uploaded: file is in the bucket
-        return !!p.filename && known.has(p.filename); // bundled: must be shipped
-      });
-      return ok ? live : null;
-    }
-
-/**
- * The committed choices, as the fallback for every composition read.
- *
- * Derived from the same git files the site shipped with, so "the database is
- * unreachable" and "Alwin has changed nothing" render identically — which is
- * the point: a visitor cannot tell whether the fallback fired.
- */
-const idToFile = new Map(DEMO_PHOTOS.map((p) => [p.id, p.filename]));
-const FALLBACK = {
-  strip: [...SITE.homeStrip],
-  hero: SITE.heroPhoto,
-  rows: COMMITTED_ROWS.map((r) => r.map((id) => idToFile.get(id) ?? "")),
-};
-
-/**
- * Push a resolved composition into the renderers.
- *
- * The wall arrives as filenames and has to become frame ids, because
- * portfolioPage() looks photos up by id and THROWS on an id it cannot find.
- * Converting here — rather than loosening that check — keeps the guard that
- * stopped the nine-stale-rows outage intact.
- */
-function applyComposition(comp: Composition): void {
-  const fileToId = new Map(
-    DEMO_PHOTOS.filter((p) => p.filename).map((p) => [p.filename!, p.id]),
-  );
-  setLiveHome(comp.homeStrip, comp.heroPhoto);
-  const asIds = comp.wallRows.map((row) =>
-    row.map((f) => fileToId.get(f)).filter((id): id is string => !!id),
-  );
-  // setLiveRows rejects a ragged wall, so a composition that lost a frame cannot
-  // reach the renderer as a short row.
-  setLiveRows(asIds);
+async function withinBudget<T>(request: Promise<T>, ms = 6000): Promise<T | null> {
+  let timer: ReturnType<typeof setTimeout>;
+  try {
+    return await Promise.race([request, new Promise<null>(resolve => { timer = setTimeout(() => resolve(null), ms); })]);
+  } finally { clearTimeout(timer!); }
 }
 
-// home + portfolio — the two routes built around the wall of frames.
-  //
-  // The gallery must NEVER depend on a network call succeeding. Two failure
-  // modes to survive: Supabase being unreachable, and supabase-js burning ~6s
-  // retrying before it admits defeat. So we don't wait on it at all beyond a
-  // short cap — the bundled set renders immediately and is upgraded in place
-  // if live photos arrive. A visitor never sees a blank page.
-  let photos = DEMO_PHOTOS;
+async function paint(): Promise<void> {
+  const r = ALIASES[route()] ?? route();
+  // A restored document already contains its form, focus and scroll position.
+  if (r === displayedRoute) return;
+  displayedRoute = r;
+  refreshPortfolioLayout = null;
+  const myPaint = ++paintSeq;
+  if (r === 'admin') { location.replace('./admin.html'); return; }
 
-  const draw = () => {
-    const body =
-      r === "home"
-        ? photos.length
-          ? homePage(photos, cols)
-          : emptyGallery()
-        : portfolioPage(photos);
-    // The home header floats over the hero photograph; portfolio keeps the
-    // solid header (its grid starts below the fold anyway).
-    app.innerHTML = renderShell(r, body, r === "home");
-    markLoadedImages();
-    wireBurger();
-      // Same: only the portfolio wall is scrollable.
-      scrollTo(0, 0);
-  };
-  draw();
+  let photos = mergePhotos();
+  const renderBody = () => r === 'contact' ? contactPage()
+    : r === 'services' ? servicesPage(photos)
+    : r === 'about' ? aboutPage(photos)
+    : r === 'home' ? homePage(photos, columnsFor(innerWidth))
+    : portfolioPage(photos);
+
+  const prerendered = app.dataset.route === r && !!app.querySelector('.main');
+  if (!prerendered) {
+    app.innerHTML = renderShell(r, renderBody(), r === 'home');
+    scrollTo(0, 0);
+  }
+  delete app.dataset.route;
   setTitle(r);
-  if (r !== "home") {
+  markLoadedImages();
+  wireBurger();
+  syncHeader();
+  if (r === 'contact') { wireContact(); return; }
+
+  let lastBody = renderBody();
+  const upgrade = (force = false) => {
+    const main = app.querySelector<HTMLElement>('.main');
+    if (!main) return;
+    const body = renderBody();
+    if (!force && lastBody === body) return;
+    lastBody = body;
+    const position = scrollY;
+    const frame = (document.activeElement as HTMLElement | null)?.dataset.full;
+    main.innerHTML = body;
+    markLoadedImages();
+    if (frame) [...main.querySelectorAll<HTMLElement>('[data-full]')].find(el => el.dataset.full === frame)?.focus({preventScroll:true});
+    scrollTo(0, position);
+  };
+  if (!['home','services','about'].includes(r)) {
     refreshPortfolioLayout = () => {
       const wanted = innerWidth <= 760 ? 2 : 3;
-      if (document.querySelectorAll('.pf-col').length === wanted) return;
-      const main = document.querySelector<HTMLElement>('.main');
-      if (!main) return;
-      const position = scrollY;
-      main.innerHTML = portfolioPage(photos);
-      markLoadedImages();
-      scrollTo(0, position);
+      if (document.querySelectorAll('.pf-col').length !== wanted) upgrade(true);
     };
+    refreshPortfolioLayout();
   }
 
-  {
-    const TIMEOUT_MS = 2500;
-    // One budget PER QUERY, not one shared promise. A single shared timeout means
-    // the composition read starts its clock when the gallery read started, so it
-        // inherits whatever the first one already spent and can only ever resolve
-        // already-expired. That is not a theoretical race: it made the composition
-        // read time out every time, which is how the hero and strip still rendered
-        // (they fall back to git) while nothing was actually coming from the DB.
-        const budget = () =>
-          new Promise<null>((res) => {
-            setTimeout(() => res(null), TIMEOUT_MS);
-          });
-        let t: ReturnType<typeof setTimeout> | undefined;
-        const timeout = new Promise<null>((res) => {
-          t = setTimeout(() => res(null), TIMEOUT_MS);
-        });
-        try {
-          const live = await Promise.race([publicPhotosOrNull(), timeout]);
-          if (myPaint !== paintSeq) return; // a newer route won
-          if (live === null) {
-                  console.warn("[gallery] timed out, keeping bundled set");
-                  // NOT an early return any more. The composition is a different table,
-                  // and the two have genuinely different failure modes: `photos` can be
-                  // empty or slow (it holds one row per upload) while `composition` holds
-                  // the 37 rows that decide which images appear where. Returning here
-                  // meant a slow gallery read silently also discarded Alwin's choices.
-                }
-      // An empty table is a legitimate state (nothing published yet) — keep the
-            // bundled set so the site is never empty. `adoptable` additionally rejects
-            // a table whose rows name files we no longer ship.
-            // `live` can be null here (the race resolved to the timeout), so this is
-            // gated on a real array rather than on truthiness.
-            if (Array.isArray(live)) {
-              const ok = adoptable(live);
-              if (ok) {
-                photos = ok;
-                draw();
-              } else if (live.length) {
-                console.warn(
-                  `[gallery] ignoring ${live.length} DB row(s) naming files that are not bundled`,
-                );
-              }
-            }
-
-            // The composition is a SEPARATE read from the gallery, and it is what
-            // makes Alwin's choices in /admin reach the page. Reordering the gallery
-            // would not do it: which photo sits in the hero, and which 30 make the
-            // wall, is a decision about slots, not about sort_order.
-            //
-            // Same rule as the gallery read above — never wait long enough to hold the
-            // page, and never let a bad row blank it. readComposition() resolves each
-            // slot against `known` and falls back per slot, so the worst case here is
-            // the committed defaults, which is what the site served before any of this.
-            if (myPaint !== paintSeq) return;
-                        // The gallery the page is actually rendering — bundled plus
-                        // anything live — so a slot naming a file we do not ship falls back
-                        // instead of rendering a hole. Same set the admin resolves against.
-                        const known = new Set<string>(photos.map((p) => p.filename).filter((f): f is string => !!f));
-                        const comp = await Promise.race([readComposition(known, FALLBACK), budget()]);
-            if (!comp) {
-              console.warn("[composition] timed out, keeping committed defaults");
-              return;
-            }
-            if (comp.problems.length) {
-              console.warn(`[composition] ${comp.problems.length} slot(s) fell back:`, comp.problems);
-            }
-            applyComposition(comp);
-            draw();
-          } catch (err) {
-            console.warn("[gallery] Supabase unreachable, keeping bundled set:", err);
-          } finally {
-      if (t !== undefined) clearTimeout(t);
+  try {
+    const live = await withinBudget(publicPhotosOrNull());
+    if (myPaint !== paintSeq) return;
+    photos = mergePhotos(live);
+    if (r === 'services' || r === 'about') { upgrade(); return; }
+    const fallback = fallbackComposition();
+    const known = new Set(photos.filter(p => p.visible).map(p => p.filename));
+    const comp = await withinBudget(readComposition(known, fallback));
+    // Check again after EACH asynchronous read, before changing shared choices.
+    if (myPaint !== paintSeq) return;
+    if (comp) {
+      const byFile = new Map(photos.map(p => [p.filename,p.id]));
+      setLiveHome(comp.homeStrip, comp.heroPhoto);
+      setLiveRows(comp.wallRows.map(row => row.map(file => byFile.get(file)!).filter(Boolean)));
     }
+    upgrade();
+  } catch (error) {
+    console.warn('[gallery] Keeping the available gallery:', error);
   }
 }
 
@@ -448,11 +279,33 @@ function wireContact(): void {
   // therefore a no-op, not a wrong answer.
   //
   // Runs on arrival; the contact page is not repainted by gallery responses.
+  const draftKey = 'shutterhaus-enquiry-draft-v1';
+  let restored = false;
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(draftKey) || 'null');
+    if (saved && Date.now() - saved.at < 24 * 60 * 60 * 1000) {
+      for (const [key,value] of Object.entries(saved.fields)) {
+        const input = form?.elements.namedItem(key) as HTMLInputElement | null;
+        if (input && typeof value === 'string') input.value = value;
+      }
+      restored = true;
+    }
+  } catch { /* Storage can be disabled; the live form still works. */ }
+  const saveDraft = () => {
+    const fields: Record<string,string> = {};
+    for (const key of ['name','email','kind','message']) {
+      fields[key] = (form?.elements.namedItem(key) as HTMLInputElement | null)?.value ?? '';
+    }
+    try { sessionStorage.setItem(draftKey, JSON.stringify({at:Date.now(), fields})); } catch { /* optional */ }
+  };
+  const clearDraft = () => { try { sessionStorage.removeItem(draftKey); } catch { /* optional */ } };
+  form?.addEventListener('input', saveDraft);
+  form?.addEventListener('change', saveDraft);
   const wanted = new URLSearchParams(location.search).get("package");
   const kind = document.getElementById("cform-kind") as HTMLSelectElement | null;
   if (wanted && kind) {
     const hit = Array.from(kind.options).find((o) => o.value === wanted);
-    if (hit) kind.value = wanted;
+    if (hit && !restored) kind.value = wanted;
   }
 
   form?.addEventListener("submit", async (e) => {
@@ -468,6 +321,7 @@ function wireContact(): void {
     if (get("_website")) {
       if (note) note.textContent = "Thanks, got it. I'll reply shortly.";
       form.reset();
+      clearDraft();
       return;
     }
 
@@ -487,6 +341,7 @@ function wireContact(): void {
     }
 
     if (SITE.contact.formEndpoint) {
+      saveDraft();
       sending = true;
       form.setAttribute("aria-busy", "true");
       if (submit) {
@@ -506,9 +361,10 @@ function wireContact(): void {
         if (!res.ok) throw new Error(`form endpoint ${res.status}`);
         if (note) note.textContent = "Thanks, got it. I'll reply shortly.";
         form.reset();
+        clearDraft();
         return;
       } catch {
-        if (note) note.textContent = "That didn't send. Email me directly instead.";
+        if (note) note.innerHTML = `That didn't send. Your message is saved here. <a href="mailto:${escapeHtml(SITE.contact.email)}">Email me directly</a> or try again.`;
         return;
       } finally {
         clearTimeout(timeout);

@@ -67,7 +67,8 @@ export let PHOTO_ROWS: PhotoRow[] = COMMITTED_ROWS;
  * page. A malformed composition must never reach the renderer.
  */
 export function setLiveRows(rows: PhotoRow[] | null | undefined): void {
-  if (!rows?.length) return;
+  if (!rows) return;
+  if (!rows.length) { PHOTO_ROWS = []; return; }
   const cols = rows[0].length;
   if (!cols || rows.some((r) => r.length !== cols)) return;
   if (rows.length === PHOTO_ROWS.length && rows.every((r, i) => r.join() === PHOTO_ROWS[i].join())) {

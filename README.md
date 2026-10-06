@@ -177,13 +177,7 @@ database access.
 
 ## Upload photos (admin)
 
-Go to `/admin.html` → **Continue with Google**. Drop images onto the dashed
-panel. New uploads start **hidden** so nothing goes live by accident — review
-them, then hit **show** on the ones you want.
-
-Order in the admin is the order visitors see. **←** **→** move an image,
-**hide** keeps it in the library but off the site, **delete** removes both the
-row and the file.
+Go to `/admin.html` and sign in with Google. Open **Photo library** to upload, then select photos for Home or Portfolio. Arrange the Page editor, preview the draft, and choose **Publish changes**. Full instructions are in **Photo manager** below.
 
 ## Edit the site content
 
@@ -316,3 +310,17 @@ reopening the work.
   `/admin` and `/admin/` to `/admin.html` (GitHub Pages has no server redirects).
 - **Share the bare domain, never `www.`** — the `www` hostname has no certificate
   of its own and will throw a security warning.
+
+## Photo manager
+
+Open `https://shutterhausvisuals.co.za/admin.html` and sign in with the authorised Google account. The Page editor manages the Home hero, Home photos and Portfolio. Drag a photo to reorder it, or use its arrow buttons. Replace and Remove affect the selected page; they keep the original in the library.
+
+In Photo library, upload files from your device or drop them onto Add photos. Images are resized on the device to a maximum edge of 1800px and encoded as JPEG. Select the destination, then Add a photo. Edit its description for accessible image text. Hide removes it from the Home/Portfolio draft. Original bundled photographs remain in the library; an uploaded file can be permanently deleted after hiding it and publishing.
+
+Changes are kept as a draft in the current browser tab. Preview checks the draft. Publish changes saves the library metadata and all page positions in one database transaction. A failed publication keeps the draft for retry. Discard draft reloads the published layout. Another session's publication causes a revision conflict instead of silently overwriting its work. Drafts are not shared across devices.
+
+The additive database migration is `supabase/migrations/20261006193000_gallery_publishing.sql`. It adds the transactional publishing RPC, a filename index and an invoker-only JWT helper; it does not change the current selections or files. Apply it before deploying this admin. Only the administrator allowed by the existing RLS policies can publish or change stored photographs.
+
+Run `npm run build`, `npm test`, `npm run verify`, and `npm run verify:admin` with Chrome on port 9222 and Vite preview on 4173. Admin verification runs the shipped UI with mocked auth/storage/database I/O; real image decoding and resizing run in Chrome. It never signs into or edits the production gallery. CI also checks seven public viewport widths and usable pages with JavaScript disabled. The exact verified `dist` artifact is deployed; pull requests verify without deploying.
+
+Enquiry drafts are stored for up to 24 hours in the current tab's session storage and cleared after a successful send. Mocked enquiry tests verify validation, failure recovery and duplicate prevention; they do not confirm delivery to the production inbox.
