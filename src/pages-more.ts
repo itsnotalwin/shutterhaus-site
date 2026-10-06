@@ -93,7 +93,7 @@ export function servicesPage(photos: Photo[] = []): string {
       <p class="pkg__price">${escapeHtml(formatPrice(t.price))}</p>
     </div>
     <p class="pkg__spec">${escapeHtml(t.spec)}</p>
-    ${ph ? `<figure class="pkg__fig${ph.width && ph.height && ph.width > ph.height ? " pkg__fig--landscape" : ""}" style="--focal:${escapeHtml(t.focal ?? "50% 50%")};--ar:${escapeHtml(t.ar ?? "3 / 2")}"><picture>${pictureFor(ph.url, "(max-width: 760px) 100vw, (max-width: 1000px) 50vw, 25vw", ph.width)}
+    ${ph ? `<figure class="pkg__fig${ph.width && ph.height && ph.width > ph.height ? " pkg__fig--landscape" : ""}" style="--focal:${escapeHtml(t.focal ?? "50% 50%")};--desktop-focal:${escapeHtml(t.desktopFocal ?? t.focal ?? "50% 50%")};--ar:${escapeHtml(t.ar ?? "3 / 2")}"><picture>${pictureFor(ph.url, "(max-width: 760px) 100vw, (max-width: 1000px) 50vw, 25vw", ph.width)}
         <img src="${escapeHtml(bestDerivative(ph.url, "jpg", ph.width))}" alt="${escapeHtml(ph.alt || ph.filename || "")}"
              loading="lazy" decoding="async" /></picture></figure>` : ""}
     <p class="pkg__desc">${escapeHtml(t.fit)}</p>

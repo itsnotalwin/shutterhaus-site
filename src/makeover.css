@@ -68,6 +68,15 @@ body { -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
 .portfolio .phead .eyebrow { color: var(--grey); }
 .page.portfolio .phead__h { font-size: clamp(44px, 5.4vw, 76px); line-height: 1.08; }
 .pf-rows { max-width: none; }
+.pf-more { margin-top: 28px; }
+.pf-more__toggle { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 48px; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); font: 500 12px/1.5 var(--font-body); cursor: pointer; list-style: none; }
+.pf-more__toggle::-webkit-details-marker { display: none; }
+.pf-more__toggle:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+.pf-more__open { display: none; }
+.pf-more[open] .pf-more__closed { display: none; }
+.pf-more[open] .pf-more__open { display: inline; }
+.pf-more[open] .pf-more__toggle svg { transform: rotate(180deg); }
+.pf-more > .pf-rows { margin-top: 28px; }
 
 /* Black marks the end of the photographs and the start of booking. */
 .hcta { margin-top: 88px; padding-top: 64px; background: #111; color: #fff; border-top: 0; }
@@ -97,8 +106,8 @@ body { -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
 .pkg--pop { border-top-color: var(--ink); }
 .pkg__heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; }
 .pkg__fig, .pkg--pop .pkg__fig { margin-bottom: 28px; }
-.pkg__fig { aspect-ratio: 4 / 3; }
-.pkg__fig img { object-position: 50% 0%; }
+.pkg__fig { aspect-ratio: 1 / 1; }
+.pkg__fig img { object-position: var(--desktop-focal, 50% 50%); }
 /* Preserve the complete group in the landscape frame. */
 .pkg__fig--landscape img { object-fit: contain; object-position: 50% 0%; }
 .pkg__num, .pkg--pop .pkg__num { color: var(--grey); margin-bottom: 16px; font: 500 10px/1.5 var(--font-body); letter-spacing: .12em; }
@@ -181,6 +190,8 @@ body { -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
   .site-nav { grid-area: auto; gap: 0; }
   .nav-link { display: block; padding: 16px 0; letter-spacing: .08em; }
   .hstrip { padding-top: 56px; }
+  .hstrip__grid { grid-template-columns: minmax(0, 1fr); }
+  .hstrip__col { display: contents; }
   .portfolio .phead { padding-top: 40px; padding-bottom: 32px; }
   .about, .shead, .page.contact { padding-top: 40px; }
   .pkgrow { padding-top: 40px; gap: 48px; }

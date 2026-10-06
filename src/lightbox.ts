@@ -187,7 +187,7 @@ export function initLightbox(): void {
    */
   function wallFrames(): HTMLImageElement[] {
     return Array.from(document.querySelectorAll<HTMLElement>(".pf-cell"))
-      .filter((c) => !c.hidden)
+      .filter((c) => !c.hidden && !c.closest('details:not([open])'))
       .sort((a, b) => Number(a.dataset.n) - Number(b.dataset.n))
       .map((c) => c.querySelector<HTMLImageElement>(".cell img[data-full]"))
       .filter((x): x is HTMLImageElement => !!x);
@@ -204,7 +204,7 @@ export function initLightbox(): void {
     // Wall: "02 / 50", using the frame's permanent number and the TOTAL wall
     // size, so it matches the number printed on the tile. Elsewhere (the home
     // strip) the caption is the alt text, exactly as before.
-    const totalVisible = document.querySelectorAll(".pf-cell:not([hidden])").length;
+    const totalVisible = frames.length;
     cap.textContent = cell
       ? `${pad2(Number(cell.dataset.n))} / ${pad2(totalVisible)}`
       : (f.dataset.alt ?? "");
@@ -255,6 +255,10 @@ export function initLightbox(): void {
           .find(frame => frame.dataset.full === returnFrameUrl)?.closest<HTMLElement>('[role="button"]')
       : null;
     const focusTarget = returnFocus?.isConnected ? returnFocus : replacement;
+    // A desktop frame may move into the mobile disclosure during rotation.
+    // Reveal it before restoring focus so the visitor returns to their photo.
+    const more = focusTarget?.closest<HTMLDetailsElement>('details');
+    if (more && !more.open) more.open = true;
     focusTarget?.focus({ preventScroll: true });
     // Reset zoom on close, or the next frame opens pre-zoomed and the visitor
     // cannot tell why it is cropped with no way back to fit.

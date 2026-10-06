@@ -29,9 +29,10 @@ const pagesBundle = await build({
   bundle: true, write: false, format: "iife", globalName: "PublicPages",
 });
 
-function fixture(url = "https://shutterhausvisuals.co.za/contact.html?package=Social", main = true) {
+function fixture(url = "https://shutterhausvisuals.co.za/contact.html?package=Social", main = true, width = 1024) {
   const dom = new JSDOM('<div id="app"></div>', { url, runScripts: "outside-only" });
   const w = dom.window;
+  w.innerWidth = width;
   w.scrollTo = (x,y) => {w.scrollY=y;};
   w.matchMedia = () => ({ matches: true });
   w.__galleryReads = 0;
@@ -259,4 +260,96 @@ test("every built public document has readable content, navigation and contact w
       if(file==='portfolio')assert.equal(dom.window.document.querySelectorAll('.pf-cell').length,30);
     }finally{dom.window.close();}
   }
+});
+
+test('mobile Portfolio shows ten photos, keeps an open disclosure through updates, and restores it after rotation', async () => {
+  const dom = fixture('https://shutterhausvisuals.co.za/portfolio.html', true, 390);
+  try {
+    const w = dom.window;
+    const visible = () => [...w.document.querySelectorAll('.pf-cell')].filter(cell => !cell.closest('details:not([open])'));
+    assert.equal(visible().length, 10);
+    assert.equal(w.document.querySelectorAll('.pf-cell').length, 30);
+    const firstTen = visible().map(cell => cell.querySelector('img').dataset.full);
+    const summary = w.document.querySelector('summary');
+    summary.focus();
+    w.scrollY = 350;
+    w.__resolveGallery(w.PublicPages.DEMO_PHOTOS.map(p => ({...p, alt: p.alt + ' updated'})));
+    await tick();
+    w.document.querySelector('.pf-more').open = true;
+    await tick();
+    assert.equal(visible().length, 30);
+    const fallback = w.__fallback;
+    w.__resolveComposition({homeStrip:fallback.strip,heroPhoto:fallback.hero,wallRows:fallback.rows,problems:[]});
+    await tick();
+    assert.equal(w.document.querySelector('.pf-more').open, true);
+    assert.match(w.document.querySelector('.pf-cell img').alt, / updated$/);
+    assert.deepEqual(visible().slice(0,10).map(cell => cell.querySelector('img').dataset.full), firstTen);
+    assert.equal(w.document.activeElement.tagName, 'SUMMARY');
+    assert.equal(w.scrollY, 350);
+    w.innerWidth = 1440; w.dispatchEvent(new w.Event('resize'));
+    await new Promise(resolve => setTimeout(resolve, 120));
+    assert.equal(w.document.querySelector('.pf-more'), null);
+    assert.equal(w.document.querySelectorAll('.pf-col').length, 3);
+    assert.equal(visible().length, 30);
+    w.innerWidth = 390; w.dispatchEvent(new w.Event('resize'));
+    await new Promise(resolve => setTimeout(resolve, 120));
+    assert.equal(w.document.querySelector('.pf-more').open, true);
+    w.document.querySelector('.pf-more').open = false;
+    assert.equal(visible().length, 10);
+  } finally { dom.window.close(); }
+});
+
+test('mobile photo viewer counts only disclosed photos and reveals the return frame after desktop rotation', async () => {
+  const dom = fixture('https://shutterhausvisuals.co.za/portfolio.html', true, 390);
+  try {
+    const w = dom.window;
+    const clickFrame = frame => frame.querySelector('img').dispatchEvent(new w.MouseEvent('click', {bubbles:true}));
+    const close = () => w.document.dispatchEvent(new w.KeyboardEvent('keydown', {key:'Escape',bubbles:true}));
+    clickFrame(w.document.querySelector('.pf-cell'));
+    assert.equal(w.document.querySelector('.lb__cap').textContent, '01 / 10');
+    close();
+    w.document.querySelector('.pf-more').open = true;
+    clickFrame(w.document.querySelector('.pf-more .pf-cell'));
+    assert.equal(w.document.querySelector('.lb__cap').textContent, '11 / 30');
+    close();
+    w.innerWidth = 1440; w.dispatchEvent(new w.Event('resize'));
+    await new Promise(resolve => setTimeout(resolve, 120));
+    const frame = [...w.document.querySelectorAll('.pf-cell')].at(-1);
+    const url = frame.querySelector('img').dataset.full;
+    clickFrame(frame);
+    w.innerWidth = 390; w.dispatchEvent(new w.Event('resize'));
+    await new Promise(resolve => setTimeout(resolve, 120));
+    close();
+    assert.equal(w.document.activeElement.querySelector('img').dataset.full, url);
+    assert.equal(w.document.activeElement.closest('details')?.open ?? true, true);
+  } finally { dom.window.close(); }
+});
+
+test('pre-rendered Home adopts one mobile column and only repacks when crossing the phone breakpoint', async () => {
+  const dom = fixture('https://shutterhausvisuals.co.za/', false, 390);
+  const built = new JSDOM(await readFile('dist/index.html', 'utf8'));
+  try {
+    const w = dom.window;
+    w.document.getElementById('app').innerHTML = built.window.document.querySelector('#app').innerHTML;
+    w.document.getElementById('app').dataset.route = 'home';
+    w.eval(mainBundle.outputFiles[0].text);
+    assert.equal(w.document.querySelectorAll('.hstrip__col').length, 1);
+    assert.equal(w.document.querySelectorAll('.hstrip__item').length, 6);
+    const frames = [...w.document.querySelectorAll('.hstrip img')].map(im => im.dataset.filename);
+    assert.deepEqual(frames, Array.from(w.PublicPages.SITE.homeStrip));
+    const grid = w.document.querySelector('.hstrip__grid');
+    const header = w.document.querySelector('.site-header');
+    w.scrollY = 450; w.innerHeight = 500; w.dispatchEvent(new w.Event('resize'));
+    await new Promise(resolve => setTimeout(resolve, 120));
+    assert.equal(w.document.querySelector('.hstrip__grid'), grid);
+    const frame = w.document.querySelector('.hstrip__item');
+    const filename = frame.querySelector('img').dataset.filename;
+    frame.focus();
+    w.innerWidth = 1440; w.dispatchEvent(new w.Event('resize'));
+    await new Promise(resolve => setTimeout(resolve, 120));
+    assert.equal(w.document.querySelectorAll('.hstrip__col').length, 2);
+    assert.equal(w.document.querySelector('.site-header'), header);
+    assert.equal(w.document.activeElement.querySelector('img').dataset.filename, filename);
+    assert.equal(w.scrollY, 450);
+  } finally { dom.window.close(); built.window.close(); }
 });

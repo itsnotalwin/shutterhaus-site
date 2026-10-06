@@ -92,7 +92,7 @@ direct contact details. Public copy describes the sessions and booking process.
 
 The Home header stays transparent at the top of the photograph and becomes
 solid white while scrolling or opening the mobile menu. The compact menu is
-used through 1000px and stays within reach on every page. Portfolio columns
+used through 1000px and stays within reach on every page. Home and Portfolio
 repack when crossing 760px; height-only
 changes never redraw the page, and Contact keeps its form draft during rotation.
 
@@ -281,13 +281,14 @@ Locked decisions that earlier cleanups broke. Change them only by deliberately
 reopening the work.
 
 - **Home is pinned.** `heroPhoto` in `src/config.ts` fixes which frame carries the
-  hero, and `homeGalleryCount: 6` fixes the home strip in two packed columns at
-  every width. Changing either needs a deliberate home-route pass.
+  hero, and `homeGalleryCount: 6` fixes the home strip in two packed columns on
+  desktop and one column at 760px and below. Changing either needs a deliberate home-route pass.
 - **Specificity trap.** `.page h1` (0,1,1) beats a bare class such as `.about__h`
   (0,1,0). The `.page` / `.portfolio` prefixes in `editorial.css` are load-bearing,
   not decoration — remove one and a heading's margin collapses to 0.
 - **The portfolio wall** is 30 curated frames in three packed columns above
-  760px and two below. `rows.ts` supplies the chosen frames and their order;
+  760px and two below. Phones show the first ten, with a native Show more images
+  disclosure for the rest; desktop shows the full wall. `rows.ts` supplies the chosen frames and their order;
   `wallCols()` and the CSS share the breakpoint. Every photo retains its ratio,
   with consistent gutters and no printed frame numbering.
 - **Photographs stay as uploaded.** No greyscale or colour filters on either

@@ -427,7 +427,11 @@ function figure(p: Photo, index: number, sizes?: string): string {
  * phone's address bar or keyboard leave the markup and scroll position alone.
  */
 function wallCols(): number {
-  return typeof innerWidth !== 'undefined' && innerWidth <= 760 ? 2 : 3;
+  return mobileGallery() ? 2 : 3;
+}
+
+function mobileGallery(): boolean {
+  return typeof innerWidth !== 'undefined' && innerWidth <= 760;
 }
 
 /**
@@ -504,7 +508,7 @@ function filterBar(photos: Photo[]): string {
  * 30 deliberately chosen ones there is nothing left for it to select between, and
  * a filter over hand-picked work hides work on purpose.
  */
-export function portfolioPage(photos: Photo[]): string {
+export function portfolioPage(photos: Photo[], expanded = false): string {
   if (!photos.length) return emptyGallery();
 
   const byId = new Map(photos.map((p) => [p.id, p]));
@@ -562,19 +566,26 @@ export function portfolioPage(photos: Photo[]): string {
     // arrangement into columns is new.
     const cols = wallCols();
     const manual = PHOTO_ROWS.flat().join('|') !== COMMITTED_ROWS.flat().join('|');
-    const packed = manual ? packInOrder(ordered, cols) : packByHeight(ordered, cols);
+    const pack = (frames: Photo[]) => manual ? packInOrder(frames, cols) : packByHeight(frames, cols);
 
     // `sizes` is derived from the column count that will actually render, so the
     // browser is never told a two-across width for a three-across layout.
     const sizes = wallSizes(cols);
 
-    let n = 1; // 1-based: the lightbox prints it as "07 / 30"
-    const wall = packed
-      .map(
-        (col) =>
-          `<div class="pf-col">${col.map((p) => wallCell(p, n++, sizes)).join("")}</div>`,
-      )
-      .join("");
+    let n = 1;
+    const wall = (frames: Photo[]) => `<div class="pf-rows" style="--pf-cols:${cols}">${pack(frames)
+      .map(col => `<div class="pf-col">${col.map(p => wallCell(p, n++, sizes)).join("")}</div>`)
+      .join("")}</div>`;
+    // Keep the first ten in place when the visitor opens the rest of the work.
+    // Desktop keeps its existing continuous, balanced wall.
+    const hasMore = mobileGallery() && ordered.length > 10;
+    const gallery = hasMore
+      ? `${wall(ordered.slice(0, 10))}
+        <details class="pf-more"${expanded ? ' open' : ''}>
+          <summary class="pf-more__toggle"><span class="pf-more__closed">Show more images</span><span class="pf-more__open">Show fewer images</span><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="m5 7 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5" /></svg></summary>
+          ${wall(ordered.slice(10))}
+        </details>`
+      : wall(ordered);
 
   if (missing.length) {
     throw new Error(
@@ -583,13 +594,13 @@ export function portfolioPage(photos: Photo[]): string {
     );
   }
 
-  return `<section class="page portfolio">
+  return `<section class="page portfolio" data-mobile-layout="${mobileGallery()}">
     <header class="phead">
       <p class="eyebrow">${shown.length} photographs · Gauteng</p>
       <h1 class="phead__h">Portfolio</h1>
       <p class="phead__p">Portraits and places, shot around Gauteng.</p>
     </header>
-    <div class="pf-rows" style="--pf-cols:${cols}">${wall}</div>
+    ${gallery}
         ${pfBand()}
       </section>`;
 }
@@ -632,28 +643,9 @@ export function emptyGallery(): string {
     </section>`;
 }
 
-/**
- * How many columns the home strip should use.
- *
- * The portfolio drops to a single column under 640px, but the home strip must
- * not: 8 frames stacked in one column on a phone is a very long scroll, and
- * the packer cannot redistribute them after the fact. So the strip is floored
- * at 2 columns, and the CSS grid is driven by the child count rather than a
- * custom property — a mismatch between the two is what left all 8 frames in
- * one column at 390px.
- */
+/** Full-width photographs on phones; the established two-column desktop strip. */
 function stripCols(frameCount: number): number {
-  // The strip uses TWO columns at every width, not the portfolio's three.
-  //
-  // A column count that divides the frame count is what keeps the bottom edge
-  // even, and Alwin wants few frames: "too many images on home now". Six
-  // frames only splits evenly as 3/3 or 2/2 — as 3 columns it forces 2/1/3 and
-  // strands the middle column 252px short, which is the white hole again.
-  //
-  // So: two columns everywhere, six frames, 3/3. On a phone 3+3 still reads as
-  // a short wall rather than a long one. Both the emitted columns and the grid
-  // track count come from this one function, so they cannot disagree.
-  const want = 2;
+  const want = mobileGallery() ? 1 : 2;
   return Math.min(want, frameCount);
 }
 
@@ -781,7 +773,7 @@ export function homePage(photos: Photo[], cols: number): string {
       </figure>`
     : "";
 
-  return `<section class="page home">
+  return `<section class="page home" data-mobile-layout="${mobileGallery()}">
     <div class="hero">
       ${heroFig}
       <div class="hero__scrim" aria-hidden="true"></div>
@@ -813,7 +805,7 @@ export function homePage(photos: Photo[], cols: number): string {
                     // like the number on my photos". The strip does not need
                     // numbering to read as a curated set, and the digit sitting in
                     // the corner of every photograph was the thing he objected to.
-                    .map((p) => `<div class="hstrip__item" role="button" tabindex="0" aria-label="View ${escapeHtml(p.alt || "photograph")}">${figure(p, 0)}</div>`)
+                    .map((p) => `<div class="hstrip__item" role="button" tabindex="0" aria-label="View ${escapeHtml(p.alt || "photograph")}">${figure(p, 0, '(max-width: 760px) 100vw, 50vw')}</div>`)
                     .join("")}</div>`,
               )
               .join("")}</div>

@@ -98,7 +98,7 @@ const ALIASES: Record<string, string> = {
  * would otherwise lock scrolling on a page whose drawer no longer exists.
  */
 let closeNav: (() => void) | null = null;
-let refreshPortfolioLayout: (() => void) | null = null;
+let refreshGalleryLayout: (() => void) | null = null;
 
 function syncHeader(): void {
   const header = document.querySelector<HTMLElement>(".shell--over .site-header");
@@ -139,16 +139,17 @@ async function paint(): Promise<void> {
   // A restored document already contains its form, focus and scroll position.
   if (r === displayedRoute) return;
   displayedRoute = r;
-  refreshPortfolioLayout = null;
+  refreshGalleryLayout = null;
   const myPaint = ++paintSeq;
   if (r === 'admin') { location.replace('./admin.html'); return; }
 
   let photos = mergePhotos();
+  let portfolioExpanded = false;
   const renderBody = () => r === 'contact' ? contactPage()
     : r === 'services' ? servicesPage(photos)
     : r === 'about' ? aboutPage(photos)
     : r === 'home' ? homePage(photos, columnsFor(innerWidth))
-    : portfolioPage(photos);
+    : portfolioPage(photos, portfolioExpanded);
 
   const prerendered = app.dataset.route === r && !!app.querySelector('.main');
   if (!prerendered) {
@@ -162,26 +163,50 @@ async function paint(): Promise<void> {
   syncHeader();
   if (r === 'contact') { wireContact(); return; }
 
-  let lastBody = renderBody();
+  // Opening a native disclosure does not change the gallery data. Compare
+  // content independently of its open state, including while a read is pending.
+  const contentKey = (body: string) => body.replace('<details class="pf-more" open>', '<details class="pf-more">');
+  let lastBody = contentKey(renderBody());
+  const wireMore = () => {
+    const more = app.querySelector<HTMLDetailsElement>('.pf-more');
+    more?.addEventListener('toggle', () => {
+      if (!more.isConnected) return;
+      portfolioExpanded = more.open;
+    });
+  };
+  wireMore();
   const upgrade = (force = false) => {
     const main = app.querySelector<HTMLElement>('.main');
     if (!main) return;
+    const more = main.querySelector<HTMLDetailsElement>('.pf-more');
+    if (more) portfolioExpanded = more.open;
     const body = renderBody();
-    if (!force && lastBody === body) return;
-    lastBody = body;
+    if (!force && lastBody === contentKey(body)) return;
+    lastBody = contentKey(body);
     const position = scrollY;
-    const frame = (document.activeElement as HTMLElement | null)?.dataset.full;
+    const focused = document.activeElement;
+    const frame = focused?.matches('[role="button"]')
+      ? focused.querySelector<HTMLImageElement>('[data-full]')?.dataset.full : undefined;
+    const moreFocused = document.activeElement?.matches('.pf-more__toggle');
     main.innerHTML = body;
+    wireMore();
     markLoadedImages();
-    if (frame) [...main.querySelectorAll<HTMLElement>('[data-full]')].find(el => el.dataset.full === frame)?.focus({preventScroll:true});
+    if (frame) {
+      const target = [...main.querySelectorAll<HTMLImageElement>('[data-full]')]
+        .find(el => el.dataset.full === frame)?.closest<HTMLElement>('[role="button"]');
+      const disclosure = target?.closest<HTMLDetailsElement>('details');
+      if (disclosure && !disclosure.open) disclosure.open = true;
+      target?.focus({preventScroll:true});
+    }
+    if (moreFocused) main.querySelector<HTMLElement>('.pf-more__toggle')?.focus({preventScroll:true});
     scrollTo(0, position);
   };
-  if (!['home','services','about'].includes(r)) {
-    refreshPortfolioLayout = () => {
-      const wanted = innerWidth <= 760 ? 2 : 3;
-      if (document.querySelectorAll('.pf-col').length !== wanted) upgrade(true);
+  if (!['services','about'].includes(r)) {
+    refreshGalleryLayout = () => {
+      const gallery = mainGallery();
+      if (gallery && gallery.dataset.mobileLayout !== String(innerWidth <= 760)) upgrade(true);
     };
-    refreshPortfolioLayout();
+    refreshGalleryLayout();
   }
 
   try {
@@ -203,6 +228,10 @@ async function paint(): Promise<void> {
   } catch (error) {
     console.warn('[gallery] Keeping the available gallery:', error);
   }
+}
+
+function mainGallery(): HTMLElement | null {
+  return app.querySelector('.page[data-mobile-layout]');
 }
 
 /** Mobile menu toggle. The button and the panel are both in the header. */
@@ -390,7 +419,7 @@ function wireContact(): void {
   });
 }
 
-// Only the portfolio needs new markup when its column count changes. Height
+// Home and Portfolio need new markup across the phone breakpoint. Height
 // changes from a phone's address bar or keyboard must never redraw a page.
 let layoutWidth = innerWidth;
 let reflowTimer: ReturnType<typeof setTimeout> | undefined;
@@ -399,10 +428,10 @@ addEventListener('resize', () => {
   layoutWidth = innerWidth;
   if (innerWidth > 1000) closeNav?.();
   clearTimeout(reflowTimer);
-  reflowTimer = setTimeout(() => refreshPortfolioLayout?.(), 100);
+  reflowTimer = setTimeout(() => refreshGalleryLayout?.(), 100);
 });
 addEventListener('orientationchange', () => {
-  setTimeout(() => refreshPortfolioLayout?.(), 250);
+  setTimeout(() => refreshGalleryLayout?.(), 250);
 });
 addEventListener('scroll', syncHeader, { passive: true });
 

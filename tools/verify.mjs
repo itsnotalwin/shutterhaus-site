@@ -60,6 +60,7 @@ const evaluate = async (expression) => {
 };
 
 await send("Page.enable");
+await send("Page.bringToFront");
 await send("Runtime.enable");
 await send("Log.enable");
 await send("Network.enable");
@@ -649,6 +650,40 @@ for (const width of reviewWidths) {
     if (route === 'services') {
       check(`review services ${width}: closing enquiry goes to contact`, state.bandHref === './contact.html', state.bandHref);
       if (width === 1440) check('desktop package prices align', Math.max(...state.priceTops) - Math.min(...state.priceTops) <= 1);
+      const framing = await evaluate(`(() => [...document.querySelectorAll('.pkg__fig')].map(fig => {
+        const image = fig.querySelector('img'), r = fig.getBoundingClientRect();
+        return { ratio:r.width/r.height, fit:getComputedStyle(image).objectFit, position:getComputedStyle(image).objectPosition };
+      }))()`);
+      check(`review services ${width}: complete landscape frames`, framing[0].fit === 'contain' && framing[2].fit === 'contain');
+      if (width > 760) {
+        check(`review services ${width}: taller desktop portrait slots`, framing.every(fig => Math.abs(fig.ratio - 1) < .01));
+        check(`review services ${width}: Essential preserves the top of the portrait`, framing[1].position === '50% 0%');
+        check(`review services ${width}: Social preserves the top of the portrait`, framing[3].position === '50% 0%');
+      } else {
+        check(`review services ${width}: established mobile portrait ratios`, Math.abs(framing[1].ratio - .8) < .01 && Math.abs(framing[3].ratio - 9/16) < .01);
+      }
+    }
+    if (route === 'home') {
+      const strip = await evaluate(`(() => {
+        const grid = document.querySelector('.hstrip__grid');
+        return { tracks:getComputedStyle(grid).gridTemplateColumns.split(' ').length,
+          count:grid.querySelectorAll('.hstrip__item').length,
+          widths:[...grid.querySelectorAll('.hstrip__item')].map(frame => frame.getBoundingClientRect().width),
+          width:grid.getBoundingClientRect().width };
+      })()`);
+      check(`review home ${width}: six showcase images`, strip.count === 6);
+      check(`review home ${width}: correct showcase columns`, strip.tracks === (width <= 760 ? 1 : 2));
+      if (width <= 760) check(`review home ${width}: each image uses the full showcase width`, strip.widths.every(frame => Math.abs(frame-strip.width) <= 1));
+    }
+    if (route === 'portfolio') {
+      const wall = await evaluate(`(() => ({
+        visible:[...document.querySelectorAll('.pf-cell')].filter(cell => !cell.closest('details:not([open])')).length,
+        more:!!document.querySelector('.pf-more'), cols:document.querySelector('.pf-rows').style.getPropertyValue('--pf-cols'),
+        targets:[...document.querySelectorAll('.pf-cell')].filter(cell => !cell.closest('details:not([open])')).map(cell => cell.getBoundingClientRect().top)
+      }))()`);
+      check(`review portfolio ${width}: correct initial image count`, wall.visible === (width <= 760 ? 10 : 30));
+      check(`review portfolio ${width}: disclosure appears only on phones`, wall.more === (width <= 760));
+      check(`review portfolio ${width}: correct column count`, Number(wall.cols) === (width <= 760 ? 2 : 3));
     }
     const metrics = await send("Page.getLayoutMetrics");
     const size = metrics.result.cssContentSize;
@@ -672,6 +707,20 @@ for (const width of reviewWidths) {
       if (width === 390 || width === 1440) await shot(`01-home-${width}-scrolled.png`);
       await evaluate(`scrollTo(0, 0)`);
       await sleep(100);
+    }
+    if (route === 'portfolio' && width <= 760) {
+      await evaluate(`window.reviewTopTen=[...document.querySelector('.pf-rows').querySelectorAll('.pf-cell')].map(cell=>cell.getBoundingClientRect().top+scrollY); document.querySelector('.pf-more__toggle').focus({preventScroll:true})`);
+      await send('Input.dispatchKeyEvent', {type:'keyDown',key:'Enter',code:'Enter',windowsVirtualKeyCode:13,text:'\r',unmodifiedText:'\r'});
+      await send('Input.dispatchKeyEvent', {type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});
+      await sleep(100);
+      check(`review portfolio ${width}: keyboard expands all photos`, await evaluate(`document.querySelector('.pf-more').open && document.querySelectorAll('.pf-cell').length === 30 && [...document.querySelectorAll('.pf-cell')].every(cell => cell.checkVisibility())`));
+      check(`review portfolio ${width}: first ten stay in place on expansion`, await evaluate(`(()=>{const frames=[...document.querySelector('.pf-rows').querySelectorAll('.pf-cell')];return frames.length===10 && frames.every((frame,i)=>Math.abs(frame.getBoundingClientRect().top+scrollY-window.reviewTopTen[i])<=1);})()`));
+      check(`review portfolio ${width}: disclosure has a touch target`, await evaluate(`document.querySelector('.pf-more__toggle').getBoundingClientRect().height>=44`));
+      if (width === 390) await shot('02-portfolio-390-expanded.png');
+      await evaluate(`document.querySelector('.pf-more__toggle').click()`);
+      await sleep(100);
+      check(`review portfolio ${width}: closing hides the remaining twenty`, await evaluate(`!document.querySelector('.pf-more').open && [...document.querySelectorAll('.pf-more .pf-cell')].every(cell=>!cell.checkVisibility())`));
+      await evaluate(`scrollTo(0,0)`);
     }
     if (width <= 1000) {
       await evaluate(`document.querySelector('.burger').click()`);
@@ -715,7 +764,7 @@ await evaluate(`(() => {
 })()`);
 await viewport(390, 844);
 await sleep(200);
-check('rotation repacks the portfolio to two columns with all 30 frames', await evaluate(`document.querySelectorAll('.pf-col').length === 2 && document.querySelectorAll('.pf-cell').length === 30`));
+check('rotation gives Portfolio two mobile columns and ten initial frames', await evaluate(`document.querySelector('.pf-rows').querySelectorAll('.pf-col').length === 2 && document.querySelector('.pf-rows').querySelectorAll('.pf-cell').length === 10 && document.querySelectorAll('.pf-cell').length === 30`));
 await shot('02-portfolio-390-viewer.png');
 await evaluate(`document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))`);
 check('viewer restores focus to the same photo after repacking', await evaluate(`document.querySelector('.lb').hidden && document.activeElement?.querySelector('img')?.dataset.full === window.reviewFrameUrl`));

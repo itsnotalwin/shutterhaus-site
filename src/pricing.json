@@ -25,6 +25,7 @@
       "spec": "60 min · 2 outfits · 1–2 locations",
       "photo": "19-img-0198-3.jpg",
       "focal": "50% 50%",
+      "desktopFocal": "50% 0%",
       "ar": "4 / 5",
       "bullets": [
         "20 edited photos",
@@ -54,6 +55,7 @@
       "spec": "45 min · 2 outfits · 1 location",
       "photo": "20-img-0202.jpg",
       "focal": "50% 17%",
+      "desktopFocal": "50% 0%",
       "ar": "9 / 16",
       "bullets": [
         "40 edited photos",

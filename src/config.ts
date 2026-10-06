@@ -83,6 +83,8 @@ export interface PricingTier {
    * focal point has very little to do.
    */
   focal?: string;
+  /** Subject position in the shared desktop thumbnail slot. */
+  desktopFocal?: string;
   /**
    * The slot shape for this card's photograph, as CSS `aspect-ratio`, e.g.
    * "4 / 5". One 3:2 slot was being applied to four photographs of three
