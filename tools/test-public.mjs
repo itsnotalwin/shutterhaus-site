@@ -58,7 +58,7 @@ test("approved prices and Social's 40 images agree across pages and metadata", a
     const cards = [...w.document.querySelectorAll(".pkg")];
     assert.deepEqual(cards.map((c) => c.querySelector(".pkg__price").textContent), ["R800", "R2,000", "R2,500", "R2,500"]);
     assert.match(cards[3].textContent, /40 edited photos/);
-    assert.match(cards[3].textContent, /48hr sneak peek, 10 images/);
+    assert.match(cards[3].textContent, /10-image preview within 48 hours/);
     assert.doesNotMatch(cards[3].textContent, /same-day/);
     assert.equal(cards.every((c) => c.querySelector("h2.pkg__name")), true);
     const contact = p.contactPage();

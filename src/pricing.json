@@ -1,7 +1,7 @@
 {
   "show": true,
   "heading": "Packages",
-  "intro": "Every session is directed start to finish, you don't need to know how to pose. 50% deposit secures your date.",
+  "intro": "Choose a session below. I'll guide you through the shoot, from choosing a location to posing.",
   "tiers": [
     {
       "name": "Starter",
@@ -21,7 +21,7 @@
     {
       "name": "Essential",
       "price": 2000,
-      "fit": "Our go-to for couples, individuals and small families.",
+      "fit": "Couples, individuals and small families.",
       "spec": "60 min · 2 outfits · 1–2 locations",
       "photo": "19-img-0198-3.jpg",
       "focal": "50% 50%",
@@ -36,7 +36,7 @@
     {
       "name": "Signature",
       "price": 2500,
-      "fit": "Families, maternity and engagements: the full experience.",
+      "fit": "Families, maternity and engagements.",
       "spec": "90 min · 2–3 outfits · multiple locations",
       "photo": "54-img-0164.jpg",
       "focal": "50% 50%",
@@ -50,7 +50,7 @@
     {
       "name": "Social",
       "price": 2500,
-      "fit": "Built for creators: a 48-hour sneak peek and commercial use.",
+      "fit": "Social content, with a commercial licence and an early preview.",
       "spec": "45 min · 2 outfits · 1 location",
       "photo": "20-img-0202.jpg",
       "focal": "50% 17%",
@@ -58,7 +58,7 @@
       "bullets": [
         "40 edited photos",
         "Private online gallery (90-day access)",
-        "48hr sneak peek, 10 images, not the full set",
+        "10-image preview within 48 hours",
         "High-res and web-optimised downloads",
         "Commercial licence included"
       ]

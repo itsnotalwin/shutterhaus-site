@@ -86,7 +86,7 @@ const GALLERY_ROUTES = new Set(["home", "portfolio", "about"]);
  * Close the live burger drawer, if there is one.
  *
  * `wireBurger()` runs inside `draw()`, which runs inside `paint()`, and `paint()`
- * runs on every route change AND every orientation change. It used to register
+ * runs on every route change. It used to register
  * its own `keydown` + `hashchange` pair on `window` each time and never removed
  * them, so every navigation leaked two more listeners — each closing over a
  * `btn`, `nav` and `scrim` that `innerHTML` had already thrown away. A visitor
@@ -99,6 +99,12 @@ const GALLERY_ROUTES = new Set(["home", "portfolio", "about"]);
  * would otherwise lock scrolling on a page whose drawer no longer exists.
  */
 let closeNav: (() => void) | null = null;
+let refreshPortfolioLayout: (() => void) | null = null;
+
+function syncHeader(): void {
+  const header = document.querySelector<HTMLElement>(".shell--over .site-header");
+  header?.classList.toggle("is-solid", scrollY > 24 || !!header.querySelector(".site-nav.is-open"));
+}
 
 /**
  * Paint generation counter.
@@ -121,6 +127,7 @@ function setTitle(r: string): void {
 }
 
 async function paint(): Promise<void> {
+  refreshPortfolioLayout = null;
   const r = ALIASES[route()] ?? route();
   const cols = columnsFor(innerWidth);
   // Abandon this paint the moment a newer one starts — see `paintSeq`.
@@ -278,6 +285,18 @@ function applyComposition(comp: Composition): void {
   };
   draw();
   setTitle(r);
+  if (r !== "home") {
+    refreshPortfolioLayout = () => {
+      const wanted = innerWidth <= 760 ? 2 : 3;
+      if (document.querySelectorAll('.pf-col').length === wanted) return;
+      const main = document.querySelector<HTMLElement>('.main');
+      if (!main) return;
+      const position = scrollY;
+      main.innerHTML = portfolioPage(photos);
+      markLoadedImages();
+      scrollTo(0, position);
+    };
+  }
 
   {
     const TIMEOUT_MS = 2500;
@@ -388,9 +407,14 @@ function wireBurger(): void {
     document.documentElement.classList.toggle("nav-locked", open);
     if (open) {
       if (!scrim.parentNode) document.body.appendChild(scrim);
+      nav.querySelector<HTMLAnchorElement>('a')?.focus({ preventScroll: true });
     } else {
       scrim.remove();
+      if (nav.contains(document.activeElement)) btn.focus({ preventScroll: true });
     }
+    const main = document.querySelector<HTMLElement>('.main');
+    if (main) main.inert = open;
+    syncHeader();
   };
 
   btn.addEventListener("click", () => set(btn.getAttribute("aria-expanded") !== "true"));
@@ -404,6 +428,7 @@ function wireBurger(): void {
   // points at the CURRENT drawer — see its note for why registering them here
   // was a leak.
   closeNav = () => set(false);
+  set(false);
 }
 
 /** Contact form: posts to Formspree if configured, else opens the mail client. */
@@ -509,40 +534,21 @@ function wireContact(): void {
   });
 }
 
-/**
- * Repaint on a real orientation change, NOT on every `resize`.
- *
- * Alwin, 2026-10-01, on an iPhone 16 / iOS 27 / Safari: "when I'm scrolling
- * through the website on any page it will flash white and take me back to top".
- *
- * The cause was this listener. On iOS Safari the address bar is attached to the
- * scroll, so every flick that moves the page also collapses or expands that bar
- * and Safari fires `resize`. That ran `paint()`, which replaces `app.innerHTML`
- * with freshly built markup — the white flash, the DOM being torn down mid-scroll
- * — and then calls `scrollTo(0, 0)`, which is the jump back to the top. One
- * listener, both symptoms, on every route, because it sits on `window` rather
- * than inside the router.
- *
- * Desktop Chrome has no address bar, so it never fired there. That is why this
- * passed every automated check in this repo, all of which run in headless Chrome.
- * It cannot be verified from here; it has to be checked on the device.
- *
- * `orientationchange` is the event that means "the device physically turned".
- * It does not fire during an ordinary scroll, which is the whole point.
- *
- * Note the portfolio no longer depends on the viewport at all — its track
- * count comes from the row length in rows.ts, so it renders identically at
- * every width. Only the home strip's column count still changes, across
- * 640/1000 px, which an orientation change covers.
- */
-addEventListener("orientationchange", () => {
-  // A beat, because iOS reports the new dimensions a frame or two after the
-  // event. Repainting synchronously here would read the old innerWidth.
-  // The contact form and package grid already reflow through CSS. Repainting
-  // these on rotation loses form contents and unnecessarily jumps to the top.
-  if ((ALIASES[route()] ?? route()) === "contact" || (ALIASES[route()] ?? route()) === "services") return;
-  setTimeout(() => void paint(), 250);
+// Only the portfolio needs new markup when its column count changes. Height
+// changes from a phone's address bar or keyboard must never redraw a page.
+let layoutWidth = innerWidth;
+let reflowTimer: ReturnType<typeof setTimeout> | undefined;
+addEventListener('resize', () => {
+  if (innerWidth === layoutWidth) return;
+  layoutWidth = innerWidth;
+  if (innerWidth > 1000) closeNav?.();
+  clearTimeout(reflowTimer);
+  reflowTimer = setTimeout(() => refreshPortfolioLayout?.(), 100);
 });
+addEventListener('orientationchange', () => {
+  setTimeout(() => refreshPortfolioLayout?.(), 250);
+});
+addEventListener('scroll', syncHeader, { passive: true });
 
 // Re-paint when the URL changes WITHOUT a document load.
 //

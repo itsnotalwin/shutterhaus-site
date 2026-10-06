@@ -408,12 +408,9 @@ function figure(p: Photo, index: number, sizes?: string): string {
  * packer and the stylesheet agree about where the phone starts.
  *
  * This is evaluated at PAINT time, not at module load, which is why it reads
- * `innerWidth` here rather than caching a constant. main.ts re-paints on
- * `orientationchange` so a phone that turns gets a new count. It deliberately
- * does NOT listen for `resize`: iOS Safari fires that on every scroll, and
- * repacking 30 frames each time is exactly the thrash that rule exists to
- * avoid. A desktop window dragged across 760px therefore keeps its count until
- * reload — the same trade the home strip already makes at 640/1000px.
+ * `innerWidth` here rather than caching a constant. main.ts repacks only the
+ * portfolio when the width crosses this boundary. Height changes from a
+ * phone's address bar or keyboard leave the markup and scroll position alone.
  */
 function wallCols(): number {
   return innerWidth <= 760 ? 2 : 3;
@@ -609,7 +606,7 @@ export const WALL_MIN_FRAME_PX = 175;
  * break the route's enquiry link. The browser gate checks the destination.
  */
 function pfBand(): string {
-  return homeBand({ eyebrow: "Book a shoot", heading: "Like what you see?", cta: "Get a quote", href: "./contact.html" });
+  return homeBand({ eyebrow: "Enquiries", heading: "Book a session.", cta: "Enquire about a session", href: "./contact.html" });
 }
 
 /** The shared empty state — reachable from home and portfolio alike. */
@@ -662,7 +659,7 @@ export function homeBand(options: { eyebrow?: string; heading?: string; cta?: st
       <div class="hcta__grid">
         <div class="hcta__main">
           <p class="eyebrow">${escapeHtml(options.eyebrow ?? SITE.services.eyebrow)}</p>
-          <h2 class="hcta__h">${escapeHtml(options.heading ?? SITE.services.heading)}</h2>
+          <h2 class="hcta__h">${escapeHtml(options.heading ?? "Book a session.")}</h2>
         </div>
         <div class="hcta__side">
           ${

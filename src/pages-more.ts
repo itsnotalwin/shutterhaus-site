@@ -80,9 +80,6 @@ export function servicesPage(photos: Photo[] = []): string {
   const card = (t: PricingTier, i: number): string => {
     const ph = shotFor(t, i);
     return `<article class="pkg${t.popular ? " pkg--pop" : ""}">
-    ${ph ? `<figure class="pkg__fig${ph.width && ph.height && ph.width > ph.height ? " pkg__fig--landscape" : ""}" style="--focal:${escapeHtml(t.focal ?? "50% 50%")};--ar:${escapeHtml(t.ar ?? "3 / 2")}"><picture>${pictureFor(ph.url, "(max-width: 760px) 100vw, (max-width: 1000px) 50vw, 25vw", ph.width)}
-        <img src="${escapeHtml(bestDerivative(ph.url, "jpg", ph.width))}" alt="${escapeHtml(ph.alt || ph.filename || "")}"
-             loading="lazy" decoding="async" /></picture></figure>` : ""}
     <p class="pkg__num">${String(i + 1).padStart(2, "0")}.${
       // Real text, not a CSS ::before. Generated content is invisible to screen
       // readers and to anything reading the DOM, so "most popular" — the one
@@ -91,13 +88,18 @@ export function servicesPage(photos: Photo[] = []): string {
       // card's photo ~50px lower than the other three and broke the row.
       t.popular ? ' <span class="pkg__flag">Most popular</span>' : ""
     }</p>
-    <h2 class="pkg__name">${escapeHtml(t.name)}</h2>
+    <div class="pkg__heading">
+      <h2 class="pkg__name">${escapeHtml(t.name)}</h2>
+      <p class="pkg__price">${escapeHtml(formatPrice(t.price))}</p>
+    </div>
     <p class="pkg__spec">${escapeHtml(t.spec)}</p>
+    ${ph ? `<figure class="pkg__fig${ph.width && ph.height && ph.width > ph.height ? " pkg__fig--landscape" : ""}" style="--focal:${escapeHtml(t.focal ?? "50% 50%")};--ar:${escapeHtml(t.ar ?? "3 / 2")}"><picture>${pictureFor(ph.url, "(max-width: 760px) 100vw, (max-width: 1000px) 50vw, 25vw", ph.width)}
+        <img src="${escapeHtml(bestDerivative(ph.url, "jpg", ph.width))}" alt="${escapeHtml(ph.alt || ph.filename || "")}"
+             loading="lazy" decoding="async" /></picture></figure>` : ""}
     <p class="pkg__desc">${escapeHtml(t.fit)}</p>
     <ul class="pkg__list">
       ${t.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}
     </ul>
-    <p class="pkg__price">${escapeHtml(formatPrice(t.price))}</p>
     <a class="cta cta--sm" href="./contact.html?package=${encodeURIComponent(t.name)}" aria-label="Book now: ${escapeHtml(t.name)} package">Book now</a>
   </article>`;
   };
@@ -118,10 +120,10 @@ export function servicesPage(photos: Photo[] = []): string {
 
     <section class="invest">
       <div class="invest__col">
-        <p class="invest__label">Investment</p>
-        <h2 class="invest__h">Quality over quantity.</h2>
+        <p class="invest__label">Booking</p>
+        <h2 class="invest__h">50% deposit to book.</h2>
       </div>
-      <p class="invest__p">${escapeHtml(p.depositNote)}</p>
+      <p class="invest__p">Full galleries delivered in 7–14 days. EFT accepted.</p>
     </section>
 
     <div class="service-details">
@@ -144,7 +146,7 @@ export function servicesPage(photos: Photo[] = []): string {
       </ul>
     </div>
     </div>
-${homeBand({ eyebrow: "Next step", heading: "Let's plan your session.", cta: "Enquire about a session", href: "./contact.html" })}
+${homeBand({ eyebrow: "Enquiries", heading: "Book a session.", cta: "Enquire about a session", href: "./contact.html" })}
   </section>`;
 }
 
@@ -208,9 +210,9 @@ export function contactPage(_photos: Photo[] = []): string {
   return `<section class="page contact">
     <div class="contact__col">
       <div class="contact__main">
-      <p class="eyebrow">Get in touch</p>
-      <h1 class="contact__h">Let's create something beautiful.</h1>
-      <p class="contact__p">${escapeHtml(SITE.blurb)}</p>
+      <p class="eyebrow">Enquiries</p>
+      <h1 class="contact__h">Book a session.</h1>
+      <p class="contact__p">Tell me which session you're interested in, where you'd like to shoot and a date that works for you.</p>
 
       <form class="cform" id="cform" novalidate>
         <label>Name<input name="name" type="text" required autocomplete="name" /></label>
@@ -229,6 +231,7 @@ export function contactPage(_photos: Photo[] = []): string {
       </div>
 
       <aside class="contact__aside">
+      <h2 class="contact__aside-title">Contact details</h2>
       <ul class="contact__list">
         <li>${icon("pin")}<span>${escapeHtml(c.location)}</span></li>
         <li>${icon("mail")}<a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></li>

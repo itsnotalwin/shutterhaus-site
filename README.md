@@ -58,7 +58,7 @@ npm run verify    # rendered-design gate (see below)
 a broken gallery row or a missing image derivative fails the build.
 
 `npm run verify` renders the built site in headless Chrome and asserts the
-design (layout, greyscale state, gallery geometry). It needs a Chrome exposing
+design (responsive layout, photograph integrity, gallery geometry and navigation). It needs a Chrome exposing
 CDP on port 9222; CI starts one automatically. Locally:
 
 ```bash
@@ -74,7 +74,7 @@ node tools/verify.mjs http://127.0.0.1:4173
 `src/pricing.json` supplies Services, Contact, the Home price and generated
 search metadata. Package prices are numeric rand amounts, for example `2500`.
 Run `npm run build` after editing it. Social includes 40 edited images and a
-10-image sneak peek within 48 hours; full galleries arrive in 7–14 days.
+10-image preview within 48 hours; full galleries arrive in 7–14 days.
 
 `npm run test` checks pricing consistency, Social deliverables, form validation,
 draft preservation during rotation, duplicate submission protection, failure
@@ -84,14 +84,25 @@ requests. `npm run verify` remains the browser layout gate.
 ## Editorial presentation
 
 `src/makeover.css` owns the public presentation: sentence-case Inter headings,
-generous page margins, white closing sections and a subtle recommendation on
-Essential. The Archivo Black wordmark and curated photograph order remain the
-brand anchors. Services closes with an enquiry link to Contact.
+generous page margins, black booking sections and a subtle recommendation on
+Essential. Prices sit beside package names before the photographs. The Archivo
+Black wordmark and curated photograph order remain the brand anchors. Services
+closes with an enquiry link to Contact. Contact has a separate black panel for
+direct contact details. Public copy describes the sessions and booking process.
+
+The Home header stays transparent at the top of the photograph and becomes
+solid white while scrolling or opening the mobile menu. The compact menu is
+used through 1000px and stays within reach on every page. Portfolio columns
+repack when crossing 760px; height-only
+changes never redraw the page, and Contact keeps its form draft during rotation.
 
 Inter 400/500 and Archivo Black 400 are served from `public/fonts/`; their OFL
 licenses are included there. The browser gate checks font loading, heading
 overflow, aligned desktop prices and the closing enquiry destination, and saves
-fresh desktop and phone screenshots for all five public pages.
+fresh desktop and phone screenshots for all five public pages. Use
+`REVIEW_WIDTHS=320,390,430,768,1024,1440,1920 npm run verify` for the broader
+responsive review. The gate also checks menu visibility, dismissal and focus,
+Home header behavior, gallery repacking and draft preservation.
 
 ## Project layout
 
@@ -276,20 +287,19 @@ Locked decisions that earlier cleanups broke. Change them only by deliberately
 reopening the work.
 
 - **Home is pinned.** `heroPhoto` in `src/config.ts` fixes which frame carries the
-  hero, and `homeGalleryCount: 6` fixes the home strip (2 frames × 3 columns at
-  ≥ 640px). Changing either needs a deliberate home-route pass; the numbers are
-  not arbitrary — 8 and 9 both strand a column and recreate the white hole.
+  hero, and `homeGalleryCount: 6` fixes the home strip in two packed columns at
+  every width. Changing either needs a deliberate home-route pass.
 - **Specificity trap.** `.page h1` (0,1,1) beats a bare class such as `.about__h`
   (0,1,0). The `.page` / `.portfolio` prefixes in `editorial.css` are load-bearing,
   not decoration — remove one and a heading's margin collapses to 0.
-- **The portfolio wall** is 30 frames in 15 rows of 2, each row one exact aspect
-  ratio (zero gap under any photo), with no frame numbering. The column count
-  (3 desktop / 2 phone) is a viewport concern owned by CSS — never re-derive it
-  in `rows.py`, which once dragged desktop to 2 columns and produced a
-  14,582px-tall page.
-- **Greyscale state.** Hover devices show the strip greyscale at rest; touch
-  devices show true colour. One width alone cannot cover the rule — check a
-  hover width (≥ 640) *and* a touch width (390).
+- **The portfolio wall** is 30 curated frames in three packed columns above
+  760px and two below. `rows.ts` supplies the chosen frames and their order;
+  `wallCols()` and the CSS share the breakpoint. Every photo retains its ratio,
+  with consistent gutters and no printed frame numbering.
+- **Photographs stay as uploaded.** No greyscale or colour filters on either
+  touch or hover devices. Gallery and About photographs remain uncropped; the
+  hero is a deliberate full-bleed crop. Service thumbnails use natural ratios
+  on phones and shared slots on desktop, with landscape groups shown in full.
 - **Admin stays out of search.** Keep `/admin` and `/admin.html` disallowed in
   `public/robots.txt`; the admin carries its own `noindex` meta as the real gate.
 

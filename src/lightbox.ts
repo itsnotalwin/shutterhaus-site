@@ -167,6 +167,7 @@ export function initLightbox(): void {
   let frames: HTMLImageElement[] = [];
   let at = 0;
   let returnFocus: HTMLElement | null = null;
+  let returnFrameUrl: string | null = null;
   let backgroundWasInert = false;
   let previousOverflow = "";
   const background = document.getElementById("app");
@@ -213,6 +214,7 @@ export function initLightbox(): void {
     if (box.hidden) {
       returnFocus = target.closest<HTMLElement>('[role="button"]')
         ?? (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+      returnFrameUrl = target.dataset.full ?? null;
       backgroundWasInert = background?.inert ?? false;
       previousOverflow = document.body.style.overflow;
     }
@@ -246,7 +248,14 @@ export function initLightbox(): void {
     img.src = "";
     document.body.style.overflow = previousOverflow;
     if (background) background.inert = backgroundWasInert;
-    if (returnFocus?.isConnected) returnFocus.focus();
+    // Rotation can repack the wall while the viewer is open. Restore focus to
+    // the same photograph in the new columns if its old element was replaced.
+    const replacement = returnFrameUrl
+      ? [...document.querySelectorAll<HTMLImageElement>('.cell img[data-full]')]
+          .find(frame => frame.dataset.full === returnFrameUrl)?.closest<HTMLElement>('[role="button"]')
+      : null;
+    const focusTarget = returnFocus?.isConnected ? returnFocus : replacement;
+    focusTarget?.focus({ preventScroll: true });
     // Reset zoom on close, or the next frame opens pre-zoomed and the visitor
     // cannot tell why it is cropped with no way back to fit.
     zoomed = false;

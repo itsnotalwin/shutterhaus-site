@@ -164,23 +164,23 @@ export const SITE: SiteConfig = {
    * touching page code.
    */
   home: {
-    eyebrow: "Photography is poetry.",
-    heading: "Timeless portraiture",
-    lede: "Real people. Honest moments. Portraits that look beyond the now.",
+    eyebrow: "Shutterhaus Visuals",
+    heading: "Portraits in Gauteng.",
+    lede: "Portraits, couples and families. On location, with Alwin Newman.",
     cta: "View portfolio",
     est: "2019",
     tags: ["Portraits", "Couples", "Families"],
   },
   about: {
     eyebrow: "About me",
-    heading: "Photography is poetry.",
+    heading: "Alwin Newman.",
     /** paragraphs, in order, on the left column beside the portrait */
     body: [
-      "I'm a photographer based in Gauteng, drawn to the raw, unfiltered beauty of real people and unfiltered moments. For me, photography isn't just about what you see, it's about what you feel.",
-      "I believe the best images aren't staged. They happen. They live in the in-between, in the quiet looks, the laughter, the chaos, the stillness.",
-      "This is my way of telling your story, honestly, creatively, and with intention.",
+      "I'm Alwin, a photographer based in Gauteng. I shoot portraits, couples, families and social content on location.",
+      "I'll help you choose a location and clothing, and guide you through the shoot. You don't need to know how to pose.",
+      "Sessions are available in the evenings and on weekends, by appointment.",
     ],
-    cta: "Let's create together",
+    cta: "Enquire about a session",
     // A man walking a beach with a metal detector, black and white. Ratio 4:5
     // (portrait) -- and nothing may crop it hard, see the About figure note.
     photo: "55-metal-detector.jpg",
@@ -247,7 +247,7 @@ export const SITE: SiteConfig = {
   // the lower-left for the white headline. Chosen from a side-by-side of all
   // six landscape frames cropped to the hero ratio.
   heroPhoto: "27-img-0297.jpg",
-  services: { eyebrow: "Services", heading: "Capture what matters.", cta: "View packages" },
+  services: { eyebrow: "Photography", heading: "Sessions & pricing.", cta: "View packages" },
 };
 
 /** Fonts loaded in index.html. Change these to re-skin the type. */

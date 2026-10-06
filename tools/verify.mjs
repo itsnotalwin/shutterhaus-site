@@ -100,6 +100,7 @@ const consoleErrors = () =>
     .filter((t) => t && !/favicon|picsum|net::ERR|Failed to load resource/i.test(t));
 
 // ============================================== desktop home
+if (!process.env.REVIEW_ONLY) {
 await viewport(1440, 900);
 await goto("/");
 
@@ -597,13 +598,17 @@ for (const w of [360, 390, 768]) {
 }
 await send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
 await shot("shot-pricing-mobile.png");
+}
 
 // Fresh review evidence from this exact build. Legacy shots above describe
 // intermediate test states; these numbered captures explicitly name the page
 // and viewport and wait for fonts and photographs to finish loading.
-for (const width of [1440, 390]) {
-  await viewport(width, 900);
-  await send("Emulation.setTouchEmulationEnabled", { enabled: width === 390 });
+const reviewWidths = process.env.REVIEW_WIDTHS
+  ? process.env.REVIEW_WIDTHS.split(',').map(Number)
+  : [390, 1440];
+for (const width of reviewWidths) {
+  await viewport(width, ({ 320: 667, 390: 844, 430: 932, 768: 1024, 1024: 768, 1920: 1080 })[width] ?? 900);
+  await send("Emulation.setTouchEmulationEnabled", { enabled: width <= 1000 });
   for (const [index, route] of ["home", "portfolio", "about", "services", "contact"].entries()) {
     await goto(route === "home" ? "/" : `/${route}.html`, 1000);
     await evaluate(`(async () => {
@@ -654,10 +659,80 @@ for (const width of [1440, 390]) {
     if (route === 'home') {
       const firstScreen = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
       writeFileSync(`${OUT}/01-home-${width}-viewport.png`, Buffer.from(firstScreen.result.data, 'base64'));
+      check(`review home ${width}: photograph starts at the top`, await evaluate(`document.querySelector('.hero').getBoundingClientRect().top === 0`));
+      await evaluate(`scrollTo(0, document.querySelector('.hstrip').offsetTop + 80)`);
+      await sleep(150);
+      const header = await evaluate(`(() => {
+        const header = document.querySelector('.site-header');
+        return { top: header.getBoundingClientRect().top, background: getComputedStyle(header).backgroundColor };
+      })()`);
+      check(`review home ${width}: menu stays visible while scrolling`, Math.abs(header.top) <= 1 && header.background === 'rgb(255, 255, 255)', JSON.stringify(header));
+      if (width === 390 || width === 1440) await shot(`01-home-${width}-scrolled.png`);
+      await evaluate(`scrollTo(0, 0)`);
+      await sleep(100);
+    }
+    if (width <= 1000) {
+      await evaluate(`document.querySelector('.burger').click()`);
+      await sleep(200);
+      const menu = await evaluate(`(() => {
+        const links = [...document.querySelectorAll('.site-nav a')];
+        return {
+          expanded: document.querySelector('.burger').getAttribute('aria-expanded') === 'true',
+          linksVisible: links.length === 5 && links.every(link => {
+            const rect = link.getBoundingClientRect();
+            return rect.top >= 0 && rect.bottom <= innerHeight && rect.left >= 0 && rect.right <= innerWidth &&
+              link.contains(document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2));
+          }),
+          focused: document.activeElement === links[0],
+          inert: document.querySelector('main').inert,
+          active: document.activeElement?.tagName,
+          visibility: getComputedStyle(document.querySelector('.site-nav')).visibility,
+        };
+      })()`);
+      check(`review ${route} ${width}: all five menu links visible`, menu.expanded && menu.linksVisible);
+      check(`review ${route} ${width}: menu focus and background isolation`, menu.focused && menu.inert, JSON.stringify(menu));
+      if (width === 390 && ['home', 'portfolio', 'contact'].includes(route)) await shot(`${String(index + 1).padStart(2, '0')}-${route}-${width}-menu.png`);
+      await evaluate(`window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))`);
+      check(`review ${route} ${width}: Escape restores focus and closes menu`, await evaluate(`document.querySelector('.burger').getAttribute('aria-expanded') === 'false' && document.activeElement === document.querySelector('.burger') && !document.querySelector('main').inert`));
+      await evaluate(`document.querySelector('.burger').click(); document.querySelector('.nav-scrim').click()`);
+      check(`review ${route} ${width}: tapping outside closes menu`, await evaluate(`document.querySelector('.burger').getAttribute('aria-expanded') === 'false' && !document.querySelector('.nav-scrim') && !document.documentElement.classList.contains('nav-locked')`));
     }
     console.log("      review screenshot:", name);
   }
 }
+
+// Width changes must repack the wall without dropping frames or breaking the
+// viewer's return focus. Contact drafts must survive width AND height changes.
+await viewport(1024, 768);
+await goto('/portfolio.html', 1000);
+await evaluate(`(() => {
+  const frame = document.querySelector('.pf-cell');
+  window.reviewFrameUrl = frame.querySelector('img').dataset.full;
+  frame.focus({ preventScroll: true });
+  frame.querySelector('img').click();
+})()`);
+await viewport(390, 844);
+await sleep(200);
+check('rotation repacks the portfolio to two columns with all 30 frames', await evaluate(`document.querySelectorAll('.pf-col').length === 2 && document.querySelectorAll('.pf-cell').length === 30`));
+await shot('02-portfolio-390-viewer.png');
+await evaluate(`document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))`);
+check('viewer restores focus to the same photo after repacking', await evaluate(`document.querySelector('.lb').hidden && document.activeElement?.querySelector('img')?.dataset.full === window.reviewFrameUrl`));
+await evaluate(`scrollTo(0, 400)`);
+await viewport(1024, 768);
+await sleep(200);
+check('desktop resize restores three columns without jumping to the top', await evaluate(`document.querySelectorAll('.pf-col').length === 3 && document.querySelectorAll('.pf-cell').length === 30 && Math.abs(scrollY - 400) <= 1`));
+
+await viewport(390, 844);
+await goto('/contact.html?package=Social', 1000);
+await evaluate(`(() => {
+  window.reviewForm = document.querySelector('form');
+  document.querySelector('[name="message"]').value = 'A draft to preserve';
+})()`);
+await viewport(390, 500);
+await evaluate(`document.querySelector('.burger').click()`);
+await viewport(1024, 768);
+check('Contact preserves the form, draft and selected package through resizing', await evaluate(`document.querySelector('form') === window.reviewForm && document.querySelector('[name="message"]').value === 'A draft to preserve' && document.querySelector('[name="kind"]').value === 'Social'`));
+check('resizing an open compact menu to desktop unlocks the page', await evaluate(`!document.documentElement.classList.contains('nav-locked') && !document.querySelector('main').inert && document.querySelector('.burger').getAttribute('aria-expanded') === 'false'`));
 
 // ============================================== console
 const errs = consoleErrors();
