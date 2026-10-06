@@ -49,7 +49,7 @@ deposit and existing add-on prices remain in place.
    search metadata to match the existing instruction to remove calling. The
    requested WhatsApp channel remains available.
 
-## Public flow status
+## Initial public flow status
 
 1. **Home → selected photographs:** keyboard access repaired; cheapest package
    remains R800 and reads shared pricing. Hero composition and crops need a
@@ -92,3 +92,28 @@ deposit and existing add-on prices remain in place.
 
 This report was written before publication. GitHub Actions and this chat record
 the subsequent deployment status.
+
+## Follow-up screenshot review and publication
+
+Alwin authorised publication and another visual attempt. Direct interactive
+browser access remained unavailable, so the existing GitHub Actions Chrome gate
+was extended to export ten fresh full-page captures, one desktop and one phone
+view of each public page. These show the built version, rather than a direct
+session on the custom domain. Artifacts are retained for seven days.
+
+The first capture run (`bc4a265`) passed 110 browser checks but revealed defects
+that the prior overflow check did not detect:
+
+- About's booking band occupied only the left desktop grid column; its price
+  and button were clipped inside the band. It now spans both columns. A browser
+  assertion also verifies that booking-band content fits inside its background.
+- Services' Add-ons heading touched the preceding black investment band. Added
+  48 px separation on desktop and 32 px on phones.
+- Contact's eyebrow touched the header border because the later `.page` rule
+  reset its top padding. Restored 40 px on desktop and 28 px on phones.
+- Some gallery screenshots caught image fade transitions in progress. The
+  screenshot pass now waits for fonts, image decode and finite animations.
+
+The build reported an advisory affecting `source-map-js` 1.2.1 in development
+tooling. The lockfile now selects the compatible patched release 1.2.2.
+Deployment status and the final screenshot review are recorded in this chat.

@@ -590,6 +590,8 @@
 /* ------------------------------------------------------- about page */
 
 .about { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr); gap: 64px; align-items: start; }
+/* The booking band is the third grid child and must span both columns. */
+.about > .hcta { grid-column: 1 / -1; }
 .about__body { padding-top: 40px; }
 /* The `.page` prefix is required, not decoration.
  *
@@ -1195,8 +1197,16 @@
  * The `.page` prefix is required: `.page h2` (0,1,1) sets margin: 0 and would
  * beat a bare `.sterms__h` (0,1,0) — the same trap as `.about__h`. */
 .page .sterms__h { margin-bottom: 16px; }
+.invest + .sterms { margin-top: 48px; }
 .sterms + .sterms { margin-top: 28px; }
 
 /* Same story on the contact page: `.contact__h` had no margin-bottom, so the
  * 40px title sat 14px above the first paragraph. */
 .page .contact__h { margin-bottom: 20px; }
+/* .page is loaded after the base Contact rules and otherwise resets its top
+   padding to zero, pressing the eyebrow against the header border. */
+.page.contact { padding-top: 40px; }
+@media (max-width: 640px) {
+  .page.contact { padding-top: 28px; }
+  .invest + .sterms { margin-top: 32px; }
+}

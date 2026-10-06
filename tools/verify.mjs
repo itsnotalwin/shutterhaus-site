@@ -615,15 +615,27 @@ for (const width of [1440, 390]) {
       // Decode lazy frames for a full-page screenshot as well as the viewport.
       images.forEach(img => { img.loading = 'eager'; });
       await Promise.all(images.map(img => img.decode().catch(() => {})));
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      await Promise.all(document.getAnimations()
+        .filter(animation => animation.effect?.getTiming().iterations !== Infinity)
+        .map(animation => animation.finished.catch(() => {})));
     })()`);
     const state = await evaluate(`({
       heading: document.querySelector('main h1')?.textContent,
       broken: [...document.querySelectorAll('main img')].filter(img => !img.naturalWidth).length,
       overflow: document.documentElement.scrollWidth - innerWidth,
+      bandFits: [...document.querySelectorAll('main .hcta')].every(band => {
+        const edge = band.getBoundingClientRect();
+        return [...band.querySelectorAll('.hcta__h, .hcta__side, .hcta__btn')].every(item => {
+          const rect = item.getBoundingClientRect();
+          return rect.left >= edge.left - 1 && rect.right <= edge.right + 1;
+        });
+      }),
     })`);
     check(`review ${route} ${width}: page loaded`, !!state.heading, state.heading);
     check(`review ${route} ${width}: no broken images`, state.broken === 0, state.broken);
     check(`review ${route} ${width}: no overflow`, state.overflow <= 0, state.overflow);
+    check(`review ${route} ${width}: booking band fits`, state.bandFits);
     const metrics = await send("Page.getLayoutMetrics");
     const size = metrics.result.cssContentSize;
     const capture = await send("Page.captureScreenshot", {
