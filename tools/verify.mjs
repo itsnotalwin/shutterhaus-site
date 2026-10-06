@@ -684,6 +684,16 @@ for (const width of reviewWidths) {
       check(`review portfolio ${width}: correct initial image count`, wall.visible === (width <= 760 ? 10 : 30));
       check(`review portfolio ${width}: disclosure appears only on phones`, wall.more === (width <= 760));
       check(`review portfolio ${width}: correct column count`, Number(wall.cols) === (width <= 760 ? 2 : 3));
+      if (width <= 760) {
+        check(`review portfolio ${width}: icon-only disclosure remains accessible and centred`, await evaluate(`(() => {
+          const summary=document.querySelector('.pf-more__toggle'), icon=summary.querySelector('svg');
+          const label=summary.querySelector('.pf-more__closed'), rect=summary.getBoundingClientRect();
+          const parent=summary.parentElement.getBoundingClientRect(), style=getComputedStyle(label);
+          return label.textContent==='Show more images' && style.clipPath==='inset(50%)' &&
+            label.getBoundingClientRect().width<=1 && icon.getAttribute('aria-hidden')==='true' &&
+            rect.width>=44 && rect.height>=44 && Math.abs((rect.left+rect.right-parent.left-parent.right)/2)<=1;
+        })()`));
+      }
     }
     const metrics = await send("Page.getLayoutMetrics");
     const size = metrics.result.cssContentSize;
@@ -720,6 +730,12 @@ for (const width of reviewWidths) {
       await evaluate(`document.querySelector('.pf-more__toggle').click()`);
       await sleep(100);
       check(`review portfolio ${width}: closing hides the remaining twenty`, await evaluate(`!document.querySelector('.pf-more').open && [...document.querySelectorAll('.pf-more .pf-cell')].every(cell=>!cell.checkVisibility())`));
+      if (width === 390) {
+        const y = await evaluate(`document.querySelector('.pf-more').getBoundingClientRect().top+scrollY-90`);
+        await evaluate(`document.querySelector('.pf-more__toggle').blur()`);
+        const detail=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:true,clip:{x:0,y:Math.max(0,y),width,height:250,scale:1}});
+        writeFileSync(`${OUT}/02-portfolio-390-disclosure.png`,Buffer.from(detail.result.data,'base64'));
+      }
       await evaluate(`scrollTo(0,0)`);
     }
     if (width <= 1000) {

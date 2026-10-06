@@ -287,8 +287,9 @@ reopening the work.
   (0,1,0). The `.page` / `.portfolio` prefixes in `editorial.css` are load-bearing,
   not decoration — remove one and a heading's margin collapses to 0.
 - **The portfolio wall** is 30 curated frames in three packed columns above
-  760px and two below. Phones show the first ten, with a native Show more images
-  disclosure for the rest; desktop shows the full wall. `rows.ts` supplies the chosen frames and their order;
+  760px and two below. Phones show the first ten, with a centred half-filled triangle
+  disclosure for the rest; its screen-reader label changes between Show more images
+  and Show fewer images. Desktop shows the full wall. `rows.ts` supplies the chosen frames and their order;
   `wallCols()` and the CSS share the breakpoint. Every photo retains its ratio,
   with consistent gutters and no printed frame numbering.
 - **Photographs stay as uploaded.** No greyscale or colour filters on either

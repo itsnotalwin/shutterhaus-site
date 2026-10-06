@@ -69,9 +69,12 @@ body { -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
 .page.portfolio .phead__h { font-size: clamp(44px, 5.4vw, 76px); line-height: 1.08; }
 .pf-rows { max-width: none; }
 .pf-more { margin-top: 28px; }
-.pf-more__toggle { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 48px; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); font: 500 12px/1.5 var(--font-body); cursor: pointer; list-style: none; }
+.pf-more__toggle { position: relative; display: flex; align-items: center; justify-content: center; width: 64px; min-height: 56px; margin: 0 auto; padding: 0; color: var(--ink); cursor: pointer; list-style: none; }
 .pf-more__toggle::-webkit-details-marker { display: none; }
 .pf-more__toggle:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+.pf-more__toggle:active { opacity: .55; }
+.pf-more__toggle svg { display: block; transition: transform .16s var(--ease); }
+.pf-more__label { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .pf-more__open { display: none; }
 .pf-more[open] .pf-more__closed { display: none; }
 .pf-more[open] .pf-more__open { display: inline; }
@@ -230,5 +233,5 @@ body { -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
   .hcta__foot a { overflow-wrap: anywhere; letter-spacing: .02em; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .social, .cta::before, .hcta__btn, .cform input, .cform select, .cform textarea { transition: none; }
+  .social, .cta::before, .hcta__btn, .cform input, .cform select, .cform textarea, .pf-more__toggle svg { transition: none; }
 }

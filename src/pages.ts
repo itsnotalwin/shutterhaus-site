@@ -582,7 +582,7 @@ export function portfolioPage(photos: Photo[], expanded = false): string {
     const gallery = hasMore
       ? `${wall(ordered.slice(0, 10))}
         <details class="pf-more"${expanded ? ' open' : ''}>
-          <summary class="pf-more__toggle"><span class="pf-more__closed">Show more images</span><span class="pf-more__open">Show fewer images</span><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="m5 7 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5" /></svg></summary>
+          <summary class="pf-more__toggle"><span class="pf-more__label pf-more__closed">Show more images</span><span class="pf-more__label pf-more__open">Show fewer images</span><svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false"><path d="M5 10H27L16 24Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" /><path d="M5 10H16V24Z" fill="currentColor" /></svg></summary>
           ${wall(ordered.slice(10))}
         </details>`
       : wall(ordered);
