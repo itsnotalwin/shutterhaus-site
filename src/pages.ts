@@ -302,35 +302,12 @@ export function pictureFor(url: string, sizes: string, sourceWidth?: number | nu
  */
 const SIZES = "100vw";
 
-/**
- * The `sizes` attribute for a WALL cell, derived from the real column count.
- *
- * This used to be a single hardcoded `SIZES` string whose smallest branch was
- * `100vw`, while a wall cell at 393px is 111px (or 186px at two columns). The
- * browser is not allowed to guess: told "100vw" it correctly asks for 393 CSS
- * px, which at DPR 3 is 1179 device px, which is why it correctly picked the
- * 1200w derivative for every one of the 30 frames. Measured on the live site:
- * 1.28 MB of images for one portfolio page, against 333 device px actually
- * needed per cell. Downscaling the current pick to the true box scores
- * PSNR 40-47 dB, i.e. visually lossless — the extra pixels bought nothing.
- *
- * So `sizes` now states the cell width honestly and the browser picks the 400w
- * file that already exists on disk (11.9x smaller than 1200w on these frames).
- *
- * `cols` is the value wallCols() already computed for the measured row width,
- * so the descriptor cannot drift away from the grid that renders it. The
- * arithmetic is done in px against a 393px reference phone and converted to a
- * percentage, then rounded UP so the browser is never told less than it paints.
- * Deliberately generous: overstating costs a little bandwidth, understating
- * costs sharpness.
- */
+/** Match the wall gutters in makeover.css so high-DPI photos stay sharp. */
 function wallSizes(cols: number): string {
-  const REF = 393; // iPhone 16 CSS width, the viewport the bug was measured at
-  const PAD = 26 * 2; // --pad on both sides
-  const GUT = 14; // --gut between cells
-  const cellPx = (REF - PAD - (cols - 1) * GUT) / cols;
-  const pct = Math.min(100, Math.ceil((cellPx / REF) * 100));
-  return `${pct}vw`;
+  return `(max-width: 640px) calc((100vw - 32px - ${(cols - 1) * 8}px) / ${cols}), ` +
+    `(max-width: 760px) calc((100vw - 40px - ${(cols - 1) * 12}px) / ${cols}), ` +
+    `(max-width: 1100px) calc((100vw - 64px - ${(cols - 1) * 16}px) / ${cols}), ` +
+    `calc((100vw - min(8.8vw, 144px) - ${(cols - 1) * 22}px) / ${cols})`;
 }
 
 /**
@@ -582,7 +559,7 @@ export function portfolioPage(photos: Photo[], expanded = false): string {
     const gallery = hasMore
       ? `${wall(ordered.slice(0, 10))}
         <details class="pf-more"${expanded ? ' open' : ''}>
-          <summary class="pf-more__toggle"><span class="pf-more__label pf-more__closed">Show more images</span><span class="pf-more__label pf-more__open">Show fewer images</span><svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false"><path d="M5 10H27L16 24Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" /><path d="M5 10H16V24Z" fill="currentColor" /></svg></summary>
+          <summary class="pf-more__toggle"><span class="pf-more__label pf-more__closed">Show more images</span><span class="pf-more__label pf-more__open">Show fewer images</span><svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false"><path d="m6 12 10 8 10-8" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" /></svg></summary>
           ${wall(ordered.slice(10))}
         </details>`
       : wall(ordered);
@@ -805,7 +782,7 @@ export function homePage(photos: Photo[], cols: number): string {
                     // like the number on my photos". The strip does not need
                     // numbering to read as a curated set, and the digit sitting in
                     // the corner of every photograph was the thing he objected to.
-                    .map((p) => `<div class="hstrip__item" role="button" tabindex="0" aria-label="View ${escapeHtml(p.alt || "photograph")}">${figure(p, 0, '(max-width: 760px) 100vw, 50vw')}</div>`)
+                    .map((p) => `<div class="hstrip__item" role="button" tabindex="0" aria-label="View ${escapeHtml(p.alt || "photograph")}">${figure(p, -1, '(max-width: 760px) 100vw, 50vw')}</div>`)
                     .join("")}</div>`,
               )
               .join("")}</div>

@@ -353,3 +353,51 @@ test('pre-rendered Home adopts one mobile column and only repacks when crossing 
     assert.equal(w.scrollY, 450);
   } finally { dom.window.close(); built.window.close(); }
 });
+
+test("page metadata stays aligned after hydration and legacy hash navigation", async () => {
+  const pages = JSON.parse(await readFile('src/seo.json', 'utf8'));
+  for (const [route, page] of Object.entries(pages)) {
+    const html = await readFile(`dist/${page.filename}`, 'utf8');
+    const dom = fixture(`https://shutterhausvisuals.co.za/${page.filename}`, false);
+    try {
+      const w = dom.window;
+      const source = new JSDOM(html);
+      w.document.head.innerHTML = source.window.document.head.innerHTML;
+      source.window.close();
+      w.eval(mainBundle.outputFiles[0].text);
+      assert.equal(w.document.title, page.title);
+      assert.equal(w.document.querySelector('meta[name="description"]').content, page.description);
+      if (route === 'home') {
+        for (const dest of ['services', 'portfolio', 'home']) {
+          w.location.hash = `#/${dest}`;
+          w.dispatchEvent(new w.Event('hashchange'));
+          const expected = pages[dest];
+          const url = `https://shutterhausvisuals.co.za/${dest === 'home' ? '' : expected.filename}`;
+          assert.equal(w.document.title, expected.title);
+          assert.equal(w.document.querySelector('link[rel="canonical"]').href, url);
+          assert.equal(w.document.querySelector('meta[property="og:url"]').content, url);
+          assert.equal(w.document.querySelector('meta[name="twitter:description"]').content, expected.description);
+          const graph = JSON.parse(w.document.querySelector('script[type="application/ld+json"]').textContent)['@graph'];
+          assert.equal(graph.find(n => n['@type'] === 'WebPage').url, url);
+          assert.equal(graph.filter(n => n['@type'] === 'BreadcrumbList').length, dest === 'home' ? 0 : 1);
+        }
+      }
+    } finally { dom.window.close(); }
+  }
+});
+
+test("sitemap agrees with canonical pages and admin noindex remains readable", async () => {
+  const xml = await readFile('dist/sitemap.xml', 'utf8');
+  const pages = JSON.parse(await readFile('src/seo.json', 'utf8'));
+  assert.equal([...xml.matchAll(/<loc>/g)].length, Object.keys(pages).length);
+  for (const page of Object.values(pages)) {
+    const dom = new JSDOM(await readFile(`dist/${page.filename}`, 'utf8'));
+    assert.ok(xml.includes(`<loc>${dom.window.document.querySelector('link[rel="canonical"]').href}</loc>`));
+    dom.window.close();
+  }
+  assert.doesNotMatch(xml, /admin|lastmod/);
+  assert.doesNotMatch(await readFile('dist/robots.txt', 'utf8'), /^Disallow:\s*\/admin/m);
+  const admin = new JSDOM(await readFile('dist/admin.html', 'utf8'));
+  assert.match(admin.window.document.querySelector('meta[name="robots"]').content, /noindex/);
+  admin.window.close();
+});

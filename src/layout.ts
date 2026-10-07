@@ -86,7 +86,7 @@ function pageHref(id: string): string {
  */
 export function header(active: string): string {
   const wordmark = `
-    <a class="logo" href="${pageHref("home")}" aria-label="${escapeHtml(SITE.nameTop)} | home">
+    <a class="logo" href="${pageHref("home")}" aria-label="${escapeHtml(SITE.nameTop)} ${escapeHtml(SITE.nameBig2)} | home">
       <span class="logo-row">
         <span class="logo-sm">${escapeHtml(SITE.nameTop)}</span>
         <span class="logo-lg">${escapeHtml(SITE.nameBig1)}</span>

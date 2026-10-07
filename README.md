@@ -287,7 +287,7 @@ reopening the work.
   (0,1,0). The `.page` / `.portfolio` prefixes in `editorial.css` are load-bearing,
   not decoration — remove one and a heading's margin collapses to 0.
 - **The portfolio wall** is 30 curated frames in three packed columns above
-  760px and two below. Phones show the first ten, with a centred half-filled triangle
+  760px and two below. Phones show the first ten, with a centred fine chevron
   disclosure for the rest; its screen-reader label changes between Show more images
   and Show fewer images. Desktop shows the full wall. `rows.ts` supplies the chosen frames and their order;
   `wallCols()` and the CSS share the breakpoint. Every photo retains its ratio,
@@ -296,8 +296,9 @@ reopening the work.
   touch or hover devices. Gallery and About photographs remain uncropped; the
   hero is a deliberate full-bleed crop. Service thumbnails use natural ratios
   on phones and shared slots on desktop, with landscape groups shown in full.
-- **Admin stays out of search.** Keep `/admin` and `/admin.html` disallowed in
-  `public/robots.txt`; the admin carries its own `noindex` meta as the real gate.
+- **Admin stays out of search.** Keep its `noindex` meta and omit it from the sitemap.
+  Allow crawling in `public/robots.txt` so search engines can read that directive.
+  Authentication and database policies protect private data.
 
 ## Notes
 

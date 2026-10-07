@@ -1,0 +1,27 @@
+{
+  "home": {
+    "filename": "index.html",
+    "title": "Kempton Park Photographer | Shutterhaus Visuals",
+    "description": "Portraits, couples, families and social content by Alwin Newman. Based in Kempton Park, with on-location photography across Gauteng."
+  },
+  "portfolio": {
+    "filename": "portfolio.html",
+    "title": "Portrait Photography Portfolio | Shutterhaus Visuals",
+    "description": "Browse portraits and location photography by Alwin Newman at Shutterhaus Visuals, based in Kempton Park and shooting across Gauteng."
+  },
+  "about": {
+    "filename": "about.html",
+    "title": "About Alwin Newman | Shutterhaus Visuals",
+    "description": "Meet Alwin Newman, the photographer behind Shutterhaus Visuals in Kempton Park. Portraits, couples, families and social content on location."
+  },
+  "services": {
+    "filename": "services.html",
+    "title": "Photography Prices in Kempton Park | Shutterhaus Visuals",
+    "description": "Compare photography packages from R800 for portraits, couples, families and social content. Travel within 25 km of Kempton Park is included."
+  },
+  "contact": {
+    "filename": "contact.html",
+    "title": "Book a Photographer in Kempton Park | Shutterhaus Visuals",
+    "description": "Book an on-location photography session with Alwin Newman in Kempton Park and Gauteng. Enquire by email or WhatsApp for evenings and weekends."
+  }
+}

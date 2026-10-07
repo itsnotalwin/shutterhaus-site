@@ -69,7 +69,8 @@ body { -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
 .page.portfolio .phead__h { font-size: clamp(44px, 5.4vw, 76px); line-height: 1.08; }
 .pf-rows { max-width: none; }
 .pf-more { margin-top: 28px; }
-.pf-more__toggle { position: relative; display: flex; align-items: center; justify-content: center; width: 64px; min-height: 56px; margin: 0 auto; padding: 0; color: var(--ink); cursor: pointer; list-style: none; }
+.pf-more__toggle { position: relative; display: flex; align-items: center; justify-content: center; width: 176px; min-height: 56px; gap: 22px; margin: 0 auto; padding: 0; color: var(--ink); cursor: pointer; list-style: none; }
+.pf-more__toggle::before, .pf-more__toggle::after { content: ""; width: 42px; height: 1px; background: var(--ink); opacity: .18; }
 .pf-more__toggle::-webkit-details-marker { display: none; }
 .pf-more__toggle:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
 .pf-more__toggle:active { opacity: .55; }

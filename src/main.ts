@@ -2,6 +2,7 @@ import "./styles.css";
 import "./editorial.css";
 import "./makeover.css";
 import { SITE } from "./config";
+import { updatePageMetadata } from "./seo";
 import { escapeHtml, renderShell } from "./layout";
 import { portfolioPage, homePage } from "./pages";
 import { contactPage, servicesPage, aboutPage } from "./pages-more";
@@ -117,13 +118,6 @@ function syncHeader(): void {
  */
 let paintSeq = 0;
 
-function setTitle(r: string): void {
-  const label = r.charAt(0).toUpperCase() + r.slice(1);
-  document.title =
-    r === "home"
-      ? `${SITE.nameTop} ${SITE.nameBig2} | photography in Gauteng`
-      : `${label} — ${SITE.nameTop} ${SITE.nameBig2}`;
-}
 
 let displayedRoute: string | null = null;
 
@@ -157,7 +151,7 @@ async function paint(): Promise<void> {
     scrollTo(0, 0);
   }
   delete app.dataset.route;
-  setTitle(r);
+  updatePageMetadata(r);
   markLoadedImages();
   wireBurger();
   syncHeader();
