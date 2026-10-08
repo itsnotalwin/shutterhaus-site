@@ -1,0 +1,161 @@
+/* Approved photographic direction: strong Archivo headings, quiet controls,
+   and whitespace instead of decorative rules. Original images stay untouched. */
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.site-header { border-bottom: 0; }
+.burger { color: var(--ink); width: auto; min-width: 52px; font: 400 16px/1.2 var(--font-body); }
+.burger__label { display: block; }
+.shell--over .site-header:not(.is-solid) .logo,
+.shell--over .site-header:not(.is-solid) .burger,
+.shell--over .site-header:not(.is-solid) .social { color: #fff; }
+.shell--over .site-header:not(.is-solid) .social { --social-bg: #333; }
+.shell--over .site-header.is-solid { border-bottom: 0; }
+.shell--over .site-header.is-solid .burger { color: var(--ink); }
+.nav-link, .nav-link.is-active { border-bottom: 0; }
+.hero { min-height: 760px; height: 94svh; max-height: 1100px; }
+.hero__fig picture { display: block; width: 100%; height: 100%; }
+.hero__scrim { background: linear-gradient(180deg, rgba(0,0,0,.52), rgba(0,0,0,.06) 28%, rgba(0,0,0,.25) 48%, rgba(0,0,0,.73) 100%); }
+.hero__body { padding: 180px var(--pad) 128px; }
+.page .hero__h { font: 400 clamp(54px, 6vw, 100px)/.96 var(--font-display); text-transform: uppercase; letter-spacing: -.05em; max-width: none; width: auto; padding: 0; margin: 0 0 24px; }
+.hero__h span { display: block; }
+.hero__h span:first-child { font-size: 1.32em; }
+.hero__lede { max-width: 34ch; font-size: 17px; line-height: 1.5; opacity: 1; margin-bottom: 28px; }
+.hero__actions { display: flex; align-items: center; gap: 28px; }
+.hero__primary { display: inline-flex; justify-content: center; align-items: center; min-height: 48px; padding: 14px 26px; background: #fff; color: #111; font: 600 13px/1.4 var(--font-body); text-transform: uppercase; letter-spacing: .02em; transition: background .2s; }
+.hero__primary:hover { background: #e8e8e8; }
+.hero__secondary { display: inline-flex; align-items: center; min-height: 44px; font-size: 15px; color: #fff; }
+.hero__secondary:hover { text-decoration: underline; text-underline-offset: 5px; }
+.hero__meta { border: 0; justify-content: flex-start; padding-bottom: 30px; font: 400 12px/1.5 var(--font-body); text-transform: none; letter-spacing: 0; }
+.hero a:focus-visible, .site-header a:focus-visible, .burger:focus-visible { outline: 2px solid currentColor; outline-offset: 5px; }
+.hstrip__head { border: 0; }
+.cta::before { display: none; }
+.cta { border: 0; }
+.hcta__foot { border: 0; }
+
+/* A photographic introduction gives the package comparison the same identity
+   as the homepage; the desktop keeps all four packages side by side. */
+.session-cover { position: relative; isolation: isolate; display: flex; align-items: flex-end; min-height: 540px; margin: 0 calc(-1 * var(--pad)); padding: 180px var(--pad) 64px; overflow: hidden; background: #111; color: #fff; }
+.session-cover__photo { position: absolute; z-index: -2; top: 0; bottom: 0; right: 0; width: min(48%, 500px); }
+.session-cover__photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; filter: grayscale(1); }
+.session-cover::after { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(90deg, #111 24%, rgba(17,17,17,.65) 49%, rgba(17,17,17,.08)); }
+.page .shead__h { font: 400 clamp(42px, 5vw, 72px)/.98 var(--font-display); letter-spacing: -.045em; text-transform: uppercase; max-width: none; margin-bottom: 22px; }
+.session-cover .shead__p { font-size: 17px; line-height: 1.5; color: #fff; margin: 0; }
+.package-picker { display: none; }
+.pkg, .pkg--pop { border: 0; }
+.pkg__flag, .pkg--pop .pkg__flag { border: 0; }
+.page .pkg__name { font-family: var(--font-display); font-size: clamp(20px, 1.8vw, 30px); text-transform: uppercase; }
+.pkg__heading { flex-direction: column; gap: 8px; }
+.pkg__price { font-weight: 700; }
+.pkg .cta, .pkg--pop .cta { justify-content: center; align-self: stretch; background: #111; color: #fff; padding: 14px 12px; text-align: center; font-size: 10px; letter-spacing: .045em; }
+.pkg .cta:hover { background: #333; }
+.pkg__deposit { display: none; }
+.addons li { border: 0; }
+
+/* Desktop is a split composition; mobile stacks a dark introduction over a
+   spacious single-column form. Existing field names and submission stay intact. */
+.page.contact { padding: 0; margin: 0 calc(-1 * var(--pad)); max-width: none; }
+.shell--contact .site-header:not(.is-solid) { background: #111; }
+.contact__col { display: grid; grid-template-columns: 1fr 1fr; gap: 0; background: #111; color: #fff; }
+.contact__intro { padding: calc(var(--head) + 76px) var(--pad) 32px; }
+.page .contact__h { font: 400 clamp(36px, 4.15vw, 68px)/1.02 var(--font-display); letter-spacing: -.045em; text-transform: uppercase; max-width: none; margin: 0 0 28px; }
+.contact__p { color: #eee; font-size: 16px; line-height: 1.6; margin: 0; max-width: 40ch; }
+.contact__break { display: none; }
+.contact__main { grid-column: 2; grid-row: 1 / 3; background: #fff; color: #111; padding: calc(var(--head) + 64px) var(--pad) 64px; }
+.contact__aside { grid-column: 1; padding: 0 var(--pad) 64px; margin: 0; background: transparent; color: inherit; }
+.contact__list { margin: 0; font-size: 14px; line-height: 1.8; }
+.contact__list li { display: block; padding: 0; margin-bottom: 4px; }
+.contact__list a { border: 0; overflow-wrap: anywhere; }
+.contact__list a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.contact__hours { font-size: 13px; margin: 8px 0 0; }
+.cform { gap: 22px; }
+.cform label { font: 400 14px/1.5 var(--font-body); text-transform: none; letter-spacing: 0; gap: 7px; }
+.cform input, .cform select, .cform textarea { border: 0; border-radius: 0; background: #f0f0f0; color: #111; padding: 13px 14px; font: 400 16px/1.5 var(--font-body); min-height: 48px; }
+.cform textarea { resize: vertical; min-height: 128px; }
+.cform textarea::placeholder { color: #656565; opacity: 1; }
+.cform input:focus, .cform select:focus, .cform textarea:focus { outline: 2px solid #111; outline-offset: 3px; }
+.cform button { align-self: stretch; width: 100%; min-height: 50px; font: 700 13px/1.5 var(--font-body); letter-spacing: .04em; }
+.cform__note:empty { display: none; }
+.contact__whatsapp { display: block; text-align: center; font-size: 13px; line-height: 1.6; padding: 16px 0; margin-top: 4px; }
+.contact__whatsapp:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+@media (min-width: 1001px) {
+  .shell--over .site-header:not(.is-solid) .nav-link { color: #e0e0e0; }
+  .shell--over .site-header:not(.is-solid) .nav-link.is-active,
+  .shell--over .site-header:not(.is-solid) .nav-link:hover { color: #fff; }
+}
+@media (max-width: 1000px) {
+  .site-header { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "logo burger"; }
+  .site-social { display: none; }
+  .burger { justify-content: flex-end; }
+  .nav-link { border: 0; font-size: 14px; text-transform: none; letter-spacing: 0; }
+  .site-nav { border: 0; padding-bottom: 20px; }
+  .contact__intro { padding-right: 28px; }
+  .contact__main { padding-right: 28px; padding-left: 28px; }
+  .page .contact__h { font-size: 34px; }
+}
+@media (max-width: 760px) {
+  :root { --pad: 24px; --head: 88px; }
+  .site-header { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "logo burger"; }
+  .logo-lg { font-size: 27px; }
+  .logo-sm { font-size: 10px; letter-spacing: .28em; }
+  .hero { min-height: 720px; height: 100svh; max-height: 1100px; }
+  .hero__fig img { object-position: 77% 0%; }
+  .hero__body { padding: 200px var(--pad) max(130px, 16svh); text-align: center; }
+  .page .hero__h { font-size: clamp(27px, 9vw, 64px); letter-spacing: -.045em; margin-bottom: 20px; }
+  .hero__lede { max-width: 32ch; margin: 0 auto 20px; font-size: 15px; line-height: 1.45; text-wrap: balance; }
+  .hero__actions { flex-direction: column; gap: 4px; }
+  .hero__primary { min-width: 200px; }
+  .hero__secondary { font-size: 14px; }
+  .hero__meta { justify-content: center; font-size: 11px; padding-bottom: max(30px, env(safe-area-inset-bottom)); }
+  .session-cover { min-height: 0; height: clamp(430px, 113vw, 720px); padding: 120px var(--pad) 28px; justify-content: center; text-align: center; }
+  .session-cover__photo { width: 100%; }
+  .session-cover__photo img { object-position: 50% 0%; }
+  .session-cover::after { background: linear-gradient(180deg, rgba(0,0,0,.26), transparent 35%, rgba(0,0,0,.7)); }
+  .page .shead__h { font-size: clamp(29px, 8.4vw, 55px); margin-bottom: 10px; }
+  .session-cover .shead__p { font-size: 14px; line-height: 1.4; }
+  .package-picker { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 0; min-width: 0; padding: 18px 0 0; margin: 0 -10px; gap: 2px; }
+  .package-choice { position: relative; min-width: 0; cursor: pointer; }
+  .package-choice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .package-choice > span { display: flex; flex-direction: column; gap: 3px; align-items: center; justify-content: center; min-height: 52px; padding: 5px 0; color: #606060; }
+  .package-choice__name { font-size: clamp(9px, 2.6vw, 14px); text-transform: uppercase; letter-spacing: .015em; }
+  .package-choice__price { font-size: 15px; }
+  .package-choice input:checked + span { color: #111; font-weight: 750; }
+  .package-choice input:focus-visible + span { outline: 2px solid #111; outline-offset: 2px; }
+  .services:has(#package-starter:checked) .pkg:not([data-package="Starter"]),
+  .services:has(#package-essential:checked) .pkg:not([data-package="Essential"]),
+  .services:has(#package-signature:checked) .pkg:not([data-package="Signature"]),
+  .services:has(#package-social:checked) .pkg:not([data-package="Social"]) { display: none; }
+  .pkgrow { display: block; padding-top: 22px; }
+  .pkg, .pkg--pop { padding: 0; text-align: center; }
+  .pkg__heading { order: 0; align-items: center; gap: 4px; margin: 0; }
+  .page .pkg__name { font-size: clamp(28px, 8vw, 44px); letter-spacing: -.04em; }
+  .pkg__price { font-size: 27px; line-height: 1.2; }
+  .pkg__num, .pkg--pop .pkg__num { order: 1; font-size: 0; margin: 5px 0 20px; letter-spacing: 0; min-height: 0; }
+  .pkg__flag, .pkg--pop .pkg__flag { font: 400 12px/1.5 var(--font-body); letter-spacing: 0; text-transform: none; color: #606060; padding: 0; }
+  .pkg__fig { display: none; }
+  .pkg__desc, .pkg--pop .pkg__desc { order: 2; font-size: 14px; line-height: 1.6; color: #111; margin-bottom: 4px; }
+  .pkg__spec, .pkg--pop .pkg__spec { min-height: 0; order: 3; color: #111; font-size: 13px; line-height: 1.6; margin-bottom: 20px; }
+  .pkg__list, .pkg--pop .pkg__list { order: 4; font-size: 12px; line-height: 1.6; color: #111; margin-bottom: 20px; }
+  .pkg__list li, .pkg--pop .pkg__list li { padding: 0; }
+  .pkg .cta, .pkg--pop .cta { order: 5; min-height: 46px; max-width: 360px; width: 100%; margin: 0 auto; font-size: 11px; }
+  .pkg__deposit { display: block; order: 6; font-size: 11px; line-height: 1.5; color: #606060; margin: 10px 0 0; }
+  .services .invest { margin-top: 48px; padding: 24px; }
+  .service-details { margin-top: 40px; }
+  .page.contact { padding: 0; }
+  .contact__col { display: flex; flex-direction: column; background: #fff; color: #111; }
+  .contact__intro { background: #111; color: #fff; text-align: center; padding: calc(var(--head) + 14px) var(--pad) 32px; }
+  .page .contact__h { font-size: clamp(28px, 8.6vw, 56px); line-height: 1.02; margin-bottom: 20px; }
+  .contact__p { max-width: 38ch; margin: 0 auto; font-size: 14px; line-height: 1.5; text-wrap: balance; }
+  .contact__main { padding: 26px var(--pad) 0; }
+  .cform { gap: 18px; }
+  .cform label { font-size: 13px; gap: 6px; }
+  .cform input, .cform select { min-height: 44px; padding: 10px 12px; }
+  .cform textarea { min-height: 112px; padding: 12px; }
+  .contact__aside { text-align: center; padding: 22px var(--pad) 36px; }
+  .contact__list { font-size: 12px; line-height: 1.7; }
+  .contact__list li { margin: 0; }
+  .contact__list li + li { color: #606060; }
+  .contact__hours { color: #606060; font-size: 11px; margin-top: 2px; }
+}
+@media (prefers-reduced-motion: reduce) { .hero__primary { transition: none; } }
+
+@media (min-width: 1001px) { .shell--home .site-header:not(.is-solid) .nav-link { text-shadow: 0 1px 6px #111; } }

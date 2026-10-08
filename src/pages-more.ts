@@ -1,5 +1,4 @@
 import { SITE } from "./config";
-import { WHATSAPP_PATH } from "./layout";
 import { escapeHtml } from "./layout";
 import { homeBand } from "./pages";
 import { pictureFor, bestDerivative } from "./pages";
@@ -49,14 +48,7 @@ export function aboutPage(photos: Photo[]): string {
   </section>`;
 }
 
-/**
- * The services route.
- *
- * The reference pairs a short intro beside the heading, then three package
- * cards, then a dark "investment" band. That band is the one place the site
- * inverts to black, so it is pulled out of the card grid and rendered as its
- * own full-width section rather than a fourth card.
- */
+/** Photographic introduction, desktop comparison, and native mobile selector. */
 export function servicesPage(photos: Photo[] = []): string {
   const p = SITE.pricing;
   if (!p.show) return `<section class="page"><div class="empty"><p>Packages coming soon.</p></div></section>`;
@@ -79,14 +71,14 @@ export function servicesPage(photos: Photo[] = []): string {
   // not behind a separate pricing route (there isn't one).
   const card = (t: PricingTier, i: number): string => {
     const ph = shotFor(t, i);
-    return `<article class="pkg${t.popular ? " pkg--pop" : ""}">
+    return `<article class="pkg${t.popular ? " pkg--pop" : ""}" data-package="${escapeHtml(t.name)}">
     <p class="pkg__num">${String(i + 1).padStart(2, "0")}.${
       // Real text, not a CSS ::before. Generated content is invisible to screen
       // readers and to anything reading the DOM, so "most popular" — the one
       // thing that steers a purchase on this page — was not in the document at
       // all. It also sat ABOVE the photograph, which pushed the recommended
       // card's photo ~50px lower than the other three and broke the row.
-      t.popular ? ' <span class="pkg__flag">Most popular</span>' : ""
+      t.popular ? ' <span class="pkg__flag">Popular choice.</span>' : ""
     }</p>
     <div class="pkg__heading">
       <h2 class="pkg__name">${escapeHtml(t.name)}</h2>
@@ -100,21 +92,24 @@ export function servicesPage(photos: Photo[] = []): string {
     <ul class="pkg__list">
       ${t.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}
     </ul>
-    <a class="cta cta--sm" href="./contact.html?package=${encodeURIComponent(t.name)}" aria-label="Book now: ${escapeHtml(t.name)} package">Book now</a>
+    <a class="cta cta--sm" href="./contact.html?package=${encodeURIComponent(t.name)}" aria-label="Enquire about ${escapeHtml(t.name)} package">Enquire about ${escapeHtml(t.name)}</a>
+    <p class="pkg__deposit">50% deposit secures your date.<br />EFT accepted.</p>
   </article>`;
   };
 
   return `<section class="page services">
-    <header class="shead">
-      <div class="shead__col">
-        <p class="eyebrow">${escapeHtml(SITE.services.eyebrow)}</p>
-        <h1 class="shead__h">${escapeHtml(SITE.services.heading)}</h1>
-      </div>
-      <div>
-        <p class="shead__p">${escapeHtml(p.intro)}</p>
-        <p class="shead__note">Prices in South African rand (ZAR). Optional add-ons are charged separately.</p>
+    <header class="shead session-cover">
+      ${(() => { const shot = shotFor(p.tiers.find(t => t.popular) ?? p.tiers[0], 1); return shot ? `<picture class="session-cover__photo">${pictureFor(shot.url, "(max-width: 760px) 100vw, 50vw", shot.width)}<img src="${escapeHtml(bestDerivative(shot.url, "webp", shot.width))}" alt="${escapeHtml(shot.alt || "Portrait session")}" loading="eager" fetchpriority="high" /></picture>` : ""; })()}
+      <div class="session-cover__body">
+        <h1 class="shead__h">Capture what <br />matters.</h1>
+        <p class="shead__p">A session shaped around you.<br />Directed from start to finish.</p>
       </div>
     </header>
+
+    <fieldset class="package-picker">
+      <legend class="visually-hidden">Choose a photography package</legend>
+      ${p.tiers.map((t, i) => `<label class="package-choice"><input type="radio" name="package-view" id="package-${escapeHtml(t.name.toLowerCase())}" value="${escapeHtml(t.name)}"${t.popular || (!p.tiers.some(t => t.popular) && i === 0) ? " checked" : ""} /><span><span class="package-choice__name">${escapeHtml(t.name)}</span><span class="package-choice__price">${escapeHtml(formatPrice(t.price))}</span></span></label>`).join("")}
+    </fieldset>
 
     <div class="pkgrow">${p.tiers.map(card).join("")}</div>
 
@@ -150,14 +145,6 @@ ${homeBand({ eyebrow: "Enquiries", heading: "Book a session.", cta: "Enquire abo
   </section>`;
 }
 
-/**
- * The contact route.
- *
- * Reference layout: heading + invitation on the left, the form below it, a
- * detail list (location / email / phone) with icons, and a photograph on the
- * right. The form is the SAME markup and the same `#cform` id as before, so
- * the Formspree wiring in main.ts and tools/prove-contact.mjs is untouched.
- */
 /**
  * Spam trap for the contact form.
  *
@@ -209,11 +196,11 @@ export function contactPage(_photos: Photo[] = []): string {
 
   return `<section class="page contact">
     <div class="contact__col">
+      <header class="contact__intro">
+        <h1 class="contact__h">Let’s create <br />something <br />beautiful.</h1>
+        <p class="contact__p">Portraits, couples, families and social content,<br class="contact__break" /> shot across Gauteng.</p>
+      </header>
       <div class="contact__main">
-      <p class="eyebrow">Enquiries</p>
-      <h1 class="contact__h">Book a session.</h1>
-      <p class="contact__p">Tell me which session you're interested in, where you'd like to shoot, and a date that works for you.</p>
-
       <form class="cform" id="cform" action="${escapeHtml(c.formEndpoint)}" method="post">
         <label>Name<input name="name" type="text" required autocomplete="name" /></label>
         <label>Email<input name="email" type="email" required autocomplete="email" /></label>
@@ -223,54 +210,26 @@ export function contactPage(_photos: Photo[] = []): string {
             <option value="Something else">Something else</option>
           </select>
         </label>
-        <label>Message<textarea name="message" rows="4" required></textarea></label>
+        <label>Message<textarea name="message" rows="4" placeholder="Tell me about the session you have in mind." required></textarea></label>
         ${HONEYPOT_FIELD}
         <button type="submit">Send message</button>
         <p class="cform__note dim" id="cform-note" role="status" aria-live="polite" aria-atomic="true"></p>
       </form>
+      <a class="contact__whatsapp" href="${escapeHtml(wa)}" target="_blank" rel="noopener">Prefer WhatsApp? Send a message</a>
       </div>
 
-      <aside class="contact__aside">
-      <h2 class="contact__aside-title">Contact details</h2>
+      <aside class="contact__aside" aria-label="Contact details">
       <ul class="contact__list">
-        <li>${icon("pin")}<span>${escapeHtml(c.location)}</span></li>
-        <li>${icon("mail")}<a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></li>
+
+        <li><a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></li>
+        <li><span>${escapeHtml(c.location)}</span></li>
         ${/* Phone row removed 2026-10-03 at Alwin's instruction: not taking
            calls for now. It was a `tel:` link, so on a phone it raised a dial
            prompt. WhatsApp below is the only direct channel. */""}
-        <li>${icon("whatsapp")}<a href="${escapeHtml(wa)}" target="_blank" rel="noopener">WhatsApp</a></li>
+
       </ul>
       <p class="contact__hours dim">${escapeHtml(c.hours)}</p>
       </aside>
     </div>
   </section>`;
-}
-
-/**
- * Inline glyphs for the contact detail list. Decorative, so aria-hidden.
- *
- * The pin, mail and phone paths are outline shapes and draw correctly against the
- * stroke rules in `.cico`. The old WhatsApp path was a hand-drawn approximation
- * ("M4 4h16v16H4z M9 9c0 4 2 6 6 6 ...") that read as a plain square with a
- * squiggle inside it — it was not recognisable as WhatsApp at 18px, so it looked
- * like a rendering fault rather than an icon.
- *
- * It is now the real mark, drawn as a FILLED silhouette, which is the only way a
- * WhatsApp logo stays legible at 18px. `.cico--fill` turns off the stroke and
- * fills instead; the outline treatment would reduce it to a tangle of hairlines.
- */
-function icon(id: string): string {
-  const outline: Record<string, string> = {
-    pin: "M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z M12 12a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z",
-    mail: "M3 6h18v12H3z M3 7l9 6 9-6",
-    phone: "M6 3h4l2 5-3 2a12 12 0 0 0 5 5l2-3 5 2v4a4 4 0 0 1-2 2A17 17 0 0 1 4 5a4 4 0 0 1 2-2Z",
-  };
-  // WhatsApp is the one glyph that is NOT an outline shape: it is a stroke
-  // bubble with the handset filled in the background colour, which is how Alwin
-  // preferred it. Rendered here at the contact list's own 24x24 with the same
-  // path layout.ts uses, so the two cannot drift apart again.
-  if (id === "whatsapp") {
-    return `<svg class="cico cico--wa" viewBox="0 0 20 20" aria-hidden="true" focusable="false">${WHATSAPP_PATH}</svg>`;
-  }
-  return `<svg class="cico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${outline[id] ?? ""}" /></svg>`;
 }

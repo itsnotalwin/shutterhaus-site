@@ -46,6 +46,9 @@ jobs:
           VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
       - name: Pricing, enquiries, delayed data, and admin drafts
         run: npm test
+      - name: Identify the verified release
+        run: |
+          node --input-type=module -e 'import {writeFileSync} from "node:fs"; writeFileSync("dist/release.json", JSON.stringify({commit: process.env.GITHUB_SHA}) + "\n")'
       - name: Start headless Chrome
         run: |
           google-chrome --headless=new --remote-debugging-port=9222 \
@@ -93,6 +96,7 @@ jobs:
     needs: verify
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       pages: write
       id-token: write
     environment:
@@ -101,3 +105,9 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+      - uses: actions/checkout@v4
+      - name: Verify the release on the live domain
+        run: node tools/verify-live.mjs
+        env:
+          LIVE_URL: https://shutterhausvisuals.co.za/
+          EXPECTED_SHA: ${{ github.sha }}

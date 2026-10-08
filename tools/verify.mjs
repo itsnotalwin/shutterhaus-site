@@ -508,9 +508,9 @@ const pr = await evaluate(`(() => ({
   popularMarked: (() => {
     const p = document.querySelector('.pkg--pop');
     const flag = p?.querySelector('.pkg__flag');
-    return !!flag && /most popular/i.test(flag.textContent) &&
+    return !!flag && /popular choice/i.test(flag.textContent) &&
       getComputedStyle(flag).opacity === '1' &&
-      getComputedStyle(flag).borderBottomStyle === 'solid';
+      flag.getBoundingClientRect().height > 0;
   })(),
   specs: [...document.querySelectorAll('.pkg__spec')].map(e => e.textContent.trim()),
 }))()`);
@@ -660,7 +660,14 @@ for (const width of reviewWidths) {
         check(`review services ${width}: Essential preserves the top of the portrait`, framing[1].position === '50% 0%');
         check(`review services ${width}: Social preserves the top of the portrait`, framing[3].position === '50% 0%');
       } else {
-        check(`review services ${width}: established mobile portrait ratios`, Math.abs(framing[1].ratio - .8) < .01 && Math.abs(framing[3].ratio - 9/16) < .01);
+        check(`review services ${width}: recommended package selected`, await evaluate(`document.querySelector('[name="package-view"]:checked')?.value === 'Essential'`));
+        check(`review services ${width}: only the chosen package is visible`, await evaluate(`[...document.querySelectorAll('.pkg')].filter(p => p.getBoundingClientRect().height > 0).length === 1`));
+        check(`review services ${width}: photographic cover preserves the top`, await evaluate(`getComputedStyle(document.querySelector('.session-cover__photo img')).objectPosition === '50% 0%'`));
+        for (const name of ['Starter', 'Essential', 'Signature', 'Social']) {
+          await evaluate(`document.querySelector('#package-${name.toLowerCase()}').click()`);
+          check(`review services ${width}: ${name} selection and enquiry`, await evaluate(`(() => { const visible = [...document.querySelectorAll('.pkg')].filter(p => p.getBoundingClientRect().height > 0); return visible.length === 1 && visible[0].dataset.package === '${name}' && visible[0].querySelector('.cta').getAttribute('href') === './contact.html?package=${name}'; })()`));
+        }
+        await evaluate(`document.querySelector('#package-essential').click()`);
       }
     }
     if (route === 'home') {

@@ -114,7 +114,7 @@ export function header(active: string): string {
   return `<header class="site-header">
     ${wordmark}
     <button class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="site-nav">
-      <span class="burger__bars" aria-hidden="true"><i></i><i></i></span>
+      <span class="burger__label">Menu</span>
     </button>
     <nav class="site-nav" id="site-nav" aria-label="Primary">${nav}</nav>
     <div class="site-social">${social}</div>
@@ -125,16 +125,15 @@ export function header(active: string): string {
  * Full page shell — header + the active route's body.
  *
  * `over` makes the header float transparently on top of the first photograph
- * instead of sitting in its own white bar. Only the home page uses it; every
- * other route has a white page behind the header, where transparent type
- * would be invisible.
+ * instead of sitting in its own white bar. Home, Services and Contact have
+ * photographic or dark introductions; other routes keep solid chrome.
  */
 export function renderShell(active: string, body: string, over = false): string {
   // No `is-bw` class. It gated the greyscale filter (styles.css:301) and nothing
   // else: after the filter was removed on 2026-10-02 at Alwin's instruction,
   // the class was emitted on every page and matched no rule. Carrying it
   // suggested a monochrome treatment that no longer exists.
-  return `<div class="shell${over ? " shell--over" : ""}">${header(active)}<main class="main">${body}</main></div>`;
+  return `<div class="shell shell--${escapeHtml(active)}${over || active === "services" || active === "contact" ? " shell--over" : ""}">${header(active)}<main class="main">${body}</main></div>`;
 }
 
 export { FONTS };

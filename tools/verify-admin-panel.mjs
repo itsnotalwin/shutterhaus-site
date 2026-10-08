@@ -108,6 +108,12 @@ try {
       check(`${route} ${width}: readable without JavaScript`,await evaluate("!!document.querySelector('h1') && document.documentElement.scrollWidth<=innerWidth && [...document.querySelectorAll('.site-nav a')].every(a=>getComputedStyle(a).visibility==='visible')"));
       check(`${route} ${width}: photos remain visible without JavaScript`,await evaluate("[...document.querySelectorAll('.cell img')].every(im=>im.naturalWidth>0 && parseFloat(getComputedStyle(im).opacity)===1)"));
       if(route==='contact')check(`contact ${width}: native form posts to the enquiry endpoint`,await evaluate("document.querySelector('form').method==='post' && document.querySelector('form').action==='https://formspree.io/f/xjyklqkp'"));
+      if(route==='services' && width===390) {
+        for(const name of ['Starter','Essential','Signature','Social']) {
+          await click('#package-'+name.toLowerCase());
+          check(`services without JavaScript: ${name} can be selected`,await evaluate(`(()=>{const cards=[...document.querySelectorAll('.pkg')].filter(p=>p.getBoundingClientRect().height>0);return cards.length===1&&cards[0].dataset.package==='${name}';})()`));
+        }
+      }
       if(width===390&&route==='portfolio')await shot('portfolio-no-javascript-390');
     }
   }
