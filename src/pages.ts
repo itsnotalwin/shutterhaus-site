@@ -741,13 +741,15 @@ export function homePage(photos: Photo[], cols: number): string {
   // WebP first, so this only changes the fallback — but it is the path some
   // browsers take, and it is free. "webp" is requested and the JPEG <source>
   // stays as the real fallback for a browser with no WebP support at all.
+  // Cover scales this landscape photo wider than a phone's viewport. Account
+  // for the rendered width so srcset never enlarges a 400px thumbnail to 1100px.
   const heroFig = hero
-    ? `<figure class="hero__fig">${pictureFor(hero.url, "100vw", hero.width)}
+    ? `<figure class="hero__fig"><picture>${pictureFor(hero.url, "max(100vw, 930px, 129svh)", hero.width)}
         <img src="${escapeHtml(bestDerivative(hero.url, "webp", hero.width))}"
              alt="${escapeHtml(hero.alt || hero.filename || "")}"
              loading="eager" decoding="async" fetchpriority="high"
              style="aspect-ratio:${hero.width ?? 1600}/${hero.height ?? 1067}" />
-      </figure>`
+      </picture></figure>`
     : "";
 
   return `<section class="page home" data-mobile-layout="${mobileGallery()}">
@@ -755,16 +757,12 @@ export function homePage(photos: Photo[], cols: number): string {
       ${heroFig}
       <div class="hero__scrim" aria-hidden="true"></div>
       <div class="hero__body">
-        <p class="eyebrow">${escapeHtml(h.eyebrow)}</p>
-        <h1 class="hero__h">${escapeHtml(h.heading)}</h1>
+        <h1 class="hero__h"><span>${escapeHtml(h.heading.split(" ")[0])}</span> <span>${escapeHtml(h.heading.split(" ").slice(1).join(" "))}</span></h1>
         <p class="hero__lede">${escapeHtml(h.lede)}</p>
-        <a class="cta" href="./portfolio.html">${escapeHtml(h.cta)}</a>
+        <div class="hero__actions"><a class="hero__primary" href="./portfolio.html">${escapeHtml(h.cta)}</a>
+        <a class="hero__secondary" href="./services.html">View packages</a></div>
       </div>
-      <div class="hero__meta">
-        <span>Est. ${escapeHtml(h.est)} | ${escapeHtml(SITE.contact.location)}</span>
-        <span class="hero__meta-tags">${h.tags.map(escapeHtml).join(" / ")}</span>
-        <span class="hero__meta-cue" aria-hidden="true">Scroll ↓</span>
-      </div>
+      <div class="hero__meta"><span>Gauteng, South Africa</span></div>
     </div>
 
     ${

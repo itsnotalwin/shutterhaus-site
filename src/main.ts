@@ -1,6 +1,7 @@
 import "./styles.css";
 import "./editorial.css";
 import "./makeover.css";
+import "./visual-refresh.css";
 import { SITE } from "./config";
 import { updatePageMetadata } from "./seo";
 import { escapeHtml, renderShell } from "./layout";
@@ -182,7 +183,15 @@ async function paint(): Promise<void> {
     const frame = focused?.matches('[role="button"]')
       ? focused.querySelector<HTMLImageElement>('[data-full]')?.dataset.full : undefined;
     const moreFocused = document.activeElement?.matches('.pf-more__toggle');
+    // Keep the visitor's package choice and keyboard focus across live photo updates.
+    const packageChoice = main.querySelector<HTMLInputElement>('[name="package-view"]:checked')?.id;
+    const packageFocus = focused?.matches('[name="package-view"]') ? focused.id : null;
     main.innerHTML = body;
+    if (packageChoice) {
+      const radio = document.getElementById(packageChoice) as HTMLInputElement | null;
+      if (radio) radio.checked = true;
+    }
+    if (packageFocus) document.getElementById(packageFocus)?.focus({preventScroll:true});
     wireMore();
     markLoadedImages();
     if (frame) {
@@ -251,6 +260,9 @@ function wireBurger(): void {
 
   const set = (open: boolean) => {
     btn.setAttribute("aria-expanded", String(open));
+    btn.setAttribute("aria-label", open ? "Close menu" : "Menu");
+    const label = btn.querySelector(".burger__label");
+    if (label) label.textContent = open ? "Close" : "Menu";
     btn.classList.toggle("is-on", open);
     nav.classList.toggle("is-open", open);
     document.body.classList.toggle("nav-open", open);

@@ -213,6 +213,20 @@ test("an identical late gallery response preserves an open menu and scroll",asyn
   } finally {dom.window.close();}
 });
 
+test("a late package photograph update preserves the selected package and keyboard focus",async()=>{
+  const dom=fixture('https://shutterhausvisuals.co.za/services.html',true,390);
+  try {
+    const w=dom.window;
+    const radio=w.document.querySelector('#package-signature');
+    radio.click();radio.focus();w.scrollY=500;
+    w.__resolveGallery(w.PublicPages.DEMO_PHOTOS.map(photo=>({...photo,alt:photo.alt+' updated'})));
+    await tick();
+    assert.equal(w.document.querySelector('[name="package-view"]:checked').value,'Signature');
+    assert.equal(w.document.activeElement.id,'package-signature');
+    assert.equal(w.scrollY,500);
+  } finally {dom.window.close();}
+});
+
 test("UUID gallery rows and an uploaded wall photo render without replacing the menu",async()=>{
   const dom=fixture('https://shutterhausvisuals.co.za/portfolio.html');
   try {
@@ -243,7 +257,7 @@ test("a stale composition response cannot overwrite a newer enquiry route",async
     resolve({homeStrip:fallback.strip,heroPhoto:fallback.hero,wallRows:fallback.rows,problems:[]});await tick();
     assert.equal(w.document.querySelector('form'),form);
     assert.equal(w.document.querySelector('[name="message"]').value,'A test enquiry');
-    assert.equal(w.document.querySelector('h1').textContent,'Book a session.');
+    assert.equal(w.document.querySelector('h1').textContent,'Let’s create something beautiful.');
   } finally {dom.window.close();}
 });
 

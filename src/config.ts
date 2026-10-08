@@ -167,8 +167,8 @@ export const SITE: SiteConfig = {
    */
   home: {
     eyebrow: "Shutterhaus Visuals",
-    heading: "Portraits in Gauteng.",
-    lede: "Portraits, couples and families, shot on location with Alwin Newman.",
+    heading: "Timeless portraiture",
+    lede: "Real people. Honest moments. Portraits that look beyond the now.",
     cta: "View portfolio",
     est: "2019",
     tags: ["Portraits", "Couples", "Families"],
