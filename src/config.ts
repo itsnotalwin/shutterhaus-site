@@ -142,7 +142,7 @@ export const SITE: SiteConfig = {
          * still read as "call me". Re-add `phone` here if that changes.
          */
         location: "Kempton Park, Gauteng",
-    hours: "Evenings & weekends, by appointment",
+    hours: "Evenings and weekends, by appointment",
     /**
      * Formspree endpoint. Set means the form POSTs here and works on any
      * device, including phones with no mail app. Empty falls back to a
@@ -168,7 +168,7 @@ export const SITE: SiteConfig = {
   home: {
     eyebrow: "Shutterhaus Visuals",
     heading: "Portraits in Gauteng.",
-    lede: "Portraits, couples and families. On location, with Alwin Newman.",
+    lede: "Portraits, couples and families, shot on location with Alwin Newman.",
     cta: "View portfolio",
     est: "2019",
     tags: ["Portraits", "Couples", "Families"],

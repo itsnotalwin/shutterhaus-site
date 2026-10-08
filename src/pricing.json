@@ -14,7 +14,7 @@
       "bullets": [
         "15 edited photos",
         "Private online gallery",
-        "Clothing guide & location suggestions",
+        "Clothing guide and location suggestions",
         "High-res and web-optimised downloads"
       ]
     },
@@ -45,13 +45,13 @@
       "bullets": [
         "40 edited photos",
         "Private online gallery (90-day access)",
-        "Full prep: clothing guide, shot list, scouting"
+        "Full prep: clothing guide, shot list and location scouting"
       ]
     },
     {
       "name": "Social",
       "price": 2500,
-      "fit": "Social content, with a commercial licence and an early preview.",
+      "fit": "Social content for creators.",
       "spec": "45 min · 2 outfits · 1 location",
       "photo": "20-img-0202.jpg",
       "focal": "50% 17%",
@@ -81,11 +81,11 @@
       "price": "+R300"
     },
     {
-      "label": "Full gallery within 48hr",
+      "label": "Full gallery within 48 hours",
       "price": "+R400"
     },
     {
-      "label": "Travel beyond 25km of Kempton Park",
+      "label": "Travel beyond 25 km of Kempton Park",
       "price": "+R5/km"
     }
   ],
@@ -93,8 +93,8 @@
     "50% non-refundable deposit secures your date; the balance is due before gallery delivery.",
     "Rescheduling with at least 7 days' notice is free. With less notice: R500 fee; the deposit transfers.",
     "Outdoor shoots include a backup indoor location. Severe weather means a free reschedule.",
-    "Full gallery delivery: 7 to 14 days for every package. Social includes a 48-hour sneak peek of 10 images.",
-    "Travel within 25km of Kempton Park is included. Additional travel is confirmed before booking.",
+    "Full gallery delivery: 7–14 days for every package. Social includes a 48-hour sneak peek of 10 images.",
+    "Travel within 25 km of Kempton Park is included. Additional travel is confirmed before booking.",
     "Personal use licence with every package. The Social package includes a commercial licence."
   ],
   "depositNote": "50% deposit to book · EFT accepted"

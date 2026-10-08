@@ -212,7 +212,7 @@ export function contactPage(_photos: Photo[] = []): string {
       <div class="contact__main">
       <p class="eyebrow">Enquiries</p>
       <h1 class="contact__h">Book a session.</h1>
-      <p class="contact__p">Tell me which session you're interested in, where you'd like to shoot and a date that works for you.</p>
+      <p class="contact__p">Tell me which session you're interested in, where you'd like to shoot, and a date that works for you.</p>
 
       <form class="cform" id="cform" action="${escapeHtml(c.formEndpoint)}" method="post">
         <label>Name<input name="name" type="text" required autocomplete="name" /></label>
