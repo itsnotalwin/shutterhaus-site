@@ -142,7 +142,7 @@ export const SITE: SiteConfig = {
          * still read as "call me". Re-add `phone` here if that changes.
          */
         location: "Kempton Park, Gauteng",
-    hours: "Evenings and weekends, by appointment",
+    hours: "Mornings and weekends, by appointment",
     /**
      * Formspree endpoint. Set means the form POSTs here and works on any
      * device, including phones with no mail app. Empty falls back to a
@@ -180,7 +180,7 @@ export const SITE: SiteConfig = {
     body: [
       "I'm Alwin, a photographer based in Kempton Park. I shoot portraits, couples, families and social content on location.",
       "I'll help you choose a location and clothing, and guide you through the shoot. You don't need to know how to pose.",
-      "Sessions are available in the evenings and on weekends, by appointment.",
+      "Sessions are available in the mornings and on weekends, by appointment.",
     ],
     cta: "Enquire about a session",
     // A man walking a beach with a metal detector, black and white. Ratio 4:5
