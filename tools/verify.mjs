@@ -6,6 +6,7 @@
  * after navigation races the frame and Runtime.evaluate lands on about:blank.
  */
 import { writeFileSync, mkdirSync, readFileSync } from "node:fs";
+import { browser } from "./lib/browser.mjs";
 
 // Root, NOT a sub-path.
 //
@@ -16,11 +17,6 @@ import { writeFileSync, mkdirSync, readFileSync } from "node:fs";
 // exactly where the path came from. The image tools below now also report
 // NOT-IMAGE responses so this class of mistake is legible instead of silent.
 const BASE = (process.argv[2] ?? "http://localhost:4173").replace(/\/$/, "");
-// Hardcoding 9222 here silently ignored CDP_PORT, so domain runs connected to a
-// different Chrome instance than the one launched with the host-resolver
-// override — which resolved the domain to the stale parking IP and produced a
-// bogus "Privacy error" that looked like a site outage.
-const CDP = `http://127.0.0.1:${process.env.CDP_PORT ?? "9222"}`;
 // Default into the gitignored shots/ dir, NOT the repo root. verify.mjs writes
 // shot-*.png, and with the old "." default those landed as untracked files in
 // the project root — visible in `git status` and one `git add -A` away from a
@@ -30,34 +26,11 @@ mkdirSync(OUT, { recursive: true });
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-const targets = await (await fetch(`${CDP}/json/new?url=about:blank`, { method: "PUT" })).json();
-const ws = new WebSocket(targets.webSocketDebuggerUrl);
-await new Promise((r) => (ws.onopen = r));
-
-let id = 0;
-const pending = new Map();
+const client = await browser();
 const events = [];
-ws.onmessage = (m) => {
-  const msg = JSON.parse(m.data);
-  if (msg.id && pending.has(msg.id)) {
-    pending.get(msg.id)(msg);
-    pending.delete(msg.id);
-  } else if (msg.method) events.push(msg);
-};
-const send = (method, params = {}) =>
-  new Promise((res) => {
-    const n = ++id;
-    pending.set(n, res);
-    ws.send(JSON.stringify({ id: n, method, params }));
-  });
-
-const evaluate = async (expression) => {
-  const r = await send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true });
-  if (r.result?.exceptionDetails) {
-    throw new Error("eval threw: " + (r.result.exceptionDetails.exception?.description ?? expression));
-  }
-  return r.result?.result?.value;
-};
+client.on(event => events.push(event));
+const send = async (method, params = {}) => ({ result: await client.send(method, params) });
+const evaluate = client.evaluate;
 
 await send("Page.enable");
 await send("Page.bringToFront");
@@ -187,6 +160,7 @@ const grid = await evaluate(`(() => {
   });
   const gut = parseFloat(getComputedStyle(cols[0] ?? document.body).rowGap || '0');
   return {
+    fileOf: cells.slice().sort((a,b) => Number(a.dataset.n)-Number(b.dataset.n)).map(c => c.querySelector("img")?.dataset.filename),
     cols: cols.length,
     perCol: cols.map(c => c.querySelectorAll('.pf-cell').length),
     cells: cells.length,
@@ -331,7 +305,7 @@ check("band carries contact links", grid.bandLinks >= 2, String(grid.bandLinks))
   // compares equal to itself and would report "no clumping" while having
   // checked nothing at all — which is how the earlier src-based version of this
   // check passed while reading 100 "frames" that matched none.
-  check("shoot map covers every frame", unknown === 0, `${unknown} unmapped`);
+  check("shoot map covers every frame", order.length === 30 && unknown === 0, `${order.length} frames, ${unknown} unmapped`);
   check(
     "no two same-shoot frames are adjacent",
     unknown === 0 && adjacentSame === 0,
@@ -818,5 +792,5 @@ if (failed.length) {
   console.log("FAILED:");
   for (const f of failed) console.log(`  - ${f.name} (${f.detail})`);
 }
-ws.close();
+await client.close();
 process.exit(failed.length ? 1 : 0);

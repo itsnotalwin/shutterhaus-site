@@ -129,15 +129,15 @@ img { display: block; max-width: 100%; }
   background: var(--paper);
 }
 
-/* NOTE: the home route's transparent-over-hero header lives in editorial.css
+/* NOTE: the home route's transparent-over-hero header lives in public.css
    (`.shell--over .site-header`), which sets position:absolute plus a measured
    scrim gradient. It was previously ineffective on a PHONE: styles.css sets
    `position: sticky` on .site-header and that wins on equal specificity only if
-   it comes later in the cascade — styles.css is imported after editorial.css, so
+   it comes later in the cascade — styles.css is imported after public.css, so
    sticky was beating absolute and the header stayed in flow. Hence the 92px
    opaque band Alwin called "the grey bar at the top of mobile view".
 
-   The fix belongs in editorial.css where the rule lives, not here. */
+   The fix belongs in public.css where the rule lives, not here. */
 
 
 /* Logo lockup: small word inline, big word wrapping onto a second line. */
@@ -1383,3 +1383,9 @@ img,
 .social { --social-bg: #fff; }
 .shell--over .social { --social-bg: rgba(12, 12, 12, 0.85); }
 .cico--wa { fill: none; stroke: currentColor; stroke-width: 1.15; }
+
+/* Reset browser chrome around the native photograph controls and dialog. */
+.photo-trigger { display: block; width: 100%; padding: 0; border: 0; border-radius: 0; background: none; color: inherit; cursor: zoom-in; text-align: inherit; }
+.photo-trigger .cell { display: block; }
+dialog.lb { margin: 0; padding: 0; border: 0; width: 100%; height: 100%; max-width: none; max-height: none; }
+button.lb__stage { padding: 0; border: 0; background: none; }

@@ -1,6 +1,5 @@
 import './styles.css';
-import './editorial.css';
-import './makeover.css';
+import './public.css';
 import './admin.css';
 import { SITE, setLiveHome } from './config';
 import { escapeHtml as esc, icon } from './layout';

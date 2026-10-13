@@ -1,6 +1,6 @@
 import { SITE } from "./config";
 import { escapeHtml } from "./layout";
-import { homeBand } from "./pages";
+import { homeBand } from "./booking-band";
 import { pictureFor, bestDerivative } from "./pages";
 import type { Photo } from "./types";
 import type { PricingTier } from "./config";
@@ -174,7 +174,7 @@ const HONEYPOT_FIELD =
   `<label class="hp" aria-hidden="true">Leave this field empty` +
   `<input name="_website" type="text" tabindex="-1" autocomplete="off" /></label>`;
 
-export function contactPage(_photos: Photo[] = []): string {
+export function contactPage(): string {
   const c = SITE.contact;
   const p0 = SITE.pricing;
   /*

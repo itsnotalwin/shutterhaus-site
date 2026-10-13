@@ -78,17 +78,18 @@ Run `npm run build` after editing it. Social includes 40 edited images and a
 
 `npm run test` checks pricing consistency, Social deliverables, form validation,
 draft preservation during rotation, duplicate submission protection, failure
-recovery and photo-viewer keyboard focus using a simulated DOM and mocked
-requests. `npm run verify` remains the browser layout gate.
+recovery and photo-viewer focus using a simulated DOM and mocked requests.
+`npm run verify` checks browser layouts, and `npm run verify:controls` checks
+native keyboard activation, modal zoom and responsive drawer cleanup.
 
 ## Editorial presentation
 
-`src/makeover.css` owns the public presentation: sentence-case Inter headings,
-generous page margins, black booking sections and a subtle recommendation on
-Essential. Prices sit beside package names before the photographs. The Archivo
-Black wordmark and curated photograph order remain the brand anchors. Services
-closes with an enquiry link to Contact. Contact has a separate black panel for
-direct contact details. Public copy describes the sessions and booking process.
+`src/public.css` contains the shared page layouts and presentation rules.
+`src/visual-refresh.css` applies the approved photographic design: strong Archivo
+headings, generous margins and quiet controls. Home shows six photographs in one
+column on phones and two on desktop. Services has a photographic introduction,
+a mobile package chooser and an enquiry link to Contact. Contact has a dark
+introduction beside the desktop form, stacked above it on phones.
 
 The Home header stays transparent at the top of the photograph and becomes
 solid white while scrolling or opening the mobile menu. The compact menu is
@@ -123,8 +124,7 @@ src/
   lightbox.ts         full-size viewer
   demo.ts             placeholder gallery + DEMO_VIDEOS
   styles.css          base design
-  editorial.css       the current visual layer (most layout rules)
-  makeover.css        public editorial typography, spacing and page refinement
+  public.css          shared public layouts, typography and page refinement
 tools/                Python/MJS build + verification tools (see below)
 public/               static assets copied verbatim into dist/
   gallery/            the committed photo files + their -<width>w derivatives
@@ -284,7 +284,7 @@ reopening the work.
   hero, and `homeGalleryCount: 6` fixes the home strip in two packed columns on
   desktop and one column at 760px and below. Changing either needs a deliberate home-route pass.
 - **Specificity trap.** `.page h1` (0,1,1) beats a bare class such as `.about__h`
-  (0,1,0). The `.page` / `.portfolio` prefixes in `editorial.css` are load-bearing,
+  (0,1,0). The `.page` / `.portfolio` prefixes in `public.css` are load-bearing,
   not decoration — remove one and a heading's margin collapses to 0.
 - **The portfolio wall** is 30 curated frames in three packed columns above
   760px and two below. Phones show the first ten, with a centred fine chevron

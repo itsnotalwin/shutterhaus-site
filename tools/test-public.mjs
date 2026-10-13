@@ -34,7 +34,9 @@ function fixture(url = "https://shutterhausvisuals.co.za/contact.html?package=So
   const w = dom.window;
   w.innerWidth = width;
   w.scrollTo = (x,y) => {w.scrollY=y;};
-  w.matchMedia = () => ({ matches: true });
+  w.matchMedia = query => ({ matches: query.includes('1000px') ? w.innerWidth <= 1000 : true, addEventListener() {} });
+  w.HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); };
+  w.HTMLDialogElement.prototype.close = function () { this.removeAttribute('open'); };
   w.__galleryReads = 0;
   w.eval(pagesBundle.outputFiles[0].text);
   if (main) w.eval(mainBundle.outputFiles[0].text);
@@ -148,7 +150,7 @@ test("honeypot submissions make no network request", () => {
   } finally { dom.window.close(); }
 });
 
-test("home photographs open by keyboard, trap focus, and restore focus", () => {
+test("native home photo buttons open the modal, trap focus, and restore focus", () => {
   const dom = fixture(undefined, false);
   try {
     const w = dom.window;
@@ -156,13 +158,14 @@ test("home photographs open by keyboard, trap focus, and restore focus", () => {
     w.PublicPages.initLightbox();
     const frame = w.document.querySelector('.hstrip__item[role="button"]');
     frame.focus();
-    frame.dispatchEvent(new w.KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+    assert.equal(frame.tagName, "BUTTON");
+    frame.click();
     const box = w.document.querySelector(".lb");
     assert.equal(box.hidden, false);
     assert.equal(w.document.getElementById("app").inert, true);
     assert.equal(w.document.activeElement.className, "lb__x");
     w.document.activeElement.dispatchEvent(new w.KeyboardEvent("keydown", { key: "Tab", shiftKey: true, bubbles: true, cancelable: true }));
-    assert.ok(w.document.activeElement.classList.contains("lb__nav--n"));
+    assert.ok(w.document.activeElement.classList.contains("lb__stage"));
     w.document.activeElement.dispatchEvent(new w.KeyboardEvent("keydown", { key: "Tab", bubbles: true, cancelable: true }));
     assert.equal(w.document.activeElement.className, "lb__x");
     w.document.dispatchEvent(new w.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
@@ -190,7 +193,7 @@ test("same-route history restores the existing form, scroll and draft", async ()
     // A fresh document boot reads the saved session draft.
     const restored=new JSDOM('<div id="app"></div>',{url:w.location.href,runScripts:'outside-only'});
     try {
-      const next=restored.window;next.scrollTo=()=>{};next.matchMedia=()=>({matches:true});
+      const next=restored.window;next.scrollTo=()=>{};next.matchMedia=()=>({matches:true,addEventListener(){}});
       next.sessionStorage.setItem('shutterhaus-enquiry-draft-v1',storage);
       next.eval(mainBundle.outputFiles[0].text);
       assert.equal(next.document.querySelector('[name="message"]').value,'A test enquiry');
@@ -200,7 +203,7 @@ test("same-route history restores the existing form, scroll and draft", async ()
 });
 
 test("an identical late gallery response preserves an open menu and scroll",async()=>{
-  const dom=fixture('https://shutterhausvisuals.co.za/services.html');
+  const dom=fixture('https://shutterhausvisuals.co.za/services.html',true,390);
   try {
     const w=dom.window;const main=w.document.querySelector('.main');
     w.scrollY=550;w.document.querySelector('.burger').click();
@@ -414,4 +417,24 @@ test("sitemap agrees with canonical pages and admin noindex remains readable", a
   const admin = new JSDOM(await readFile('dist/admin.html', 'utf8'));
   assert.match(admin.window.document.querySelector('meta[name="robots"]').content, /noindex/);
   admin.window.close();
+});
+
+
+test("leaving Contact aborts pending delivery and preserves the saved draft", async () => {
+  const dom = fixture('https://shutterhausvisuals.co.za/#/contact');
+  try {
+    const w = dom.window;
+    fill(w);
+    let signal;
+    w.fetch = (_url, options) => {
+      signal = options.signal;
+      return new Promise((_resolve, reject) => signal.addEventListener('abort', () => reject(new Error('aborted')), { once: true }));
+    };
+    submit(w);
+    w.location.hash = '/about';
+    await new Promise(resolve => setTimeout(resolve, 20));
+    assert.equal(signal.aborted, true);
+    assert.ok(w.document.querySelector('.about'));
+    assert.match(w.sessionStorage.getItem('shutterhaus-enquiry-draft-v1'), /A test enquiry/);
+  } finally { dom.window.close(); }
 });

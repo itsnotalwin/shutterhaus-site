@@ -16,7 +16,8 @@
     "typecheck": "tsc --noEmit",
     "probe:packer": "node tools/probe-packer.mjs",
     "test": "node tools/test-public.mjs && node tools/test-admin.mjs",
-    "verify:admin": "node tools/verify-admin-panel.mjs"
+    "verify:admin": "node tools/verify-admin-panel.mjs",
+    "verify:controls": "node tools/verify-controls.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.58.0"

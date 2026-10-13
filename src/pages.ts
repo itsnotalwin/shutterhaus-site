@@ -1,10 +1,10 @@
 import { escapeHtml } from "./layout";
 import { SITE } from "./config";
-import { formatPrice } from "./pricing";
 import type { Photo } from "./types";
-import { PHOTO_ROWS, COMMITTED_ROWS, setLiveRows } from "./rows";
+import { PHOTO_ROWS, COMMITTED_ROWS } from "./rows";
+import { homeBand } from "./booking-band";
+export { homeBand } from "./booking-band";
 import { SHOOT_OF } from "./shoots";
-import { setLiveHome } from "./config";
 // src/rows.ts (justified rows) went away with the row layout — the wall uses
 // `packByHeight()` from this file now, the same packer the home strip uses.
 
@@ -194,6 +194,34 @@ export function packByHeight<T extends Photo>(items: T[], cols: number): T[][] {
   // preserves it down each column instead of showing 17 tallest-first.
   for (const b of buckets) b.sort((x, y) => x.i - y.i);
 
+  // Cross-column swaps can settle in a local minimum. Repair remaining
+  // neighbours within a column; its height and frame count stay unchanged.
+  const adjacent = () => {
+    const sequence = buckets.flat();
+    return sequence.slice(1).filter((frame, i) =>
+      shootId.get(frame.i) === shootId.get(sequence[i].i)).length;
+  };
+  let remaining = adjacent();
+  while (remaining > 0) {
+    let improved = false;
+    for (const bucket of buckets) {
+      for (let x = 0; x < bucket.length && !improved; x++) {
+        for (let y = x + 1; y < bucket.length; y++) {
+          [bucket[x], bucket[y]] = [bucket[y], bucket[x]];
+          const score = adjacent();
+          if (score < remaining) {
+            remaining = score;
+            improved = true;
+            break;
+          }
+          [bucket[x], bucket[y]] = [bucket[y], bucket[x]];
+        }
+      }
+      if (improved) break;
+    }
+    if (!improved) break;
+  }
+
   return buckets.map((b) => b.map((s) => s.photo));
 }
 
@@ -302,7 +330,7 @@ export function pictureFor(url: string, sizes: string, sourceWidth?: number | nu
  */
 const SIZES = "100vw";
 
-/** Match the wall gutters in makeover.css so high-DPI photos stay sharp. */
+/** Match the wall gutters in public.css so high-DPI photos stay sharp. */
 function wallSizes(cols: number): string {
   return `(max-width: 640px) calc((100vw - 32px - ${(cols - 1) * 8}px) / ${cols}), ` +
     `(max-width: 760px) calc((100vw - 40px - ${(cols - 1) * 12}px) / ${cols}), ` +
@@ -323,11 +351,21 @@ function categoryOf(p: Photo): string {
   return SITE.categories.includes(key) ? key : "portrait";
 }
 
-/** "portrait" -> "Portrait", for the caption line. */
-function titleCase(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
+/**
+ * A portfolio wall cell: a button wrapping the thumbnail.
+  *
+  * It used to carry a second, larger `<img>` that the CSS revealed on hover.
+  * Removed 2026-10-01 — Alwin, "when i hover it destroys the crop... make it
+  * like the home page images". Measured: 247px of thumbnail replaced by 492px of
+  * the same frame, thumbnail underneath at opacity 0. Inside a justified row
+  * that swaps in a differently-cropped copy whose height disagrees with its
+  * neighbours. The wall now inherits the home page's monochrome-at-rest hover
+  * because no element of its own is needed — there is no filter any more.
+  *
+  * The lightbox opens on CLICK of `.cell img[data-full]`, so the thumbnail
+  * keeps that attribute and the button must not swallow the event — hence no
+  * JS here at all.
+  */
 function figure(p: Photo, index: number, sizes?: string): string {
   // The first frame is the LCP element. Marking it lazy forces the browser to
     // discover it, then decide — which is exactly the 6.4s stall we measured.
@@ -346,7 +384,7 @@ function figure(p: Photo, index: number, sizes?: string): string {
   // <picture> entirely still doesn't pull an 1800px original.
   const fb = derivative(p.url, 400, "jpg") ?? p.url;
 
-  return `<figure class="cell">
+  return `<span class="cell">
       <picture>${sources}
         <img src="${escapeHtml(fb)}" alt="${escapeHtml(p.alt || p.filename || "")}"
              loading="${loading}" decoding="async"${priority}${ratio}
@@ -354,24 +392,9 @@ function figure(p: Photo, index: number, sizes?: string): string {
              data-cat="${escapeHtml(categoryOf(p))}"
              data-filename="${escapeHtml(p.filename || "")}" />
       </picture>
-    </figure>`;
+    </span>`;
 }
 
-/**
- * A portfolio wall cell: a button wrapping the thumbnail.
-  *
-  * It used to carry a second, larger `<img>` that the CSS revealed on hover.
-  * Removed 2026-10-01 — Alwin, "when i hover it destroys the crop... make it
-  * like the home page images". Measured: 247px of thumbnail replaced by 492px of
-  * the same frame, thumbnail underneath at opacity 0. Inside a justified row
-  * that swaps in a differently-cropped copy whose height disagrees with its
-  * neighbours. The wall now inherits the home page's monochrome-at-rest hover
-  * because no element of its own is needed — there is no filter any more.
-  *
-  * The lightbox opens on CLICK of `.cell img[data-full]`, so the thumbnail
-  * keeps that attribute and the button must not swallow the event — hence no
-  * JS here at all.
-  */
  function wallCell(p: Photo, n: number, sizes: string): string {
    // No index argument: `figure()` marks index 0 as the eager/high-priority LCP
    // image, and under column packing that would be whichever frame the packer
@@ -382,10 +405,10 @@ function figure(p: Photo, index: number, sizes?: string): string {
    // data-n is the frame's permanent number; the lightbox reads it for its
    // counter and for stepping order. The visible label is decoration only
    // (aria-hidden): the accessible name is already the alt text.
-   return `<span class="pf-cell" role="button" tabindex="0" data-photo-id="${escapeHtml(p.id)}"
+   return `<button class="photo-trigger pf-cell" type="button" role="button" data-photo-id="${escapeHtml(p.id)}"
                 data-n="${n}" aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">
          ${figure(p, -1, sizes)}
-       </span>`;
+       </button>`;
  }
 
 /**
@@ -409,57 +432,6 @@ function wallCols(): number {
 
 function mobileGallery(): boolean {
   return typeof innerWidth !== 'undefined' && innerWidth <= 760;
-}
-
-/**
- * The portfolio filter bar.
- *
- * The `.pfilter` stylesheet shipped in src/editorial.css with nothing emitting
- * it (verify.mjs counted `filters: 0` and nothing complained). This is that
- * markup.
- *
- * Categories come from `photo.album`, which tools/build-demo-ts.py now writes
- * from tools/frame_meta.py — 46 portraits and 4 landscapes in the real gallery.
- * There are no couples, families or social groups in it, so the bar does not
- * claim any. An earlier mockup of this bar showed invented counts of 28/9/7/6
- * against categories the frames do not contain; do not reintroduce those.
- *
- * "All" comes first and is the default, so the bar is a filter rather than a
- * set of tabs that hide work behind them.
- */
-function filterBar(photos: Photo[]): string {
-  const counts = new Map<string, number>();
-  for (const p of photos) {
-    const k = p.album || "other";
-    counts.set(k, (counts.get(k) ?? 0) + 1);
-  }
-  // Only offer a bar when it would actually distinguish something. With one
-  // category the bar is chrome around a single option.
-  if (counts.size < 2) return "";
-
-  const label: Record<string, string> = {
-    portrait: "Portraits",
-    // The data key stays `landscape` (frame_meta.py, demo.ts, the filter handler
-    // all match on it); only the label changed, to echo the page's own copy,
-    // "Portraits and places".
-    landscape: "Places",
-  };
-  const items = [
-    `<button class="pfilter__item is-on" type="button" data-filter="all"
-         aria-pressed="true">All · ${photos.length}</button>`,
-    ...[...counts.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .map(
-        ([cat, n]) =>
-          `<button class="pfilter__item" type="button" data-filter="${escapeHtml(cat)}"
-             aria-pressed="false">${escapeHtml(label[cat] ?? cat)} · ${n}</button>`,
-      ),
-  ].join("");
-
-  // The cue is for mouse users: the column scrollbars are hidden on purpose, so
-  // nothing else says the three columns move independently. Hidden on phones.
-  const cue = `<span class="pfilter__cue" aria-hidden="true">Scroll any column ↓</span>`;
-  return `<nav class="pfilter" aria-label="Filter photographs by category">${items}${cue}</nav>`;
 }
 
 /**
@@ -635,50 +607,7 @@ function stripCols(frameCount: number): number {
  * back up to the nav. The contact row is deliberately ONE line inside the band,
  * not a site-wide footer (an earlier footer was reverted).
  */
-export function homeBand(options: { eyebrow?: string; heading?: string; cta?: string; href?: string } = {}): string {
-  const from = cheapestTier();
-  const insta = SITE.social.find((x) => x.id === "instagram");
-  const names = SITE.pricing.tiers.map((t) => t.name).join(" · ");
-  return `<section class="hcta">
-      <div class="hcta__grid">
-        <div class="hcta__main">
-          <p class="eyebrow">${escapeHtml(options.eyebrow ?? SITE.services.eyebrow)}</p>
-          <h2 class="hcta__h">${escapeHtml(options.heading ?? "Book a session.")}</h2>
-        </div>
-        <div class="hcta__side">
-          ${
-            from
-              ? `<p class="hcta__k">From</p>
-          <p class="hcta__price">${escapeHtml(formatPrice(from.price))}</p>`
-              : ""
-          }
-          <p class="hcta__note">${escapeHtml(names)}<br>${escapeHtml(SITE.pricing.depositNote)}</p>
-          <a class="hcta__btn" href="${escapeHtml(options.href ?? "./services.html")}">${escapeHtml(options.cta ?? SITE.services.cta)} →</a>
-        </div>
-      </div>
-      <div class="hcta__foot">
-        <a href="mailto:${escapeHtml(SITE.contact.email)}">${escapeHtml(SITE.contact.email)}</a>
-        ${/* Phone removed 2026-10-03 at Alwin's instruction: not taking calls
-           for now. This was a `tel:` link, so on a phone it raised a dial
-           prompt. WhatsApp in the header is the only direct channel now. */""}
-        ${insta ? `<a href="${escapeHtml(insta.url)}" target="_blank" rel="noopener">Instagram</a>` : ""}
-        <span>© ${escapeHtml(SITE.home.est)}–${new Date().getFullYear()} ${escapeHtml(SITE.nameTop)} ${escapeHtml(SITE.nameBig2)}</span>
-      </div>
-    </section>`;
-}
 
-/**
- * The cheapest package, for the "From R1,200" line on the home band.
- *
- * Read from the pricing config rather than typed in, so changing a tier price
- * on the Services page can never leave the home page quoting a stale figure.
- * Numeric rand amounts avoid parsing formatted display strings.
- */
-function cheapestTier(): { name: string; price: number } | null {
-  const tiers = SITE.pricing.tiers.filter((t) => Number.isFinite(t.price) && t.price > 0);
-  if (!tiers.length) return null;
-  return [...tiers].sort((a, b) => a.price - b.price)[0]!;
-}
 
 /**
  * The home route: full-bleed hero, then a short editorial strip of frames.
@@ -687,7 +616,7 @@ function cheapestTier(): { name: string; price: number } | null {
  * puts the work behind the headline, and a black rectangle reads as a broken
  * image to a first-time visitor.
  */
-export function homePage(photos: Photo[], cols: number): string {
+export function homePage(photos: Photo[], _cols: number): string {
   const h = SITE.home;
   // The hero is a wide box; most gallery frames are portrait. Taking photos[0]
   // blindly meant a 1440x1800 portrait centre-cropped into a 1440x710 hero —
@@ -780,7 +709,7 @@ export function homePage(photos: Photo[], cols: number): string {
                     // like the number on my photos". The strip does not need
                     // numbering to read as a curated set, and the digit sitting in
                     // the corner of every photograph was the thing he objected to.
-                    .map((p) => `<div class="hstrip__item" role="button" tabindex="0" aria-label="View ${escapeHtml(p.alt || "photograph")}">${figure(p, -1, '(max-width: 760px) 100vw, 50vw')}</div>`)
+                    .map((p) => `<button class="photo-trigger hstrip__item" type="button" role="button" aria-label="View ${escapeHtml(p.alt || "photograph")}">${figure(p, -1, '(max-width: 760px) 100vw, 50vw')}</button>`)
                     .join("")}</div>`,
               )
               .join("")}</div>
