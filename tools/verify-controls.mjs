@@ -8,9 +8,12 @@ const check = async (name, expression) => {
   console.log(`PASS ${name}`); count++;
 };
 try {
+  await b.send('Network.enable');
+  await b.send('Network.setBlockedURLs', { urls: ['*.supabase.co/*'] });
   await b.viewport(1440);
   await b.send('Page.navigate', { url: base + '/' });
-  await b.until('!!document.querySelector(".photo-trigger")');
+  // Static photos exist before their delegated handlers are mounted.
+  await b.until('!!document.querySelector(".photo-trigger") && !document.getElementById("app").hasAttribute("data-route")');
   await b.evaluate('document.querySelector(".photo-trigger").focus()');
   await b.key('Enter', 'Enter', 13);
   await check('home photo opens with native Enter', 'document.querySelector(".lb").matches(":modal") && document.activeElement.matches(".lb__x")');
@@ -30,10 +33,10 @@ try {
   await b.click('.burger');
   await check('mobile drawer exposes links and disables background', '!document.querySelector("#site-nav").inert && document.querySelector("main").inert');
   await b.viewport(1440);
-  await b.until('!document.querySelector("#site-nav").inert');
+  await b.until('!document.querySelector("#site-nav").inert && document.querySelector(".burger").getAttribute("aria-expanded")==="false"');
   await check('desktop resize clears the drawer and scroll lock', '!document.querySelector(".nav-scrim") && !document.querySelector("main").inert && !document.documentElement.classList.contains("nav-locked")');
   await b.click('.nav-link[href="./portfolio.html"]');
-  await b.until('!!document.querySelector(".pf-cell")');
+  await b.until('!!document.querySelector(".pf-cell") && !document.getElementById("app").hasAttribute("data-route")');
   await b.evaluate('document.querySelector(".pf-cell").focus()');
   await b.key(' ', 'Space', 32);
   await check('portfolio opens with native Space', 'document.querySelector(".lb").matches(":modal")');
