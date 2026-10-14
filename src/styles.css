@@ -26,19 +26,26 @@
 }
 
 :root {
-  --ink: #111;
-  /* Inactive nav was #8c8c8c — only 3.36:1 on white, failing WCAG AA at 12px.
-     #6b6b6b is 5.3:1 and still reads as "quiet next to" the active item, so the
-     hierarchy survives without the contrast failing. */
-  --grey: #6b6b6b;
-  --line: #e6e6e6;
-  --paper: #fff;
-  --dim: #6d6d6d;
+  /* Colors */
+  --ink: #111111;
+  --coal: #292929;
+  --slate: #676767;
+  --mid: #898989;
+  --paper: #F7F6F3;
+  --white: #FFFFFF;
+  --fog: #EDECE8;
+  --border: #D5D3CE;
+  --quiet: #696761;
+  --negative: #FFFFFF;
+  --focus: #111111;
 
-  --pad: 26px;          /* outer page gutter */
-  --gut: 14px;          /* gap between columns/images */
-  --head: 118px;        /* header height */
+  /* Spacing */
+  --pad: clamp(32px, 4.2vw, 80px); /* outer page gutter */
+  --gut: 24px; /* gap between columns/images */
+  --head: 84px; /* header height desktop */
+  --head-mobile: 72px; /* header height mobile */
 
+  /* iPhone safe-area insets */
   /* iPhone safe-area insets, aliased once so no rule has to spell out the
      max() fallback itself. `env(safe-area-inset-*)` is 0 on every browser
      that does not understand it and on every desktop, so wrapping it in
@@ -54,13 +61,19 @@
   --sal: max(0px, env(safe-area-inset-left));
   --sar: max(0px, env(safe-area-inset-right));
 
-  --font-display: "Archivo Black", "Helvetica Neue", Arial, sans-serif;
-  --font-body: "Inter", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  /* Typography */
+  --font-display: "EB Garamond", "Iowan Old Style", "Baskerville", Georgia, serif;
+  --font-body: Inter, "Helvetica Neue", Arial, sans-serif;
   /* System monospace on purpose: no extra font request, and it reads as
      "spec sheet" next to the Archivo display type. Used for metadata only. */
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
 
+@media (max-width: 759px) {
+  :root {
+    --head: var(--head-mobile);
+  }
+}
 * { box-sizing: border-box; }
 
 html, body {
