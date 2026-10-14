@@ -72,7 +72,8 @@
 .cform textarea { resize: vertical; min-height: 128px; }
 .cform textarea::placeholder { color: #656565; opacity: 1; }
 .cform input:focus, .cform select:focus, .cform textarea:focus { outline: 2px solid #111; outline-offset: 3px; }
-.cform button { align-self: stretch; width: 100%; min-height: 50px; font: 700 13px/1.5 var(--font-body); letter-spacing: .04em; }
+.cform button { align-self: stretch; width: 100%; min-height: 48px; background: #111; color: #fff; font: 600 13px/1.4 var(--font-body); text-transform: uppercase; letter-spacing: 0.10em; border-radius: 0; transition: background .2s; }
+.cform button:hover { background: #292929; }
 .cform__note:empty { display: none; }
 .contact__whatsapp { display: block; text-align: center; font-size: 13px; line-height: 1.6; padding: 16px 0; margin-top: 4px; }
 .contact__whatsapp:hover { text-decoration: underline; text-underline-offset: 4px; }
