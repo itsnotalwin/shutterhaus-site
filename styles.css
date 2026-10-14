@@ -1,0 +1,1404 @@
+/* =============================================================
+   Shutterhaus Visuals — rebuilt from the Van André Rensburg reference
+   Tokens first, then site chrome, gallery, lightbox, admin.
+   ============================================================= */
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/inter-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/inter-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Archivo Black";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/archivo-black-latin-400-normal.woff2") format("woff2");
+}
+
+:root {
+  /* Colors */
+  --ink: #111111;
+  --coal: #292929;
+  --slate: #676767;
+  --mid: #898989;
+  --paper: #F7F6F3;
+  --white: #FFFFFF;
+  --fog: #EDECE8;
+  --border: #D5D3CE;
+  --quiet: #696761;
+  --negative: #FFFFFF;
+  --focus: #111111;
+
+  /* Spacing */
+  --pad: clamp(32px, 4.2vw, 80px); /* outer page gutter */
+  --gut: 24px; /* gap between columns/images */
+  --head: 84px; /* header height desktop */
+  --head-mobile: 72px; /* header height mobile */
+
+  /* iPhone safe-area insets */
+  /* iPhone safe-area insets, aliased once so no rule has to spell out the
+     max() fallback itself. `env(safe-area-inset-*)` is 0 on every browser
+     that does not understand it and on every desktop, so wrapping it in
+     max(<fallback>, env(...)) means these are a plain 0 on the machines
+     this was written on and grow to 59px/34px/0px only on a notched
+     device. A bare `env()` is technically valid CSS but invalid in
+     browsers without support, which drops the whole declaration; max()
+     keeps the fallback and the inset in one property.
+     Values are read from the iPhone 16: 59px top (Dynamic Island band),
+     34px bottom (home indicator), 0 left/right in portrait. */
+  --sat: max(0px, env(safe-area-inset-top));
+  --sab: max(0px, env(safe-area-inset-bottom));
+  --sal: max(0px, env(safe-area-inset-left));
+  --sar: max(0px, env(safe-area-inset-right));
+
+  /* Typography */
+  --font-display: "EB Garamond", "Iowan Old Style", "Baskerville", Georgia, serif;
+  --font-body: Inter, "Helvetica Neue", Arial, sans-serif;
+  /* System monospace on purpose: no extra font request, and it reads as
+     "spec sheet" next to the Archivo display type. Used for metadata only. */
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+@media (max-width: 759px) {
+  :root {
+    --head: var(--head-mobile);
+  }
+}
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  /* Kept, because .shell { min-height: 100% } and the sticky header both
+     resolve their percentages against it. Dropping it in the process of
+     adding the insets was a regression, not a simplification. */
+  height: 100%;
+  /* Left/right insets live here, once, rather than on .main and every full-bleed
+     section. A body inset shrinks the ICB, so `position: fixed` chrome and any
+     `100vw` element are already clamped to the safe width, and the
+     full-bleed rules that cancel `var(--pad)` with a negative margin
+     (.hero, .hcta, .invest) only cancel the gutter — not the inset — which is
+     exactly the intent: those sections are meant to reach the screen edge but
+     never under a rounded corner in landscape. Bottom inset likewise keeps the
+     last row of a page clear of the home indicator; `height: 100%` above is
+     left alone because the box-sizing below makes it content height, and the
+     padding-bottom is what actually reserves the space. */
+  padding-left: var(--sal);
+  padding-right: var(--sar);
+  padding-bottom: var(--sab);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+.icon { display: block; }
+
+/* ---------------------------------------------------------- header */
+
+.shell { min-height: 100%; }
+
+.site-header {
+  /* STICKY, fixed 2026-10-02. This was `position: relative`, which means the
+     header scrolls away with the document: on #/services the audit measured the
+     burger at top: -3105px, so reaching the menu meant scrolling back 3124px.
+     The burger is the ONLY navigation on a phone, so a page that scrolls it out
+     of reach is a page you can only navigate by scrolling back to the top.
+     `sticky` keeps it in the document flow (so the hero on the home route still
+     starts at the very top) while pinning it to the viewport as you scroll. */
+  position: sticky;
+  top: 0;
+  /* Above the hero photograph (z-index 5) and the nav drawer, or the header
+     would slide under the drawer instead of carrying it. */
+  z-index: 6;
+  /* The mobile nav drawer is absolutely positioned against this. */
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  /* The top inset is added to --head, not swapped for it, so the bar keeps
+     its designed height AND gains clearance for the Dynamic Island. With a
+     fixed `height` and a padding-top the content would just be squeezed
+     upward and the burger would sit at the very top of the box, which is
+     precisely the y=18px defect. box-sizing is border-box (set above), so
+     the total is --head + --sat and the 20px row of content lands below
+     the island. */
+  height: calc(var(--head) + var(--sat));
+  padding: var(--sat) var(--pad) 0;
+  gap: 20px;
+  /* Opaque by default, because on every route except home it sits over plain
+     white content and a transparent bar would let photographs run under the
+     wordmark. The home route is the exception and says so below. */
+  background: var(--paper);
+}
+
+/* NOTE: the home route's transparent-over-hero header lives in public.css
+   (`.shell--over .site-header`), which sets position:absolute plus a measured
+   scrim gradient. It was previously ineffective on a PHONE: styles.css sets
+   `position: sticky` on .site-header and that wins on equal specificity only if
+   it comes later in the cascade — styles.css is imported after public.css, so
+   sticky was beating absolute and the header stayed in flow. Hence the 92px
+   opaque band Alwin called "the grey bar at the top of mobile view".
+
+   The fix belongs in public.css where the rule lives, not here. */
+
+
+/* Logo lockup: small word inline, big word wrapping onto a second line. */
+.logo {
+  /* "SHUTTERHAUS" on the first line, "VISUALS" on the second (see
+     .logo-lg--b). The tap-target pass added a second .logo rule with
+     `display: inline-flex` to give it a 44px box — inline-flex lays the two
+     spans out as ROW flex items, which silently collapsed the wordmark from
+     two stacked lines into one line. `inline-block` is what preserves the
+     stacked layout; the min-height below is enough to size the target. */
+  display: inline-block;
+  justify-self: start;
+  line-height: 0.86;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  /* Padding, NOT min-height. The header is a centred grid, so a min-height
+     taller than the logo's own content re-centres it and pushes the small top
+     word to top: -3px at 390px — off-screen, so "SHUTTERHAUS" disappears and
+     only "VISUALS" shows. Padding grows the tap box without changing the
+     layout box the grid measures. */
+  padding: 11px 0;
+}
+.logo-row { display: flex; align-items: baseline; gap: 6px; }
+/* Both words are tracked out, and the small one is sized so its optical width
+   MATCHES the big word below — that shared measure is what makes it read as a
+   single considered lockup rather than a caption stacked on a title. The
+   reference does exactly this in a spaced serif. Archivo Black is far wider
+   per glyph, so the small word needs fewer characters-worth of tracking to
+   land on the same width. */
+.logo-sm {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  transform: translateY(-0.5em);
+}
+.logo-lg {
+  font-family: var(--font-display);
+  font-size: 27px;
+  /* Display type at this size needs the tracking pulled IN, not out — a wide
+     gap between SHUTTER/HAUS reads as two words. */
+  letter-spacing: -0.005em;
+  font-weight: 400;
+}
+.logo-lg--b { display: block; }
+
+/* Nav sits centre-left, matching the reference's offset placement.
+   `max-width: 100%` is load-bearing below 640px, where this becomes an
+   absolutely-positioned drawer carrying `grid-area: nav`. An out-of-flow grid
+   child uses its GRID AREA as its containing block, so the drawer's `right: 0`
+   resolves against that area — and the area is 284px wide at a 320px viewport
+   while five links at a 22px gap want 308px. The over-wide box then sticks out
+   past the header and the document scrollWidth becomes 326 on a 320 screen.
+   Clamping to the container stops the closed drawer creating scroll. */
+.site-nav { display: flex; gap: 30px; max-width: 100%; }
+
+/* The reference collapses the nav behind a hamburger below 760px. Hidden on
+   desktop entirely so it can never be tabbed to when it's not on screen. */
+.burger {
+  display: none;
+  justify-self: end;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+.burger__bars { display: block; width: 20px; }
+.burger__bars i {
+  display: block;
+  height: 1px;
+  background: var(--ink);
+  transition: transform 0.18s ease;
+}
+.burger__bars i:first-child { margin-bottom: 5px; }
+.burger[aria-expanded="true"] .burger__bars i:first-child { transform: translateY(3px) rotate(45deg); }
+.burger[aria-expanded="true"] .burger__bars i:last-child { transform: translateY(-3px) rotate(-45deg); }
+.burger:focus-visible { outline: 1px solid var(--ink); outline-offset: 2px; }
+.nav-link {
+  font-size: 12px;
+  color: var(--grey);
+  letter-spacing: 0.01em;
+  /* min-height rather than padding alone, so the 44px tap target holds at
+     every width — a tablet is a touch device too, and the first mobile pass
+     only fixed this inside the 640px query, leaving 768/1024/1440 at 18px. */
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s;
+}
+.nav-link:hover { color: var(--ink); }
+.nav-link.is-active { color: var(--ink); border-bottom-color: var(--ink); }
+
+.site-social { display: flex; gap: 16px; justify-self: end; }
+.social {
+  color: var(--ink);
+  opacity: 0.85;
+  transition: opacity 0.15s;
+  /* Same 44px floor as the nav, at every width. Padding (not a negative
+     margin) is what sizes the target, and the flex gap absorbs the growth. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+}
+.social:hover { opacity: 0.5; }
+
+/* --------------------------------------------------------- gallery */
+
+.main { padding: 0 var(--pad) var(--pad); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), 1fr);
+  gap: var(--gut);
+  align-items: start;
+}
+.grid[data-cols="3"] { --cols: 3; }
+.grid[data-cols="2"] { --cols: 2; }
+.grid[data-cols="1"] { --cols: 1; }
+
+/* Each column scrolls on its own — the reference's signature behaviour. */
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gut);
+  max-height: calc(100vh - var(--head) - var(--pad));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+.col::-webkit-scrollbar { display: none; }
+
+/* THE SQUISH BUG.
+   A flex column's default `align-items` is `stretch`, so every <figure> was
+   forced to the height of the tallest one in that column. `.cell img` has
+   `height: auto`, which then resolved against that stretched box and changed
+   the rendered aspect ratio — a 1440x1800 portrait displayed as a 453x453
+   SQUARE. Alwin spotted it on a PC; every portrait in the set was distorted.
+
+   `flex: none` stops the item from being stretched at all, so each figure
+   keeps its intrinsic height and the photo keeps its real proportions. */
+.cell { margin: 0; flex: none; }
+/* The <picture> wrapper is the direct child now, so it has to be the block
+   that fills the cell; the img inside it then fills that. */
+.cell picture { display: block; }
+.cell img {
+  width: 100%;
+  height: auto;
+  /* Placeholder grey flashed on every not-yet-loaded frame. On a phone that
+     is most of the second screen, so it read as broken rather than loading. */
+  background: #f4f4f4;
+  cursor: zoom-in;
+  transition: opacity 0.25s;
+}
+/* Photographs remain visible if JavaScript fails or is disabled. */
+.cell img:not(.is-loaded) { opacity: 1; }
+.cell img.is-loaded { opacity: 1; }
+/* Only dim a frame that has actually loaded, and only where hover exists —
+   :hover never fires on touch, and an un-fired rule would leave the frame
+   stuck at the opacity below. */
+@media (hover: hover) {
+  .cell img.is-loaded:hover { opacity: 0.92; }
+}
+.cell figcaption {
+  font-size: 11px;
+  color: var(--dim);
+  padding-top: 6px;
+}
+
+/* NO FILTER ON PHOTOGRAPHS — deliberately.
+ *
+ * Alwin's instruction, 2026-10-02: "REMOVE THE GREY COVERING ON THE PHOTOS —
+ * PHOTOS MUST STAY EXACTLY AS THEY WERE UPLOADED (full colour, no greyscale
+ * filter)". The site's black-and-white look was only ever a CSS `filter` over
+ * colour JPEGs, so removing those rules restores the uploaded image and needs
+ * nothing else: no re-encode, no build step, no derivative changes. The files
+ * on disk and in Supabase were never touched by it.
+ *
+ * Nothing replaces the filter. Do not reintroduce a greyscale, sepia,
+ * desaturation or brightness tweak here — a photography site that grades his
+ * own work is second-guessing the photographer, and the rejection was of the
+ * whole idea, not of one particular value.
+ *
+ * There is deliberately no rule in this file that references the shell's
+ * black-and-white class any more, so nothing downstream has to know about it. */
+
+/* --------------------------------------------------------- contact */
+
+.contact {
+  display: grid;
+  /* Stacks: heading, blurb and form, then the direct-contact details below.
+     The form and the ways to reach him are one thought on a phone and belong in
+     one column. Alwin asked for this page to carry no image, so the second
+     column that once held a photograph is gone and the page has nothing in it. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
+  padding: 40px 0 80px;
+  max-width: 720px;
+}
+
+/* From 1100px the two sit side by side. This page was leaving 41% of a 1440px
+   screen and 56% of a 1920px screen empty on its right edge -- measured -- while
+   every other route fills 98.6-100% of the viewport. It is also the page that
+   converts, so the space is worth using.
+
+   The form column is capped rather than allowed to stretch: a 900px-wide text
+   input is worse to complete than a 620px one. Dead space drops from 41% to
+   roughly a fifth instead of being "fixed" by making the form unusable.
+   Flush-left, consistent with every other block on the site. */
+@media (min-width: 1100px) {
+  /* The grid belongs on `.contact__col`, NOT on `.contact`. `.contact` is the
+     <section> and its only child is `.contact__col`, so putting two tracks on
+     the section left the second one empty and the details dropped back below
+     the form — which is exactly what the first attempt did, and why the
+     measured dead space went down while the screenshot still looked half-empty.
+     Measure and LOOK; the two disagreed. */
+  .contact { max-width: none; }
+  .contact__col {
+    display: grid;
+    grid-template-columns: minmax(0, 620px) minmax(260px, 340px);
+    gap: 72px;
+    align-items: start;
+  }
+  .contact__aside { padding-top: 4px; }
+}
+
+
+
+
+.contact__h {
+  font-family: var(--font-display);
+  font-size: 40px;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  margin: 0 0 18px;
+  line-height: 0.9;
+}
+.contact__p { font-size: 14px; line-height: 1.6; color: var(--dim); max-width: 42ch; }
+.contact__list { list-style: none; margin: 30px 0 0; padding: 0; font-size: 14px; }
+/* Each item is an icon plus a label, side by side. Without `display:flex` the
+   <svg> and the <span> stack as blocks, and because the svg has no intrinsic
+   size it expands to fill the line — which is what happened. */
+.contact__list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+/* THE RULE THAT WAS MISSING.
+ *
+ * `icon()` in pages-more.ts emits <svg class="cico" viewBox="0 0 24 24">, with
+ * a comment calling them "tiny inline glyphs". There was never a `.cico` rule in
+ * any stylesheet, so the svg had no width and no height: a replaced element with
+ * only a viewBox sizes itself to 100% x 100% of its containing block.
+ *
+ * Measured on the contact page at 390px, before this rule existed:
+ *     .contact__list height = 1616px   (four items, mostly whitespace)
+ * The pin filled a whole screen, then the envelope, then the phone, then the
+ * WhatsApp glyph — each bigger than the text beside it. The contact details
+ * that the page exists to show were pushed off the bottom of a 3-screen page.
+ *
+ * `width/height` with `flex: none` fixes it, and `flex: none` matters because a
+ * flex item would otherwise be allowed to shrink below its specified size. */
+.cico {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  /* Baseline alignment, so the glyph sits on the text's baseline rather than
+   * floating in the middle of the line box. */
+  align-self: center;
+}
+
+/* Filled variant, for glyphs that are silhouettes rather than outlines. The
+   WhatsApp mark is illegible as a hairline outline at 18px — it collapses into a
+   tangle — so it is drawn solid instead. */
+.cico--fill {
+  fill: currentColor;
+  stroke: none;
+}
+/* These are the primary contact actions — tap-to-call, tap-to-email,
+   tap-to-WhatsApp. At 20px tall they were the easiest thing on the page to
+   miss with a thumb, so the link is padded out to a real target and the
+   underline is kept to preserve the reference's look. */
+.contact__list a {
+  display: inline-block;
+  min-height: 44px;
+  line-height: 44px;
+  border-bottom: 1px solid var(--line);
+}
+.contact__list a:hover { border-bottom-color: var(--ink); }
+.dim { color: var(--dim); }
+
+.cform { display: flex; flex-direction: column; gap: 16px; }
+.cform label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.cform input,
+.cform select,
+.cform textarea {
+  font-family: var(--font-body);
+  /* 16px on touch: anything smaller makes iOS Safari zoom the page on focus,
+     which is its own "the site jumped" complaint. */
+  font-size: 16px;
+  color: var(--ink);
+  /* min-height, not just padding: the 44px tap minimum has to hold on tablet
+     and desktop too, not only inside the 640px media query. */
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 0;
+  width: 100%;
+}
+.cform input:focus,
+.cform select:focus,
+.cform textarea:focus { outline: none; border-color: var(--ink); }
+.cform button {
+  font-family: var(--font-body);
+  /* 12px -> 13.5px. The primary action on the conversion page was set in the
+     small metadata size, which is the wrong register for the one control the
+     whole page exists to be pressed. No iOS zoom risk either way — it is a
+     button, not a field, and it is already 48px tall. */
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  min-height: 48px;
+  padding: 13px 22px;
+  background: var(--ink);
+  color: #fff;
+  border: 0;
+  cursor: pointer;
+  align-self: flex-start;
+}
+.cform button:hover { background: #333; }
+/* The honeypot. Visually gone and unclickable, but still in the DOM and still
+   in the accessibility tree's shadow — `aria-hidden="true"` on the label plus
+   `tabindex="-1"` on the input is what keeps it away from a screen reader and
+   from the tab order. `display:none` would also hide it from the FormData that
+   the check reads. */
+.cform .hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+/* The input itself, not just the label: `.cform input` sizing was still
+   applying inside the trap, leaving a 26x44 box that a strict tap-target audit
+   flags. Unreachable in practice, but a clean report matters. */
+.cform .hp input {
+  /* Not `!important` after all: the base rule here is
+     `.cform input, .cform select, .cform textarea`, which matches this input too
+     (specificity 0,1,1). `.cform .hp input` is 0,2,1 and beats it cleanly, so
+     the size is pinned without an override escape hatch.
+     `min-height: 0` is the one that mattered: `.cform input` sets
+     `min-height: 44px`, and min-height wins over `height`, which is why the
+     trap was still reporting 44px tall. */
+  width: 1px;
+  height: 1px;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+}
+.cform__note { font-size: 12px; min-height: 1em; margin: 0; }
+
+.empty { padding: 60px 0; }
+.empty p { margin: 0 0 6px; font-size: 14px; }
+.empty a { border-bottom: 1px solid var(--ink); }
+
+/* -------------------------------------------------------- lightbox */
+
+.lb {
+  position: fixed;
+  inset: 0;
+  /* Fully opaque. At 0.96 the page behind stayed faintly visible through the
+     backdrop — the header, the nav and the neighbouring thumbnails all ghosted
+     through behind the photograph, which reads as a rendering bug rather than
+     as a deliberate scrim. A photo viewer wants the photo and nothing else. */
+  background: #0c0c0c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.lb[hidden] { display: none; }
+/* The zoom stage and its image.
+ *
+ * `.lb__stage` exists so the swipe handler's `translateX` and the zoom's
+ * `scale` cannot both write to one `transform`. They are separate elements:
+ * the stage takes the zoom, the image keeps the drag. Before this, both wrote
+ * to `.lb__img` and whichever ran last won, so a zoomed photo could not be
+ * swiped and a swiped photo snapped back to unzoomed.
+ *
+ * `overflow: hidden` clips the 2x scale to the viewport, which is what makes
+ * the zoom read as "closer" instead of as a photo that has grown and pushed
+ * the layout around. */
+.lb__stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transform: scale(1);
+  transition: transform 180ms ease;
+  /* Stacking, measured with elementFromPoint rather than assumed.
+   *
+   * The stage was originally an in-flow flex child while Close and the arrows
+   * are `position: absolute`. An absolutely positioned box paints ABOVE an
+   * in-flow one regardless of DOM order, so the stage covered all three
+   * controls -- elementFromPoint returned IMG.lb__img for close, prev and next,
+   * BOTH unzoomed and zoomed. Tapping Close still worked when done via
+   * element.click(), which dispatches straight at the node, which is exactly why
+   * an automated check missed it: it bypasses hit-testing entirely.
+   *
+   * The first attempt raised `.lb` to z-index 1002 while zoomed. That was the
+   * wrong lever: `.lb` is the containing block, so raising it changes nothing
+   * about stacking among its own children. Giving the stage and the controls
+   * explicit z-indexes in the same context fixes it in both states. */
+  z-index: 0;
+}
+.lb__x,
+.lb__nav { z-index: 2; }
+.lb__cap { z-index: 1; }
+/* No transition while dragging: the photo must track the finger 1:1 with no
+ * easing, the same rule the swipe handler already follows. */
+.lb__stage.is-zoomed { transform: scale(2); }
+
+@media (prefers-reduced-motion: reduce) {
+  .lb__stage { transition: none; }
+}
+
+.lb__img {
+  max-width: 92vw;
+  max-height: 86vh;
+  object-fit: contain;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+}
+.lb__cap {
+  position: absolute;
+  /* 18px + the home-indicator inset. The caption was measured at 18px from
+     the bottom of the viewport, which on an iPhone 16 is inside the 34px
+     home-indicator band — the swipe target sits on top of the caption. */
+  bottom: calc(18px + var(--sab));
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #fff;
+  font-size: 12px;
+  opacity: 0.75;
+  margin: 0;
+  padding: 0 20px;
+}
+.lb__x,
+.lb__nav {
+  position: absolute;
+  background: none;
+  border: 0;
+  color: #fff;
+  cursor: pointer;
+  font-size: 30px;
+  line-height: 1;
+  opacity: 0.7;
+  padding: 10px 16px;
+}
+/* The audit measured this close button at y=18px on an iPhone 16, which is
+   inside the 59px Dynamic Island band: the pill is drawn over the island and
+   part of the tap target is unreachable. top is 12px + the top inset, and the
+   side insets join it so the control stays inside the rounded corners in
+   landscape, where the island moves to a left or right inset. */
+.lb__x { top: calc(12px + var(--sat)); right: calc(18px + var(--sar)); font-size: 34px; }
+.lb__nav--p { left: calc(14px + var(--sal)); }
+.lb__nav--n { right: calc(14px + var(--sar)); }
+.lb__x:hover, .lb__nav:hover { opacity: 1; }
+
+/* Each control holds a glyph AND a word. Glyphs by default (the home page's
+   lightbox, which is locked); words only when opened from the portfolio wall. */
+.lb__t { display: none; }
+.lb--wall .lb__g { display: none; }
+.lb--wall .lb__t { display: inline; }
+.lb--wall .lb__x,
+.lb--wall .lb__nav {
+  font: 11px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.9;
+  min-height: 44px;
+  padding: 0 16px;
+}
+.lb--wall .lb__x { top: 18px; right: 22px; font-size: 11px; }
+/* "02 / 50" counter instead of the alt text, in the same mono voice. */
+.lb--wall .lb__cap {
+  font: 11px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  bottom: 22px;
+}
+
+/* =============================================================
+   ADMIN
+   ============================================================= */
+
+body.adm-body { background: #f6f6f6; }
+
+.adm { min-height: 100vh; }
+
+.adm__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 22px;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.adm__logo {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+.adm__tabs { display: flex; gap: 4px; }
+.adm__tab {
+  font-family: var(--font-body);
+  font-size: 12px;
+  padding: 7px 13px;
+  background: none;
+  border: 0;
+  border-radius: 999px;
+  color: var(--dim);
+  cursor: pointer;
+}
+.adm__tab:hover { background: #f0f0f0; }
+.adm__tab.is-on { background: var(--ink); color: #fff; }
+.adm__right { display: flex; align-items: center; gap: 14px; }
+.adm__who { font-size: 11px; color: var(--dim); }
+.adm__link, .adm__out {
+  font-size: 11px;
+  color: var(--dim);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font-body);
+}
+.adm__link:hover, .adm__out:hover { color: var(--ink); }
+
+.adm__body { padding: 22px; max-width: 1300px; margin: 0 auto; }
+.pad { font-size: 13px; line-height: 1.7; max-width: 68ch; }
+.pad--dim { color: var(--dim); font-size: 12px; }
+.lnk { border-bottom: 1px solid var(--ink); }
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.92em;
+  background: #ececec;
+  padding: 1px 5px;
+}
+
+/* login gate */
+.gate { min-height: 100vh; display: grid; place-items: center; background: #f6f6f6; }
+.gate__card {
+  background: #fff;
+  border: 1px solid var(--line);
+  padding: 40px;
+  max-width: 400px;
+  width: calc(100% - 40px);
+  text-align: center;
+}
+.gate__h {
+  font-family: var(--font-display);
+  font-size: 30px;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+}
+.gate__p { font-size: 13px; color: var(--dim); margin: 0 0 22px; line-height: 1.6; }
+.gate__err {
+  font-size: 12px;
+  color: #b3261e;
+  background: #fdeceb;
+  padding: 8px 10px;
+  margin: 0 0 14px;
+}
+.gate__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 12px 16px;
+  background: #fff;
+  border: 1px solid #d5d5d5;
+  cursor: pointer;
+}
+.gate__btn:hover { background: #f7f7f7; }
+.gate__btn:disabled { opacity: 0.6; cursor: default; }
+.gate__note { font-size: 11px; color: var(--dim); margin: 18px 0 0; line-height: 1.7; }
+
+.notice { font-size: 12px; padding: 9px 12px; margin: 0 0 16px; }
+.notice--ok { background: #eaf4ec; color: #1c5c2c; }
+.notice--err { background: #fdeceb; color: #8c1d18; }
+
+/* dropzone */
+.drop {
+  /* A <label>, not a <section>, so tapping it opens the file picker on a
+     phone. That means it is inline by default, and an inline box ignores its
+     own padding — the zone collapsed to a sliver and sat on top of the cards
+     below. display:block is what makes this a target again. */
+  display: block;
+  background: #fff;
+  border: 1px dashed #c9c9c9;
+  padding: 34px 20px;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 14px;
+  transition: border-color 0.15s, background 0.15s;
+}
+.drop:hover, .drop.is-over { border-color: var(--ink); background: #fbfbfb; }
+.drop strong { display: block; font-size: 14px; margin-bottom: 4px; }
+.drop span { font-size: 12px; color: var(--dim); }
+.drop__prog {
+  display: block;
+  height: 3px;
+  background: #ececec;
+  margin-top: 16px;
+  overflow: hidden;
+}
+.drop__prog i { display: block; height: 100%; width: 0; background: var(--ink); transition: width 0.2s; }
+
+/* Post-upload call to action. The only place the panel asks the photographer
+   to confirm, so it is the one thing allowed a solid fill. */
+.publishbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  background: #eaf4ec;
+  color: #1c5c2c;
+  font-size: 12.5px;
+}
+.publishbar__go {
+  font-family: var(--font-body);
+  font-size: 12px;
+  padding: 9px 16px;
+  background: var(--ink);
+  color: #fff;
+  border: 0;
+  cursor: pointer;
+  min-height: 44px;
+}
+.publishbar__go:hover { background: #000; }
+
+/* card grid */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px;
+  margin-top: 6px;
+}
+.card { margin: 0; background: #fff; border: 1px solid var(--line); }
+.card.is-hidden .card__img { opacity: 0.45; }
+.card__img { position: relative; }
+.card__img img { width: 100%; aspect-ratio: 4/5; object-fit: cover; }
+.card__badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: #fff;
+  padding: 3px 7px;
+}
+.card.is-hidden .card__badge { background: #d8d8d8; }
+.card__bar { padding: 9px; display: flex; flex-direction: column; gap: 8px; }
+.card__alt {
+  font-family: var(--font-body);
+  font-size: 12px;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  width: 100%;
+}
+.card__alt:focus { outline: none; border-color: var(--ink); }
+.card__acts { display: flex; gap: 5px; flex-wrap: wrap; }
+.card__acts button {
+  font-family: var(--font-body);
+  font-size: 11px;
+  padding: 4px 8px;
+  background: #f4f4f4;
+  border: 1px solid #e2e2e2;
+  cursor: pointer;
+  color: var(--ink);
+}
+.card__acts button:hover { background: #e9e9e9; }
+.card__acts .is-danger { color: #b3261e; }
+
+/* ------------------------------------------------------- admin: page mock
+   A scaled preview of each page with the chosen images as slots. The point is
+   to answer "what does my site look like", so the proportions match the real
+   page rather than being a convenient grid. */
+
+.mock { display: grid; gap: 40px; }
+.mock__page { border-top: 1px solid var(--line); padding-top: 18px; }
+.mock__h {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+
+.mock__hero { position: relative; }
+.mock__cap {
+  display: block;
+  font-size: 11px;
+  color: var(--dim);
+  margin-top: 7px;
+}
+
+.mock__strip {
+  display: grid;
+  /* The live strip is 3 across on desktop, 2 on a phone. The preview mirrors
+     that rather than showing six at once, because "how will this read" is the
+     question and the desktop answer is not it. */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.mock__wall { display: grid; gap: 8px; }
+.mock__row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.mslot {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 1px solid var(--line);
+  background: #f1f1f1;
+  cursor: pointer;
+  overflow: hidden;
+  width: 100%;
+}
+.mslot img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+}
+.mslot--hero img { aspect-ratio: 3/2; }
+.mslot:hover { border-color: var(--ink); }
+.mslot:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* The held slot. This is the only place the mock uses an overlay, so the eye
+   goes straight to the one place the next tap lands. */
+.mslot.is-held {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px var(--ink);
+}
+.mslot.is-held::after {
+  content: "pick a photo";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.62);
+  color: #fff;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mslot--empty {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4/5;
+  border-style: dashed;
+  color: var(--dim);
+  font-size: 11px;
+}
+.mslot--hero.mslot--empty { aspect-ratio: 3/2; }
+
+.mslot__n {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 9px;
+  background: #fff;
+  color: var(--ink);
+  padding: 2px 5px;
+}
+
+.publishbar--warn { background: #fdf1e6; color: #8a4b12; }
+
+.picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 8px;
+}
+.picker__i {
+  padding: 0;
+  border: 1px solid var(--line);
+  background: #f1f1f1;
+  cursor: pointer;
+  overflow: hidden;
+}
+.picker__i:hover { border-color: var(--ink); }
+.picker__i img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+}
+
+@media (max-width: 620px) {
+  /* The real strip drops to 2 across on a phone, so the preview must too —
+     otherwise he approves a 3-across layout he will never see. */
+  .mock__strip { grid-template-columns: repeat(2, 1fr); }
+  .mock { gap: 32px; }
+  .picker { grid-template-columns: repeat(3, 1fr); }
+  .picker__i, .mslot { min-height: 44px; }
+  .mock__h { font-size: 12px; }
+}
+
+/* ------------------------------------------------- admin: phone layout ---
+   The admin bar is one row by design on a laptop. At 390px that row is
+   logo + tabs + email + links, and it wraps or clips. The alt input is 12px,
+   which makes iOS Safari zoom the whole page on focus and leave it zoomed
+   after the keyboard closes — 16px is the threshold that prevents it. */
+@media (max-width: 620px) {
+  .adm__bar {
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    padding: 12px 16px;
+  }
+  .adm__right {
+    width: 100%;
+    justify-content: space-between;
+    order: 3;
+  }
+  .adm__who {
+    /* The allowlist is one entry; the email is noise on a phone. */
+    display: none;
+  }
+  .adm__tab {
+    padding: 12px 16px;
+    font-size: 13px;
+    /* 36px measured on a phone — a miss here means he can't reach his library. */
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .adm__link, .adm__out {
+    /* 11px text with 0 padding is not a thumb target. */
+    font-size: 13px;
+    padding: 10px 2px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .adm__body { padding: 16px; }
+  .drop { padding: 30px 16px; }
+  .drop strong { font-size: 15px; }
+  .drop span { font-size: 13px; }
+
+  .publishbar { flex-direction: column; align-items: stretch; }
+  .publishbar__go { width: 100%; }
+
+  /* 210px min would leave one cramped column on a 390px screen anyway. */
+  .cards { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .card__bar { padding: 10px; gap: 10px; }
+  .card__alt {
+    /* 16px stops iOS zooming on focus. The caret has to stay put on a long
+       alt description, so the text scrolls rather than clipping. */
+    font-size: 16px;
+    padding: 10px;
+    min-width: 0;
+  }
+  .card__acts button {
+    /* 4px 8px is a mouse target; a thumb needs ~44px or it misses. */
+    padding: 10px 12px;
+    font-size: 13px;
+    flex: 1 1 auto;
+    min-height: 44px;
+  }
+  .gate__btn { min-height: 48px; }
+}
+
+/* ---------------------------------------------------------- pricing */
+/* Same restraint as the rest of the site: hairline rules, one heavy
+   display size, no colour except the "most popular" flag. */
+
+.pricing {
+  max-width: 1180px;
+  padding: 46px 0 90px;
+}
+.pricing__head { margin-bottom: 46px; max-width: 62ch; }
+.pricing__h {
+  font-family: var(--font-display);
+  font-size: 40px;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  margin: 0 0 16px;
+}
+.pricing__intro { font-size: 14px; line-height: 1.7; color: var(--dim); margin: 0; }
+.pricing__sub {
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 0 0 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.pricing__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--gut);
+  align-items: start;
+}
+
+.tier {
+  position: relative;
+  border: 1px solid var(--line);
+  padding: 26px 22px 24px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.tier--pop { border-color: var(--ink); }
+.tier__flag {
+  position: absolute;
+  /* `right: -1px` pushed the badge one full pixel past the card's border
+     box, so it visibly overhung the edge. Sit it just inside instead. */
+  top: 0;
+  right: 0;
+  background: var(--ink);
+  color: #fff;
+  font-size: 9px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 5px 9px;
+}
+.tier__name {
+  font-family: var(--font-display);
+  font-size: 17px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+}
+.tier__price {
+  font-family: var(--font-display);
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin: 0 0 4px;
+}
+.tier__spec {
+  font-size: 11px;
+  color: var(--dim);
+  margin: 0 0 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.tier__fit { font-size: 13px; line-height: 1.6; margin: 0 0 16px; }
+.tier__list { list-style: none; margin: 0 0 22px; padding: 0; flex: 1; }
+.tier__list li {
+  position: relative;
+  font-size: 12.5px;
+  line-height: 1.55;
+  padding-left: 15px;
+  margin-bottom: 9px;
+  color: #2a2a2a;
+}
+/* the tick is a hairline cross, not a glyph — matches the hairline rules */
+.tier__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 7px;
+  height: 1px;
+  background: var(--ink);
+}
+.tier__cta {
+  display: block;
+  text-align: center;
+  border: 1px solid var(--ink);
+  /* The CTA on every package card — a primary action, so it gets the same
+     44px floor as the form button. */
+  min-height: 44px;
+  padding: 11px 12px;
+  font-size: 12px;
+  color: var(--ink);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+.tier__cta:hover { background: var(--ink); color: #fff; }
+.tier--pop .tier__cta { background: var(--ink); color: #fff; }
+.tier--pop .tier__cta:hover { background: #000; }
+
+.pricing__addons, .pricing__terms { margin-top: 60px; }
+.addons { list-style: none; margin: 0; padding: 0; }
+/* 13px -> 14px. The add-ons are the upsell list on the money page; a client
+   reads them on a phone to decide what to add. The price keeps the display face
+   so it still reads as a figure rather than as body copy. */
+.addons li {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.addons__p { font-family: var(--font-display); font-size: 14px; white-space: nowrap; }
+
+.terms { list-style: none; margin: 0 0 18px; padding: 0; max-width: 78ch; }
+/* 12.5px -> 14px. These are the booking terms: the copy a client reads last,
+   immediately before committing money, and the smallest body text on the site. */
+.terms li {
+  font-size: 14px;
+  line-height: 1.62;
+  color: var(--dim);
+  margin-bottom: 10px;
+}
+.pricing__note {
+  font-size: 12.5px;
+  line-height: 1.65;
+  border-left: 2px solid var(--ink);
+  padding-left: 14px;
+  margin: 0;
+  max-width: 78ch;
+}
+
+/* ------------------------------------------------------ responsive */
+
+@media (max-width: 900px) {
+  .contact { grid-template-columns: 1fr; gap: 36px; }
+  .pricing__grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* The phone gutters. Alwin: "I want them to take up more screen space in mobile
+   view" and "images should have more screen real estate".
+   At --pad 16 / --gut 10 a portfolio cell measured 173px wide on a 393px
+   screen — 44px, or 11% of the width, was spent on air. At --pad 10 / --gut 6
+   the same wall gives 181px cells and the home strip 186px: +9% linear, +19% of
+   image AREA, which is what "more real estate" means on a screen you judge
+   photographs on.
+   The 10px side padding is retained deliberately: at 0 the wall would touch
+   both edges of the screen, and Alwin's own rule (2026-09-29) was to keep the
+   site centred with visible margins. */
+@media (max-width: 640px) {
+  :root { --head: 92px; --pad: 10px; --gut: 6px; }
+  .site-header {
+    /* Three explicit tracks, not two. `.burger` had NO `grid-area` here, so it
+       was auto-placed into the logo's column: measured at 320px the row held
+       logo(128) + burger(44) + social(96) with two 20px gaps = 308px inside a
+       288px content box, which is what pushed document scrollWidth to 326 on a
+       320px screen. Naming every area stops the auto-placement.
+       The column gap drops to 10px for the same reason — 128+96+44 at the
+       base 20px gap does not fit 288px. */
+    grid-template-columns: 1fr auto auto;
+    grid-template-areas: "logo social burger" "nav nav nav";
+    column-gap: 10px;
+    align-content: center;
+    row-gap: 10px;
+  }
+  .logo { grid-area: logo; }
+  .burger { grid-area: burger; }
+  .site-nav { grid-area: nav; gap: 22px; }
+  .site-social { grid-area: social; }
+  .logo-lg { font-size: 21px; }
+  .logo-sm { font-size: 10px; }
+  .contact__h { font-size: 30px; }
+  .pricing__h { font-size: 30px; }
+  .pricing__grid { grid-template-columns: 1fr; }
+  .tier__price { font-size: 30px; }
+  .adm__bar { flex-wrap: wrap; }
+
+  /* Tap targets are now handled in the BASE rules (min-height/min-width on
+     .nav-link, .social, form fields, .tier__cta, .contact__list a), so they
+     hold on tablet and desktop too. This block only pays for the extra
+     padding with tighter gaps — the header must still fit 390px. */
+  .nav-link { padding: 0 8px; }
+  .site-nav { gap: 16px; }
+  .site-social { gap: 8px; }
+
+  /* 320px is the narrowest phone still in the wild (iPhone SE 1st gen, some
+     Android). At that width the drawer above is clamped to its container, so
+     the five links have to fit inside it rather than overflow: measured at
+     320px, 22px gaps plus 8px link padding wanted 308px of a 284px box. */
+  @media (max-width: 360px) {
+    .site-nav { gap: 12px; }
+    .nav-link { padding: 0 4px; }
+    /* 128+96+44 at a 10px gap is exactly 288px of a 288px box — no slack. Give
+       the wordmark a step down so a 320px screen has room to breathe. */
+    .site-header { column-gap: 8px; }
+    .logo-lg { font-size: 19px; }
+  }
+
+  /* Let the PAGE scroll on a phone. The desktop design gives each column its
+     own scrollbar, which is the reference's signature look — but on touch it
+     means the page itself is stationary, a nested scroll area fights the
+     browser's own momentum, and the footer can be unreachable. That is the
+     "laggy and not working well" feeling, and no amount of image weight
+     fixes it. Normal document flow is what a phone expects. */
+  .col {
+    max-height: none;
+    overflow: visible;
+    /* The column is a flex column in a 1-col grid; nothing to scroll itself. */
+    scroll-snap-type: none;
+  }
+  .cell { scroll-snap-align: none; }
+
+  /* The grid gap was the only thing separating frames vertically; give the
+     photo a little more air than the 10px mobile gutter. */
+  .grid { gap: 12px; }
+}
+
+/* ------------------------------------------------- reduced motion */
+
+/* The site animated 11 transitions and honoured none of them as optional.
+ * None of it is decorative in the vestibular sense — no parallax, no large
+ * translation, no autoplay — but that is not the test. prefers-reduced-motion
+ * is set by people whose OS-level "reduce motion" is on, commonly for
+ * migraine or vestibular disorder, and the polite reading is that a site
+ * should still work if it stops moving.
+ *
+ * The blanket `*` is deliberate and is NOT a shortcut. These transitions are
+ * declared at (0,1,0) and (0,2,0) across two files, and enumerating the
+ * eleven elements would be a list that rots on the next edit — a new
+ * transition would silently ship animated. `transition-duration: 0.01ms`
+ * rather than `0s` is the standard incantation: 0s would also cancel
+ * transition-delay, and a delayed transition is still a transition.
+ *
+ * Nothing here hides content or changes layout. The nav drawer and the burger
+ * still open, the gallery still swaps, the upload progress bar still grows —
+ * they just arrive at their final state immediately, which is what the
+ * preference asks for. animation-duration is included so any future
+ * @keyframes inherits the same guarantee. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* The one place where a duration is load-bearing rather than decorative.
+       .cell img fades in on load (opacity 0 -> 1); with the transition cut the
+       frame appears at full opacity the moment it decodes, which is the desired
+       outcome. */
+  }
+
+/* --------------------------------------------------------- dark mode
+   NOT IMPLEMENTED, on purpose. Recording the reasoning so it is not
+   re-litigated every audit: this is a photography site, and the palette is
+   --ink #111 on --paper #fff with photographs as the only colour in the
+   document. Inverting that to a dark theme does not just swap two tokens —
+   the hero scrim, the lightbox backdrop (#0c0c0c), the .cell placeholder
+   grey and the white-on-photo header type are all tuned against a white
+   page, and every ratio measured in this file was measured on it. Shipping
+   a dark mode means re-deriving that whole set, and a plausible-looking
+   inversion with unverified ratios is a worse outcome than a site that is
+   honestly light-only. The monochrome brand used to make this look like a free
+      win — photographs were filtered grey, so an inversion "carried over almost
+      unchanged". Photographs now render in full colour exactly as uploaded, which
+      is the opposite case: a dark UI would put a colour image against a dark
+      ground and force the whole set of measured ratios to be re-derived.
+   If it is ever wanted, the work is: re-run mobile-audit/a11y/contrast.py
+   with a prefers-color-scheme: dark capture and hold the same thresholds. */
+
+
+/* ---- image theft deterrence, page-wide ----------------------------------
+ *
+ * HONEST LIMIT: this cannot stop anyone who is determined. The bytes are
+ * already in the browser; DevTools, the network panel and a screenshot all
+ * still work. What it removes is the ACCIDENTAL save — the long-press on a
+ * phone that a visitor reaches for without thinking.
+ *
+ * `-webkit-touch-callout: none` is the one that matters on iOS: it is what
+ * suppresses the system "Save Image / Copy" callout on a long press. It has no
+ * effect in Chrome or Firefox, which is why `contextmenu` and `dragstart` are
+ * also cancelled in JS.
+ *
+ * `-webkit-user-drag` stops desktop drag-to-a-new-tab, which is otherwise a
+ * second one-gesture save path alongside right-click. */
+img,
+.hero__fig img {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+}
+
+/* The WhatsApp mark's handset is filled with the BACKGROUND behind the icon, so
+ * it reads as a knockout. Default is the white page; the home page's header
+ * floats over a dark photograph, so it overrides to the scrim colour there.
+ * This is what the original hard-coded `var(--paper)` got wrong: white on a
+ * dark header left the handset invisible. */
+.social { --social-bg: #fff; }
+.shell--over .social { --social-bg: rgba(12, 12, 12, 0.85); }
+.cico--wa { fill: none; stroke: currentColor; stroke-width: 1.15; }
+
+/* Reset browser chrome around the native photograph controls and dialog. */
+.photo-trigger { display: block; width: 100%; padding: 0; border: 0; border-radius: 0; background: none; color: inherit; cursor: zoom-in; text-align: inherit; }
+.photo-trigger .cell { display: block; }
+dialog.lb { margin: 0; padding: 0; border: 0; width: 100%; height: 100%; max-width: none; max-height: none; }
+button.lb__stage { padding: 0; border: 0; background: none; }
