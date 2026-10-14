@@ -225,7 +225,7 @@ export const SITE: SiteConfig = {
       },
       {
         name: "Social",
-        price: "R2,500",
+        price: "R3,500",
         fit: "Built for creators: quick turnaround, same-day previews.",
         spec: "45 min · 2 outfits · 1 location",
         photo: "20-img-0202.jpg",

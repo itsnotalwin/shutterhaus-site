@@ -90,12 +90,8 @@ HEAD = """<!doctype html>
     <title>{title}</title>
     <meta name="description" content="{description}" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preload" href="./fonts/eb-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
 
     <meta property="og:title" content="{og_title}" />
     <meta property="og:description" content="{description}" />
@@ -215,11 +211,10 @@ BIZ = {
     ),
     "url": f"{SITE}/",
     "email": "alwin@shutterhausvisuals.co.za",
-    "telephone": "+27730958363",
     "image": f"{SITE}/og-card.jpg",
-    # R800 / R1,500 / R2,000 / R2,500 are the four packages on /services.
+    # R800 / R2,000 / R2,500 / R3,500 are the four packages on /services.
     # The range is the cheapest and dearest of those, nothing invented.
-    "priceRange": "R800–R2,500",
+    "priceRange": "R800–R3,500",
     "areaServed": [
         {"@type": "City", "name": "Pretoria"},
         {"@type": "City", "name": "Johannesburg"},

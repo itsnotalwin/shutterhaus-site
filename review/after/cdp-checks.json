@@ -1,0 +1,17 @@
+[
+  {
+    "command": "npm run verify -- http://127.0.0.1:4175",
+    "exit": 0,
+    "log": "review/after/verify.log"
+  },
+  {
+    "command": "node tools/verify-admin-panel.mjs",
+    "exit": 0,
+    "log": "review/after/admin-panel.log"
+  },
+  {
+    "command": "node tools/verify-admin-upload.mjs",
+    "exit": 0,
+    "log": "review/after/admin-upload.log"
+  }
+]

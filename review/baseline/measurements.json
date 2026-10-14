@@ -1,0 +1,540 @@
+[
+  {
+    "route": "home",
+    "width": 390,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Timeless Portraiture"
+    ],
+    "images": [
+      {
+        "src": "gallery/27-img-0297-1600w.webp",
+        "ok": true,
+        "alt": "Black and white portrait of a woman seated on the ground, legs to one side"
+      },
+      {
+        "src": "gallery/22-img-0239-400w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with loose hair, warm light across her face"
+      },
+      {
+        "src": "gallery/26-img-0253-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman outdoors, backlit by low sun"
+      },
+      {
+        "src": "gallery/46-img-0119-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, both arms raised overhead"
+      },
+      {
+        "src": "gallery/21-img-0234-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
+      },
+      {
+        "src": "gallery/18-img-0043-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors, looking down"
+      },
+      {
+        "src": "gallery/1-20240718113728-img-0065-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a white top with her hair tied back, looking off into the distance"
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/"
+  },
+  {
+    "route": "portfolio",
+    "width": 390,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Portfolio"
+    ],
+    "images": [
+      {
+        "src": "gallery/2-20240718114526-img-0124-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a white top outdoors, hair pulled back, in bright light"
+      },
+      {
+        "src": "gallery/34-img-0461-400w.jpg",
+        "ok": true,
+        "alt": "Black and white close portrait of a woman with her hair down"
+      },
+      {
+        "src": "gallery/53-img-0155-400w.jpg",
+        "ok": true,
+        "alt": "Full-length portrait of a woman in a black top and pale skirt against a green backdrop"
+      },
+      {
+        "src": "gallery/19-img-0198-3-400w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman smiling, lit by warm afternoon light"
+      },
+      {
+        "src": "gallery/44-img-0098-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, hand raised to her hair"
+      },
+      {
+        "src": "gallery/32-img-0404-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman seated on the floor in a patterned skirt"
+      },
+      {
+        "src": "gallery/50-img-0143-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in warm low light, looking directly at the camera"
+      },
+      {
+        "src": "gallery/15-img-0025-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman with her hair caught by the wind"
+      },
+      {
+        "src": "gallery/45-img-0118-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, standing with one hand at her hip"
+      },
+      {
+        "src": "gallery/30-img-0396-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman seated with both arms raised"
+      },
+      {
+        "src": "gallery/40-img-0092-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, lit from the front against a dark wall"
+      },
+      {
+        "src": "gallery/48-img-0128-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, standing in low indoor light"
+      },
+      {
+        "src": "gallery/37-img-0124-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman resting her chin on her hand"
+      },
+      {
+        "src": "gallery/46-img-0119-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, both arms raised overhead"
+      },
+      {
+        "src": "gallery/13-img-0020-400w.jpg",
+        "ok": true,
+        "alt": "Full-length portrait of a woman walking beside the water"
+      },
+      {
+        "src": "gallery/18-img-0043-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors, looking down"
+      },
+      {
+        "src": "gallery/47-img-0121-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, one arm raised against a green backdrop"
+      },
+      {
+        "src": "gallery/24-img-0245-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman standing by the water under an overcast sky"
+      },
+      {
+        "src": "gallery/28-img-0308-400w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman looking at the camera, soft neutral light"
+      },
+      {
+        "src": "gallery/51-img-0145-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, hand resting on her head against a green backdrop"
+      },
+      {
+        "src": "gallery/25-img-0249-400w.jpg",
+        "ok": true,
+        "alt": "Black and white close portrait of a woman"
+      },
+      {
+        "src": "gallery/49-img-0131-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, standing against a dark background"
+      },
+      {
+        "src": "gallery/5-img-0086-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a young man in a beanie and a Manhattan sweatshirt"
+      },
+      {
+        "src": "gallery/41-img-0094-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman looking back over her shoulder, hair falling across her face"
+      },
+      {
+        "src": "gallery/20-img-0202-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman seated on a chair in a black top, lit warmly"
+      },
+      {
+        "src": "gallery/42-img-0095-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, arm raised overhead against a green backdrop"
+      },
+      {
+        "src": "gallery/12-img-0019-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman facing the camera"
+      },
+      {
+        "src": "gallery/14-img-0026-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman with a hand in her hair"
+      },
+      {
+        "src": "gallery/26-img-0253-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman outdoors, backlit by low sun"
+      },
+      {
+        "src": "gallery/21-img-0234-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/portfolio.html"
+  },
+  {
+    "route": "about",
+    "width": 390,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Photography is poetry."
+    ],
+    "images": [
+      {
+        "src": "gallery/55-metal-detector-1600w.jpg",
+        "ok": true,
+        "alt": "A man walking a beach with a metal detector, seen in black and white against an empty sky"
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/about.html"
+  },
+  {
+    "route": "services",
+    "width": 390,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Capture What Matters."
+    ],
+    "images": [
+      {
+        "src": "gallery/56-img-0126-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with auburn hair in a white zip top, looking straight at the camera in bright sunlight"
+      },
+      {
+        "src": "gallery/19-img-0198-3-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman smiling, lit by warm afternoon light"
+      },
+      {
+        "src": "gallery/54-img-0164-1600w.jpg",
+        "ok": true,
+        "alt": "Family portrait of six people outdoors, laughing together on a path"
+      },
+      {
+        "src": "gallery/20-img-0202-1200w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman seated on a chair in a black top, lit warmly"
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/services.html"
+  },
+  {
+    "route": "contact",
+    "width": 390,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Let's Create Something Beautiful."
+    ],
+    "images": [],
+    "canonical": "https://shutterhausvisuals.co.za/contact.html"
+  },
+  {
+    "route": "home",
+    "width": 1440,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Timeless Portraiture"
+    ],
+    "images": [
+      {
+        "src": "gallery/27-img-0297-1600w.webp",
+        "ok": true,
+        "alt": "Black and white portrait of a woman seated on the ground, legs to one side"
+      },
+      {
+        "src": "gallery/22-img-0239-400w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with loose hair, warm light across her face"
+      },
+      {
+        "src": "gallery/26-img-0253-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman outdoors, backlit by low sun"
+      },
+      {
+        "src": "gallery/46-img-0119-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, both arms raised overhead"
+      },
+      {
+        "src": "gallery/21-img-0234-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
+      },
+      {
+        "src": "gallery/18-img-0043-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors, looking down"
+      },
+      {
+        "src": "gallery/1-20240718113728-img-0065-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a white top with her hair tied back, looking off into the distance"
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/"
+  },
+  {
+    "route": "portfolio",
+    "width": 1440,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Portfolio"
+    ],
+    "images": [
+      {
+        "src": "gallery/2-20240718114526-img-0124-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a white top outdoors, hair pulled back, in bright light"
+      },
+      {
+        "src": "gallery/34-img-0461-400w.jpg",
+        "ok": true,
+        "alt": "Black and white close portrait of a woman with her hair down"
+      },
+      {
+        "src": "gallery/44-img-0098-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, hand raised to her hair"
+      },
+      {
+        "src": "gallery/25-img-0249-400w.jpg",
+        "ok": true,
+        "alt": "Black and white close portrait of a woman"
+      },
+      {
+        "src": "gallery/50-img-0143-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in warm low light, looking directly at the camera"
+      },
+      {
+        "src": "gallery/30-img-0396-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman seated with both arms raised"
+      },
+      {
+        "src": "gallery/40-img-0092-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, lit from the front against a dark wall"
+      },
+      {
+        "src": "gallery/12-img-0019-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman facing the camera"
+      },
+      {
+        "src": "gallery/46-img-0119-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, both arms raised overhead"
+      },
+      {
+        "src": "gallery/13-img-0020-400w.jpg",
+        "ok": true,
+        "alt": "Full-length portrait of a woman walking beside the water"
+      },
+      {
+        "src": "gallery/18-img-0043-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors, looking down"
+      },
+      {
+        "src": "gallery/53-img-0155-400w.jpg",
+        "ok": true,
+        "alt": "Full-length portrait of a woman in a black top and pale skirt against a green backdrop"
+      },
+      {
+        "src": "gallery/28-img-0308-400w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman looking at the camera, soft neutral light"
+      },
+      {
+        "src": "gallery/51-img-0145-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, hand resting on her head against a green backdrop"
+      },
+      {
+        "src": "gallery/32-img-0404-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman seated on the floor in a patterned skirt"
+      },
+      {
+        "src": "gallery/15-img-0025-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman with her hair caught by the wind"
+      },
+      {
+        "src": "gallery/41-img-0094-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman looking back over her shoulder, hair falling across her face"
+      },
+      {
+        "src": "gallery/37-img-0124-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman resting her chin on her hand"
+      },
+      {
+        "src": "gallery/26-img-0253-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman outdoors, backlit by low sun"
+      },
+      {
+        "src": "gallery/21-img-0234-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
+      },
+      {
+        "src": "gallery/19-img-0198-3-400w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman smiling, lit by warm afternoon light"
+      },
+      {
+        "src": "gallery/47-img-0121-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, one arm raised against a green backdrop"
+      },
+      {
+        "src": "gallery/24-img-0245-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman standing by the water under an overcast sky"
+      },
+      {
+        "src": "gallery/49-img-0131-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, standing against a dark background"
+      },
+      {
+        "src": "gallery/5-img-0086-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a young man in a beanie and a Manhattan sweatshirt"
+      },
+      {
+        "src": "gallery/45-img-0118-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, standing with one hand at her hip"
+      },
+      {
+        "src": "gallery/20-img-0202-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman seated on a chair in a black top, lit warmly"
+      },
+      {
+        "src": "gallery/42-img-0095-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, arm raised overhead against a green backdrop"
+      },
+      {
+        "src": "gallery/48-img-0128-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, standing in low indoor light"
+      },
+      {
+        "src": "gallery/14-img-0026-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman with a hand in her hair"
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/portfolio.html"
+  },
+  {
+    "route": "about",
+    "width": 1440,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Photography is poetry."
+    ],
+    "images": [
+      {
+        "src": "gallery/55-metal-detector-1600w.jpg",
+        "ok": true,
+        "alt": "A man walking a beach with a metal detector, seen in black and white against an empty sky"
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/about.html"
+  },
+  {
+    "route": "services",
+    "width": 1440,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Capture What Matters."
+    ],
+    "images": [
+      {
+        "src": "gallery/56-img-0126-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with auburn hair in a white zip top, looking straight at the camera in bright sunlight"
+      },
+      {
+        "src": "gallery/19-img-0198-3-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman smiling, lit by warm afternoon light"
+      },
+      {
+        "src": "gallery/54-img-0164-1600w.jpg",
+        "ok": true,
+        "alt": "Family portrait of six people outdoors, laughing together on a path"
+      },
+      {
+        "src": "gallery/20-img-0202-1200w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman seated on a chair in a black top, lit warmly"
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/services.html"
+  },
+  {
+    "route": "contact",
+    "width": 1440,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Let's Create Something Beautiful."
+    ],
+    "images": [],
+    "canonical": "https://shutterhausvisuals.co.za/contact.html"
+  }
+]

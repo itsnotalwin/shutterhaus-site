@@ -1,6 +1,8 @@
+import "./fonts.css";
 import "./styles.css";
-import "./editorial.css";
-import "./makeover.css";
+import "./public.css";
+import { wireNavigation } from "./navigation";
+import { wireContact } from "./contact-form";
 import { SITE } from "./config";
 import { renderShell } from "./layout";
 import { portfolioPage, homePage, emptyGallery } from "./pages";
@@ -55,7 +57,7 @@ function route(): string {
   // home+portfolio tail, which is why `#/video` falls back to the gallery —
   // tools/verify.mjs asserts exactly that. Do not "tidy" this into a whitelist
   // without checking that check: it is load-bearing.
-  return h || "home";
+  return h === "main-content" ? "home" : h || "home";
 }
 
 /** Routes with a real document, keyed by filename stem. Keep in step with tools/build-pages.py. */
@@ -133,26 +135,11 @@ async function paint(): Promise<void> {
   }
 
   if (r === "contact") {
-    // The reference puts a photograph beside the form, so this page needs a
-    // photo too — same non-blocking pattern as about.
-    let photos = DEMO_PHOTOS;
-    const draw = () => {
-      app.innerHTML = renderShell("contact", contactPage(photos));
-      markLoadedImages();
-      wireContact();
-      wireBurger();
-      scrollTo(0, 0);
-    };
-    draw();
+    app.innerHTML = renderShell("contact", contactPage());
+    wireContact();
+    wireBurger();
     setTitle("contact");
-    {
-      const live = adoptable(await publicPhotosOrNull());
-      if (myPaint !== paintSeq) return; // a newer route won
-      if (live) {
-        photos = live;
-        draw();
-      }
-    }
+    scrollTo(0, 0);
     return;
   }
 
@@ -281,9 +268,8 @@ function applyComposition(comp: Composition): void {
           ? homePage(photos, cols)
           : emptyGallery()
         : portfolioPage(photos);
-    // The home header floats over the hero photograph; portfolio keeps the
-    // solid header (its grid starts below the fold anyway).
-    app.innerHTML = renderShell(r, body, r === "home");
+    // All public pages share the solid editorial header.
+    app.innerHTML = renderShell(r, body);
     markLoadedImages();
     wireBurger();
       // Same: only the portfolio wall is scrollable.
@@ -370,135 +356,7 @@ function applyComposition(comp: Composition): void {
 
 /** Mobile menu toggle. The button and the panel are both in the header. */
 function wireBurger(): void {
-  const btn = document.querySelector<HTMLButtonElement>(".burger");
-  const nav = document.getElementById("site-nav");
-  // Drop the stale closer BEFORE bailing. Without this, a route that renders no
-  // burger (or one whose header failed to build) leaves `closeNav` pointing at
-  // the PREVIOUS page's `set()`, which would close an element that is no longer
-  // in the document.
-  closeNav = null;
-  if (!btn || !nav) return;
-
-  // A scrim behind the drawer, added on open and removed on close. Without it
-  // there is no "outside" to tap: the audit measured a tap at (196,600) on
-  // #/contact landing on the TEXTAREA with aria-expanded still "true", so the
-  // only ways out were the burger, a nav link, or Escape — and on a phone the
-  // first two are the only reachable ones. A menu you cannot dismiss by tapping
-  // the page you can see is a menu that traps people.
-  const scrim = document.createElement("div");
-  scrim.className = "nav-scrim";
-  scrim.setAttribute("aria-hidden", "true");
-
-  const set = (open: boolean) => {
-    btn.setAttribute("aria-expanded", String(open));
-    btn.classList.toggle("is-on", open);
-    nav.classList.toggle("is-open", open);
-    document.body.classList.toggle("nav-open", open);
-    // Stop the page behind the drawer scrolling. Dragging the open drawer moved
-    // the background 800 -> 985px, which reads as the page jumping under your
-    // thumb. `nav-open` was set here since day one and styled NOWHERE, so the
-    // class was dead; the CSS that consumes it ships with this change.
-    document.documentElement.classList.toggle("nav-locked", open);
-    if (open) {
-      if (!scrim.parentNode) document.body.appendChild(scrim);
-    } else {
-      scrim.remove();
-    }
-  };
-
-  btn.addEventListener("click", () => set(btn.getAttribute("aria-expanded") !== "true"));
-  scrim.addEventListener("click", () => set(false));
-  // Any nav link closes the panel — otherwise it stays open over the new page.
-  nav.addEventListener("click", (e) => {
-    if ((e.target as HTMLElement).closest("a")) set(false);
-  });
-  // Escape and hashchange are handled by the ONE pair of window listeners
-  // registered at the bottom of this file. They call `closeNav`, which always
-  // points at the CURRENT drawer — see its note for why registering them here
-  // was a leak.
-  closeNav = () => set(false);
-}
-
-/** Contact form: posts to Formspree if configured, else opens the mail client. */
-function wireContact(): void {
-  const form = document.getElementById("cform") as HTMLFormElement | null;
-  const note = document.getElementById("cform-note");
-
-  // Preselect the package the visitor tapped "Book now" on.
-  //
-  // "Book now" on a tier card links to `contact.html?package=<tier name>`, so
-  // arriving from a card arrives already having chosen that package. Matched
-  // against the select's own options rather than assigning a value outright:
-  // setting an unknown value silently leaves the select on option 0, which
-  // would show "Starter" for someone who tapped "Signature". A no-match is
-  // therefore a no-op, not a wrong answer.
-  //
-  // Only runs on arrival, not on the contact route's second paint. paint()
-  // redraws the page once live photos land, and re-running this would discard
-  // anything the visitor had already typed.
-  const wanted = new URLSearchParams(location.search).get("package");
-  const kind = document.getElementById("cform-kind") as HTMLSelectElement | null;
-  if (wanted && kind) {
-    const hit = Array.from(kind.options).find((o) => o.value === wanted);
-    if (hit) kind.value = wanted;
-  }
-
-  form?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const fd = new FormData(form);
-    const get = (k: string) => String(fd.get(k) ?? "").trim();
-
-    // Honeypot. A real visitor cannot see or focus this field, so anything in it
-    // came from a script filling every input it finds. Pretend it worked: a bot
-    // told "sent" learns to retry with the field left empty, whereas an error
-    // tells it the trap exists. Nothing is posted either way.
-    if (get("_website")) {
-      if (note) note.textContent = "Thanks, got it. I'll reply shortly.";
-      form.reset();
-      return;
-    }
-
-    if (!get("name") || !get("email") || !get("message")) {
-      if (note) note.textContent = "Please fill in name, email and message.";
-      return;
-    }
-
-    // Catch typos like "name@gamil.com" before the enquiry disappears into a
-    // dead address. Deliberately loose — real validation is the mail server's
-    // job; this only rejects things that are definitely not addresses.
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(get("email"))) {
-      if (note) note.textContent = "That email address doesn't look right. Check it?";
-      return;
-    }
-
-    if (SITE.contact.formEndpoint) {
-      try {
-        const res = await fetch(SITE.contact.formEndpoint, {
-          method: "POST",
-          headers: { Accept: "application/json" },
-          body: fd,
-        });
-        if (!res.ok) throw new Error(`form endpoint ${res.status}`);
-        if (note) note.textContent = "Thanks, got it. I'll reply shortly.";
-        form.reset();
-        return;
-      } catch {
-        if (note) note.textContent = "That didn't send. Email me directly instead.";
-        return;
-      }
-    }
-
-    const subject = encodeURIComponent(`Enquiry — ${get("kind")}`);
-    const body = encodeURIComponent(
-      `${get("message")}\n\n— ${get("name")} (${get("email")})`,
-    );
-    location.href = `mailto:${SITE.contact.email}?subject=${subject}&body=${body}`;
-    // Don't promise a hand-off we can't confirm: on a phone with no mail app
-    // this does nothing at all. Show the address so they can copy it instead.
-    if (note) {
-      note.innerHTML = `If nothing opened, email me directly: <a href="mailto:${SITE.contact.email}">${SITE.contact.email}</a>`;
-    }
-  });
+  closeNav = wireNavigation();
 }
 
 /**
@@ -530,7 +388,7 @@ function wireContact(): void {
 addEventListener("orientationchange", () => {
   // A beat, because iOS reports the new dimensions a frame or two after the
   // event. Repainting synchronously here would read the old innerWidth.
-  setTimeout(() => void paint(), 250);
+  if ((ALIASES[route()] ?? route()) !== "contact") setTimeout(() => void paint(), 250);
 });
 
 // Re-paint when the URL changes WITHOUT a document load.
@@ -545,7 +403,9 @@ addEventListener("orientationchange", () => {
 // popstate is included because Back/Forward across a real page load restores a
 // document from bfcache WITHOUT re-running the script, so nothing would
 // otherwise repaint.
-addEventListener("hashchange", () => void paint());
+addEventListener("hashchange", () => {
+  if (location.hash !== "#main-content") void paint();
+});
 addEventListener("popstate", () => void paint());
 
 // The burger drawer's global listeners — registered ONCE, here, and pointed at
@@ -555,6 +415,12 @@ addEventListener("keydown", (e) => {
   if (e.key === "Escape") closeNav?.();
 });
 addEventListener("hashchange", () => closeNav?.());
+
+document.addEventListener("click", (event) => {
+  if (!(event.target as Element).closest(".skip-link")) return;
+  event.preventDefault();
+  document.querySelector<HTMLElement>("#main-content")?.focus();
+});
 
 initLightbox();
 void paint();

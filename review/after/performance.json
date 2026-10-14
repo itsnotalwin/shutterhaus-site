@@ -1,0 +1,85 @@
+{
+  "conditions": "Local Vite production preview, unthrottled Chromium, 2-second observation, no scroll; a sanity check, not a benchmark.",
+  "measurements": [
+    {
+      "route": "home",
+      "width": 390,
+      "cls": 0,
+      "lcp": 328,
+      "resourceBytes": 220812,
+      "externalHosts": []
+    },
+    {
+      "route": "portfolio",
+      "width": 390,
+      "cls": 0,
+      "lcp": 352,
+      "resourceBytes": 263878,
+      "externalHosts": []
+    },
+    {
+      "route": "about",
+      "width": 390,
+      "cls": 0,
+      "lcp": 56,
+      "resourceBytes": 10348,
+      "externalHosts": []
+    },
+    {
+      "route": "services",
+      "width": 390,
+      "cls": 0,
+      "lcp": 80,
+      "resourceBytes": 35392,
+      "externalHosts": []
+    },
+    {
+      "route": "contact",
+      "width": 390,
+      "cls": 0,
+      "lcp": 60,
+      "resourceBytes": 3000,
+      "externalHosts": []
+    },
+    {
+      "route": "home",
+      "width": 1440,
+      "cls": 0,
+      "lcp": 268,
+      "resourceBytes": 1588318,
+      "externalHosts": []
+    },
+    {
+      "route": "portfolio",
+      "width": 1440,
+      "cls": 0,
+      "lcp": 380,
+      "resourceBytes": 231322,
+      "externalHosts": []
+    },
+    {
+      "route": "about",
+      "width": 1440,
+      "cls": 0,
+      "lcp": 52,
+      "resourceBytes": 18680,
+      "externalHosts": []
+    },
+    {
+      "route": "services",
+      "width": 1440,
+      "cls": 0,
+      "lcp": 68,
+      "resourceBytes": 203270,
+      "externalHosts": []
+    },
+    {
+      "route": "contact",
+      "width": 1440,
+      "cls": 0,
+      "lcp": 56,
+      "resourceBytes": 3000,
+      "externalHosts": []
+    }
+  ]
+}

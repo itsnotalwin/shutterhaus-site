@@ -58,3 +58,10 @@ audit-v2/**/tmp/
 # Stubs the verification loop creates before any worker has filled them in.
 verification/round*/
 verification/fix-queue.md
+
+# Local browser review artefacts; reports and capture tools are versioned.
+review/**/*.png
+review/**/*.jpg
+review/**/*.zip
+test-results/
+playwright-report/

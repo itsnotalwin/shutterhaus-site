@@ -1,3 +1,4 @@
+import "./fonts.css";
 import "./styles.css";
 import { ADMIN_EMAILS, SITE } from "./config";
 import { escapeHtml, icon } from "./layout";

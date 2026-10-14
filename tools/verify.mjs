@@ -137,7 +137,7 @@ const info = await evaluate(`(() => {
     imageFilters: [...document.querySelectorAll('img')]
       .map(i => getComputedStyle(i).filter).filter(f => f && f !== 'none'),
     coverCrops: [...document.querySelectorAll('img')]
-      .filter(i => getComputedStyle(i).objectFit === 'cover')
+      .filter(i => !i.closest('[aria-hidden="true"]') && getComputedStyle(i).objectFit === 'cover')
       .map(i => (i.closest('[class]')?.className || i.className || '?').split(' ')[0]),
     colScroll: [...document.querySelectorAll('.col')].map(c => c.scrollHeight > c.clientHeight),
     // Scope to gallery images: the lightbox holds an <img> with src="" until
@@ -232,15 +232,8 @@ console.log("--- portfolio ---" + JSON.stringify(grid));
 
 check("title set", /shutterhaus/i.test(info.title), info.title);
 check("header renders", info.header);
-check("logo two-line lockup", /SHUTTERHAUS/i.test(info.logo ?? ""), info.logo);
-check("small word < big word", parseFloat(info.smFS) < parseFloat(info.lgFS), `${info.smFS} < ${info.lgFS}`);
-// Archivo Black ships a single weight (400) — it IS the black. The family is
-// the real signal that the wordmark is heavy, plus a font-size floor.
-check("wordmark is the display face", /Archivo/i.test(info.lgFamily ?? ""), info.lgFamily);
-check("wordmark is large", parseFloat(info.lgFS) >= 24, info.lgFS);
-// The five-route editorial build. `portfolio` is the route that carries the
-// column grid, so the grid checks below read from there, not from the default
-// route — which is now the home hero and has no columns at all.
+const brand = await evaluate(`(() => { const image = document.querySelector('.logo img'); return { src: image?.getAttribute('src'), alt: image?.alt, loaded: image?.naturalWidth > 0 }; })()`);
+check("supplied wordmark renders accessibly", brand.loaded && /wordmark-primary/.test(brand.src) && /SHUTTERHAUS VISUALS/.test(brand.alt), JSON.stringify(brand));
 const ROUTES = ["Home", "Portfolio", "About", "Services", "Contact"];
 check("nav = the five routes", info.nav.join(",") === ROUTES.join(","), info.nav.join(","));
 check("home active by default", info.active === "Home", info.active);
@@ -356,11 +349,11 @@ check("no filter over the photographs", info.imageFilters.length === 0,
 // The hero is the one deliberate exception: it is a full-bleed background behind
 // a scrim, where `contain` would letterbox and expose the page behind it. Every
 // other figure must stay uncropped.
-check("only the hero crops", info.coverCrops.every(c => c === "hero__fig"),
+check("only hero photo and decorative motif crop", info.coverCrops.every(c => ["hero__fig", "hero__motif"].includes(c)),
   info.coverCrops.join(", ") || "none");
-check("white page bg", info.bodyBg === "rgb(255, 255, 255)", info.bodyBg);
-check("inactive nav is muted", info.navColor !== info.activeColor, `muted ${info.navColor} vs active ${info.activeColor}`);
-check("nav text size", parseFloat(info.navSize) >= 11, info.navSize);
+check("warm-white page stage", info.bodyBg === "rgb(247, 246, 243)", info.bodyBg);
+check("active nav is indicated", await evaluate(`document.querySelector('.nav-link.is-active')?.getAttribute('aria-current') === 'page'`));
+check("nav text size", parseFloat(info.navSize) >= 10, info.navSize);
 check("no broken images", info.broken === 0, String(info.broken));
 // Typography guard. "Timeless Portraiture" shipped for months rendering as
 // "TIMELESS PORTRAITUR / E" — the H1 split a word mid-character on every phone

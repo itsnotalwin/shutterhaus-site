@@ -1,6 +1,7 @@
 import { SITE } from "./config";
 import { WHATSAPP_PATH } from "./layout";
-import { escapeHtml } from "./layout";
+import { escapeHtml, motif } from "./layout";
+import { DEMO_PHOTOS } from "./demo";
 import { homeBand } from "./pages";
 import { pictureFor, bestDerivative } from "./pages";
 import type { Photo } from "./types";
@@ -21,17 +22,16 @@ export function aboutPage(photos: Photo[]): string {
   // of Alwin on a beach with a metal detector; if the gallery is missing it the
   // page still renders with the old fallback rather than an empty column.
   const shot = photos.find((p) => p.filename === a.photo)
-    ?? photos.find((p) => p.album === "about")
-    ?? photos[0];
+    ?? DEMO_PHOTOS.find((p) => p.filename === a.photo);
 
   const fig = shot
     ? `<figure class="about__fig">
          <picture>${pictureFor(shot.url, "(max-width: 1000px) 100vw, 40vw", shot.width)}
            <img src="${escapeHtml(bestDerivative(shot.url, "jpg", shot.width))}" alt="${escapeHtml(shot.alt || shot.filename || "")}"
-                loading="lazy" decoding="async"
+                loading="eager" decoding="async"
                 style="aspect-ratio:${shot.width ?? 1200}/${shot.height ?? 1600}" />
          </picture>
-       </figure>`
+       <figcaption class="about__caption">Alwin Newman / Photographer</figcaption></figure>`
     : `<div class="about__fig about__fig--none" aria-hidden="true"></div>`;
 
   return `<section class="page about">
@@ -44,6 +44,7 @@ export function aboutPage(photos: Photo[]): string {
       <a class="cta about__cta" href="./contact.html">${escapeHtml(a.cta)}</a>
     </div>
     ${fig}
+    ${motif("about__motif")}
     ${homeBand()}
   </section>`;
 }
@@ -66,7 +67,7 @@ export function servicesPage(photos: Photo[] = []): string {
   // does not have falls back to the rotation rather than rendering a broken img.
   const shotFor = (t: PricingTier, i: number): Photo | undefined => {
     if (i > 0 && t.photo) {
-      const pinned = photos.find((p) => p.filename === t.photo);
+      const pinned = photos.find((p) => p.filename === t.photo) ?? DEMO_PHOTOS.find((p) => p.filename === t.photo);
       if (pinned) return pinned;
     }
     return photos.length ? photos[i % photos.length] : undefined;
@@ -90,7 +91,7 @@ export function servicesPage(photos: Photo[] = []): string {
       // card's photo ~50px lower than the other three and broke the row.
       t.popular ? ' <span class="pkg__flag">Most popular</span>' : ""
     }</p>
-    <h3 class="pkg__name">${escapeHtml(t.name)}</h3>
+    <h2 class="pkg__name">${escapeHtml(t.name)}</h2>
     <p class="pkg__spec">${escapeHtml(t.spec)}</p>
     <p class="pkg__desc">${escapeHtml(t.fit)}</p>
     <ul class="pkg__list">
@@ -106,10 +107,13 @@ export function servicesPage(photos: Photo[] = []): string {
       <div class="shead__col">
         <p class="eyebrow">${escapeHtml(SITE.services.eyebrow)}</p>
         <h1 class="shead__h">${escapeHtml(SITE.services.heading)}</h1>
+        <p class="shead__p">${escapeHtml(p.intro)}</p>
+        <a class="cta" href="./contact.html">Make an enquiry <span aria-hidden="true">→</span></a>
       </div>
-      <p class="shead__p">${escapeHtml(p.intro)}</p>
+      ${(() => { const shot = shotFor(p.tiers[2], 2); return shot ? `<figure class="shead__fig"><picture>${pictureFor(shot.url, "(max-width: 759px) 100vw, 45vw", shot.width)}<img src="${escapeHtml(bestDerivative(shot.url, "jpg", shot.width))}" alt="${escapeHtml(shot.alt || "")}" loading="eager" decoding="async" /></picture></figure>` : ""; })()}
+      ${motif()}
     </header>
-
+    <div class="section-label"><h2>Choose your session.</h2><span>Packages / ZAR</span></div>
     <div class="pkgrow">${p.tiers.map(card).join("")}</div>
 
     <section class="invest">
@@ -206,6 +210,11 @@ export function contactPage(_photos: Photo[] = []): string {
       <h1 class="contact__h">Let's Create Something Beautiful.</h1>
       <p class="contact__p">${escapeHtml(SITE.blurb)}</p>
 
+      ${(() => { const shot = DEMO_PHOTOS.find(p => p.filename === SITE.pricing.tiers[2]?.photo); return shot ? `<figure class="contact__photo"><picture>${pictureFor(shot.url, "(max-width: 759px) 100vw, 35vw", shot.width)}<img src="${escapeHtml(bestDerivative(shot.url, "jpg", shot.width))}" width="${shot.width}" height="${shot.height}" alt="${escapeHtml(shot.alt || "")}" loading="lazy" decoding="async" /></picture></figure>` : ""; })()}
+      <div class="contact__details"><a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a><p>${escapeHtml(c.location)}<br>${escapeHtml(c.hours)}</p></div>
+      ${motif("contact__motif")}
+      </div>
+      <div class="contact__form-panel"><p class="eyebrow eyebrow--rule">Your enquiry</p>
       <form class="cform" id="cform" novalidate>
         <label>Name<input name="name" type="text" required autocomplete="name" /></label>
         <label>Email<input name="email" type="email" required autocomplete="email" /></label>
@@ -218,7 +227,7 @@ export function contactPage(_photos: Photo[] = []): string {
         <label>Message<textarea name="message" rows="4" required></textarea></label>
         ${HONEYPOT_FIELD}
         <button type="submit">Send message</button>
-        <p class="cform__note dim" id="cform-note"></p>
+        <p class="cform__note dim" id="cform-note" role="status" aria-live="polite" tabindex="-1"></p>
       </form>
       </div>
 

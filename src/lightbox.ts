@@ -149,6 +149,7 @@ export function initLightbox(): void {
   box.className = "lb";
   box.setAttribute("role", "dialog");
   box.setAttribute("aria-modal", "true");
+  box.setAttribute("aria-label", "Photograph viewer");
   box.hidden = true;
   // Each control carries BOTH a glyph and a word; CSS shows one. The glyphs (×
   // ‹ ›) are what the home page's lightbox has always shown, and the home page
@@ -165,6 +166,7 @@ export function initLightbox(): void {
   const cap = box.querySelector<HTMLElement>(".lb__cap")!;
   let frames: HTMLImageElement[] = [];
   let at = 0;
+  let opener: HTMLElement | null = null;
 
   const pad2 = (n: number) => String(n).padStart(2, "0");
 
@@ -204,6 +206,7 @@ export function initLightbox(): void {
   }
 
   function open(target: HTMLImageElement): void {
+    opener = target.closest<HTMLElement>(".pf-cell, .hstrip__item") ?? target;
     const fromWall = !!target.closest(".pf-cell");
     frames = fromWall
       ? wallFrames()
@@ -211,6 +214,8 @@ export function initLightbox(): void {
     box.classList.toggle("lb--wall", fromWall);
     show(Math.max(0, frames.indexOf(target)));
     box.hidden = false;
+    document.querySelector<HTMLElement>(".shell")!.inert = true;
+    box.querySelector<HTMLButtonElement>(".lb__x")!.focus();
     document.body.style.overflow = "hidden";
   }
 
@@ -228,7 +233,9 @@ export function initLightbox(): void {
 
   function close(): void {
     box.hidden = true;
-    img.src = "";
+    document.querySelector<HTMLElement>(".shell")!.inert = false;
+    opener?.focus({preventScroll:true});
+    img.removeAttribute("src");
     document.body.style.overflow = "";
     // Reset zoom on close, or the next frame opens pre-zoomed and the visitor
     // cannot tell why it is cropped with no way back to fit.
@@ -407,7 +414,7 @@ export function initLightbox(): void {
   // intact (an <img> inside a button has neither).
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Enter" && e.key !== " ") return;
-    const cell = (e.target as HTMLElement | null)?.closest?.(".pf-cell");
+    const cell = (e.target as HTMLElement | null)?.closest?.(".pf-cell, .hstrip__item");
     if (!cell) return;
     e.preventDefault();
     const target = cell.querySelector<HTMLImageElement>(".cell img[data-full]");
@@ -417,6 +424,12 @@ export function initLightbox(): void {
 
   document.addEventListener("keydown", (e) => {
     if (box.hidden) return;
+    if (e.key === "Tab") {
+      const buttons = [...box.querySelectorAll<HTMLButtonElement>("button")];
+      const first = buttons[0], last = buttons[buttons.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
     if (e.key === "Escape") close();
     if (e.key === "ArrowRight") show(at + 1);
     if (e.key === "ArrowLeft") show(at - 1);

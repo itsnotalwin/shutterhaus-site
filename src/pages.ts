@@ -1,4 +1,4 @@
-import { escapeHtml } from "./layout";
+import { escapeHtml, motif } from "./layout";
 import { SITE } from "./config";
 import type { Photo } from "./types";
 import { PHOTO_ROWS, setLiveRows } from "./rows";
@@ -573,7 +573,7 @@ export function portfolioPage(photos: Photo[]): string {
   return `<section class="page portfolio">
     <header class="phead">
       <p class="eyebrow">${shown.length} photographs · Gauteng</p>
-      <h1 class="phead__h">Portfolio</h1>
+      <h1 class="phead__h">Selected stories.</h1>
       <p class="phead__p">Portraits and places, shot around Gauteng.</p>
     </header>
     <div class="pf-rows" style="--pf-cols:${cols}">${wall}</div>
@@ -644,17 +644,9 @@ export function emptyGallery(): string {
  * one column at 390px.
  */
 function stripCols(frameCount: number): number {
-  // The strip uses TWO columns at every width, not the portfolio's three.
-  //
-  // A column count that divides the frame count is what keeps the bottom edge
-  // even, and Alwin wants few frames: "too many images on home now". Six
-  // frames only splits evenly as 3/3 or 2/2 — as 3 columns it forces 2/1/3 and
-  // strands the middle column 252px short, which is the white hole again.
-  //
-  // So: two columns everywhere, six frames, 3/3. On a phone 3+3 still reads as
-  // a short wall rather than a long one. Both the emitted columns and the grid
-  // track count come from this one function, so they cannot disagree.
-  const want = 2;
+  // Six curated frames: three columns on desktop, two on smaller screens.
+  // Continue using the existing height-aware packer and live image selection.
+  const want = innerWidth >= 1001 ? 3 : 2;
   return Math.min(want, frameCount);
 }
 
@@ -715,7 +707,7 @@ function cheapestTier(): { name: string; price: string } | null {
 }
 
 /**
- * The home route: full-bleed hero, then a short editorial strip of frames.
+ * The home route: editorial split hero, then six curated frames.
  *
  * The hero is a real photograph rather than a flat black block — the reference
  * puts the work behind the headline, and a black rectangle reads as a broken
@@ -776,24 +768,24 @@ export function homePage(photos: Photo[], cols: number): string {
   // browsers take, and it is free. "webp" is requested and the JPEG <source>
   // stays as the real fallback for a browser with no WebP support at all.
   const heroFig = hero
-    ? `<figure class="hero__fig">${pictureFor(hero.url, "100vw", hero.width)}
+    ? `<figure class="hero__fig"><picture>${pictureFor(hero.url, "(max-width: 759px) 100vw, 50vw", hero.width)}
         <img src="${escapeHtml(bestDerivative(hero.url, "webp", hero.width))}"
              alt="${escapeHtml(hero.alt || hero.filename || "")}"
              loading="eager" decoding="async" fetchpriority="high"
-             style="aspect-ratio:${hero.width ?? 1600}/${hero.height ?? 1067}" />
+             width="${hero.width ?? 1600}" height="${hero.height ?? 1067}" /></picture><figcaption>${escapeHtml(SITE.contact.location)} <span>Portraiture / Selected frame</span></figcaption>
       </figure>`
     : "";
 
   return `<section class="page home">
     <div class="hero">
-      ${heroFig}
-      <div class="hero__scrim" aria-hidden="true"></div>
       <div class="hero__body">
-        <p class="eyebrow">${escapeHtml(h.eyebrow)}</p>
+        <p class="eyebrow eyebrow--rule">Independent photography / Gauteng, SA</p>
         <h1 class="hero__h">${escapeHtml(h.heading)}</h1>
         <p class="hero__lede">${escapeHtml(h.lede)}</p>
-        <a class="cta" href="./portfolio.html">${escapeHtml(h.cta)}</a>
+        <div class="hero__actions"><a class="cta cta--btn" href="./contact.html">Book a session <span aria-hidden="true">→</span></a><a class="cta cta--line" href="./portfolio.html">${escapeHtml(h.cta)}</a></div>
       </div>
+      ${heroFig}
+      ${motif("hero__motif")}
       <div class="hero__meta">
         <span>Est. ${escapeHtml(h.est)} | ${escapeHtml(SITE.contact.location)}</span>
         <span class="hero__meta-tags">${h.tags.map(escapeHtml).join(" / ")}</span>
@@ -815,7 +807,7 @@ export function homePage(photos: Photo[], cols: number): string {
                     // like the number on my photos". The strip does not need
                     // numbering to read as a curated set, and the digit sitting in
                     // the corner of every photograph was the thing he objected to.
-                    .map((p) => `<div class="hstrip__item">${figure(p, 0)}</div>`)
+                    .map((p) => `<div class="hstrip__item" role="button" tabindex="0" aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">${figure(p, -1)}</div>`)
                     .join("")}</div>`,
               )
               .join("")}</div>

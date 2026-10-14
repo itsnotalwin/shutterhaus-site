@@ -85,14 +85,7 @@ function pageHref(id: string): string {
  * stacked words, nav offset from the left, socials pinned right.
  */
 export function header(active: string): string {
-  const wordmark = `
-    <a class="logo" href="${pageHref("home")}" aria-label="${escapeHtml(SITE.nameTop)} | home">
-      <span class="logo-row">
-        <span class="logo-sm">${escapeHtml(SITE.nameTop)}</span>
-        <span class="logo-lg">${escapeHtml(SITE.nameBig1)}</span>
-      </span>
-      <span class="logo-lg logo-lg--b">${escapeHtml(SITE.nameBig2)}</span>
-    </a>`;
+  const wordmark = `<a class="logo" href="${pageHref("home")}" aria-label="SHUTTERHAUS VISUALS | home"><img src="./brand/wordmark-primary.svg" width="240" height="40" alt="SHUTTERHAUS VISUALS" /></a>`;
 
   const nav = SITE.nav
     .map(
@@ -117,24 +110,26 @@ export function header(active: string): string {
       <span class="burger__bars" aria-hidden="true"><i></i><i></i></span>
     </button>
     <nav class="site-nav" id="site-nav" aria-label="Primary">${nav}</nav>
+    <a class="header-book cta cta--btn" href="./contact.html">Book a session <span aria-hidden="true">→</span></a>
     <div class="site-social">${social}</div>
   </header>`;
 }
 
-/**
- * Full page shell — header + the active route's body.
- *
- * `over` makes the header float transparently on top of the first photograph
- * instead of sitting in its own white bar. Only the home page uses it; every
- * other route has a white page behind the header, where transparent type
- * would be invisible.
- */
-export function renderShell(active: string, body: string, over = false): string {
+/** Shared public header, skip link, landmark and footer. */
+export function renderShell(active: string, body: string): string {
   // No `is-bw` class. It gated the greyscale filter (styles.css:301) and nothing
   // else: after the filter was removed on 2026-10-02 at Alwin's instruction,
   // the class was emitted on every page and matched no rule. Carrying it
   // suggested a monochrome treatment that no longer exists.
-  return `<div class="shell${over ? " shell--over" : ""}">${header(active)}<main class="main">${body}</main></div>`;
+  return `<div class="shell"><a class="skip-link" href="#main-content">Skip to content</a>${header(active)}<main class="main" id="main-content" tabindex="-1">${body}</main>${footer()}</div>`;
+}
+
+export function motif(className = ""): string {
+  return `<aside class="brand-motif ${className}" aria-hidden="true"><img src="./brand/arc-grid.svg" width="320" height="480" alt="" /><p>People<br>Places<br>Stories</p></aside>`;
+}
+
+function footer(): string {
+  return `<footer class="site-footer"><a class="footer-brand" href="./" aria-label="Shutterhaus Visuals home"><img src="./brand/wordmark-primary.svg" width="210" height="35" alt="SHUTTERHAUS VISUALS" /></a><p>${escapeHtml(SITE.contact.location)}</p><div>${SITE.social.map(s => `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.label)}</a>`).join("")}</div><small>© ${new Date().getFullYear()} SHUTTERHAUS VISUALS</small></footer>`;
 }
 
 export { FONTS };
