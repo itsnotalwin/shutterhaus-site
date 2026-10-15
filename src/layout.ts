@@ -125,11 +125,11 @@ export function renderShell(active: string, body: string): string {
 }
 
 export function motif(className = ""): string {
-  return `<aside class="brand-motif ${className}" aria-hidden="true"><img src="./brand/arc-grid.svg" width="320" height="480" alt="" /><p>People<br>Places<br>Stories</p></aside>`;
+  return `<aside class="brand-motif ${className}" aria-hidden="true"><picture><source media="(max-width: 759px)" srcset="./brand/editorial-arcs-horizontal.webp" /><img src="./brand/editorial-arcs-vertical.webp" width="378" height="1040" alt="" /></picture><p>People<br>Places<br>Stories</p></aside>`;
 }
 
 function footer(): string {
-  return `<footer class="site-footer"><strong>People. Places. Stories.</strong><small>© ${new Date().getFullYear()} SHUTTERHAUS VISUALS · ${escapeHtml(SITE.contact.location)}</small><div>${SITE.social.map(s => `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.label)}</a>`).join("")}</div><img src="./brand/arc-tile.svg" width="52" height="52" alt="" /></footer>`;
+  return `<footer class="site-footer"><strong>People. Places. Stories.</strong><small>© ${new Date().getFullYear()} SHUTTERHAUS VISUALS · ${escapeHtml(SITE.contact.location)}</small><div>${SITE.social.map(s => `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.label)}</a>`).join("")}</div><img src="./brand/editorial-arcs-horizontal.webp" width="104" height="40" alt="" /></footer>`;
 }
 
 export { FONTS };

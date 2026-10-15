@@ -5,39 +5,39 @@
       "route": "home",
       "width": 390,
       "cls": 0,
-      "lcp": 376,
-      "resourceBytes": 213534,
+      "lcp": 612,
+      "resourceBytes": 358829,
       "externalHosts": []
     },
     {
       "route": "portfolio",
       "width": 390,
       "cls": 0,
-      "lcp": 132,
-      "resourceBytes": 201936,
+      "lcp": 272,
+      "resourceBytes": 170222,
       "externalHosts": []
     },
     {
       "route": "about",
       "width": 390,
       "cls": 0,
-      "lcp": 80,
-      "resourceBytes": 18084,
+      "lcp": 52,
+      "resourceBytes": 17784,
       "externalHosts": []
     },
     {
       "route": "services",
       "width": 390,
       "cls": 0,
-      "lcp": 84,
-      "resourceBytes": 12568,
+      "lcp": 60,
+      "resourceBytes": 12268,
       "externalHosts": []
     },
     {
       "route": "contact",
       "width": 390,
       "cls": 0,
-      "lcp": 120,
+      "lcp": 60,
       "resourceBytes": 26124,
       "externalHosts": []
     },
@@ -45,15 +45,15 @@
       "route": "home",
       "width": 1440,
       "cls": 0,
-      "lcp": 344,
-      "resourceBytes": 1581040,
+      "lcp": 220,
+      "resourceBytes": 1838929,
       "externalHosts": []
     },
     {
       "route": "portfolio",
       "width": 1440,
       "cls": 0,
-      "lcp": 104,
+      "lcp": 100,
       "resourceBytes": 330944,
       "externalHosts": []
     },
@@ -61,7 +61,7 @@
       "route": "about",
       "width": 1440,
       "cls": 0,
-      "lcp": 88,
+      "lcp": 72,
       "resourceBytes": 40176,
       "externalHosts": []
     },
@@ -69,7 +69,7 @@
       "route": "services",
       "width": 1440,
       "cls": 0,
-      "lcp": 124,
+      "lcp": 80,
       "resourceBytes": 145998,
       "externalHosts": []
     },
@@ -77,7 +77,7 @@
       "route": "contact",
       "width": 1440,
       "cls": 0,
-      "lcp": 68,
+      "lcp": 60,
       "resourceBytes": 3000,
       "externalHosts": []
     }

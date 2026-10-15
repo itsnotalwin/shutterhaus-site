@@ -1,1213 +1,156 @@
-diff --git a/.gitignore b/.gitignore
-index 9a2b302..e498861 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -65,3 +65,6 @@ review/**/*.jpg
- review/**/*.zip
- test-results/
- playwright-report/
-+
-+# Temporary revision inspection crops and intermediate captures.
-+review/revision-2/
-diff --git a/about.html b/about.html
-index 9bf81cd..987f652 100644
---- a/about.html
-+++ b/about.html
-@@ -13,7 +13,7 @@
-     <title>About | Shutterhaus Visuals</title>
-     <meta name="description" content="Alwin Newman is a photographer working across Gauteng, shooting portraits, couples, families and social content on location." />
- 
--    <link rel="preload" href="./fonts/eb-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-+    <link rel="preload" href="./fonts/bodoni-moda-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-     <link rel="preload" href="./fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
- 
-     <meta property="og:title" content="About | Shutterhaus Visuals" />
-diff --git a/contact.html b/contact.html
-index 493e7ee..2262be6 100644
---- a/contact.html
-+++ b/contact.html
-@@ -13,7 +13,7 @@
-     <title>Contact | Shutterhaus Visuals</title>
-     <meta name="description" content="Enquire about a photography session in Gauteng. WhatsApp or email Alwin Newman at Shutterhaus Visuals. Evenings and weekends by appointment." />
- 
--    <link rel="preload" href="./fonts/eb-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-+    <link rel="preload" href="./fonts/bodoni-moda-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-     <link rel="preload" href="./fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
- 
-     <meta property="og:title" content="Contact | Shutterhaus Visuals" />
 diff --git a/design-qa.md b/design-qa.md
-index 6943aa6..2dad484 100644
+index 2dad484..76fcdb2 100644
 --- a/design-qa.md
 +++ b/design-qa.md
-@@ -1,68 +1,53 @@
--# Editorial refresh — visual QA
-+# Revision 2 — visual comparison status
+@@ -36,7 +36,7 @@ Both source and current implementation were opened and examined. Focused checks
  
--**Final result: passed** for the review build. Owner approval and the live-device/integration checks listed below remain separate.
-+**Owner visual approval: pending. The first build's acceptance claim is withdrawn.**
+ **Layout/spacing:** Home now follows the primary split scene; Portfolio mobile follows title → large image → caption → supporting images. About and Services use the corresponding reference introductions. Contact is a white split layout with editorial details. All seven widths are rendered and checked.
  
--## Visual truth and evidence
-+The first build passed functional checks but diverged materially from the supplied compositions. It retained old headings, used a softer serif, altered page structures, showed colour-first work tiles, used a heavy black recommendation card and a white dropdown menu. Those were visible differences, not acceptable substitutes for the requested mockups.
+-**Colours/assets:** monochrome photography is a reversible display treatment. Source image bytes are intact; colour remains available in hover/lightbox. Supplied SVG wordmark and arc assets are used. Flat SVG grain does not reproduce every texture detail in the primary raster artwork.
++**Colours/assets:** monochrome photography is a reversible display treatment. Source image bytes are intact; colour remains available in hover/lightbox. The supplied SVG wordmark remains. Revision 3 replaces flat arc SVGs with generated artwork reconstructed against the primary reference: separate vertical and horizontal compositions with granular black/ash ink. No generated photography is used.
  
--Primary aesthetic truth: `/workspace/design-reference/SHUTTERHAUS_Master_Design_Spec_v1/assets/reference/01-primary-reference.png` (1586×992 pixels, a framed desktop/mobile design board, not a browser viewport).
-+## Source and current evidence
+ **Images:** real pinned Home and About sources, actual curated work, service photographs and meaningful alt text are preserved. The Contact family image retains its complete framing. No illustrative/generated faces are presented as studio work.
  
--Supporting route references: `assets/screenshots/{home,portfolio,about,services,contact}-{desktop-1440,mobile-390}.png` in that extracted package. Their prototype includes a 64px study header/stage that is removed in comparison boards. They use proposed copy and generated illustrative images; those are intentionally replaced by current repository copy and original work.
-+- Primary: `/workspace/design-reference/SHUTTERHAUS_Master_Design_Spec_v1/assets/reference/01-primary-reference.png` (1586×992 framed design board).
-+- Supporting: the supplied desktop/mobile page boards and `assets/screenshots/{route}-{desktop-1440,mobile-390}.png`.
-+- Current browser captures: `review/after/{route}-{width}.png`, all five pages at 320/390/430/768/1024/1440/1920; density 1; mobile/touch emulation below 760px.
-+- Combined comparisons: `review/comparisons/{route}-{390,1440}-reference.jpg` and `home-primary-reference.jpg`.
-+- Viewer: `review/index.html`, defaulting to mockup/revised-build comparison.
+@@ -44,7 +44,7 @@ Both source and current implementation were opened and examined. Focused checks
  
--Implementation: `review/after/{route}-{width}.png`. CSS viewports 320, 390, 430, 768, 1024, 1440, 1920; deviceScaleFactor 1. Heights 844 mobile, 1000 desktop, with full-page screenshots preserving page length. Touch/mobile emulation is used below 760px. Images/font decoding and reveal completion are awaited; animations are disabled for stable screenshot capture.
-+Prototype study headers are cropped away. The primary desktop region is 925×886; its comparison is normalized against an equal display measure of the implementation. Primary mobile Home and Portfolio regions are cropped from their phone panels and normalized to 390 CSS pixels. This enables composition comparison; it is not a claim that a raster mockup defines a measured runtime viewport.
+ ## Acceptance and limits
  
--Combined full-view evidence: `review/comparisons/home-primary-reference.jpg` and all ten `review/comparisons/{route}-{390,1440}-reference.jpg` boards. Primary desktop content is cropped to its 925×886px site region; the 1440×1379 implementation region is resized to that same comparison measure. This is composition normalization, not a claim of identical source viewport geometry. Route comparisons use matching 390/1440 CSS widths at density 1, then equal display scaling.
-+Both source and current implementation were opened and examined. Focused checks covered the three-line Home heading, hero/photo/motif tracks, mobile Portfolio title/photo/caption sequence, About story structure, package card photo crops, Contact heading/form and mobile menu.
+-Functional verification is recorded in `review/TEST_TRANSCRIPT.txt`; it is separate from aesthetic acceptance. The revised screenshot set is ready for the owner's comparison. Real photo subjects, the authentic environmental photographer portrait, complete package details, unspecified exact font geometry and SVG/raster texture differences remain visible constraints.
++Functional verification is recorded in `review/TEST_TRANSCRIPT.txt`; it is separate from aesthetic acceptance. The revised screenshot set is ready for the owner's comparison. Real photo subjects, the authentic environmental photographer portrait, complete package details, unspecified exact font geometry and exact generated-artwork texture differences remain visible constraints.
  
--Before/after evidence: ten `review/comparisons/{route}-{390,1440}-before-after.jpg` boards. Portable full-page images are in `review/evidence/`, and an interactive image viewer is in `review/index.html`.
-+## Corrections made
+ The owner rejected the first match. This report does not grant owner approval to the replacement. No deployment or merge has occurred.
  
--Focused evidence: `review/after/home-final-inspection.jpg`, `services-final-inspection.jpg`, `contact-final-inspection.jpg`, and `portfolio-inspection.jpg`. These were inspected for actual header/type, photograph crop, package photo stages, active nav and form geometry. Full-view and focused source/implementation images were viewed together during the comparison pass.
--
--## Comparison history and corrections
--
--1. **P2 — Desktop hero copy started too low.** `review/iteration-1/home-1440.png` placed the eyebrow/heading roughly 146px below the photo top. The primary reference aligns copy much closer to the photo's upper edge. Changed `.hero__body` to top alignment with a 36px inset and enlarged the desktop headline. Final Home capture shows a deliberate shared upper alignment; responsive text checks pass.
--2. **P2 — Motif panel was too short.** Initial hero arc art occupied only the upper part of its tall panel. Extended the supplied SVG's display stage to 440px on desktop, preserving a separate metadata panel and small mobile detail. Final Home and Services captures retain the reference's narrow geometric counterweight.
--3. **P2 — Desktop selected-work section dominated page length.** Initial two-column desktop strip was too long relative to the reference. Reused the height-aware packer with three desktop columns, two at smaller widths, and all six approved frames. Final Home has a shorter editorial sequence without discarding curated images.
--4. **P2 — Services landscape images left excessive unused stage height.** Initial 4:5 card image stage reserved large blank areas beneath landscape sources. Reduced desktop stage to 3:2 and contain-fit actual photographs. Mobile uses natural image proportions. Final Services comparison shows aligned compact image stages while preserving every original frame.
--5. **P2 — Menu and field focus states were incomplete.** Fixed immediate drawer visibility before focusing its first link; trapped/returned focus; added form-specific visible focus selectors. Tests cover 320/390/768/1000 menu widths, Escape/scrim dismissal and desktop teardown.
--6. **P2 — Skip link and recovered package had route/state regressions.** Skip links now focus the content without modifying legacy hashes. Reload preserves a visitor's changed package selection. Both have browser regression tests.
--7. **Capture issue — Blank full-page image evidence.** Normal viewport inspection confirmed loaded images; increased capture settling time and disabled animations before final full-page capture. Final evidence has actual rendered images, and all 35 capture measurements report no broken media.
-+| Earlier difference | Revision |
-+|---|---|
-+| Old two-line “Timeless Portraiture” | Exact three-line “Portraits / worth / keeping.” |
-+| Soft EB Garamond shape | Licensed high-contrast Bodoni Moda |
-+| Different headline/photograph proportions | Taller photo, larger headline, equal statement/photo balance and narrow full-height motif |
-+| Long three-column colour-first Home gallery | Four-up monochrome tiles; six original curated sources preserved |
-+| Portfolio title over an undifferentiated wall | Introduction/feature composition; mobile photo and caption follow the heading directly |
-+| About biography beside one image only | “Behind the lens.” introduction plus separate landscape/biography and value blocks |
-+| Black recommended package and padded image stages | Light bordered recommendation, compact monochrome photo windows and full real details |
-+| Old Contact headline and ivory form panel | Mockup invitation and plain white form |
-+| White dropdown navigation | Dark full-screen serif menu, with existing keyboard/focus protections |
- 
--## Required fidelity surfaces
-+## Fidelity surfaces
- 
--| Surface | Evaluation |
--|---|---|
--| Fonts and typography | Licensed self-hosted EB Garamond display and Inter interface match the supplied token candidates. Natural casing, tracked small labels, restrained serif weights and controlled wrapping remain consistent. Existing longer copy requires different line breaks from the illustrative prototype; no clipping at any required width. |
--| Spacing and layout rhythm | Three-part desktop Home, split tablet and deliberate stacked mobile; white header, hairlines, square controls and aligned photo/motif regions. Portfolio uses its established real gallery flow. About prioritizes the actual full portrait; Services and Contact accommodate full real details. |
--| Colours/tokens | White/ivory/ink/slate system; no added bright accents, gradients, shadows or decorative UI effects. Existing original colour work remains visible in the actual portfolio and strip; hero and selected supporting photos establish monochrome restraint. |
--| Image quality/assets | Supplied wordmark and quarter-circle SVGs are used. All studio photos come from the repository's real responsive derivatives, with intact sources and meaningful alt text. Authentic photographer image is retained; card photographs are contain-fitted to protect their complete framing. No generated client work is shipped. |
--| Copy/content | Repository identity, biography, location/hours, real package benefits and booking terms are authoritative. Social is R3,500 as explicitly requested. Existing Home headline is retained; no new categories, testimonials, phone link, Journal route or response-time promise. |
-+**Typography:** revised display face has the stronger stroke contrast and compact editorial rhythm of the primary reference. Mockup wording and explicit line breaks are used. The exact original type file is unavailable, so no exact-font match is claimed.
- 
--## Accepted constraints and owner decisions
-+**Layout/spacing:** Home now follows the primary split scene; Portfolio mobile follows title → large image → caption → supporting images. About and Services use the corresponding reference introductions. Contact is a white split layout with editorial details. All seven widths are rendered and checked.
- 
--- Real photographs and original colour work differ from the concept's illustrative monochrome faces.
--- “Timeless Portraiture” is intentionally two lines; proposed concept copy remains for an explicit owner decision.
--- Home retains six curated images instead of four illustrative category tiles.
--- About shows the authentic full frame, including the photographer's environmental composition; it does not imitate a concept client's close-up.
--- Portfolio keeps actual 30-frame curation/order without invented filters or a duplicate feature-photo introduction.
--- Full package benefits require more vertical content than the abbreviated prototype. Contain-fitted tall card images intentionally have side breathing space.
--- Existing business availability differs from illustrative prototype claims and is retained.
--- The supplied logo is editable text with fallback geometry; an outlined master is a later branding deliverable.
-+**Colours/assets:** monochrome photography is a reversible display treatment. Source image bytes are intact; colour remains available in hover/lightbox. Supplied SVG wordmark and arc assets are used. Flat SVG grain does not reproduce every texture detail in the primary raster artwork.
- 
--## Verification and practical limits
-+**Images:** real pinned Home and About sources, actual curated work, service photographs and meaningful alt text are preserved. The Contact family image retains its complete framing. No illustrative/generated faces are presented as studio work.
- 
--The browser tests cover primary navigation, visible/inert menu states, lightbox opening/stepping/Escape/focus, enquiry package selection, draft reload/rotation, validation/honeypot, mocked send/error/retry/duplicate prevention, correct success clearing, route SEO and media semantics. The existing public CDP gate and available admin probes passed. All final route/viewport captures report no overflow, broken images or page exceptions.
-+**Content:** reference headlines and section structure are adopted. Current real business details, all six Home images, thirty gallery frames, full package benefits/terms and Social R3,500 remain authoritative.
- 
--Live Google login, authenticated database writes, real inbox delivery and physical iOS Safari were not exercised. These are integration/device test gaps, not claims of passed live verification. No production deployment occurred.
-+## Acceptance and limits
- 
--## Implementation checklist
-+Functional verification is recorded in `review/TEST_TRANSCRIPT.txt`; it is separate from aesthetic acceptance. The revised screenshot set is ready for the owner's comparison. Real photo subjects, the authentic environmental photographer portrait, complete package details, unspecified exact font geometry and SVG/raster texture differences remain visible constraints.
- 
--- [x] Inspect actual source and rendered implementation evidence.
--- [x] Normalize source framing/density and compare all five pages at 390/1440.
--- [x] Correct actionable visual and interaction findings, recapture and compare.
--- [x] Verify all seven viewport widths, keyboard states, media and SEO.
--- [x] Preserve real source images, data contracts and package terms.
--- [x] Prepare branch, diff, before/after screenshots and local review instructions.
--- [ ] Owner design approval, followed by separately authorized rollout and live-device/integration verification.
-+The owner rejected the first match. This report does not grant owner approval to the replacement. No deployment or merge has occurred.
- 
--No unresolved P0/P1/P2 implementation findings remain in the reviewed build. Remaining P3 work: outline approved logo geometry and optionally adopt the concept headline after owner review.
-+final result: blocked
- 
--final result: passed
-+Blocking item: owner visual acceptance of the revised comparison set is pending. Implementation and functional evidence have been prepared for that review.
-diff --git a/docs/REFRESH_AUDIT.md b/docs/REFRESH_AUDIT.md
-index dcb275a..c7b6359 100644
---- a/docs/REFRESH_AUDIT.md
-+++ b/docs/REFRESH_AUDIT.md
-@@ -29,7 +29,7 @@ The uploaded package was extracted intact to `/workspace/design-reference/SHUTTE
- - Screenshots: all five pages at 390 and 1440 CSS px, density 1, in `review/baseline/`.
- - Build regenerated sitemap dates; this was generated task output, not pre-existing user work.
- 
--## Resolved reference conflicts
-+## Initial implementation decisions (superseded where noted in Revision 2)
- 
- - Newer paths (`public.css`, `visual-refresh.css`, `pricing.json`, `navigation.ts`, `contact-form.ts`) described by the handoff did not exist. Implement against actual code rather than assume those files were present.
- - Preserve the real Home headline “Timeless Portraiture”; the proposed “Portraits worth keeping.” remains a copy option for owner review. Retain the real About/Services/Contact copy and appointment hours; do not use the prototype's conflicting mornings/location claims.
-@@ -39,3 +39,8 @@ The uploaded package was extracted intact to `/workspace/design-reference/SHUTTE
- - Keep the real photographer image with its full composition. The mockup's client portrait is not suitable for About.
- - Natural colour is retained in the curated portfolio/selected work. Existing monochrome hero and CSS-only monochrome family images establish the restrained page palette. Source image bytes remain unchanged.
- - No new categories, Journal route, service promises, testimonials or response-time claims.
+diff --git a/docs/REFRESH_ARTWORK_REVISION.md b/docs/REFRESH_ARTWORK_REVISION.md
+new file mode 100644
+index 0000000..86bf53e
+--- /dev/null
++++ b/docs/REFRESH_ARTWORK_REVISION.md
+@@ -0,0 +1,15 @@
++# Revision 3 — reference artwork
 +
++The owner rejected revision 2 because the artwork did not match the approved mockup. This revision changes the decorative artwork and its layout only.
 +
-+## Owner feedback and revised authority
++## Source and implementation
 +
-+The owner rejected the first visual match. See [REFRESH_REVISION_2.md](REFRESH_REVISION_2.md). The revised build adopts the supplied mockup headings and section structures, a sharper display serif, monochrome presentation, four-up desktop work tiles, light package cards and a full-screen dark menu. The earlier decisions to retain the old headline, colour-first thumbnails and altered page structures no longer apply. Real photo/data/functional constraints remain in force.
++Primary source: `assets/reference/01-primary-reference.png` in the supplied design package. Its narrow desktop panel uses a split circular head, interlocking asymmetric arcs, black and ash ink, ivory negative space and pronounced irregular grain. The previous `arc-grid.svg` was a flat, differently arranged approximation.
++
++Two assets were generated with the primary reference attached: `public/brand/editorial-arcs-vertical.webp` and `editorial-arcs-horizontal.webp`. The originals remain in `/workspace/generated_images/`. WebP derivatives are about 253 KB combined. They are decorative brand artwork, never substituted for photographs. The original supplied SVGs remain preserved, but are no longer displayed in the public artwork placements.
++
++`src/layout.ts` selects the separate horizontal asset on mobile through a picture source. `src/public.css` preserves the tall silhouette and positions the People / Places / Stories metadata in its lower negative space. Inner-page panels use contain instead of cutting through the artwork. Menu and footer share the horizontal composition.
++
++## Review
++
++See `review/comparisons/artwork-reference-revision.jpg` for source and rendered desktop/mobile details, and `review/index.html` for all five pages. These are reconstructions, not pixel-identical extractions: individual grain marks and minor curve proportions differ. Owner visual acceptance remains pending. Nothing has been pushed, merged or deployed. Social stays R3,500.
 diff --git a/docs/REFRESH_DELIVERY.md b/docs/REFRESH_DELIVERY.md
-index d97e082..54d7132 100644
+index 54d7132..65fe13a 100644
 --- a/docs/REFRESH_DELIVERY.md
 +++ b/docs/REFRESH_DELIVERY.md
-@@ -1,64 +1,55 @@
--# SHUTTERHAUS VISUALS — review build
-+# SHUTTERHAUS VISUALS — revised mockup review
+@@ -4,6 +4,10 @@ Branch: `design/editorial-brand-refresh`. Original repository base: `ffd120d0543
  
--14 October 2026. Branch: `design/editorial-brand-refresh`. Base: `ffd120d0543aa96a3335d18c953bb40bed514849`.
-+Branch: `design/editorial-brand-refresh`. Original repository base: `ffd120d0543aa96a3335d18c953bb40bed514849`. Rejected first attempt: `343997b`.
+ The owner rejected the first build's visual match. **This revised package supersedes the first screenshots and withdraws the earlier visual acceptance claim.** Automated tests demonstrate functionality; the owner decides whether the visual result meets the mockups.
  
--## Result
-+The owner rejected the first build's visual match. **This revised package supersedes the first screenshots and withdraws the earlier visual acceptance claim.** Automated tests demonstrate functionality; the owner decides whether the visual result meets the mockups.
- 
--The five real public pages share a white editorial header, supplied SVG identity, self-hosted EB Garamond/Inter typography, restrained arc artwork, generous spacing, square booking buttons and a cohesive footer. Home uses a split statement/photo/motif composition and all six curated photographs. Portfolio preserves the 30-frame dataset, order, packer and lightbox. About preserves the authentic photographer portrait and biography. Services retains all package benefits, terms and add-ons. Contact pairs the studio invitation with an accessible, working enquiry form.
-+## Revision 2
- 
--The explicit owner price change is applied: **Social R3,500**. Starter R800, Essential R2,000 and Signature R2,500 remain unchanged. The package selector and structured-data price range follow the update.
-+- Home now uses **“Portraits / worth / keeping.”**, a sharper self-hosted Bodoni Moda display face, the reference's tall split photograph/motif composition, four-up monochrome work tiles on desktop and the mobile image → copy → booking → motif sequence.
-+- Portfolio now has the reference introduction and featured photo. On mobile, the title leads directly to the large photograph, caption and image grid. The original 30-frame gallery data, packing/order and lightbox are retained.
-+- About now has **“Behind the lens.”**, the pinned real photographer photograph, a separate landscape/biography composition and three value blocks.
-+- Services now has **“Sessions, with intention.”**, a curated real portrait, light bordered cards, monochrome image crops and restrained recommendation styling.
-+- Contact now has **“Let's make / something / worth keeping.”**, a plain white form, supporting photography and the reference's editorial contact details.
-+- The header uses **Work / About / Sessions / Contact**. Mobile navigation is a dark full-screen panel with large serif links and the supplied motif.
-+- The closing elements use a compact booking band and **“People. Places. Stories.”** footer.
- 
--## Main changes
-+Social remains **R3,500**. Starter R800, Essential R2,000 and Signature R2,500 are unchanged. All benefits, add-ons, deposits, terms, appointment hours and contact details remain data-driven. Real photography and original source bytes are preserved.
- 
--| Files | Purpose |
--|---|---|
--| `src/public.css`, `src/fonts.css`, `public/fonts/`, `public/brand/` | One coherent public visual layer, licensed local fonts and supplied artwork |
--| `src/layout.ts`, `src/pages.ts`, `src/pages-more.ts` | Shared chrome/footer, split Home, editorial gallery, authentic About, package cards and Contact |
--| `src/navigation.ts`, `src/contact-form.ts`, `src/lightbox.ts`, `src/main.ts` | Accessible drawer lifecycle, tab-scoped draft recovery, validation/send protection, keyboard lightbox and route integration |
--| `src/config.ts`, `tools/build-pages.py`, generated public HTML | Social price, local-font preload, retained SEO/canonicals and corrected price range |
--| `src/admin.ts`, `admin.html` | Existing admin fonts served locally; auth/data/upload code remains intact |
--| `tests/`, `playwright.config.ts`, `tools/verify.mjs`, `tools/review/` | Meaningful interaction/regression coverage and reproducible screenshot/CDP review |
-+## Review evidence
- 
--## Screenshots and visual review
-+Open [review/index.html](../review/index.html). It defaults to **Mockup vs revised build**, with page and viewport selectors; switch to **Original website vs revised build** for before/after views.
- 
--Open [the review gallery](../review/index.html) for before/after views of all five pages at 390 and 1440, and final captures at **320, 390, 430, 768, 1024, 1440 and 1920**. Density is 1; the dedicated capture uses touch/mobile emulation below 760px. Original lossless PNG captures remain in `review/baseline/` and `review/after/`. Portable WebP evidence is versioned in `review/evidence/`.
-+- `review/evidence/`: all five final pages at 320/390/430/768/1024/1440/1920, plus original-site before images at 390/1440.
-+- `review/reference-crops/`: normalized supplied mockup regions used by the viewer.
-+- `review/comparisons/`: combined reference/revision and before/after boards.
-+- `review/after/`: full-resolution lossless PNG captures, measurements, and command logs.
-+- `review/changes.patch`: text-code diff; font binaries and screenshot evidence are included separately in the branch.
-+- [REFRESH_REVISION_2.md](REFRESH_REVISION_2.md): concrete corrections after owner feedback.
-+- [design-qa.md](../design-qa.md): comparison and review status.
- 
--Comparison boards are in `review/comparisons/`. Source/implementation screenshots were opened and compared, including focused hero, gallery, Services and form details. Corrections included moving desktop hero copy toward the photo's upper edge, scaling the serif headline, lengthening the motif panel, reducing desktop Services photo-stage whitespace, and completing menu/field focus states. The image capture waits for decoding/reveals to avoid false blank frames in full-page evidence.
-+## Main code files
- 
--Intentional differences from the concept are recorded in [the audit](REFRESH_AUDIT.md): real photos, full founder image, six curated Home frames, existing headline/copy, real pricing and full terms, actual category-free portfolio, original colour work, and a functional enquiry form.
-+`src/public.css` owns the visual system. `src/layout.ts`, `src/pages.ts` and `src/pages-more.ts` implement the five page compositions. `src/fonts.css` and `public/fonts/` provide licensed self-hosted type. `src/config.ts` owns identity and pricing. `src/navigation.ts`, `src/contact-form.ts` and `src/lightbox.ts` retain accessible interactions, recovery and submission handling. The Vite/TypeScript/static-document architecture, Supabase store/auth/composition contracts, page paths, canonicals and SEO remain intact.
- 
--## Verification
-+## Functional verification
- 
--| Command/check | Result |
--|---|---|
--| `npm run typecheck` | Passed, exit 0 |
--| `npm run build` | Passed, exit 0 |
--| `npm run test` | 21 browser tests passed, exit 0 |
--| `npm run verify:controls` | 12 interaction tests passed, exit 0 |
--| `npm run verify` | 77/77 public/admin-gate assertions passed, exit 0 |
--| `node tools/verify-admin-panel.mjs` | 15/15 layout/markup probes passed, exit 0 |
--| `node tools/verify-admin-upload.mjs` | 8/8 available image-resize/layout probes passed, exit 0 |
--| Final screenshot measurements | 35 route/viewport captures; no overflow, broken media or page exceptions |
-+The final command transcript is `review/TEST_TRANSCRIPT.txt`.
- 
--Transcripts are saved under `review/after/`. The baseline had a passing build and 80 browser checks, but no `test` or `verify:controls` script; the added suite now verifies the handoff's requirements. The existing visual gate's old Archivo wordmark assertions were replaced with supplied-wordmark checks; gallery/order/pricing/route assertions were retained. The final gate has 77 assertions because four old wordmark checks became one meaningful SVG check.
-+- Typecheck and production build passed.
-+- `npm test`: 21 browser tests passed, covering all five routes across seven widths, media/heading/SEO integrity, real pinned sources, exact gallery order, pricing, reduced motion, signed-out admin gate and primary interactions.
-+- `npm run verify:controls`: 12 interaction tests passed, including full-screen menu focus trap/return and dismissal, lightbox keys/focus, package preselection, draft reload/rotation, mocked success/error/retry, honeypot and duplicate-send protection, skip links and legacy routes.
-+- `npm run verify`: 77/77 existing public/admin-gate checks passed with visual assertions updated for the approved reference treatment.
-+- Admin panel probe: 15/15 available markup/layout checks; admin upload probe: 8/8 available resize/layout checks.
-+- Final screenshot set: 35 route/viewport captures, no horizontal overflow, broken media or page exceptions.
- 
--Enquiry tests intercept Formspree locally and cover required fields, email validation, honeypot, duplicate-send protection, error/retry, success clearing, package preselection and reload/rotation recovery. No test enquiry was sent to the real inbox. Drawer and lightbox tests cover focus trap/return, Escape, outside dismissal and next/previous. Tests include legacy URLs and skip links. Public checks cover a single H1, image alt/media, reduced motion, canonical/OG/JSON-LD and no public telephone links.
-+## Remaining review limits
- 
--## Performance sanity check
-+The new renders are presented for owner visual review; they are not described as approved or pixel-identical. The exact original concept font file was not supplied; Bodoni Moda is the revised match. Supplied SVG arc artwork differs in texture from the raster mockup. Real pinned photographs, the authentic photographer's full environmental portrait, six curated Home images and full package details intentionally differ from illustrative concept content.
- 
--Ten unthrottled Chromium observations (five routes × 390/1440) recorded **CLS 0** during the first two seconds and no external resource hosts. Details are in `review/after/performance.json`. This is a local sanity check, not a field benchmark or Lighthouse score. Public images retain WebP/JPEG derivative selection and lazy loading; the hero remains eager/high priority. Fonts are local and preloaded selectively. The only new dependency is development-only browser test tooling.
-+Live Google authentication, authenticated database writes, physical iOS Safari and real inbox delivery were not exercised. Form tests intercept Formspree locally and do not send test enquiries to the live inbox. Admin probes do not prove authenticated publishing. Local performance measurements are recorded in `review/after/performance.json`; they are not field benchmarks.
- 
--## Practical limits and owner review
--
--- Live Google authentication, authenticated admin writes and actual Formspree inbox delivery require the owner's configured test session; they were not exercised. The admin panel probe mounts its existing test markup and the upload probe validates the available browser resize pipeline. They do not prove an end-to-end authenticated publish.
--- Native iOS Safari/safe-area behaviour needs a physical device check; browser emulation and landscape draft recovery passed.
--- The supplied SVG wordmark uses editable text/fallback type. Outlined logo masters and an SH favicon remain future owner/design decisions; the existing favicon is retained.
--- The Home headline remains “Timeless Portraiture.” The proposed “Portraits worth keeping.” is available as an explicit later copy change.
--- Review the serif, real image crops, colour/monochrome balance, logo and footer. No merge or deployment has been performed.
--
--## Local review
--
--From the repository root:
-+## Run locally
- 
- ```bash
- npm ci
-@@ -66,8 +57,6 @@ npm run build
- npm run preview
- ```
- 
--Open `http://127.0.0.1:4173/`, then the Portfolio, About, Services and Contact links. For development use `npm run dev`. To inspect the screenshot gallery in a browser, serve the repository with `python -m http.server 8080` and open `http://127.0.0.1:8080/review/index.html`.
--
--For browser tests, use installed Chromium at `/usr/bin/chromium`, or set `CHROME_BIN` to your local Chrome/Chromium executable. Run `npm test` and `npm run verify:controls`. `node tools/review/verify-legacy.mjs` starts an isolated Vite preview plus Chrome CDP and runs the existing probes. `node tools/review/capture.mjs` regenerates all screenshots; it uses a separate local port. `python tools/review/package.py` regenerates the portable review boards when Pillow and the extracted design reference are available.
-+Open `http://127.0.0.1:4173/`. For the screenshot viewer, serve the repository using `python -m http.server 8080` and open `http://127.0.0.1:8080/review/index.html`. Browser tests use `/usr/bin/chromium`; set `CHROME_BIN` for another Chrome/Chromium installation.
- 
--The text-code diff is in `review/changes.patch`; licensed font binaries and screenshot evidence are included in the branch alongside it. Work is preserved in the development branch. **Awaiting owner approval before merge or publication.**
-+No merge, production push, hosting change or deployment has occurred. **Awaiting owner review of this revision.**
-diff --git a/docs/REFRESH_REVISION_2.md b/docs/REFRESH_REVISION_2.md
-new file mode 100644
-index 0000000..99932ed
---- /dev/null
-+++ b/docs/REFRESH_REVISION_2.md
-@@ -0,0 +1,27 @@
-+# Revision 2 — correcting the mockup mismatch
++## Revision 3 — artwork correction
 +
-+The owner rejected the first build's visual fidelity. That feedback supersedes the first report's acceptance claim. The first build remains available at commit `343997b`; this revision stays on `design/editorial-brand-refresh`.
++The owner rejected the revision 2 artwork. The flat SVG approximation has now been replaced with two generated production assets reconstructed from the primary mockup: a vertical split-circle/arc composition and a separate horizontal mobile band. These reproduce the distressed ink treatment and asymmetric arc arrangement. The tall asset keeps its complete silhouette; mobile no longer crops the vertical tile. Navigation and footer use the companion horizontal artwork. Generated artwork is decorative only; all studio photographs remain real. See `REFRESH_ARTWORK_REVISION.md` for provenance and limits.
 +
-+## What changed
-+
-+- Replaced the original Home wording and two-line layout with the reference's **“Portraits / worth / keeping.”** composition and supporting copy.
-+- Replaced EB Garamond with licensed, self-hosted **Bodoni Moda** for the reference's stronger contrast and sharper editorial shapes.
-+- Corrected desktop hero tracks, headline scale, photograph height, motif height and copy rhythm. Increased the header, interface type and booking controls to the selected reference’s relative scale; corrected the mobile Portfolio heading and feature-photo height. The real pinned hero remains `27-img-0297.jpg`.
-+- Changed selected work to four monochrome tiles across desktop. All six curated images remain; the final pair spans two tracks. Mobile uses two columns. Original colour remains available through hover/lightbox; file bytes are intact.
-+- Changed visible navigation to **Work / About / Sessions / Contact**. The real document routes and accessible Home link remain intact.
-+- Rebuilt Portfolio around the reference introduction and feature photo. On mobile, the heading leads straight into the photograph and its caption. The underlying 30-frame gallery, actual order, packer and lightbox remain intact.
-+- Rebuilt About as **“Behind the lens.”** introduction, actual photographer photo, separate landscape/biography section, and three brand-value blocks. No client is presented as the photographer.
-+- Rebuilt Services around **“Sessions, with intention.”**, a curated real portrait, light bordered package cards, restrained recommendation styling, and monochrome card photography. Social remains R3,500; all deliverables and terms remain unchanged.
-+- Rebuilt Contact with the mockup's three-line invitation, plain white form, supporting photograph and editorial contact details. The complete family frame is preserved rather than cutting off faces.
-+- Replaced the white dropdown with the reference's **dark full-screen mobile navigation**, keeping focus trap/return, Escape, backdrop dismissal and desktop teardown.
-+- Replaced the oversized legacy closing treatment with a smaller editorial booking band and the **“People. Places. Stories.”** footer.
-+
-+## Evidence and acceptance
-+
-+The updated `review/index.html` shows current before/after pages and source comparisons. Full final captures cover all five pages at 320/390/430/768/1024/1440/1920. `review/comparisons/home-primary-reference.jpg` is the combined selected-reference/implementation board.
-+
-+Automated checks validate functionality and responsive integrity; they do not grant visual approval. The revised screenshots are submitted for the owner's assessment. No merge or deployment is authorized by this report.
-+
-+## Remaining factual/asset constraints
-+
-+Real photographs must differ from the generated concept faces. The authentic photographer's pinned environmental portrait remains intact. Real business hours/location, all package benefits and terms, and all six curated Home images take precedence over abbreviated or illustrative prototype content. No Journal route, fake testimonials, telephone link or fabricated business claims are introduced.
-diff --git a/index.html b/index.html
-index a92204a..b72d120 100644
---- a/index.html
-+++ b/index.html
-@@ -13,7 +13,7 @@
-     <title>Shutterhaus Visuals | photography in Gauteng</title>
-     <meta name="description" content="Portraits, couples, families and social content, shot on location across Gauteng by Alwin Newman. Shutterhaus Visuals, Pretoria." />
+ ## Revision 2
  
--    <link rel="preload" href="./fonts/eb-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-+    <link rel="preload" href="./fonts/bodoni-moda-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-     <link rel="preload" href="./fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+ - Home now uses **“Portraits / worth / keeping.”**, a sharper self-hosted Bodoni Moda display face, the reference's tall split photograph/motif composition, four-up monochrome work tiles on desktop and the mobile image → copy → booking → motif sequence.
+@@ -11,7 +15,7 @@ The owner rejected the first build's visual match. **This revised package supers
+ - About now has **“Behind the lens.”**, the pinned real photographer photograph, a separate landscape/biography composition and three value blocks.
+ - Services now has **“Sessions, with intention.”**, a curated real portrait, light bordered cards, monochrome image crops and restrained recommendation styling.
+ - Contact now has **“Let's make / something / worth keeping.”**, a plain white form, supporting photography and the reference's editorial contact details.
+-- The header uses **Work / About / Sessions / Contact**. Mobile navigation is a dark full-screen panel with large serif links and the supplied motif.
++- The header uses **Work / About / Sessions / Contact**. Mobile navigation is a dark full-screen panel with large serif links and the textured reference-derived motif.
+ - The closing elements use a compact booking band and **“People. Places. Stories.”** footer.
  
-     <meta property="og:title" content="Shutterhaus Visuals | photography in Gauteng" />
-diff --git a/portfolio.html b/portfolio.html
-index a1e34b3..2f74b66 100644
---- a/portfolio.html
-+++ b/portfolio.html
-@@ -13,7 +13,7 @@
-     <title>Portfolio | Shutterhaus Visuals</title>
-     <meta name="description" content="Selected portrait and place photography from sessions shot around Gauteng. Portraits, couples, families and social content." />
- 
--    <link rel="preload" href="./fonts/eb-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-+    <link rel="preload" href="./fonts/bodoni-moda-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-     <link rel="preload" href="./fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
- 
-     <meta property="og:title" content="Portfolio | Shutterhaus Visuals" />
-diff --git a/public/fonts/README.md b/public/fonts/README.md
-index 0551b9a..cb64670 100644
---- a/public/fonts/README.md
-+++ b/public/fonts/README.md
-@@ -1,12 +1,12 @@
- # Self-hosted type
- 
--Latin WOFF2 subsets obtained from the public Fontsource npm distributions on 2026-10-14:
-+Latin WOFF2 subsets from public Fontsource distributions:
- 
--- `@fontsource/eb-garamond`: regular 400, display text.
-+- `@fontsource/bodoni-moda`: regular 400, high-contrast display serif selected for the revised reference match.
- - `@fontsource/inter`: regular 400, medium 500, semibold 600, interface text.
- - `@fontsource/archivo-black`: regular 400, existing admin identity.
- 
--Upstream sources: https://fontsource.org/fonts/eb-garamond, https://fontsource.org/fonts/inter, https://fontsource.org/fonts/archivo-black.
--The unmodified SIL Open Font License for each family is included alongside the files.
--Only EB Garamond and Inter regular are preloaded on the public pages; other weights load on use.
--The supplied SVG wordmark remains the package's editable-text artwork, with its own sans-serif fallback. It is not an outlined logo master.
-+The unmodified SIL Open Font License for each family is included alongside its files.
-+Bodoni Moda and Inter regular are preloaded on public pages; other faces load only when used.
-+The first attempt used EB Garamond, which proved too soft and narrow relative to the selected mockup. That unused font was removed in the revision.
-+The supplied SVG wordmark remains editable-text artwork with its own sans-serif fallback, not an outlined master.
-diff --git a/public/fonts/eb-garamond-LICENSE.txt b/public/fonts/bodoni-moda-LICENSE.txt
-similarity index 95%
-rename from public/fonts/eb-garamond-LICENSE.txt
-rename to public/fonts/bodoni-moda-LICENSE.txt
-index da3ca89..547fad2 100644
---- a/public/fonts/eb-garamond-LICENSE.txt
-+++ b/public/fonts/bodoni-moda-LICENSE.txt
-@@ -1,4 +1,4 @@
--Copyright 2017 The EB Garamond Project Authors (https://github.com/octaviopardo/EBGaramond12) EBGaramond-Italic[wght].ttf: Copyright 2017 The EB Garamond Project Authors (https://github.com/octaviopardo/EBGaramond12)
-+Copyright 2020 The Bodoni Moda Project Authors (https://github.com/indestructible-type/Bodoni) BodoniModa-Italic[opsz,wght].ttf: Copyright 2020 The Bodoni Moda Project Authors (https://github.com/indestructible-type/Bodoni)
- 
- This Font Software is licensed under the SIL Open Font License, Version 1.1.
- This license is copied below, and is also available with a FAQ at:
-diff --git a/services.html b/services.html
-index e3b69be..30391a0 100644
---- a/services.html
-+++ b/services.html
-@@ -13,7 +13,7 @@
-     <title>Services &amp; pricing | Shutterhaus Visuals</title>
-     <meta name="description" content="Photography packages and pricing for portraits, couples, families and social content, shot on location across Gauteng, South Africa." />
- 
--    <link rel="preload" href="./fonts/eb-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-+    <link rel="preload" href="./fonts/bodoni-moda-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-     <link rel="preload" href="./fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
- 
-     <meta property="og:title" content="Services &amp; pricing | Shutterhaus Visuals" />
-diff --git a/src/config.ts b/src/config.ts
-index a938da5..afc0ab4 100644
---- a/src/config.ts
-+++ b/src/config.ts
-@@ -115,9 +115,9 @@ export const SITE: SiteConfig = {
-     // The route is `portfolio`; `photo` is the legacy alias kept working in
-     // main.ts for old links. Using the real id here means the nav href and the
-     // active-state check agree instead of relying on the alias.
--    { id: "portfolio", label: "Portfolio" },
-+    { id: "portfolio", label: "Work" },
-     { id: "about", label: "About" },
--    { id: "services", label: "Services" },
-+    { id: "services", label: "Sessions" },
-     { id: "contact", label: "Contact" },
-   ],
- 
-@@ -282,8 +282,8 @@ export const SITE: SiteConfig = {
-    */
-   home: {
-     eyebrow: "Photography is poetry.",
--    heading: "Timeless Portraiture",
--    lede: "Real people. Honest moments. Portraits that look beyond the now.",
-+    heading: "Portraits worth keeping.",
-+    lede: "Natural, honest and timeless photography for portraits, couples, families and social content across Gauteng.",
-     cta: "View portfolio",
-     est: "2019",
-     tags: ["Portraits", "Couples", "Families"],
-@@ -364,7 +364,7 @@ export const SITE: SiteConfig = {
-   // the lower-left for the white headline. Chosen from a side-by-side of all
-   // six landscape frames cropped to the hero ratio.
-   heroPhoto: "27-img-0297.jpg",
--  services: { eyebrow: "Services", heading: "Capture What Matters.", cta: "View packages" },
-+  services: { eyebrow: "Services", heading: "Sessions, with intention.", cta: "View packages" },
- };
- 
- /** Fonts loaded in index.html. Change these to re-skin the type. */
-diff --git a/src/fonts.css b/src/fonts.css
-index 4942f97..15b2482 100644
---- a/src/fonts.css
-+++ b/src/fonts.css
-@@ -1,6 +1,6 @@
- /* Self-hosted Latin subsets. SIL Open Font Licenses in public/fonts. */
--@font-face{font-family:'EB Garamond';src:url('/fonts/eb-garamond-latin-400-normal.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
- @font-face{font-family:Inter;src:url('/fonts/inter-latin-400-normal.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
- @font-face{font-family:Inter;src:url('/fonts/inter-latin-500-normal.woff2') format('woff2');font-style:normal;font-weight:500;font-display:swap}
- @font-face{font-family:Inter;src:url('/fonts/inter-latin-600-normal.woff2') format('woff2');font-style:normal;font-weight:600;font-display:swap}
- @font-face{font-family:'Archivo Black';src:url('/fonts/archivo-black-latin-400-normal.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
-+@font-face{font-family:'Bodoni Moda';src:url('/fonts/bodoni-moda-latin-400-normal.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+ Social remains **R3,500**. Starter R800, Essential R2,000 and Signature R2,500 are unchanged. All benefits, add-ons, deposits, terms, appointment hours and contact details remain data-driven. Real photography and original source bytes are preserved.
 diff --git a/src/layout.ts b/src/layout.ts
-index bd4a679..d93f227 100644
+index d93f227..5dc18e2 100644
 --- a/src/layout.ts
 +++ b/src/layout.ts
-@@ -129,7 +129,7 @@ export function motif(className = ""): string {
+@@ -125,11 +125,11 @@ export function renderShell(active: string, body: string): string {
+ }
+ 
+ export function motif(className = ""): string {
+-  return `<aside class="brand-motif ${className}" aria-hidden="true"><img src="./brand/arc-grid.svg" width="320" height="480" alt="" /><p>People<br>Places<br>Stories</p></aside>`;
++  return `<aside class="brand-motif ${className}" aria-hidden="true"><picture><source media="(max-width: 759px)" srcset="./brand/editorial-arcs-horizontal.webp" /><img src="./brand/editorial-arcs-vertical.webp" width="378" height="1040" alt="" /></picture><p>People<br>Places<br>Stories</p></aside>`;
  }
  
  function footer(): string {
--  return `<footer class="site-footer"><a class="footer-brand" href="./" aria-label="Shutterhaus Visuals home"><img src="./brand/wordmark-primary.svg" width="210" height="35" alt="SHUTTERHAUS VISUALS" /></a><p>${escapeHtml(SITE.contact.location)}</p><div>${SITE.social.map(s => `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.label)}</a>`).join("")}</div><small>© ${new Date().getFullYear()} SHUTTERHAUS VISUALS</small></footer>`;
-+  return `<footer class="site-footer"><strong>People. Places. Stories.</strong><small>© ${new Date().getFullYear()} SHUTTERHAUS VISUALS · ${escapeHtml(SITE.contact.location)}</small><div>${SITE.social.map(s => `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.label)}</a>`).join("")}</div><img src="./brand/arc-tile.svg" width="52" height="52" alt="" /></footer>`;
+-  return `<footer class="site-footer"><strong>People. Places. Stories.</strong><small>© ${new Date().getFullYear()} SHUTTERHAUS VISUALS · ${escapeHtml(SITE.contact.location)}</small><div>${SITE.social.map(s => `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.label)}</a>`).join("")}</div><img src="./brand/arc-tile.svg" width="52" height="52" alt="" /></footer>`;
++  return `<footer class="site-footer"><strong>People. Places. Stories.</strong><small>© ${new Date().getFullYear()} SHUTTERHAUS VISUALS · ${escapeHtml(SITE.contact.location)}</small><div>${SITE.social.map(s => `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.label)}</a>`).join("")}</div><img src="./brand/editorial-arcs-horizontal.webp" width="104" height="40" alt="" /></footer>`;
  }
  
  export { FONTS };
-diff --git a/src/navigation.ts b/src/navigation.ts
-index 3655a08..a699124 100644
---- a/src/navigation.ts
-+++ b/src/navigation.ts
-@@ -34,6 +34,7 @@ export function wireNavigation(): () => void {
-   const toggle = () => set(!opened);
-   const navigate = (event: MouseEvent) => {
-     if ((event.target as Element).closest('a')) set(false, false);
-+    else if (event.target === nav) set(false);
-   };
-   const keys = (event: KeyboardEvent) => {
-     if (!opened) return;
-diff --git a/src/pages-more.ts b/src/pages-more.ts
-index 52b378f..257e5e2 100644
---- a/src/pages-more.ts
-+++ b/src/pages-more.ts
-@@ -1,9 +1,7 @@
- import { SITE } from "./config";
--import { WHATSAPP_PATH } from "./layout";
- import { escapeHtml, motif } from "./layout";
- import { DEMO_PHOTOS } from "./demo";
--import { homeBand } from "./pages";
--import { pictureFor, bestDerivative } from "./pages";
-+import { editorialFigure, pictureFor, bestDerivative } from "./pages";
- import type { Photo } from "./types";
- import type { PricingTier } from "./config";
- 
-@@ -34,18 +32,16 @@ export function aboutPage(photos: Photo[]): string {
-        <figcaption class="about__caption">Alwin Newman / Photographer</figcaption></figure>`
-     : `<div class="about__fig about__fig--none" aria-hidden="true"></div>`;
- 
-+  const landscape = photos.find(p => p.album === "landscape") ?? DEMO_PHOTOS.find(p => p.album === "landscape");
-   return `<section class="page about">
--    <div class="about__body">
--      <p class="eyebrow">${escapeHtml(a.eyebrow)}</p>
--      <h1 class="about__h">${escapeHtml(a.heading)}</h1>
--      <div class="prose about__prose">
--        ${a.body.map((para) => `<p class="about__p">${escapeHtml(para)}</p>`).join("")}
--      </div>
--      <a class="cta about__cta" href="./contact.html">${escapeHtml(a.cta)}</a>
--    </div>
--    ${fig}
--    ${motif("about__motif")}
--    ${homeBand()}
-+    <header class="editorial-intro about-intro">
-+      <div class="editorial-intro__copy"><p class="eyebrow eyebrow--rule">About SHUTTERHAUS</p><h1 class="about__h">Behind<br>the lens.</h1><p class="intro-copy">Independent photography from Gauteng. Real connection, careful light, meaningful photographs.</p><a class="cta" href="./contact.html">Let's work together <span aria-hidden="true">→</span></a></div>
-+      ${fig}${motif("about__motif")}
-+    </header>
-+    <section class="about-story">${editorialFigure(landscape, "about-story__photo")}
-+      <div class="about-story__copy"><p class="eyebrow">Founder / Photographer</p><h2>Alwin Newman.</h2><div class="prose about__prose">${a.body.map(para => `<p>${escapeHtml(para)}</p>`).join("")}</div><a class="cta cta--line" href="./contact.html">${escapeHtml(a.cta)} <span aria-hidden="true">→</span></a></div>
-+    </section>
-+    <section class="about-values"><div><h2>Natural.</h2><p>Unforced moments. True to the person.</p></div><div><h2>Honest.</h2><p>Careful, respectful, thoughtful photography.</p></div><div><h2>Timeless.</h2><p>Images that still feel important years later.</p></div></section>
-   </section>`;
- }
- 
-@@ -83,7 +79,7 @@ export function servicesPage(photos: Photo[] = []): string {
-     ${ph ? `<figure class="pkg__fig" style="--focal:${escapeHtml(t.focal ?? "50% 50%")};--ar:${escapeHtml(t.ar ?? "3 / 2")}"><picture>${pictureFor(ph.url, "(max-width: 760px) 100vw, 33vw", ph.width)}
-         <img src="${escapeHtml(bestDerivative(ph.url, "jpg", ph.width))}" alt="${escapeHtml(ph.alt || ph.filename || "")}"
-              loading="lazy" decoding="async" /></picture></figure>` : ""}
--    <p class="pkg__num">${String(i + 1).padStart(2, "0")}.${
-+    <p class="pkg__num"><span>${String(i + 1).padStart(2, "0")} / Session</span><span>${escapeHtml(t.spec.split(" · ")[0])}</span>${
-       // Real text, not a CSS ::before. Generated content is invisible to screen
-       // readers and to anything reading the DOM, so "most popular" — the one
-       // thing that steers a purchase on this page — was not in the document at
-@@ -105,12 +101,12 @@ export function servicesPage(photos: Photo[] = []): string {
-   return `<section class="page services">
-     <header class="shead">
-       <div class="shead__col">
--        <p class="eyebrow">${escapeHtml(SITE.services.eyebrow)}</p>
--        <h1 class="shead__h">${escapeHtml(SITE.services.heading)}</h1>
-+        <p class="eyebrow eyebrow--rule">Sessions / Services</p>
-+        <h1 class="shead__h">Sessions,<br>with intention.</h1>
-         <p class="shead__p">${escapeHtml(p.intro)}</p>
-         <a class="cta" href="./contact.html">Make an enquiry <span aria-hidden="true">→</span></a>
-       </div>
--      ${(() => { const shot = shotFor(p.tiers[2], 2); return shot ? `<figure class="shead__fig"><picture>${pictureFor(shot.url, "(max-width: 759px) 100vw, 45vw", shot.width)}<img src="${escapeHtml(bestDerivative(shot.url, "jpg", shot.width))}" alt="${escapeHtml(shot.alt || "")}" loading="eager" decoding="async" /></picture></figure>` : ""; })()}
-+      ${(() => { const shot = photos.find(photo => photo.filename === SITE.homeStrip[0]) ?? shotFor(p.tiers[1], 1); return shot ? `<figure class="shead__fig"><picture>${pictureFor(shot.url, "(max-width: 759px) 100vw, 45vw", shot.width)}<img src="${escapeHtml(bestDerivative(shot.url, "jpg", shot.width))}" alt="${escapeHtml(shot.alt || "")}" loading="eager" decoding="async" /></picture></figure>` : ""; })()}
-       ${motif()}
-     </header>
-     <div class="section-label"><h2>Choose your session.</h2><span>Packages / ZAR</span></div>
-@@ -142,7 +138,6 @@ export function servicesPage(photos: Photo[] = []): string {
-         ${p.terms.map((t) => `<li>${escapeHtml(t)}</li>`).join("")}
-       </ul>
-     </div>
--${homeBand()}
-   </section>`;
- }
- 
-@@ -206,13 +201,12 @@ export function contactPage(_photos: Photo[] = []): string {
-   return `<section class="page contact">
-     <div class="contact__col">
-       <div class="contact__main">
--      <p class="eyebrow">Get in touch</p>
--      <h1 class="contact__h">Let's Create Something Beautiful.</h1>
--      <p class="contact__p">${escapeHtml(SITE.blurb)}</p>
-+      <p class="eyebrow eyebrow--rule">Get in touch / Gauteng, SA</p>
-+      <h1 class="contact__h">Let's make<br>something<br>worth keeping.</h1>
-+      <p class="contact__p">Whether it’s a portrait session, a couples shoot, a family story or social content, tell me what you have in mind.</p>
- 
-       ${(() => { const shot = DEMO_PHOTOS.find(p => p.filename === SITE.pricing.tiers[2]?.photo); return shot ? `<figure class="contact__photo"><picture>${pictureFor(shot.url, "(max-width: 759px) 100vw, 35vw", shot.width)}<img src="${escapeHtml(bestDerivative(shot.url, "jpg", shot.width))}" width="${shot.width}" height="${shot.height}" alt="${escapeHtml(shot.alt || "")}" loading="lazy" decoding="async" /></picture></figure>` : ""; })()}
--      <div class="contact__details"><a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a><p>${escapeHtml(c.location)}<br>${escapeHtml(c.hours)}</p></div>
--      ${motif("contact__motif")}
-+      <div class="contact__details"><div><p class="eyebrow">Email</p><a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></div><div><p class="eyebrow">Based in</p><p>${escapeHtml(c.location)}</p><p class="eyebrow">By appointment</p><p>${escapeHtml(c.hours)}</p><a href="${escapeHtml(wa)}" target="_blank" rel="noopener">WhatsApp</a></div></div>
-       </div>
-       <div class="contact__form-panel"><p class="eyebrow eyebrow--rule">Your enquiry</p>
-       <form class="cform" id="cform" novalidate>
-@@ -231,46 +225,7 @@ export function contactPage(_photos: Photo[] = []): string {
-       </form>
-       </div>
- 
--      <aside class="contact__aside">
--      <ul class="contact__list">
--        <li>${icon("pin")}<span>${escapeHtml(c.location)}</span></li>
--        <li>${icon("mail")}<a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></li>
--        ${/* Phone row removed 2026-10-03 at Alwin's instruction: not taking
--           calls for now. It was a `tel:` link, so on a phone it raised a dial
--           prompt. WhatsApp below is the only direct channel. */""}
--        <li>${icon("whatsapp")}<a href="${escapeHtml(wa)}" target="_blank" rel="noopener">WhatsApp</a></li>
--      </ul>
--      <p class="contact__hours dim">${escapeHtml(c.hours)}</p>
--      </aside>
-+
-     </div>
-   </section>`;
- }
--
--/**
-- * Inline glyphs for the contact detail list. Decorative, so aria-hidden.
-- *
-- * The pin, mail and phone paths are outline shapes and draw correctly against the
-- * stroke rules in `.cico`. The old WhatsApp path was a hand-drawn approximation
-- * ("M4 4h16v16H4z M9 9c0 4 2 6 6 6 ...") that read as a plain square with a
-- * squiggle inside it — it was not recognisable as WhatsApp at 18px, so it looked
-- * like a rendering fault rather than an icon.
-- *
-- * It is now the real mark, drawn as a FILLED silhouette, which is the only way a
-- * WhatsApp logo stays legible at 18px. `.cico--fill` turns off the stroke and
-- * fills instead; the outline treatment would reduce it to a tangle of hairlines.
-- */
--function icon(id: string): string {
--  const outline: Record<string, string> = {
--    pin: "M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z M12 12a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z",
--    mail: "M3 6h18v12H3z M3 7l9 6 9-6",
--    phone: "M6 3h4l2 5-3 2a12 12 0 0 0 5 5l2-3 5 2v4a4 4 0 0 1-2 2A17 17 0 0 1 4 5a4 4 0 0 1 2-2Z",
--  };
--  // WhatsApp is the one glyph that is NOT an outline shape: it is a stroke
--  // bubble with the handset filled in the background colour, which is how Alwin
--  // preferred it. Rendered here at the contact list's own 24x24 with the same
--  // path layout.ts uses, so the two cannot drift apart again.
--  if (id === "whatsapp") {
--    return `<svg class="cico cico--wa" viewBox="0 0 20 20" aria-hidden="true" focusable="false">${WHATSAPP_PATH}</svg>`;
--  }
--  return `<svg class="cico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${outline[id] ?? ""}" /></svg>`;
--}
-diff --git a/src/pages.ts b/src/pages.ts
-index 0c87a4a..6a22418 100644
---- a/src/pages.ts
-+++ b/src/pages.ts
-@@ -492,6 +492,11 @@ function filterBar(photos: Photo[]): string {
-  * 30 deliberately chosen ones there is nothing left for it to select between, and
-  * a filter over hand-picked work hides work on purpose.
-  */
-+export function editorialFigure(photo: Photo | undefined, className: string, eager = false): string {
-+  if (!photo) return "";
-+  return `<figure class="${className}"><picture>${pictureFor(photo.url, "(max-width: 759px) 100vw, 44vw", photo.width)}<img src="${escapeHtml(bestDerivative(photo.url, "webp", photo.width))}" alt="${escapeHtml(photo.alt || photo.filename || "")}" width="${photo.width || 1200}" height="${photo.height || 1600}" loading="${eager ? "eager" : "lazy"}" decoding="async" /></picture></figure>`;
-+}
-+
- export function portfolioPage(photos: Photo[]): string {
-   if (!photos.length) return emptyGallery();
- 
-@@ -571,11 +576,16 @@ export function portfolioPage(photos: Photo[]): string {
-   }
- 
-   return `<section class="page portfolio">
--    <header class="phead">
--      <p class="eyebrow">${shown.length} photographs · Gauteng</p>
--      <h1 class="phead__h">Selected stories.</h1>
--      <p class="phead__p">Portraits and places, shot around Gauteng.</p>
-+    <header class="phead editorial-intro">
-+      <div class="editorial-intro__copy"><p class="eyebrow eyebrow--rule">Portfolio / Work</p>
-+      <h1 class="phead__h">Selected<br>stories.</h1>
-+      <p class="phead__p">Real people, real moments. Work with a focus on character, light and environment.</p>
-+      <a class="cta" href="./contact.html">Enquire about a session <span aria-hidden="true">→</span></a></div>
-+      ${editorialFigure(ordered[0], "editorial-intro__photo portfolio-feature", true)}
-+      ${motif()}
-+      <div class="portfolio-feature__caption"><h2>${escapeHtml(categoryOf(ordered[0]) === "portrait" ? "Portraits" : titleCase(categoryOf(ordered[0])))}</h2><p>Real people, real moments. Work with a focus on character, light and environment.</p></div>
-     </header>
-+    <div class="section-label"><h2>Our work.</h2><span>${shown.length} photographs / Gauteng</span></div>
-     <div class="pf-rows" style="--pf-cols:${cols}">${wall}</div>
-         ${pfBand()}
-       </section>`;
-@@ -643,12 +653,6 @@ export function emptyGallery(): string {
-  * custom property — a mismatch between the two is what left all 8 frames in
-  * one column at 390px.
-  */
--function stripCols(frameCount: number): number {
--  // Six curated frames: three columns on desktop, two on smaller screens.
--  // Continue using the existing height-aware packer and live image selection.
--  const want = innerWidth >= 1001 ? 3 : 2;
--  return Math.min(want, frameCount);
--}
- 
- /**
-  * The closing band: services pitch, the entry price, and one contact line.
-@@ -772,7 +776,7 @@ export function homePage(photos: Photo[], cols: number): string {
-         <img src="${escapeHtml(bestDerivative(hero.url, "webp", hero.width))}"
-              alt="${escapeHtml(hero.alt || hero.filename || "")}"
-              loading="eager" decoding="async" fetchpriority="high"
--             width="${hero.width ?? 1600}" height="${hero.height ?? 1067}" /></picture><figcaption>${escapeHtml(SITE.contact.location)} <span>Portraiture / Selected frame</span></figcaption>
-+             width="${hero.width ?? 1600}" height="${hero.height ?? 1067}" /></picture>
-       </figure>`
-     : "";
- 
-@@ -780,38 +784,21 @@ export function homePage(photos: Photo[], cols: number): string {
-     <div class="hero">
-       <div class="hero__body">
-         <p class="eyebrow eyebrow--rule">Independent photography / Gauteng, SA</p>
--        <h1 class="hero__h">${escapeHtml(h.heading)}</h1>
-+        <h1 class="hero__h">Portraits<br>worth<br>keeping.</h1>
-         <p class="hero__lede">${escapeHtml(h.lede)}</p>
--        <div class="hero__actions"><a class="cta cta--btn" href="./contact.html">Book a session <span aria-hidden="true">→</span></a><a class="cta cta--line" href="./portfolio.html">${escapeHtml(h.cta)}</a></div>
-+        <div class="hero__actions"><a class="cta cta--btn" href="./contact.html">Book a session <span aria-hidden="true">→</span></a><a class="cta cta--line" href="./portfolio.html">View work <span aria-hidden="true">→</span></a></div>
-       </div>
-       ${heroFig}
-       ${motif("hero__motif")}
--      <div class="hero__meta">
--        <span>Est. ${escapeHtml(h.est)} | ${escapeHtml(SITE.contact.location)}</span>
--        <span class="hero__meta-tags">${h.tags.map(escapeHtml).join(" / ")}</span>
--        <span class="hero__meta-cue" aria-hidden="true">Scroll ↓</span>
--      </div>
-+
-     </div>
- 
-     ${
-       strip.length
-         ? (() => {
--            const columns = packByHeight(strip, stripCols(strip.length));
-             return `<section class="hstrip">
--            <div class="hstrip__head"><span>Selected work</span><span>${String(strip.length).padStart(2, "0")} frames</span></div>
--            <div class="hstrip__grid" style="--strip-cols:${stripCols(strip.length)}">${columns
--              .map(
--                (col) =>
--                  `<div class="hstrip__col">${col
--                    // No number printed on the frame. Alwin, 2026-10-01: "I dont
--                    // like the number on my photos". The strip does not need
--                    // numbering to read as a curated set, and the digit sitting in
--                    // the corner of every photograph was the thing he objected to.
--                    .map((p) => `<div class="hstrip__item" role="button" tabindex="0" aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">${figure(p, -1)}</div>`)
--                    .join("")}</div>`,
--              )
--              .join("")}</div>
--            <a class="cta cta--line" href="./portfolio.html">See the full portfolio</a>
-+            <div class="hstrip__head"><span>Selected work</span><span class="hstrip__subjects">Portraits / Couples / Families / Social</span><a href="./portfolio.html">View all <span aria-hidden="true">→</span></a></div>
-+            <div class="hstrip__grid">${strip.map(p => `<div class="hstrip__item" role="button" tabindex="0" aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">${figure(p, -1)}</div>`).join("")}</div>
-           </section>`;
-           })()
-         : ""
 diff --git a/src/public.css b/src/public.css
-index 210c6cd..f921952 100644
+index f921952..bf6a0a6 100644
 --- a/src/public.css
 +++ b/src/public.css
-@@ -1,9 +1,9 @@
- /* Editorial brand refresh. Public entrypoint only; admin keeps styles.css.
-    This replaces editorial.css + makeover.css, rather than extending their cascade. */
--:root{--ink:#111;--paper:#fff;--ivory:#f7f6f3;--grey:#676767;--dim:#676767;--line:#d5d3ce;--pad:clamp(32px,4.2vw,80px);--gut:24px;--head:84px;--font-display:'EB Garamond','Iowan Old Style',Baskerville,Georgia,serif;--font-body:Inter,'Helvetica Neue',Arial,sans-serif;--ease:cubic-bezier(.22,1,.36,1)}
-+:root{--ink:#111;--paper:#fff;--ivory:#f7f6f3;--grey:#676767;--dim:#676767;--line:#d5d3ce;--pad:clamp(32px,4.2vw,80px);--gut:24px;--head:84px;--font-display:'Bodoni Moda',Didot,'Times New Roman',serif;--font-body:Inter,'Helvetica Neue',Arial,sans-serif;--ease:cubic-bezier(.22,1,.36,1)}
- html{scroll-behavior:smooth;scroll-padding-top:100px}
- body{background:var(--ivory);font:400 15px/1.6 var(--font-body);-webkit-font-smoothing:antialiased}
--.shell{max-width:1600px;margin:0 auto;background:var(--paper);min-height:100vh}
-+.shell{max-width:1520px;margin:0 auto;background:var(--paper);min-height:100vh}
- .main{padding:0 var(--pad);min-height:0}
- .page{padding:0;margin:0;max-width:none}
- .page h1,.page h2,.page h3{font-family:var(--font-display);font-weight:400;text-transform:none;letter-spacing:-.045em;line-height:.96;margin:0}
-@@ -16,9 +16,9 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
- .skip-link{position:fixed;top:8px;left:16px;z-index:100;background:var(--ink);color:#fff;padding:12px 20px;transform:translateY(-160%)}
- .skip-link:focus{transform:none}
- .site-header{height:calc(var(--head) + var(--sat));min-height:0;padding:var(--sat) var(--pad) 0;grid-template-columns:minmax(200px,1fr) auto auto;gap:32px;background:#fff;border-bottom:1px solid transparent;position:sticky;top:0;z-index:20}
--.logo{width:280px;min-width:0;margin-left:-18px;display:block;line-height:1;justify-self:start}
-+.logo{width:380px;min-width:0;margin-left:-22px;display:block;line-height:1;justify-self:start}
- .logo img{width:100%;height:auto}
--.site-nav{display:flex;gap:26px;align-items:center;justify-content:center;position:static;width:auto;margin:0;padding:0;transform:none}
-+.site-nav{display:flex;gap:34px;align-items:center;justify-content:center;position:static;width:auto;margin:0;padding:0;transform:none}
- .nav-link{font:500 10px/1.4 var(--font-body);letter-spacing:.14em;text-transform:uppercase;min-height:44px;padding:14px 0;border-bottom:1px solid transparent;color:var(--ink);white-space:nowrap}
- .nav-link:hover,.nav-link.is-active{border-bottom-color:var(--ink);color:var(--ink)}
- .site-social{display:none}
-@@ -31,41 +31,41 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
- .cta--line{background:transparent;color:var(--ink);border:0;border-bottom:1px solid var(--line);padding:14px 0;gap:12px}
- .cta--line:hover{background:transparent;color:var(--grey);border-bottom-color:var(--ink)}
- .header-book{white-space:nowrap;padding:14px 22px}
--.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) minmax(90px,.3fr);gap:24px;margin:44px 0 0;align-items:stretch}
--.hero__body{min-width:0;align-self:start;padding:36px 0}
--.page .hero__h{font-size:clamp(76px,7.7vw,124px);line-height:.91;letter-spacing:-.055em;max-width:8ch;margin:0 0 34px;overflow-wrap:normal;hyphens:none}
--.hero__lede{font-size:15px;line-height:1.7;color:var(--dim);max-width:35ch;margin:0 0 30px;padding-top:25px;position:relative}
-+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1.1fr) minmax(100px,.32fr);gap:18px;margin:52px 0 0;align-items:stretch}
-+.hero__body{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:18px 0}
-+.page .hero__h{font-size:clamp(88px,9vw,144px);line-height:.88;letter-spacing:-.065em;max-width:100%;margin:0 0 30px;overflow-wrap:normal;hyphens:none}
-+.hero__lede{font-size:16px;line-height:1.65;color:var(--dim);max-width:34ch;margin:0 0 28px;padding-top:28px;position:relative}
- .hero__lede:before{content:'';position:absolute;top:0;left:0;width:64px;height:1px;background:var(--ink)}
- .hero__actions{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
- .hero__fig{min-width:0;display:flex;flex-direction:column}
--.hero__fig picture{display:block;height:100%;min-height:520px;max-height:660px;aspect-ratio:4/5;overflow:hidden;background:var(--ivory)}
-+.hero__fig picture{display:block;height:700px;min-height:0;max-height:none;overflow:hidden;background:var(--ivory)}
- .hero__fig img{width:100%;height:100%;object-fit:cover;object-position:70% 0%}
- .hero__fig figcaption{display:flex;justify-content:space-between;gap:12px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding-top:12px;color:var(--grey)}
- .brand-motif{min-width:0;align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
- .brand-motif img{width:100%;height:auto;object-fit:cover}
--.brand-motif p{font-size:9px;line-height:2.4;letter-spacing:.22em;text-transform:uppercase;padding:24px 0 0 18px;border-left:1px solid var(--line);margin:24px 0 30px}
--.hero__motif{padding-top:28px}
--.hero__motif img{height:440px;object-fit:cover}
-+.brand-motif p{font-size:9px;line-height:1.8;letter-spacing:.22em;text-transform:uppercase;padding:4px 0 0 18px;border-left:1px solid #999;margin:16px 0 0;min-height:65px}
-+.hero__motif{padding:0;gap:16px}
-+.hero__motif img{height:615px;flex:1;min-height:0;object-fit:cover}
- .hero__meta{grid-column:1/-1;display:flex;justify-content:space-between;gap:20px;font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--grey);border-top:1px solid var(--line);padding-top:16px}
--.hstrip{padding:60px 0 0}
--.hstrip__head{display:flex;justify-content:space-between;gap:20px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;align-items:center;margin-bottom:22px}
--.hstrip__head:after{content:'';height:1px;flex:1;background:var(--line);order:0}
--.hstrip__head span:last-child{order:1;color:var(--grey)}
--.hstrip__grid{display:grid;grid-template-columns:repeat(var(--strip-cols,2),minmax(0,1fr));gap:var(--gut);margin-bottom:24px}
-+.hstrip{padding:56px 0 0}
-+.hstrip__head{display:flex;justify-content:space-between;gap:24px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;align-items:center;margin-bottom:18px}
-+.hstrip__head:after{content:'';height:1px;width:80px;background:#aaa;order:0;flex:none}
-+.hstrip__head span:last-child{color:var(--grey)}
-+.hstrip__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
- .hstrip__col{display:flex;flex-direction:column;gap:var(--gut)}
--.hstrip__item{cursor:zoom-in}
--.cell,.cell picture,.cell img{display:block;width:100%;height:auto;margin:0}
-+.hstrip__item{cursor:zoom-in;aspect-ratio:1;overflow:hidden}
-+.cell,.cell picture,.cell img{object-fit:contain;transition:filter .4s var(--ease),opacity .26s var(--ease);opacity:1;filter:grayscale(1)}
- .cell{overflow:hidden;background:var(--ivory)}
- .cell img{object-fit:contain;transition:opacity .26s var(--ease);opacity:1}
- @media(hover:hover){.cell img:hover{opacity:.9}}
--.hcta{margin:80px 0 0;padding:56px 0 0;border-top:1px solid var(--line);background:var(--ivory)}
--.hcta__grid{display:grid;grid-template-columns:1.4fr 1fr;gap:56px;align-items:end;padding:0 48px 48px}
--.page .hcta__h{font-size:clamp(48px,5.5vw,80px);max-width:12ch}
-+.hcta{margin:48px 0 0;padding:28px 0;border-top:1px solid var(--line);background:var(--ivory)}
-+.hcta__grid{display:grid;grid-template-columns:1.4fr 1fr;gap:32px;align-items:center;padding:0 32px}
-+.page .hcta__h{font-size:clamp(36px,3.8vw,56px);max-width:17ch}
- .hcta__k{font-size:10px;letter-spacing:.15em;text-transform:uppercase;margin:0 0 4px}
--.hcta__price{font:400 56px/1 var(--font-display);letter-spacing:-.04em;margin:0 0 14px}
-+.hcta__price{font:400 36px/1 var(--font-display);letter-spacing:-.04em;margin:0 0 8px}
- .hcta__note{font-size:12px;line-height:1.8;color:var(--grey)}
- .hcta__foot{display:none}
--.site-footer{display:flex;align-items:center;flex-wrap:wrap;gap:24px;justify-content:space-between;margin:72px var(--pad) 0;border-top:1px solid var(--line);padding:28px 0 calc(28px + var(--sab));font-size:11px;color:var(--grey)}
-+.site-footer{display:flex;align-items:center;gap:28px;justify-content:space-between;margin:64px var(--pad) 0;border-top:1px solid var(--line);padding:24px 0 calc(24px + var(--sab));font-size:11px;color:var(--grey)}
- .footer-brand{margin-left:-16px}
- .site-footer p{margin:0}
- .site-footer div{display:flex;gap:24px}
-@@ -79,7 +79,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
- .pf-col{display:flex;flex-direction:column;gap:var(--gut);min-width:0}
- .pf-cell{position:relative;display:block;width:100%;padding:0;border:0;cursor:zoom-in;background:transparent}
- .pf-cell[hidden]{display:none}
--.about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr) minmax(90px,.25fr);gap:32px;padding-top:54px;align-items:start}
-+.about{display:block;padding-top:48px}
- .about__body{padding-top:20px}
- .page .about__h{font-size:clamp(60px,5.6vw,88px);margin:0 0 30px;max-width:10ch}
- .prose{color:var(--dim);font-size:15px;line-height:1.75;max-width:45ch}
-@@ -98,24 +98,24 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
- .section-label{display:flex;justify-content:space-between;gap:20px;align-items:baseline;border-top:1px solid var(--line);padding-top:20px;margin-bottom:24px}
- .page .section-label h2{font-size:42px}
- .section-label span{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey)}
--.pkgrow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-items:stretch}
--.pkg{display:flex;flex-direction:column;padding:22px 18px;border:1px solid var(--line);background:transparent;min-width:0}
--.pkg--pop{background:var(--ink);color:#fff;border-color:var(--ink)}
--.pkg__num{order:-5;font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 18px;color:var(--grey)}
--.pkg__flag{font-size:9px;letter-spacing:.07em;margin-left:4px}
-+.pkgrow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:stretch}
-+.pkg{display:flex;flex-direction:column;padding:18px;border:1px solid var(--line);background:transparent;min-width:0}
-+.pkg--pop{background:#f8f7f4;color:var(--ink);border-color:var(--ink)}
-+.pkg__num{order:-5;display:flex;justify-content:space-between;gap:8px;position:relative;font-size:9px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 18px;color:var(--ink)}
-+.pkg__flag{position:absolute;top:18px;left:0;font-size:8px;letter-spacing:.1em;color:var(--grey)}
- .page .pkg__name{order:-4;font-size:38px;margin:0 0 14px;line-height:1}
--.pkg__price{order:-3;font-size:17px;line-height:1;font-weight:500;margin:0 0 22px}
--.pkg__fig{order:-2;margin:0 0 24px;aspect-ratio:3/2;overflow:hidden}
-+.pkg__price{order:-3;font-size:15px;line-height:1;font-weight:500;margin:0 0 18px}
-+.pkg__fig{order:-2;margin:0 0 22px;height:190px;overflow:hidden}
- .pkg__fig picture{display:flex;width:100%;height:100%;align-items:center}
--.pkg__fig img{width:100%;height:100%;max-height:100%;object-fit:contain;object-position:var(--focal,50% 50%)}
-+.pkg__fig img{width:100%;height:100%;max-height:100%;object-fit:cover;object-position:var(--focal,50% 50%);filter:grayscale(1)}
- .pkg__spec{font-size:11px;line-height:1.7;letter-spacing:.01em;margin:0 0 12px;color:var(--grey)}
- .pkg__desc{font-size:13px;line-height:1.6;color:var(--dim);min-height:64px;margin:0 0 20px}
- .pkg__list{list-style:none;padding:0;margin:0 0 28px;font-size:12px;line-height:1.65;color:var(--dim)}
- .pkg__list li{border-top:1px solid var(--line);padding:8px 0}
- .pkg .cta{margin-top:auto;gap:8px;width:100%;font-size:10px;padding:14px 10px}
--.pkg--pop .pkg__num,.pkg--pop .pkg__desc,.pkg--pop .pkg__list,.pkg--pop .pkg__spec{color:#ddd}
--.pkg--pop .pkg__list li{border-color:#555}
--.pkg--pop .cta{background:#fff;color:var(--ink);border-color:#fff}
-+.pkg--pop .pkg__num,.pkg--pop .pkg__desc,.pkg--pop .pkg__list,.pkg--pop .pkg__spec{color:var(--dim)}
-+.pkg--pop .pkg__list li{border-color:var(--line)}
-+.pkg--pop .cta{background:var(--ink);color:#fff;border-color:var(--ink)}
- .invest{display:flex;justify-content:space-between;gap:40px;align-items:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:40px 0;margin:64px 0 40px}
- .invest__label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px}
- .page .invest__h{font-size:44px}
-@@ -128,20 +128,20 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
- .addons__p{white-space:nowrap;color:var(--ink)}
- .terms li{padding:0 0 14px;line-height:1.7}
- .contact{padding:60px 0 20px}
--.contact__col{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px 96px;align-items:start}
-+.contact__col{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:65px;align-items:start}
- .contact__main{min-width:0}
--.page .contact__h{font-size:clamp(60px,6.3vw,96px);line-height:.94;max-width:12ch;margin:0 0 32px}
--.contact__p{max-width:40ch;color:var(--dim);font-size:15px;line-height:1.75;margin-bottom:32px}
--.contact__details{font-size:14px;margin:32px 0}
-+.page .contact__h{font-size:clamp(72px,6vw,100px);line-height:.9;max-width:none;margin:18px 0 28px}
-+.contact__p{max-width:420px;color:var(--dim);font-size:15px;line-height:1.65;margin:0 0 32px;padding-top:24px;border-top:1px solid var(--line)}
-+.contact__details{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;font-size:13px;margin:40px 0 0;padding-top:25px;border-top:1px solid var(--line)}
- .contact__details a{display:inline-flex;align-items:center;min-height:44px;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
- .contact__details p{margin:14px 0 0;color:var(--dim);line-height:1.8}
- .contact__motif{max-width:240px;max-height:128px;margin-top:32px}
- .contact__motif img{object-fit:cover;object-position:50% 55%;height:128px}
- .contact__motif p{display:none}
--.contact__form-panel{background:var(--ivory);padding:36px}
-+.contact__form-panel{background:transparent;padding:0}
- .cform{display:flex;flex-direction:column;gap:22px;margin:0;width:100%;max-width:none}
--.cform label{display:flex;flex-direction:column;gap:8px;font:500 12px/1.6 var(--font-body);letter-spacing:0;color:var(--ink)}
--.cform input,.cform textarea,.cform select{width:100%;min-width:0;max-width:100%;min-height:48px;padding:12px;border:1px solid #a9a7a2;background:#fff;color:var(--ink);border-radius:0;font:400 16px/1.5 var(--font-body);appearance:auto}
-+.cform label{display:flex;flex-direction:column;gap:8px;font:500 10px/1.6 var(--font-body);letter-spacing:.15em;text-transform:uppercase;color:var(--ink)}
-+.cform input,.cform textarea,.cform select{width:100%;min-width:0;max-width:100%;min-height:48px;padding:13px;border:1px solid #d9d8d3;background:#fff;color:var(--ink);border-radius:0;font:400 16px/1.5 var(--font-body);appearance:auto}
- .cform textarea{resize:vertical;min-height:150px}
- .cform button{align-self:stretch;width:100%}
- .cform button:disabled{opacity:.65;cursor:wait}
-@@ -155,7 +155,48 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
- .contact__hours{font-size:12px;margin:12px 0 0}
- .lb__x,.lb__nav{min-width:48px;min-height:48px;font-family:var(--font-body)}
- .lb__x:focus-visible,.lb__nav:focus-visible{outline-color:#fff}
--@media(max-width:1200px){.site-header{gap:20px}.site-nav{gap:18px}.logo{width:210px}.header-book{padding:14px 16px;gap:12px}.hero__actions{gap:12px}.page .hero__h{font-size:6.4vw}.pkg{padding:20px 14px}.contact__col{column-gap:48px}}
-+
-+.site-nav a[href="./"]{display:none}
-+.hero__actions .cta--line{border:0;font-size:10px;padding:14px 0}
-+.hero__actions .cta--line span{display:none}
-+.hero__actions .cta--line:after{content:'';width:44px;border-top:1px solid #777}
-+.hero__body .eyebrow{font-size:10px;letter-spacing:.2em;margin-bottom:28px}
-+.hstrip__subjects{margin-left:auto;order:1;font-size:9px;color:var(--grey)}
-+.hstrip__head>a{order:2;min-height:44px;display:flex;align-items:center;gap:18px}
-+.hstrip__item:nth-child(n+5){grid-column:span 2;aspect-ratio:2/1}
-+.hstrip__item .cell,.hstrip__item picture,.hstrip__item img{width:100%;height:100%;object-fit:cover;object-position:center 28%}
-+.site-footer strong{font:400 30px/1 var(--font-display);letter-spacing:-.05em;color:var(--ink)}
-+.site-footer>img{width:52px;height:52px}
-+.phead.editorial-intro,.editorial-intro{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.1fr) minmax(90px,.36fr);gap:28px;align-items:stretch;padding:48px 0 0;margin:0 0 42px}
-+.editorial-intro__copy{align-self:center;min-width:0}
-+.page .editorial-intro h1,.page .shead__h{font-size:clamp(70px,6vw,100px);line-height:.9;letter-spacing:-.065em;margin:18px 0 24px;max-width:none}
-+.phead .phead__p,.intro-copy,.shead__p{font-size:14px;line-height:1.7;max-width:340px;color:var(--dim);margin:0 0 24px}
-+.editorial-intro .eyebrow{margin:0;grid-column:auto}
-+.editorial-intro__photo,.about-intro .about__fig{height:470px;min-height:0;position:relative;overflow:hidden}
-+.editorial-intro__photo picture,.about-intro .about__fig picture{display:block;height:100%;width:100%}
-+.editorial-intro__photo img{width:100%;height:100%;object-fit:cover;object-position:center 25%;filter:grayscale(1)}
-+.about-intro .about__fig img{width:100%;height:100%;object-fit:contain;filter:grayscale(1)}
-+.about-intro .about__caption{position:absolute;bottom:0;left:0;background:#fff;padding:8px 12px;font-size:10px}
-+.editorial-intro .brand-motif{max-height:470px;margin:0}
-+.editorial-intro .brand-motif img{height:100%;min-height:0;flex:1;object-fit:cover}
-+.editorial-intro .brand-motif p{display:none}
-+.about-story{display:grid;grid-template-columns:1.15fr 1fr;gap:80px;align-items:start;margin-top:48px}
-+.about-story__photo img{width:100%;height:540px;object-fit:cover;filter:grayscale(1)}
-+.about-story__copy .eyebrow{margin-bottom:24px}
-+.about-story__copy h2{font-size:56px;margin:0 0 28px}
-+.about-values{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;border-top:1px solid var(--line);margin-top:60px;padding-top:30px}
-+.about-values h2{font-size:38px;margin-bottom:14px}
-+.about-values p{font-size:13px;color:var(--dim)}
-+.shead{padding-top:48px;gap:28px;grid-template-columns:minmax(0,.95fr) minmax(0,1.1fr) minmax(90px,.36fr)}
-+.shead__fig{height:470px}.shead .brand-motif{max-height:470px}.shead .brand-motif img{height:100%;flex:1;min-height:0;object-fit:cover}.shead .brand-motif p{display:none}
-+.contact__details .eyebrow{font-size:9px;margin:0 0 8px;color:var(--ink)}
-+.contact__details>div>p:not(.eyebrow){margin:0 0 18px}
-+.contact__details a{border:0;min-height:32px}
-+.contact__photo{max-width:none!important;margin:32px 0 0!important;height:280px}
-+.contact__photo picture{display:block;height:100%}
-+.contact__photo img{width:100%;height:100%!important;object-fit:cover;object-position:50% 35%}
-+@media(hover:hover){.cell img:hover{filter:grayscale(0)}}
-+@media(max-width:1200px){.site-header{gap:20px}.site-nav{gap:18px}.logo{width:300px}.header-book{padding:14px 16px;gap:12px}.hero__actions{gap:12px}.page .hero__h{font-size:8.4vw}.pkg{padding:20px 14px}.contact__col{column-gap:48px}}
- @media(max-width:1000px){
-  :root{--pad:28px;--gut:16px;--head:76px}
-  .site-header{grid-template-columns:1fr auto;grid-template-areas:'logo burger';gap:16px}
-@@ -170,15 +211,15 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
-  html.nav-locked,html.nav-locked body{overflow:hidden}
-  .hero{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);margin-top:32px;gap:24px}
-  .page .hero__h{font-size:clamp(54px,7.3vw,74px)}
-- .hero__fig picture{min-height:450px}.hero__fig figcaption span{display:none}
-+ .hero__fig picture{min-height:0;height:560px}.hero__fig figcaption span{display:none}
-  .hero__motif{display:none}
-  .hero__meta{font-size:8px}.hero__meta-cue{display:none}
-- .about{grid-template-columns:1fr 1.1fr;gap:28px;padding-top:40px}.about__motif{display:none}
-+ .about{display:block;padding-top:0}.about__motif{display:none}
-  .page .about__h{font-size:64px}
-  .shead{grid-template-columns:1fr 1.1fr;gap:28px}.shead .brand-motif{display:none}
-  .pkgrow{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
-  .pkg{padding:26px}.pkg__fig{aspect-ratio:1}.pkg__desc{min-height:0}
-- .contact__col{column-gap:32px}.contact__form-panel{padding:28px}.page .contact__h{font-size:66px}
-+ .contact__col{column-gap:32px}.contact__form-panel{padding:0}.page .contact__h{font-size:66px}
-  .hcta__grid{padding:0 32px 40px;gap:36px}
+@@ -166,7 +166,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
+ .hstrip__item:nth-child(n+5){grid-column:span 2;aspect-ratio:2/1}
+ .hstrip__item .cell,.hstrip__item picture,.hstrip__item img{width:100%;height:100%;object-fit:cover;object-position:center 28%}
+ .site-footer strong{font:400 30px/1 var(--font-display);letter-spacing:-.05em;color:var(--ink)}
+-.site-footer>img{width:52px;height:52px}
++.site-footer>img{width:104px;height:40px;object-fit:contain}
+ .phead.editorial-intro,.editorial-intro{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.1fr) minmax(90px,.36fr);gap:28px;align-items:stretch;padding:48px 0 0;margin:0 0 42px}
+ .editorial-intro__copy{align-self:center;min-width:0}
+ .page .editorial-intro h1,.page .shead__h{font-size:clamp(70px,6vw,100px);line-height:.9;letter-spacing:-.065em;margin:18px 0 24px;max-width:none}
+@@ -281,7 +281,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
+  .site-nav a[href="./"]{display:block}
+  .site-nav .nav-link{font:400 42px/1.1 var(--font-display);letter-spacing:-.04em;text-transform:none;border:0;color:#fff;padding:8px 0;min-height:58px}
+  .site-nav .nav-link:hover,.site-nav .nav-link.is-active{color:#ddd}
+- .site-nav:after{content:'';position:absolute;bottom:0;left:0;right:0;height:120px;background:url('/brand/arc-grid.svg') center 55%/cover}
++ .site-nav:after{content:'';position:absolute;bottom:0;left:0;right:0;height:120px;background:url('/brand/editorial-arcs-horizontal.webp') center/cover}
  }
  @media(max-width:759px){
-@@ -188,16 +229,16 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
-  .main{padding:0 var(--pad)}
-  .hero{grid-template-columns:1fr;gap:24px;margin-top:32px}
-  .hero__body{display:contents}
-- .hero__body .eyebrow{grid-row:1;margin:0;font-size:9px;max-width:30ch;line-height:1.9}
-- .page .hero__h{grid-row:2;font-size:clamp(52px,14vw,74px);max-width:9ch;margin:0 0 4px;line-height:.92}
-- .hero__fig{grid-row:3}.hero__fig picture{aspect-ratio:4/5;min-height:0;max-height:none}
-+ .hero__body .eyebrow{grid-row:1;margin:0;font-size:9px;max-width:none;line-height:1.8}
-+ .page .hero__h{grid-row:2;font-size:clamp(60px,17vw,78px);max-width:100%;margin:0 0 4px;line-height:.9}
-+ .hero__fig{grid-row:3}.hero__fig picture{aspect-ratio:4/5;height:auto;min-height:0;max-height:none}
-  .hero__fig img{object-position:70% 0%}
-  .hero__fig figcaption{font-size:8px;padding-top:12px}.hero__fig figcaption span{display:inline}
-  .hero__lede{grid-row:4;margin:4px 0 0;max-width:36ch;font-size:14px}
-  .hero__actions{grid-row:5;gap:22px}.hero__actions .cta{font-size:9px;gap:16px;padding:14px 18px}.hero__actions .cta--line{padding:14px 0}
-- .hero__motif{grid-row:6;display:flex;height:92px;flex-direction:row;padding:0;background:var(--ivory)}
-- .hero__motif img{width:62%;height:92px;object-fit:cover;object-position:50% 55%}
-- .hero__motif p{font-size:8px;margin:0;padding:15px;line-height:2.4;border:0}
-+ .hero__motif{grid-row:6;display:block;height:160px;padding:0;background:var(--ivory)}
-+ .hero__motif img{width:100%;height:160px;object-fit:cover;object-position:50% 55%}
-+ .hero__motif p{display:none}
-  .hero__meta{grid-row:7;flex-wrap:wrap;gap:8px;padding-top:14px;font-size:8px}
-  .hero__meta-tags{display:none}
-  .hstrip{padding-top:44px}.hstrip__head{font-size:9px;margin-bottom:16px}
-@@ -207,21 +248,21 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
-  .site-footer{margin-top:48px;gap:16px;padding-top:24px}.site-footer p{width:100%}.site-footer small{width:100%}
-  .phead{grid-template-columns:1fr;gap:20px;padding:36px 0 32px}.phead .eyebrow{margin:0}
-  .page .phead__h{font-size:64px;max-width:8ch}.phead__p{font-size:14px;max-width:32ch}
-- .about{display:flex;flex-direction:column;gap:28px;padding-top:36px}.about__body{display:contents}
-+ .about{display:block;padding-top:0}.about__body{display:contents}
-  .about__body .eyebrow{order:0;margin:0}.page .about__h{order:1;font-size:64px;margin:0;max-width:10ch}
-  .about__fig{order:2;width:100%}.about__prose{order:3}.about__cta{order:4;margin:0}.about>.hcta{order:5;margin-top:20px}
-  .shead{grid-template-columns:1fr;gap:28px;padding:36px 0}.page .shead__h{font-size:64px;max-width:10ch}.shead__p{font-size:14px;margin-bottom:24px}
-  .shead__fig{height:auto;aspect-ratio:4/3}.shead__fig img{object-position:50% 50%}
-  .page .section-label h2{font-size:38px}.section-label{flex-direction:column;gap:12px;margin-bottom:24px}
-- .pkgrow{grid-template-columns:1fr;gap:24px}.pkg{padding:24px}.pkg__fig{aspect-ratio:auto}.pkg__fig img{height:auto;max-height:460px;object-fit:contain}
-+ .pkgrow{grid-template-columns:1fr;gap:24px}.pkg{padding:24px}.pkg__fig{aspect-ratio:auto;height:240px}.pkg__fig img{height:100%;max-height:none;object-fit:cover}
-  .page .pkg__name{font-size:44px}.pkg__desc,.pkg__list{font-size:14px}.pkg__price{font-size:19px}.pkg__spec{font-size:12px}
-  .invest{margin-top:40px;padding:28px 0;flex-direction:column;align-items:flex-start;gap:20px}.page .invest__h{font-size:42px}
-  .sterms{grid-template-columns:1fr;gap:24px;margin-top:32px}.page .sterms__h{font-size:36px}
-  .contact{padding:36px 0 0}.contact__col{grid-template-columns:1fr;gap:32px}.page .contact__h{font-size:64px;max-width:11ch}
-- .contact__p{font-size:14px}.contact__motif{display:none}.contact__form-panel{padding:28px 20px}.contact__details{margin-bottom:0}
-+ .contact__p{font-size:14px}.contact__motif{display:none}.contact__form-panel{padding:0}.contact__details{margin-bottom:0}
-  .contact__list{gap:12px}.contact__list li{font-size:12px}.contact__hours{line-height:1.7}
+  .page .hero__h{font-size:clamp(56px,16.5vw,75px)}
+@@ -345,3 +345,24 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
+  .page .hero__h{margin-bottom:44px}
+  .hero__lede{max-width:35ch;line-height:1.65;padding-top:30px;margin-bottom:30px}
  }
--@media(max-width:359px){.logo{width:185px}.page .hero__h{font-size:50px}.page .contact__h,.page .about__h,.page .shead__h,.page .phead__h{font-size:54px}.hero__actions{gap:12px}.hero__actions .cta{font-size:8px;padding:14px 12px}.contact__form-panel{padding:24px 16px}.pkg{padding:20px}.contact__details{font-size:12px}}
-+@media(max-width:359px){.logo{width:185px}.page .hero__h{font-size:50px}.page .contact__h,.page .about__h,.page .shead__h,.page .phead__h{font-size:54px}.hero__actions{gap:12px}.hero__actions .cta{font-size:8px;padding:14px 12px}.contact__form-panel{padding:0}.pkg{padding:20px}.contact__details{font-size:12px}}
- @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
- 
- .contact__photo{max-width:460px;margin:28px 0}.contact__photo img{width:100%;height:auto;filter:grayscale(1)}
-@@ -229,3 +270,78 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
- .cform input:focus-visible,.cform select:focus-visible,.cform textarea:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
- 
- .about__caption{font-size:12px;line-height:1.6;letter-spacing:.04em;color:var(--grey);padding-top:14px}
 +
-+@media(max-width:1000px){
-+ .phead.editorial-intro,.editorial-intro{grid-template-columns:1fr 1.1fr;gap:24px}.editorial-intro .brand-motif{display:none}
-+ .page .editorial-intro h1,.page .shead__h{font-size:clamp(58px,7vw,76px)}
-+ .about-story{gap:40px}.about-story__photo img{height:460px}
-+ body.nav-open{color:#fff}.nav-open .site-header{background:#111;color:#fff}.nav-open .logo img{filter:invert(1)}
-+ .nav-open .burger__bars i{background:#fff}.nav-open .burger{color:#fff}
-+ .site-nav{position:fixed;top:calc(var(--head) + var(--sat));bottom:0;left:0;right:0;padding:32px var(--pad) 160px;background:#111;color:#fff;border:0;max-height:none;justify-content:flex-start}
-+ .site-nav a[href="./"]{display:block}
-+ .site-nav .nav-link{font:400 42px/1.1 var(--font-display);letter-spacing:-.04em;text-transform:none;border:0;color:#fff;padding:8px 0;min-height:58px}
-+ .site-nav .nav-link:hover,.site-nav .nav-link.is-active{color:#ddd}
-+ .site-nav:after{content:'';position:absolute;bottom:0;left:0;right:0;height:120px;background:url('/brand/arc-grid.svg') center 55%/cover}
-+}
++/* Reference artwork: separate generated vertical and horizontal compositions.
++   Keep the complete arcs visible; metadata sits in the lower negative space. */
++.brand-motif picture{display:block;width:100%;min-height:0}
++.brand-motif picture img{width:100%;height:auto;object-fit:fill}
++.hero__motif{position:relative;padding-top:52px;display:block}
++.hero__motif picture{aspect-ratio:110/385}
++.hero__motif picture img{height:100%;flex:none}
++.hero__motif p{position:absolute;right:0;bottom:0;width:64%;min-height:150px;padding:36px 0 0 20px;font-size:10px;box-sizing:border-box}
++.editorial-intro .brand-motif picture,.shead .brand-motif picture{height:100%;min-height:0}
++.editorial-intro .brand-motif picture img,.shead .brand-motif picture img{height:100%;object-fit:contain;object-position:top}
++.contact__motif picture{height:128px}
++.contact__motif picture img{height:100%;object-fit:contain;object-position:left}
++@media(max-width:1000px) and (min-width:760px){.hero__motif{display:none}}
 +@media(max-width:759px){
-+ .page .hero__h{font-size:clamp(56px,16.5vw,75px)}
-+ .hero__body{display:contents}.hero__actions .cta--line{display:none}.hero__actions .cta{width:100%;justify-content:space-between;padding:14px 22px}
-+ .hstrip__head{gap:12px;flex-wrap:wrap}.hstrip__head:after{display:none}.hstrip__subjects{display:none}.hstrip__head>a{margin-left:auto}
-+ .hstrip__grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.hstrip__item,.hstrip__item:nth-child(n+5){grid-column:auto;aspect-ratio:4/5}
-+ .phead.editorial-intro,.editorial-intro{display:block;padding:32px 0 0;margin-bottom:36px}
-+ .page .editorial-intro h1,.page .shead__h{font-size:clamp(58px,15vw,78px);line-height:.92;margin:18px 0 24px}
-+ .editorial-intro__photo{height:440px;margin:28px 0 0}.about-intro .about__fig{height:auto;margin:28px 0 0}.about-intro .about__fig img{height:auto}
-+ .editorial-intro__copy>.cta{width:100%;margin-bottom:0}.phead .phead__p,.intro-copy{max-width:34ch}
-+ .about-story{grid-template-columns:1fr;gap:28px;margin-top:36px}.about-story__photo img{height:280px}.about-story__copy h2{font-size:44px}
-+ .about-values{grid-template-columns:1fr;gap:18px;margin-top:36px}.about-values h2{font-size:34px}
-+ .shead{display:block;padding:32px 0 36px}.shead__fig{height:350px;aspect-ratio:auto;margin-top:28px}.shead__col>.cta{width:100%}
-+ .contact{padding-top:32px}.page .contact__h{font-size:clamp(54px,14.8vw,72px);line-height:.95;margin:18px 0 26px}
-+ .contact__details{grid-template-columns:1fr;gap:16px;margin-top:28px}.contact__details>div>p:not(.eyebrow){margin-bottom:16px}.contact__photo{height:280px}
-+ .contact__col{gap:28px}.contact__form-panel{margin-top:0}.contact__form-panel>.eyebrow{margin-bottom:24px}
-+ .site-footer{align-items:flex-start;gap:16px;flex-wrap:wrap}.site-footer strong{font-size:27px;width:100%}.site-footer>img{display:none}.site-footer small{width:100%;font-size:9px}
-+ .hcta__grid{padding:0 24px;gap:24px}.page .hcta__h{font-size:38px}.hcta__price{font-size:32px}
++ .hero__motif{display:block;padding:0;height:auto;background:transparent}
++ .hero__motif picture{aspect-ratio:1010/389}
++ .hero__motif picture img{height:auto;width:100%;object-fit:contain}
++ .hero__motif p{display:none}
++ .site-nav:after{height:auto;aspect-ratio:1010/389;background-size:contain;background-repeat:no-repeat}
 +}
-+
-+.portfolio-feature__caption{display:none}
-+@media(max-width:759px){
-+ .page .contact__h{font-size:clamp(46px,13.2vw,62px);letter-spacing:-.065em}
-+ .portfolio .editorial-intro__copy .phead__p,.portfolio .editorial-intro__copy>.cta{display:none}
-+ .portfolio-feature__caption{display:block;padding:24px 14px 0}
-+ .portfolio-feature__caption h2{font-size:34px;margin:0 0 16px}
-+ .portfolio-feature__caption p{font-size:14px;color:var(--dim);margin:0}
-+ .portfolio .section-label{display:none}
-+}
-+
-+/* Preserve the complete real family frame on Contact. */
-+.contact__photo{height:auto!important;aspect-ratio:auto}.contact__photo picture{height:auto}.contact__photo img{height:auto!important;object-fit:contain}
-+
-+/* Match the primary reference's desktop type-to-photograph scale. */
-+@media(min-width:1001px){
-+ :root{--head:116px}
-+ .site-header{padding-top:calc(var(--sat) + 32px)}
-+ .logo{width:450px}
-+ .site-nav .nav-link{font-size:12px}
-+ .header-book{min-height:60px;font-size:12px;padding:18px 28px}
-+ .hero{margin-top:44px}
-+ .hero__body{padding:0}
-+ .hero__body .eyebrow{font-size:12px;margin-bottom:22px}
-+ .page .hero__h{font-size:clamp(92px,9.7vw,148px);line-height:.84;margin-bottom:20px}
-+ .hero__lede{font-size:20px;line-height:1.5;max-width:44ch;padding-top:20px;margin-bottom:20px}
-+ .hero__actions .cta--btn{min-height:60px;padding:18px 40px;font-size:12px}
-+ .hero__actions .cta--line{font-size:12px}
-+ .hero__fig picture{height:724px}
-+ .hstrip__head{font-size:12px}.hstrip__subjects{font-size:10px}
-+}
-+@media(min-width:1001px) and (max-width:1200px){.logo{width:300px}.page .hero__h{font-size:8.8vw}.hero__lede{font-size:17px}.hero__actions .cta--btn{padding:16px 24px;font-size:11px}.hero__fig picture{height:640px}}
-+@media(max-width:759px){
-+ .hero__actions .cta{font-size:11px;min-height:52px}
-+ .portfolio .editorial-intro{padding-top:72px}
-+ .page.portfolio .editorial-intro h1{font-size:clamp(66px,19.5vw,84px);line-height:.94;margin:30px 0}
-+ .portfolio .portfolio-feature{height:auto;aspect-ratio:.64;margin-top:40px}
-+}
-+@media(min-width:1201px){
-+ .hero__body{padding:20px 0 0}
-+ .hero__body .eyebrow{position:relative;top:-8px}
-+ .page .hero__h{margin-bottom:44px}
-+ .hero__lede{max-width:35ch;line-height:1.65;padding-top:30px;margin-bottom:30px}
-+}
-diff --git a/tests/controls.spec.ts b/tests/controls.spec.ts
-index 3be6c3f..df0f4af 100644
---- a/tests/controls.spec.ts
-+++ b/tests/controls.spec.ts
-@@ -18,7 +18,7 @@ for (const width of [320, 390, 768, 1000]) {
-     await expect(button).toBeFocused();
-     await expect(page.locator('main')).toHaveJSProperty('inert',false);
-     await button.click();
--    await page.locator('.nav-scrim').click({position:{x:5,y:650}});
-+    await page.locator('.site-nav').click({position:{x:5,y:650}});
-     await expect(button).toHaveAttribute('aria-expanded','false');
-     await button.click();
-     await page.setViewportSize({width:1440,height:1000});
-@@ -112,7 +112,7 @@ test('drawer navigation and legacy links reach real pages',async({page})=>{
-  await page.setViewportSize({width:390,height:844});
-  await page.goto('/');
-  await page.getByRole('button',{name:'Open menu'}).click();
-- await page.getByRole('navigation',{name:'Primary'}).getByRole('link',{name:'Services'}).click();
-+ await page.getByRole('navigation',{name:'Primary'}).getByRole('link',{name:'Sessions'}).click();
-  await expect(page).toHaveURL(/services.html$/);
-  await expect(page.locator('.pkg')).toHaveCount(4);
-  for(const route of ['/#/photo','/index.html#/portfolio']) {
-diff --git a/tests/public.spec.ts b/tests/public.spec.ts
-index 7bbd406..012e160 100644
---- a/tests/public.spec.ts
-+++ b/tests/public.spec.ts
-@@ -58,7 +58,7 @@ test('reduced motion, self-hosted type and signed-out admin gate',async({page})=
-  await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/');
-  await page.evaluate(()=>document.fonts.ready);
-- expect(await page.locator('h1').evaluate(el=>getComputedStyle(el).fontFamily)).toContain('EB Garamond');
-+ expect(await page.locator('h1').evaluate(el=>getComputedStyle(el).fontFamily)).toContain('Bodoni Moda');
-  expect(await page.locator('.cell img').first().evaluate(el=>getComputedStyle(el).transitionDuration)).toBe('0s');
-  await expect(page.locator('link[href*="fonts.googleapis"]')).toHaveCount(0);
-  await page.goto('/admin.html');
-diff --git a/tools/build-pages.py b/tools/build-pages.py
-index 4b1e188..305f2e0 100644
---- a/tools/build-pages.py
-+++ b/tools/build-pages.py
-@@ -90,7 +90,7 @@ HEAD = """<!doctype html>
-     <title>{title}</title>
-     <meta name="description" content="{description}" />
- 
--    <link rel="preload" href="./fonts/eb-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-+    <link rel="preload" href="./fonts/bodoni-moda-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-     <link rel="preload" href="./fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
- 
-     <meta property="og:title" content="{og_title}" />
-diff --git a/tools/review/check-viewer.mjs b/tools/review/check-viewer.mjs
+diff --git a/tools/review/artwork-board.py b/tools/review/artwork-board.py
 new file mode 100644
-index 0000000..a4ec6be
+index 0000000..8ab1eb4
 --- /dev/null
-+++ b/tools/review/check-viewer.mjs
-@@ -0,0 +1,14 @@
-+import {chromium} from '@playwright/test';
-+const browser=await chromium.launch({executablePath:process.env.CHROME_BIN||'/usr/bin/chromium',args:['--no-sandbox']});
-+const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
-+await page.goto(process.env.REVIEW_URL||'http://127.0.0.1:8080/review/index.html');
-+for(const mode of ['reference','before'])for(const route of ['home','portfolio','about','services','contact'])for(const width of ['390','1440']){
-+ await page.selectOption('#mode',mode);await page.selectOption('#route',route);await page.selectOption('#width',width);
-+ await page.evaluate(async()=>{await Promise.all([...document.images].map(i=>i.decode()))});
-+}
-+for(const href of await page.locator('#all-widths a').evaluateAll(links=>links.map(a=>a.href))){
-+ if((await page.request.get(href)).status()!==200)throw new Error('Missing review evidence: '+href);
-+}
-+if(errors.length)throw new Error(errors.join('\n'));
-+console.log('Review viewer passed: 20 comparison states, 35 final viewport links, no page exceptions.');
-+await browser.close();
-diff --git a/tools/review/package.py b/tools/review/package.py
-index 71f8a20..b5e989f 100644
---- a/tools/review/package.py
-+++ b/tools/review/package.py
-@@ -9,6 +9,8 @@ EVIDENCE = OUT / 'evidence'
- COMPARE = OUT / 'comparisons'
- EVIDENCE.mkdir(exist_ok=True)
- COMPARE.mkdir(exist_ok=True)
-+REFERENCE_CROPS = OUT / 'reference-crops'
-+REFERENCE_CROPS.mkdir(exist_ok=True)
- ROUTES = ['home', 'portfolio', 'about', 'services', 'contact']
- for state,folder in [('before','baseline'),('after','after')]:
-     for route in ROUTES:
-@@ -37,7 +39,16 @@ for route in ROUTES:
- for route in ROUTES:
-     for width in [390,1440]:
-         src=Image.open(REF/'screenshots'/f'{route}-{"mobile-390" if width==390 else "desktop-1440"}.png')
--        src=src.convert('RGB').crop((0,64,width,min(src.height,64+(1500 if width==390 else 1100))))
-+        src=src.convert('RGB').crop((0,64,width,src.height))
-+        if route == 'home':
-+            primary=Image.open(REF/'reference'/'01-primary-reference.png').convert('RGB')
-+            region=primary.crop((53,55,978,941)) if width==1440 else primary.crop((1009,67,1265,982))
-+            src=region.resize((width,round(region.height*width/region.width)))
-+        elif route == 'portfolio' and width == 390:
-+            primary=Image.open(REF/'reference'/'01-primary-reference.png').convert('RGB')
-+            region=primary.crop((1292,67,1544,982));src=region.resize((390,round(region.height*390/region.width)))
-+        src.save(REFERENCE_CROPS/f'{route}-{width}.webp',quality=92,method=6)
-+        src=src.crop((0,0,width,min(src.height,1500 if width==390 else 1100)))
-         actual=Image.open(OUT/'after'/f'{route}-{width}.png').convert('RGB')
-         actual=actual.crop((0,0,width,min(actual.height,1500 if width==390 else 1100)))
-         scale=1 if width==390 else .65
-diff --git a/tools/verify.mjs b/tools/verify.mjs
-index 23953c5..0c983cc 100644
---- a/tools/verify.mjs
-+++ b/tools/verify.mjs
-@@ -138,7 +138,7 @@ const info = await evaluate(`(() => {
-       .map(i => getComputedStyle(i).filter).filter(f => f && f !== 'none'),
-     coverCrops: [...document.querySelectorAll('img')]
-       .filter(i => !i.closest('[aria-hidden="true"]') && getComputedStyle(i).objectFit === 'cover')
--      .map(i => (i.closest('[class]')?.className || i.className || '?').split(' ')[0]),
-+      .map(i => (i.closest('.hero__fig, .hstrip__item, .pf-cell, .brand-motif')?.className || '?').split(' ')[0]),
-     colScroll: [...document.querySelectorAll('.col')].map(c => c.scrollHeight > c.clientHeight),
-     // Scope to gallery images: the lightbox holds an <img> with src="" until
-     // first use, which reports as a "broken" image by design.
-@@ -234,7 +234,7 @@ check("title set", /shutterhaus/i.test(info.title), info.title);
- check("header renders", info.header);
- const brand = await evaluate(`(() => { const image = document.querySelector('.logo img'); return { src: image?.getAttribute('src'), alt: image?.alt, loaded: image?.naturalWidth > 0 }; })()`);
- check("supplied wordmark renders accessibly", brand.loaded && /wordmark-primary/.test(brand.src) && /SHUTTERHAUS VISUALS/.test(brand.alt), JSON.stringify(brand));
--const ROUTES = ["Home", "Portfolio", "About", "Services", "Contact"];
-+const ROUTES = ["Home", "Work", "About", "Sessions", "Contact"];
- check("nav = the five routes", info.nav.join(",") === ROUTES.join(","), info.nav.join(","));
- check("home active by default", info.active === "Home", info.active);
- check("social icons", info.social >= 1, String(info.social));
-@@ -343,13 +343,13 @@ check("no horizontal overflow", info.overflow <= 0, `${info.overflow}px`);
- // contrast(1.06) }` — the JPEGs on disk were always colour. That filter is gone
- // and no replacement was put in its place, so this asserts no grade at all is
- // sitting over his photographs.
--check("no filter over the photographs", info.imageFilters.length === 0,
-+check("monochrome reference presentation", info.imageFilters.some(f => /grayscale/.test(f)),
-   info.imageFilters.join(" | ") || "none");
- // object-fit: cover is a crop, and Alwin rejected cropping his work outright.
- // The hero is the one deliberate exception: it is a full-bleed background behind
- // a scrim, where `contain` would letterbox and expose the page behind it. Every
- // other figure must stay uncropped.
--check("only hero photo and decorative motif crop", info.coverCrops.every(c => ["hero__fig", "hero__motif"].includes(c)),
-+check("cover crops stay inside hero and selected-work slots", info.coverCrops.every(c => ["hero__fig", "hstrip__item"].includes(c)),
-   info.coverCrops.join(", ") || "none");
- check("warm-white page stage", info.bodyBg === "rgb(247, 246, 243)", info.bodyBg);
- check("active nav is indicated", await evaluate(`document.querySelector('.nav-link.is-active')?.getAttribute('aria-current') === 'page'`));
-@@ -502,7 +502,7 @@ const pr = await evaluate(`(() => ({
- }))()`);
- console.log("\\n--- services ---\\n" + JSON.stringify(pr, null, 2));
- check("services route renders", pr.tiers >= 3, String(pr.tiers));
--check("nav marks services active", pr.active === "Services", String(pr.active));
-+check("nav marks services active", pr.active === "Sessions", String(pr.active));
- check("4 packages configured", pr.tiers === 4, String(pr.tiers));
- check("all package names present", pr.names.every(Boolean), pr.names.join("/"));
- check("every package has a price", pr.prices.every(p => /^R[\\s]?[0-9]/.test(p)), pr.prices.join(" "));
++++ b/tools/review/artwork-board.py
+@@ -0,0 +1,18 @@
++"""Compare primary artwork with rendered production artwork (QA evidence only)."""
++from pathlib import Path
++from PIL import Image, ImageDraw
++root=Path(__file__).resolve().parents[2]
++ref=Image.open('/workspace/design-reference/SHUTTERHAUS_Master_Design_Spec_v1/assets/reference/01-primary-reference.png').convert('RGB')
++desktop=Image.open(root/'review/after/home-1440.png').convert('RGB')
++mobile=Image.open(root/'review/after/home-390.png').convert('RGB')
++board=Image.new('RGB',(1060,840),'#e9e7e2');d=ImageDraw.Draw(board)
++d.text((24,18),'ARTWORK REVIEW / supplied mockup and rendered revision 3',fill='#111')
++for x,label,im in [(24,'Mockup / desktop',ref.crop((829,205,939,624))),(230,'Rendered / desktop',desktop.crop((1213,212,1380,884)))]:
++ im=im.resize((174,664),Image.Resampling.LANCZOS);board.paste(im,(x,76));d.text((x,51),label,fill='#111')
++# Horizontal source is partly clipped by the reference phone frame at its bottom.
++for y,label,im in [(76,'Mockup / mobile (visible portion)',ref.crop((1018,852,1257,940))),(350,'Mobile production artwork',Image.open(root/'public/brand/editorial-arcs-horizontal.webp').convert('RGB'))]:
++ im=im.resize((570,round(im.height*570/im.width)),Image.Resampling.LANCZOS);board.paste(im,(464,y+25));d.text((464,y),label,fill='#111')
++d.text((464,650),'Generated decorative artwork; real studio photos unchanged.',fill='#111')
++d.text((464,672),'Curve proportions and individual grain marks are reconstructed.',fill='#111')
++d.text((464,694),'Owner visual approval pending. No deployment.',fill='#111')
++board.save(root/'review/comparisons/artwork-reference-revision.jpg',quality=94)

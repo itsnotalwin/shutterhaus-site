@@ -4,6 +4,10 @@ Branch: `design/editorial-brand-refresh`. Original repository base: `ffd120d0543
 
 The owner rejected the first build's visual match. **This revised package supersedes the first screenshots and withdraws the earlier visual acceptance claim.** Automated tests demonstrate functionality; the owner decides whether the visual result meets the mockups.
 
+## Revision 3 — artwork correction
+
+The owner rejected the revision 2 artwork. The flat SVG approximation has now been replaced with two generated production assets reconstructed from the primary mockup: a vertical split-circle/arc composition and a separate horizontal mobile band. These reproduce the distressed ink treatment and asymmetric arc arrangement. The tall asset keeps its complete silhouette; mobile no longer crops the vertical tile. Navigation and footer use the companion horizontal artwork. Generated artwork is decorative only; all studio photographs remain real. See `REFRESH_ARTWORK_REVISION.md` for provenance and limits.
+
 ## Revision 2
 
 - Home now uses **“Portraits / worth / keeping.”**, a sharper self-hosted Bodoni Moda display face, the reference's tall split photograph/motif composition, four-up monochrome work tiles on desktop and the mobile image → copy → booking → motif sequence.
@@ -11,7 +15,7 @@ The owner rejected the first build's visual match. **This revised package supers
 - About now has **“Behind the lens.”**, the pinned real photographer photograph, a separate landscape/biography composition and three value blocks.
 - Services now has **“Sessions, with intention.”**, a curated real portrait, light bordered cards, monochrome image crops and restrained recommendation styling.
 - Contact now has **“Let's make / something / worth keeping.”**, a plain white form, supporting photography and the reference's editorial contact details.
-- The header uses **Work / About / Sessions / Contact**. Mobile navigation is a dark full-screen panel with large serif links and the supplied motif.
+- The header uses **Work / About / Sessions / Contact**. Mobile navigation is a dark full-screen panel with large serif links and the textured reference-derived motif.
 - The closing elements use a compact booking band and **“People. Places. Stories.”** footer.
 
 Social remains **R3,500**. Starter R800, Essential R2,000 and Signature R2,500 are unchanged. All benefits, add-ons, deposits, terms, appointment hours and contact details remain data-driven. Real photography and original source bytes are preserved.

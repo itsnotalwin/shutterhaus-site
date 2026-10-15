@@ -36,7 +36,7 @@ Both source and current implementation were opened and examined. Focused checks 
 
 **Layout/spacing:** Home now follows the primary split scene; Portfolio mobile follows title → large image → caption → supporting images. About and Services use the corresponding reference introductions. Contact is a white split layout with editorial details. All seven widths are rendered and checked.
 
-**Colours/assets:** monochrome photography is a reversible display treatment. Source image bytes are intact; colour remains available in hover/lightbox. Supplied SVG wordmark and arc assets are used. Flat SVG grain does not reproduce every texture detail in the primary raster artwork.
+**Colours/assets:** monochrome photography is a reversible display treatment. Source image bytes are intact; colour remains available in hover/lightbox. The supplied SVG wordmark remains. Revision 3 replaces flat arc SVGs with generated artwork reconstructed against the primary reference: separate vertical and horizontal compositions with granular black/ash ink. No generated photography is used.
 
 **Images:** real pinned Home and About sources, actual curated work, service photographs and meaningful alt text are preserved. The Contact family image retains its complete framing. No illustrative/generated faces are presented as studio work.
 
@@ -44,7 +44,7 @@ Both source and current implementation were opened and examined. Focused checks 
 
 ## Acceptance and limits
 
-Functional verification is recorded in `review/TEST_TRANSCRIPT.txt`; it is separate from aesthetic acceptance. The revised screenshot set is ready for the owner's comparison. Real photo subjects, the authentic environmental photographer portrait, complete package details, unspecified exact font geometry and SVG/raster texture differences remain visible constraints.
+Functional verification is recorded in `review/TEST_TRANSCRIPT.txt`; it is separate from aesthetic acceptance. The revised screenshot set is ready for the owner's comparison. Real photo subjects, the authentic environmental photographer portrait, complete package details, unspecified exact font geometry and exact generated-artwork texture differences remain visible constraints.
 
 The owner rejected the first match. This report does not grant owner approval to the replacement. No deployment or merge has occurred.
 

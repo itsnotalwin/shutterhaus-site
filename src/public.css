@@ -166,7 +166,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 .hstrip__item:nth-child(n+5){grid-column:span 2;aspect-ratio:2/1}
 .hstrip__item .cell,.hstrip__item picture,.hstrip__item img{width:100%;height:100%;object-fit:cover;object-position:center 28%}
 .site-footer strong{font:400 30px/1 var(--font-display);letter-spacing:-.05em;color:var(--ink)}
-.site-footer>img{width:52px;height:52px}
+.site-footer>img{width:104px;height:40px;object-fit:contain}
 .phead.editorial-intro,.editorial-intro{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.1fr) minmax(90px,.36fr);gap:28px;align-items:stretch;padding:48px 0 0;margin:0 0 42px}
 .editorial-intro__copy{align-self:center;min-width:0}
 .page .editorial-intro h1,.page .shead__h{font-size:clamp(70px,6vw,100px);line-height:.9;letter-spacing:-.065em;margin:18px 0 24px;max-width:none}
@@ -281,7 +281,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
  .site-nav a[href="./"]{display:block}
  .site-nav .nav-link{font:400 42px/1.1 var(--font-display);letter-spacing:-.04em;text-transform:none;border:0;color:#fff;padding:8px 0;min-height:58px}
  .site-nav .nav-link:hover,.site-nav .nav-link.is-active{color:#ddd}
- .site-nav:after{content:'';position:absolute;bottom:0;left:0;right:0;height:120px;background:url('/brand/arc-grid.svg') center 55%/cover}
+ .site-nav:after{content:'';position:absolute;bottom:0;left:0;right:0;height:120px;background:url('/brand/editorial-arcs-horizontal.webp') center/cover}
 }
 @media(max-width:759px){
  .page .hero__h{font-size:clamp(56px,16.5vw,75px)}
@@ -344,4 +344,25 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
  .hero__body .eyebrow{position:relative;top:-8px}
  .page .hero__h{margin-bottom:44px}
  .hero__lede{max-width:35ch;line-height:1.65;padding-top:30px;margin-bottom:30px}
+}
+
+/* Reference artwork: separate generated vertical and horizontal compositions.
+   Keep the complete arcs visible; metadata sits in the lower negative space. */
+.brand-motif picture{display:block;width:100%;min-height:0}
+.brand-motif picture img{width:100%;height:auto;object-fit:fill}
+.hero__motif{position:relative;padding-top:52px;display:block}
+.hero__motif picture{aspect-ratio:110/385}
+.hero__motif picture img{height:100%;flex:none}
+.hero__motif p{position:absolute;right:0;bottom:0;width:64%;min-height:150px;padding:36px 0 0 20px;font-size:10px;box-sizing:border-box}
+.editorial-intro .brand-motif picture,.shead .brand-motif picture{height:100%;min-height:0}
+.editorial-intro .brand-motif picture img,.shead .brand-motif picture img{height:100%;object-fit:contain;object-position:top}
+.contact__motif picture{height:128px}
+.contact__motif picture img{height:100%;object-fit:contain;object-position:left}
+@media(max-width:1000px) and (min-width:760px){.hero__motif{display:none}}
+@media(max-width:759px){
+ .hero__motif{display:block;padding:0;height:auto;background:transparent}
+ .hero__motif picture{aspect-ratio:1010/389}
+ .hero__motif picture img{height:auto;width:100%;object-fit:contain}
+ .hero__motif p{display:none}
+ .site-nav:after{height:auto;aspect-ratio:1010/389;background-size:contain;background-repeat:no-repeat}
 }
