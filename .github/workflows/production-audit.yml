@@ -35,7 +35,7 @@ jobs:
         run: npx playwright install --with-deps webkit
       - name: Wait for the corrected production release
         env:
-          EXPECTED_RELEASE: aa3460bdc7e78946e222c1a93face0794d21d402
+          EXPECTED_RELEASE: 50ebcb41ecb3578993e3ee721fd62326d8322e84
         run: |
           node --input-type=module <<'JS'
           let ready = false;

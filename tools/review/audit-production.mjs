@@ -168,7 +168,7 @@ try {
               ctaViewportScreenshot = `package-social-${viewport.label}-cta-viewport.jpg`;
               await page.screenshot({ path: `${output}/${ctaViewportScreenshot}`, type: 'jpeg', quality: 85, fullPage: false, animations: 'disabled' });
             }
-            return { selected: await page.locator('[name="package-view"]:checked').inputValue(), screenshot: `package-${tier.toLowerCase()}-${viewport.label}.jpg`, fullPageScreenshot, ctaViewportScreenshot, cta, package: state.packages, images: state.images.filter(image => image.context === 'pkg__fig'), headings: state.headings.filter(heading => heading.text === tier), horizontalOverflow: state.horizontalOverflow };
+            return { selected: await page.locator('[name="package-view"]:checked').inputValue(), screenshot: `package-${tier.toLowerCase()}-${viewport.label}.jpg`, fullPageScreenshot, ctaViewportScreenshot, cta, package: state.packages, images: state.images.filter(image => image.context.split(/\s+/).includes('pkg__fig')), headings: state.headings.filter(heading => heading.text === tier), horizontalOverflow: state.horizontalOverflow };
           });
         }
         if (route === 'portfolio' && [390, 1440].includes(viewport.width)) {
