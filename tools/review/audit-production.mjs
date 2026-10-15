@@ -1,19 +1,22 @@
 /** Read-only evidence from the deployed site. Never submits a form or authenticates. */
-import { chromium, request } from '@playwright/test';
+import { chromium, webkit, request } from '@playwright/test';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const origin = (process.env.LIVE_URL || 'https://shutterhausvisuals.co.za').replace(/\/$/, '');
 const output = resolve(process.env.AUDIT_OUT || 'shots/production-audit');
+const engine = process.env.BROWSER_ENGINE === 'webkit' ? 'webkit' : 'chromium';
 const routes = (process.env.AUDIT_ROUTES || 'home,portfolio,about,services,contact').split(',');
 const widths = (process.env.AUDIT_WIDTHS || '320,390,430,768,1024,1440,1920').split(',').map(Number);
 const navOnly = process.env.AUDIT_NAV_ONLY === '1';
 const viewports = widths.map(width => ({ width, height: Number(process.env.AUDIT_HEIGHT) || (width <= 768 ? 844 : 1000), label: String(width) }));
 if (process.env.AUDIT_LANDSCAPE !== '0') viewports.push({ width: 844, height: 390, label: '844-landscape' });
 mkdirSync(output, { recursive: true });
-const report = { generatedAt: new Date().toISOString(), origin, readOnly: true, navOnly, release: null, pages: [], interactions: [], accessFailures: [] };
+const report = { generatedAt: new Date().toISOString(), origin, engine, readOnly: true, navOnly, release: null, pages: [], interactions: [], accessFailures: [] };
 const save = () => writeFileSync(`${output}/measurements.json`, JSON.stringify(report, null, 2));
-const browser = await chromium.launch({ executablePath: process.env.CHROME_BIN || '/usr/bin/google-chrome', args: ['--no-sandbox', '--disable-dev-shm-usage'] });
+const browser = engine === 'webkit'
+  ? await webkit.launch()
+  : await chromium.launch({ executablePath: process.env.CHROME_BIN || '/usr/bin/google-chrome', args: ['--no-sandbox', '--disable-dev-shm-usage'] });
 const routeURL = route => `${origin}/${route === 'home' ? '' : `${route}.html`}`;
 
 async function settle(page) {
@@ -141,7 +144,31 @@ try {
             await page.waitForTimeout(250);
             await capture(page, `package-${tier.toLowerCase()}-${viewport.label}`, card);
             const state = await metrics(page);
-            return { selected: await page.locator('[name="package-view"]:checked').inputValue(), screenshot: `package-${tier.toLowerCase()}-${viewport.label}.jpg`, package: state.packages, images: state.images.filter(image => image.context === 'pkg__fig'), headings: state.headings.filter(heading => heading.text === tier), horizontalOverflow: state.horizontalOverflow };
+            const cta = await card.locator('a.cta').evaluate(link => {
+              const card = link.closest('.pkg'), rect = link.getBoundingClientRect(), cardRect = card.getBoundingClientRect();
+              const range = document.createRange(); range.selectNodeContents(link);
+              const textRect = range.getBoundingClientRect();
+              const bounds = rect => ({ x: rect.x, y: rect.y, top: rect.top, right: rect.right, bottom: rect.bottom, width: rect.width, height: rect.height, documentTop: rect.top + scrollY, documentBottom: rect.bottom + scrollY });
+              const clippingAncestors = [];
+              for (let ancestor = link.parentElement; ancestor && !['HTML', 'BODY'].includes(ancestor.tagName); ancestor = ancestor.parentElement) {
+                const style = getComputedStyle(ancestor), box = ancestor.getBoundingClientRect();
+                const clipsX = /hidden|clip|auto|scroll/.test(style.overflowX) && (rect.left < box.left - 1 || rect.right > box.right + 1);
+                const clipsY = /hidden|clip|auto|scroll/.test(style.overflowY) && (rect.top < box.top - 1 || rect.bottom > box.bottom + 1);
+                if (clipsX || clipsY) clippingAncestors.push({ class: ancestor.className, overflowX: style.overflowX, overflowY: style.overflowY, box: bounds(box), clipsX, clipsY, hardClip: (clipsX && /hidden|clip/.test(style.overflowX)) || (clipsY && /hidden|clip/.test(style.overflowY)) });
+              }
+              const insideCard = rect.left >= cardRect.left - 1 && rect.right <= cardRect.right + 1 && rect.top >= cardRect.top - 1 && rect.bottom <= cardRect.bottom + 1;
+              const textInsideControl = textRect.left >= rect.left - 1 && textRect.right <= rect.right + 1 && textRect.top >= rect.top - 1 && textRect.bottom <= rect.bottom + 1;
+              return { control: bounds(rect), card: bounds(cardRect), text: bounds(textRect), viewport: { width: innerWidth, height: innerHeight }, insideCard, textInsideControl, clippingAncestors, actualClippingDetected: !insideCard || !textInsideControl || clippingAncestors.some(ancestor => ancestor.hardClip), fullyInsideViewport: rect.top >= 0 && rect.bottom <= innerHeight && rect.left >= 0 && rect.right <= innerWidth, elementScreenshotExtendsBeyondViewport: cardRect.top < 0 || cardRect.bottom > innerHeight };
+            });
+            let fullPageScreenshot = null, ctaViewportScreenshot = null;
+            if (tier === 'Social') {
+              fullPageScreenshot = `package-social-${viewport.label}-fullpage.jpg`;
+              await capture(page, `package-social-${viewport.label}-fullpage`);
+              await card.locator('a.cta').scrollIntoViewIfNeeded(); await page.waitForTimeout(200);
+              ctaViewportScreenshot = `package-social-${viewport.label}-cta-viewport.jpg`;
+              await page.screenshot({ path: `${output}/${ctaViewportScreenshot}`, type: 'jpeg', quality: 85, fullPage: false, animations: 'disabled' });
+            }
+            return { selected: await page.locator('[name="package-view"]:checked').inputValue(), screenshot: `package-${tier.toLowerCase()}-${viewport.label}.jpg`, fullPageScreenshot, ctaViewportScreenshot, cta, package: state.packages, images: state.images.filter(image => image.context === 'pkg__fig'), headings: state.headings.filter(heading => heading.text === tier), horizontalOverflow: state.horizontalOverflow };
           });
         }
         if (route === 'portfolio' && [390, 1440].includes(viewport.width)) {
