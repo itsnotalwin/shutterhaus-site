@@ -167,14 +167,14 @@ export const SITE: SiteConfig = {
    */
   home: {
     eyebrow: "Shutterhaus Visuals",
-    heading: "Timeless portraiture",
-    lede: "Real people. Honest moments. Portraits that look beyond the now.",
+    heading: "Portraits worth keeping.",
+    lede: "Natural, honest and timeless photography for portraits, couples, families and social content across Gauteng.",
     cta: "View portfolio",
     est: "2019",
     tags: ["Portraits", "Couples", "Families"],
   },
   about: {
-    eyebrow: "About me",
+    eyebrow: "INDEPENDENT PHOTOGRAPHY / GAUTENG, SA",
     heading: "Alwin Newman.",
     /** paragraphs, in order, on the left column beside the portrait */
     body: [
@@ -249,7 +249,7 @@ export const SITE: SiteConfig = {
   // the lower-left for the white headline. Chosen from a side-by-side of all
   // six landscape frames cropped to the hero ratio.
   heroPhoto: "27-img-0297.jpg",
-  services: { eyebrow: "Photography", heading: "Sessions & pricing.", cta: "View packages" },
+  services: { eyebrow: "INDEPENDENT PHOTOGRAPHY / GAUTENG, SA", heading: "Sessions & pricing.", cta: "View packages" },
 };
 
 /** Fonts loaded in index.html. Change these to re-skin the type. */

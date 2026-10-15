@@ -141,7 +141,7 @@ export function servicesPage(photos: Photo[] = []): string {
       </ul>
     </div>
     </div>
-${homeBand({ eyebrow: "Enquiries", heading: "Book a session.", cta: "Enquire about a session", href: "./contact.html" })}
+${homeBand({ eyebrow: "INDEPENDENT PHOTOGRAPHY / GAUTENG, SA", heading: "Book a session.", cta: "Enquire about a session", href: "./contact.html" })}
   </section>`;
 }
 
@@ -197,6 +197,7 @@ export function contactPage(): string {
   return `<section class="page contact">
     <div class="contact__col">
       <header class="contact__intro">
+        <p class="eyebrow">INDEPENDENT PHOTOGRAPHY / GAUTENG, SA</p>
         <h1 class="contact__h">Let’s create <br />something <br />beautiful.</h1>
         <p class="contact__p">Portraits, couples, families and social content,<br class="contact__break" /> shot across Gauteng.</p>
       </header>

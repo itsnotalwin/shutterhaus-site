@@ -545,8 +545,8 @@ export function portfolioPage(photos: Photo[], expanded = false): string {
 
   return `<section class="page portfolio" data-mobile-layout="${mobileGallery()}">
     <header class="phead">
-      <p class="eyebrow">${shown.length} photographs · Gauteng</p>
-      <h1 class="phead__h">Portfolio</h1>
+      <p class="eyebrow">INDEPENDENT PHOTOGRAPHY / GAUTENG, SA</p>
+      <h1 class="phead__h">Selected stories.</h1>
       <p class="phead__p">Portraits and places, shot around Gauteng.</p>
     </header>
     ${gallery}
@@ -581,7 +581,7 @@ export const WALL_MIN_FRAME_PX = 175;
  * break the route's enquiry link. The browser gate checks the destination.
  */
 function pfBand(): string {
-  return homeBand({ eyebrow: "Enquiries", heading: "Book a session.", cta: "Enquire about a session", href: "./contact.html" });
+  return homeBand({ eyebrow: "INDEPENDENT PHOTOGRAPHY / GAUTENG, SA", heading: "Book a session.", cta: "Enquire about a session", href: "./contact.html" });
 }
 
 /** The shared empty state — reachable from home and portfolio alike. */
