@@ -621,9 +621,9 @@ for (const width of reviewWidths) {
         const image = fig.querySelector('img'), r = fig.getBoundingClientRect();
         return { ratio:r.width/r.height, fit:getComputedStyle(image).objectFit, position:getComputedStyle(image).objectPosition };
       }))()`);
-      check(`review services ${width}: editorial package image windows`, framing[0].fit === 'cover' && framing[2].fit === 'cover');
+      check(`review services ${width}: editorial package image windows`, framing[0].fit === 'contain' && framing[2].fit === 'contain');
       if (width > 760) {
-        check(`review services ${width}: consistent desktop image windows`, framing.every(fig => fig.ratio > 0 && Number.isFinite(fig.ratio)));
+        check(`review services ${width}: consistent desktop image windows`, framing.every(fig => Math.abs(fig.ratio - 1.25) < .01));
         check(`review services ${width}: Essential preserves the top of the portrait`, framing[1].position === '50% 0%');
         check(`review services ${width}: Social preserves the top of the portrait`, framing[3].position === '50% 0%');
       } else {
