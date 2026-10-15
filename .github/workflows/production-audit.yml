@@ -1,0 +1,37 @@
+name: Production visual audit
+
+on:
+  push:
+    branches: [qa/production-visual-pass]
+    paths:
+      - tools/review/audit-production.mjs
+      - .github/workflows/production-audit.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Capture and measure the real production website
+        run: node tools/review/audit-production.mjs
+        env:
+          LIVE_URL: https://shutterhausvisuals.co.za/
+          CHROME_BIN: /usr/bin/google-chrome
+      - name: Save production evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-visual-audit
+          path: shots/production-audit/
+          if-no-files-found: error
+          retention-days: 14
