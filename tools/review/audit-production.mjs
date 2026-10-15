@@ -7,10 +7,11 @@ const origin = (process.env.LIVE_URL || 'https://shutterhausvisuals.co.za').repl
 const output = resolve(process.env.AUDIT_OUT || 'shots/production-audit');
 const routes = (process.env.AUDIT_ROUTES || 'home,portfolio,about,services,contact').split(',');
 const widths = (process.env.AUDIT_WIDTHS || '320,390,430,768,1024,1440,1920').split(',').map(Number);
-const viewports = widths.map(width => ({ width, height: width <= 768 ? 844 : 1000, label: String(width) }));
+const navOnly = process.env.AUDIT_NAV_ONLY === '1';
+const viewports = widths.map(width => ({ width, height: Number(process.env.AUDIT_HEIGHT) || (width <= 768 ? 844 : 1000), label: String(width) }));
 if (process.env.AUDIT_LANDSCAPE !== '0') viewports.push({ width: 844, height: 390, label: '844-landscape' });
 mkdirSync(output, { recursive: true });
-const report = { generatedAt: new Date().toISOString(), origin, readOnly: true, release: null, pages: [], interactions: [], accessFailures: [] };
+const report = { generatedAt: new Date().toISOString(), origin, readOnly: true, navOnly, release: null, pages: [], interactions: [], accessFailures: [] };
 const save = () => writeFileSync(`${output}/measurements.json`, JSON.stringify(report, null, 2));
 const browser = await chromium.launch({ executablePath: process.env.CHROME_BIN || '/usr/bin/google-chrome', args: ['--no-sandbox', '--disable-dev-shm-usage'] });
 const routeURL = route => `${origin}/${route === 'home' ? '' : `${route}.html`}`;
@@ -121,7 +122,7 @@ try {
     page.on('console', message => { if (['error', 'warning'].includes(message.type())) warnings.push({ type: message.type(), text: message.text().slice(0, 1000) }); });
     page.on('requestfailed', request => failedRequests.push({ url: request.url(), failure: request.failure()?.errorText }));
     page.on('response', response => { if (response.status() >= 400) resourceErrors.push({ url: response.url(), status: response.status() }); });
-    for (const route of routes) {
+    for (const route of navOnly ? [] : routes) {
       exceptions = []; failedRequests = []; resourceErrors = []; warnings = [];
       try {
         const response = await page.goto(routeURL(route), { waitUntil: 'domcontentloaded', timeout: 45000 });
@@ -174,13 +175,27 @@ try {
         await capture(page, `failed-${route}-${viewport.label}`).catch(() => {}); save();
       }
     }
-    if ([390, 1440].includes(viewport.width)) {
+    if (viewport.width <= 1000 || viewport.width === 1440) {
       await checkInteraction(`navigation ${viewport.label}`, async () => {
         await page.goto(routeURL('home')); await settle(page); await page.evaluate(() => scrollTo(0, 0));
         const burger = page.locator('.burger'); let menu = null;
         if (await burger.isVisible()) {
           await burger.click(); await page.waitForTimeout(300);
           await capture(page, `menu-${viewport.label}`);
+          const geometry = await page.locator('.site-nav').evaluate(nav => {
+            const links = [...nav.querySelectorAll('a')].map(link => {
+              const rect = link.getBoundingClientRect(), style = getComputedStyle(link);
+              const x = rect.left + rect.width / 2, y = rect.top + rect.height / 2;
+              const hit = document.elementFromPoint(x, y);
+              const rendered = !!link.getClientRects().length && style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity) > 0;
+              const fullyInsideViewport = rect.left >= 0 && rect.top >= 0 && rect.right <= innerWidth && rect.bottom <= innerHeight;
+              const centerHitsLink = !!hit && (hit === link || link.contains(hit));
+              return { text: link.textContent.trim(), href: link.getAttribute('href'), rect: { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom, width: rect.width, height: rect.height }, rendered, fullyInsideViewport, center: { x, y }, centerHitsLink, hitElement: hit ? { tag: hit.tagName, class: hit.className, text: hit.textContent?.trim().slice(0, 120) } : null, visible: rendered && fullyInsideViewport && centerHitsLink };
+            });
+            return { viewport: { width: innerWidth, height: innerHeight }, linkCount: links.length, allFiveLinksVisible: links.length === 5 && links.every(link => link.visible), links, navScroll: { top: nav.scrollTop, height: nav.scrollHeight, clientHeight: nav.clientHeight }, navBox: { top: nav.getBoundingClientRect().top, bottom: nav.getBoundingClientRect().bottom } };
+          });
+          // Retain the geometry even if a subsequent real navigation is blocked.
+          report.interactions.push({ label: `menu geometry ${viewport.label}`, screenshot: `menu-${viewport.label}.jpg`, ...geometry }); save();
           const opens = await burger.getAttribute('aria-expanded') === 'true';
           const firstFocused = await page.locator('.site-nav a').first().evaluate(element => element === document.activeElement);
           await page.locator('.site-nav a').last().focus(); await page.keyboard.press('Tab');
