@@ -1,17 +1,17 @@
-import "./fonts.css";
 import "./styles.css";
 import "./public.css";
-import { wireNavigation } from "./navigation";
-import { wireContact } from "./contact-form";
-import { SITE } from "./config";
+import "./fonts.css";
+import { updatePageMetadata } from "./seo";
 import { renderShell } from "./layout";
-import { portfolioPage, homePage, emptyGallery } from "./pages";
+import { portfolioPage, homePage } from "./pages";
 import { contactPage, servicesPage, aboutPage } from "./pages-more";
-import { publicPhotosOrNull, type AdminPhoto } from "./store";
-import { readComposition, type Composition } from "./composition";
+import { publicPhotosOrNull } from "./store";
+import { mergePhotos, fallbackComposition } from "./gallery-model";
+import { readComposition } from "./composition";
 import { setLiveHome } from "./config";
-import { setLiveRows, COMMITTED_ROWS } from "./rows";
-import { DEMO_PHOTOS } from "./demo";
+import { setLiveRows } from "./rows";
+import { mountContactForm } from "./contact-form";
+import { mountNavigation } from "./navigation";
 import { initLightbox, markLoadedImages } from "./lightbox";
 
 const app = document.getElementById("app")!;
@@ -57,7 +57,7 @@ function route(): string {
   // home+portfolio tail, which is why `#/video` falls back to the gallery —
   // tools/verify.mjs asserts exactly that. Do not "tidy" this into a whitelist
   // without checking that check: it is load-bearing.
-  return h === "main-content" ? "home" : h || "home";
+  return h || "home";
 }
 
 /** Routes with a real document, keyed by filename stem. Keep in step with tools/build-pages.py. */
@@ -81,14 +81,12 @@ const ALIASES: Record<string, string> = {
   pricing: "services",
 };
 
-/** Routes that need the photo set rather than just static copy. */
-const GALLERY_ROUTES = new Set(["home", "portfolio", "about"]);
 
 /**
  * Close the live burger drawer, if there is one.
  *
  * `wireBurger()` runs inside `draw()`, which runs inside `paint()`, and `paint()`
- * runs on every route change AND every orientation change. It used to register
+ * runs on every route change. It used to register
  * its own `keydown` + `hashchange` pair on `window` each time and never removed
  * them, so every navigation leaked two more listeners — each closing over a
  * `btn`, `nav` and `scrim` that `innerHTML` had already thrown away. A visitor
@@ -101,6 +99,13 @@ const GALLERY_ROUTES = new Set(["home", "portfolio", "about"]);
  * would otherwise lock scrolling on a page whose drawer no longer exists.
  */
 let closeNav: (() => void) | null = null;
+let cleanupPage = () => {};
+let refreshGalleryLayout: (() => void) | null = null;
+
+function syncHeader(): void {
+  const header = document.querySelector<HTMLElement>(".shell--over .site-header");
+  header?.classList.toggle("is-solid", scrollY > 24 || !!header.querySelector(".site-nav.is-open"));
+}
 
 /**
  * Paint generation counter.
@@ -114,282 +119,147 @@ let closeNav: (() => void) | null = null;
  */
 let paintSeq = 0;
 
-function setTitle(r: string): void {
-  const label = r.charAt(0).toUpperCase() + r.slice(1);
-  document.title =
-    r === "home"
-      ? `${SITE.nameTop} ${SITE.nameBig2} | photography in Gauteng`
-      : `${label} — ${SITE.nameTop} ${SITE.nameBig2}`;
+
+let displayedRoute: string | null = null;
+
+async function withinBudget<T>(request: Promise<T>, ms = 6000): Promise<T | null> {
+  let timer: ReturnType<typeof setTimeout>;
+  try {
+    return await Promise.race([request, new Promise<null>(resolve => { timer = setTimeout(() => resolve(null), ms); })]);
+  } finally { clearTimeout(timer!); }
 }
 
 async function paint(): Promise<void> {
   const r = ALIASES[route()] ?? route();
-  const cols = columnsFor(innerWidth);
-  // Abandon this paint the moment a newer one starts — see `paintSeq`.
+  // A restored document already contains its form, focus and scroll position.
+  if (r === displayedRoute) return;
+  closeLightbox();
+  cleanupPage();
+  displayedRoute = r;
+  refreshGalleryLayout = null;
   const myPaint = ++paintSeq;
+  if (r === 'admin') { location.replace('./admin.html'); return; }
 
-  if (r === "admin") {
-    // The admin is a separate bundle (admin.html) — bounce across.
-    location.replace("./admin.html");
-    return;
-  }
+  let photos = mergePhotos();
+  let portfolioExpanded = false;
+  const renderBody = () => r === 'contact' ? contactPage()
+    : r === 'services' ? servicesPage(photos)
+    : r === 'about' ? aboutPage(photos)
+    : r === 'home' ? homePage(photos, columnsFor(innerWidth))
+    : portfolioPage(photos, portfolioExpanded);
 
-  if (r === "contact") {
-    app.innerHTML = renderShell("contact", contactPage());
-    wireContact();
-    wireBurger();
-    setTitle("contact");
+  const prerendered = app.dataset.route === r && !!app.querySelector('.main');
+  if (!prerendered) {
+    app.innerHTML = renderShell(r, renderBody(), r === 'home');
     scrollTo(0, 0);
+  }
+  delete app.dataset.route;
+  updatePageMetadata(r);
+  markLoadedImages();
+  const navigation = mountNavigation(syncHeader);
+  closeNav = navigation.close;
+  cleanupPage = navigation.destroy;
+  syncHeader();
+  if (r === 'contact') {
+    const unmountForm = mountContactForm();
+    cleanupPage = () => { unmountForm(); navigation.destroy(); };
     return;
   }
 
-  if (r === "services") {
-    // Package cards carry a photograph each, same non-blocking pattern.
-    let photos = DEMO_PHOTOS;
-    const draw = () => {
-      app.innerHTML = renderShell("services", servicesPage(photos));
-      markLoadedImages();
-      wireBurger();
-      scrollTo(0, 0);
-    };
-    draw();
-    setTitle("services");
-    {
-      const live = adoptable(await publicPhotosOrNull());
-      if (myPaint !== paintSeq) return; // a newer route won
-      if (live) {
-        photos = live;
-        draw();
-      }
-    }
-    return;
-  }
-
-  if (r === "about") {
-    // The about page shows one portrait beside the prose, so it needs a photo
-    // but must never wait on the network for it.
-    let photos = DEMO_PHOTOS;
-    const draw = () => {
-      app.innerHTML = renderShell("about", aboutPage(photos));
-      markLoadedImages();
-      wireBurger();
-      scrollTo(0, 0);
-    };
-    draw();
-    setTitle("about");
-    {
-      const live = adoptable(await publicPhotosOrNull());
-      if (myPaint !== paintSeq) return; // a newer route won
-      if (live) {
-        photos = live;
-        draw();
-      }
-    }
-    return;
-  }
-
-  /**
-     * Adopt the Supabase set only if every row it names is actually reachable.
-     *
-     * A row can name a file that isn't there: when the bundled gallery was
-     * replaced with Alwin's favourites, the `photos` table still listed the nine
-     * old `finals-*.jpg` rows. Those overrode the bundled set and rendered as
-     * 404s on every page — a whole-site breakage from nine stale rows. The DB is
-     * optional data, so it only wins when it is fully coherent; a partial match is
-     * worse than no match and is rejected outright.
-     *
-     * Two kinds of row, and they get opposite verdicts:
-     *   - bundled  (`gallery/…`, committed to the repo): must be in DEMO_PHOTOS.
-     *     Checking the manifest is what catches the stale-row case above.
-     *   - uploaded (a Supabase storage URL): accepted on trust. The file went up
-     *     with the row in the same request, so there is no gap for it to rot in,
-     *     and requiring it in DEMO_PHOTOS would reject every photo added through
-     *     /admin — the upload would succeed and silently never appear.
-     */
-  function adoptable(live: AdminPhoto[] | null | undefined): AdminPhoto[] | null {
-      if (!live?.length) return null;
-      const known = new Set(DEMO_PHOTOS.map((p) => p.filename));
-      const ok = live.every((p) => {
-        if (!p.url) return false;
-        if (/^https?:\/\//.test(p.url)) return true; // uploaded: file is in the bucket
-        return !!p.filename && known.has(p.filename); // bundled: must be shipped
-      });
-      return ok ? live : null;
-    }
-
-/**
- * The committed choices, as the fallback for every composition read.
- *
- * Derived from the same git files the site shipped with, so "the database is
- * unreachable" and "Alwin has changed nothing" render identically — which is
- * the point: a visitor cannot tell whether the fallback fired.
- */
-const idToFile = new Map(DEMO_PHOTOS.map((p) => [p.id, p.filename]));
-const FALLBACK = {
-  strip: [...SITE.homeStrip],
-  hero: SITE.heroPhoto,
-  rows: COMMITTED_ROWS.map((r) => r.map((id) => idToFile.get(id) ?? "")),
-};
-
-/**
- * Push a resolved composition into the renderers.
- *
- * The wall arrives as filenames and has to become frame ids, because
- * portfolioPage() looks photos up by id and THROWS on an id it cannot find.
- * Converting here — rather than loosening that check — keeps the guard that
- * stopped the nine-stale-rows outage intact.
- */
-function applyComposition(comp: Composition): void {
-  const fileToId = new Map(
-    DEMO_PHOTOS.filter((p) => p.filename).map((p) => [p.filename!, p.id]),
-  );
-  setLiveHome(comp.homeStrip, comp.heroPhoto);
-  const asIds = comp.wallRows.map((row) =>
-    row.map((f) => fileToId.get(f)).filter((id): id is string => !!id),
-  );
-  // setLiveRows rejects a ragged wall, so a composition that lost a frame cannot
-  // reach the renderer as a short row.
-  setLiveRows(asIds);
-}
-
-// home + portfolio — the two routes built around the wall of frames.
-  //
-  // The gallery must NEVER depend on a network call succeeding. Two failure
-  // modes to survive: Supabase being unreachable, and supabase-js burning ~6s
-  // retrying before it admits defeat. So we don't wait on it at all beyond a
-  // short cap — the bundled set renders immediately and is upgraded in place
-  // if live photos arrive. A visitor never sees a blank page.
-  let photos = DEMO_PHOTOS;
-
-  const draw = () => {
-    const body =
-      r === "home"
-        ? photos.length
-          ? homePage(photos, cols)
-          : emptyGallery()
-        : portfolioPage(photos);
-    // All public pages share the solid editorial header.
-    app.innerHTML = renderShell(r, body);
-    markLoadedImages();
-    wireBurger();
-      // Same: only the portfolio wall is scrollable.
-      scrollTo(0, 0);
+  // Opening a native disclosure does not change the gallery data. Compare
+  // content independently of its open state, including while a read is pending.
+  const contentKey = (body: string) => body.replace('<details class="pf-more" open>', '<details class="pf-more">');
+  let lastBody = contentKey(renderBody());
+  const wireMore = () => {
+    const more = app.querySelector<HTMLDetailsElement>('.pf-more');
+    more?.addEventListener('toggle', () => {
+      if (!more.isConnected) return;
+      portfolioExpanded = more.open;
+    });
   };
-  draw();
-  setTitle(r);
-
-  {
-    const TIMEOUT_MS = 2500;
-    // One budget PER QUERY, not one shared promise. A single shared timeout means
-    // the composition read starts its clock when the gallery read started, so it
-        // inherits whatever the first one already spent and can only ever resolve
-        // already-expired. That is not a theoretical race: it made the composition
-        // read time out every time, which is how the hero and strip still rendered
-        // (they fall back to git) while nothing was actually coming from the DB.
-        const budget = () =>
-          new Promise<null>((res) => {
-            setTimeout(() => res(null), TIMEOUT_MS);
-          });
-        let t: ReturnType<typeof setTimeout> | undefined;
-        const timeout = new Promise<null>((res) => {
-          t = setTimeout(() => res(null), TIMEOUT_MS);
-        });
-        try {
-          const live = await Promise.race([publicPhotosOrNull(), timeout]);
-          if (myPaint !== paintSeq) return; // a newer route won
-          if (live === null) {
-                  console.warn("[gallery] timed out, keeping bundled set");
-                  // NOT an early return any more. The composition is a different table,
-                  // and the two have genuinely different failure modes: `photos` can be
-                  // empty or slow (it holds one row per upload) while `composition` holds
-                  // the 37 rows that decide which images appear where. Returning here
-                  // meant a slow gallery read silently also discarded Alwin's choices.
-                }
-      // An empty table is a legitimate state (nothing published yet) — keep the
-            // bundled set so the site is never empty. `adoptable` additionally rejects
-            // a table whose rows name files we no longer ship.
-            // `live` can be null here (the race resolved to the timeout), so this is
-            // gated on a real array rather than on truthiness.
-            if (Array.isArray(live)) {
-              const ok = adoptable(live);
-              if (ok) {
-                photos = ok;
-                draw();
-              } else if (live.length) {
-                console.warn(
-                  `[gallery] ignoring ${live.length} DB row(s) naming files that are not bundled`,
-                );
-              }
-            }
-
-            // The composition is a SEPARATE read from the gallery, and it is what
-            // makes Alwin's choices in /admin reach the page. Reordering the gallery
-            // would not do it: which photo sits in the hero, and which 30 make the
-            // wall, is a decision about slots, not about sort_order.
-            //
-            // Same rule as the gallery read above — never wait long enough to hold the
-            // page, and never let a bad row blank it. readComposition() resolves each
-            // slot against `known` and falls back per slot, so the worst case here is
-            // the committed defaults, which is what the site served before any of this.
-            if (myPaint !== paintSeq) return;
-                        // The gallery the page is actually rendering — bundled plus
-                        // anything live — so a slot naming a file we do not ship falls back
-                        // instead of rendering a hole. Same set the admin resolves against.
-                        const known = new Set<string>(photos.map((p) => p.filename).filter((f): f is string => !!f));
-                        const comp = await Promise.race([readComposition(known, FALLBACK), budget()]);
-            if (!comp) {
-              console.warn("[composition] timed out, keeping committed defaults");
-              return;
-            }
-            if (comp.problems.length) {
-              console.warn(`[composition] ${comp.problems.length} slot(s) fell back:`, comp.problems);
-            }
-            applyComposition(comp);
-            draw();
-          } catch (err) {
-            console.warn("[gallery] Supabase unreachable, keeping bundled set:", err);
-          } finally {
-      if (t !== undefined) clearTimeout(t);
+  wireMore();
+  const upgrade = (force = false) => {
+    const main = app.querySelector<HTMLElement>('.main');
+    if (!main) return;
+    const more = main.querySelector<HTMLDetailsElement>('.pf-more');
+    if (more) portfolioExpanded = more.open;
+    const body = renderBody();
+    if (!force && lastBody === contentKey(body)) return;
+    lastBody = contentKey(body);
+    const position = scrollY;
+    const focused = document.activeElement;
+    const frame = focused?.matches('[role="button"]')
+      ? focused.querySelector<HTMLImageElement>('[data-full]')?.dataset.full : undefined;
+    const moreFocused = document.activeElement?.matches('.pf-more__toggle');
+    // Keep the visitor's package choice and keyboard focus across live photo updates.
+    const packageChoice = main.querySelector<HTMLInputElement>('[name="package-view"]:checked')?.id;
+    const packageFocus = focused?.matches('[name="package-view"]') ? focused.id : null;
+    main.innerHTML = body;
+    if (packageChoice) {
+      const radio = document.getElementById(packageChoice) as HTMLInputElement | null;
+      if (radio) radio.checked = true;
     }
+    if (packageFocus) document.getElementById(packageFocus)?.focus({preventScroll:true});
+    wireMore();
+    markLoadedImages();
+    if (frame) {
+      const target = [...main.querySelectorAll<HTMLImageElement>('[data-full]')]
+        .find(el => el.dataset.full === frame)?.closest<HTMLElement>('[role="button"]');
+      const disclosure = target?.closest<HTMLDetailsElement>('details');
+      if (disclosure && !disclosure.open) disclosure.open = true;
+      target?.focus({preventScroll:true});
+    }
+    if (moreFocused) main.querySelector<HTMLElement>('.pf-more__toggle')?.focus({preventScroll:true});
+    scrollTo(0, position);
+  };
+  if (!['services','about'].includes(r)) {
+    refreshGalleryLayout = () => {
+      const gallery = mainGallery();
+      if (gallery && gallery.dataset.mobileLayout !== String(innerWidth <= 760)) upgrade(true);
+    };
+    refreshGalleryLayout();
+  }
+
+  try {
+    const live = await withinBudget(publicPhotosOrNull());
+    if (myPaint !== paintSeq) return;
+    photos = mergePhotos(live);
+    if (r === 'services' || r === 'about') { upgrade(); return; }
+    const fallback = fallbackComposition();
+    const known = new Set(photos.filter(p => p.visible).map(p => p.filename));
+    const comp = await withinBudget(readComposition(known, fallback));
+    // Check again after EACH asynchronous read, before changing shared choices.
+    if (myPaint !== paintSeq) return;
+    if (comp) {
+      const byFile = new Map(photos.map(p => [p.filename,p.id]));
+      setLiveHome(comp.homeStrip, comp.heroPhoto);
+      setLiveRows(comp.wallRows.map(row => row.map(file => byFile.get(file)!).filter(Boolean)));
+    }
+    upgrade();
+  } catch (error) {
+    console.warn('[gallery] Keeping the available gallery:', error);
   }
 }
 
-/** Mobile menu toggle. The button and the panel are both in the header. */
-function wireBurger(): void {
-  closeNav = wireNavigation();
+function mainGallery(): HTMLElement | null {
+  return app.querySelector('.page[data-mobile-layout]');
 }
 
-/**
- * Repaint on a real orientation change, NOT on every `resize`.
- *
- * Alwin, 2026-10-01, on an iPhone 16 / iOS 27 / Safari: "when I'm scrolling
- * through the website on any page it will flash white and take me back to top".
- *
- * The cause was this listener. On iOS Safari the address bar is attached to the
- * scroll, so every flick that moves the page also collapses or expands that bar
- * and Safari fires `resize`. That ran `paint()`, which replaces `app.innerHTML`
- * with freshly built markup — the white flash, the DOM being torn down mid-scroll
- * — and then calls `scrollTo(0, 0)`, which is the jump back to the top. One
- * listener, both symptoms, on every route, because it sits on `window` rather
- * than inside the router.
- *
- * Desktop Chrome has no address bar, so it never fired there. That is why this
- * passed every automated check in this repo, all of which run in headless Chrome.
- * It cannot be verified from here; it has to be checked on the device.
- *
- * `orientationchange` is the event that means "the device physically turned".
- * It does not fire during an ordinary scroll, which is the whole point.
- *
- * Note the portfolio no longer depends on the viewport at all — its track
- * count comes from the row length in rows.ts, so it renders identically at
- * every width. Only the home strip's column count still changes, across
- * 640/1000 px, which an orientation change covers.
- */
-addEventListener("orientationchange", () => {
-  // A beat, because iOS reports the new dimensions a frame or two after the
-  // event. Repainting synchronously here would read the old innerWidth.
-  if ((ALIASES[route()] ?? route()) !== "contact") setTimeout(() => void paint(), 250);
+// Home and Portfolio need new markup across the phone breakpoint. Height
+// changes from a phone's address bar or keyboard must never redraw a page.
+let layoutWidth = innerWidth;
+let reflowTimer: ReturnType<typeof setTimeout> | undefined;
+addEventListener('resize', () => {
+  if (innerWidth === layoutWidth) return;
+  layoutWidth = innerWidth;
+  if (innerWidth > 1000) closeNav?.();
+  clearTimeout(reflowTimer);
+  reflowTimer = setTimeout(() => refreshGalleryLayout?.(), 100);
 });
+addEventListener('orientationchange', () => {
+  setTimeout(() => refreshGalleryLayout?.(), 250);
+});
+addEventListener('scroll', syncHeader, { passive: true });
 
 // Re-paint when the URL changes WITHOUT a document load.
 //
@@ -403,9 +273,7 @@ addEventListener("orientationchange", () => {
 // popstate is included because Back/Forward across a real page load restores a
 // document from bfcache WITHOUT re-running the script, so nothing would
 // otherwise repaint.
-addEventListener("hashchange", () => {
-  if (location.hash !== "#main-content") void paint();
-});
+addEventListener("hashchange", () => void paint());
 addEventListener("popstate", () => void paint());
 
 // The burger drawer's global listeners — registered ONCE, here, and pointed at
@@ -416,11 +284,11 @@ addEventListener("keydown", (e) => {
 });
 addEventListener("hashchange", () => closeNav?.());
 
-document.addEventListener("click", (event) => {
+document.addEventListener("click", event => {
   if (!(event.target as Element).closest(".skip-link")) return;
   event.preventDefault();
   document.querySelector<HTMLElement>("#main-content")?.focus();
 });
 
-initLightbox();
+const closeLightbox = initLightbox();
 void paint();

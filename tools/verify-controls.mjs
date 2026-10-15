@@ -1,0 +1,44 @@
+import assert from 'node:assert/strict';
+import { browser } from './lib/browser.mjs';
+const base = (process.argv[2] ?? 'http://127.0.0.1:4173').replace(/\/$/, '');
+const b = await browser();
+let count = 0;
+const check = async (name, expression) => {
+  assert.equal(await b.evaluate(expression), true, name);
+  console.log(`PASS ${name}`); count++;
+};
+try {
+  await b.send('Network.enable');
+  await b.send('Network.setBlockedURLs', { urls: ['*.supabase.co/*'] });
+  await b.viewport(1440);
+  await b.send('Page.navigate', { url: base + '/' });
+  // Static photos exist before their delegated handlers are mounted.
+  await b.until('!!document.querySelector(".photo-trigger") && !document.getElementById("app").hasAttribute("data-route")');
+  await b.evaluate('document.querySelector(".photo-trigger").focus()');
+  await b.key('Enter', 'Enter', 13);
+  await check('home photo opens with native Enter', 'document.querySelector(".lb").matches(":modal") && document.activeElement.matches(".lb__x")');
+  await b.click('.lb__stage');
+  await check('zoom scales only the stage', 'document.querySelector(".lb__stage").getAttribute("aria-pressed")==="true" && document.querySelector(".lb__img").style.transform===""');
+  await b.key('ArrowRight', 'ArrowRight', 39);
+  await check('next photo resets zoom', 'document.querySelector(".lb__stage").getAttribute("aria-pressed")==="false"');
+  await b.key('Escape', 'Escape', 27);
+  await check('viewer returns photo focus', '!document.querySelector(".lb").open && document.activeElement.matches(".photo-trigger") && !document.getElementById("app").inert');
+  await b.key(' ', 'Space', 32);
+  await check('home photo opens with native Space', 'document.querySelector(".lb").open');
+  await b.evaluate('location.hash="/contact"');
+  await b.until('!!document.querySelector("#cform")');
+  await check('navigation closes viewer and restores scrolling', '!document.querySelector(".lb").open && document.body.style.overflow!=="hidden"');
+  await b.viewport(390, 780);
+  await b.until('document.querySelector("#site-nav").inert');
+  await b.click('.burger');
+  await check('mobile drawer exposes links and disables background', '!document.querySelector("#site-nav").inert && document.querySelector("main").inert');
+  await b.viewport(1440);
+  await b.until('!document.querySelector("#site-nav").inert && document.querySelector(".burger").getAttribute("aria-expanded")==="false"');
+  await check('desktop resize clears the drawer and scroll lock', '!document.querySelector(".nav-scrim") && !document.querySelector("main").inert && !document.documentElement.classList.contains("nav-locked")');
+  await b.click('.nav-link[href="./portfolio.html"]');
+  await b.until('!!document.querySelector(".pf-cell") && !document.getElementById("app").hasAttribute("data-route")');
+  await b.evaluate('document.querySelector(".pf-cell").focus()');
+  await b.key(' ', 'Space', 32);
+  await check('portfolio opens with native Space', 'document.querySelector(".lb").matches(":modal")');
+  console.log(`${count}/${count} native control checks passed`);
+} finally { await b.close(); }

@@ -1,7 +1,7 @@
 [
   {
     "command": "npm run verify -- http://127.0.0.1:4175",
-    "exit": 0,
+    "exit": 1,
     "log": "review/after/verify.log"
   },
   {

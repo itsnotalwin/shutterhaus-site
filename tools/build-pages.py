@@ -1,79 +1,38 @@
+"""Build route metadata and HTML using the shared public TypeScript renderers.
+
+Each document contains its complete default content before JavaScript runs.
+The browser binds navigation/form controls and loads published gallery edits.
+Prices are shared with visible cards and booking choices through pricing.json.
 """
-Generate one HTML file per route from a single head template.
-
-    python tools/build-pages.py && npm run build
-
-WHY THIS EXISTS
----------------
-The site was a hash-routed SPA: ONE index.html, and `main.ts` read
-`location.hash` to swap `#app`. Everything Google could see was a single
-document, so the portfolio, about, services and contact copy were all
-invisible to search — one canonical URL for the entire site, and no sitemap.
-
-Alwin asked for the pages split so each is a real document. That is what
-this emits: portfolio.html, about.html, services.html, contact.html and
-admin.html alongside index.html, each carrying its own title, description,
-og:url and canonical.
-
-WHAT THIS DOES NOT DO
---------------------
-It does NOT change how a page RENDERS. Every file boots the same
-`src/main.ts`, and `route()` reads the FILENAME first (falling back to the
-hash, so an old `#/portfolio` link still works). One renderer, many
-documents — so there is no second implementation that can drift.
-
-The per-page <title> is also written by the client after load (setTitle in
-main.ts), so the static tag matters for crawlers and social scrapers that
-never run JS, while a human sees the same string either way.
-
-Keep the route list in one place: ROUTES below is the single source, and
-`tools/verify.mjs` asserts every emitted file exists and every nav link in
-src/config.ts has a matching document.
-"""
-import datetime as dt
 import json
+import math
 import re
 import sys
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
 SITE = "https://shutterhausvisuals.co.za"
 
-# id, filename, <title>, meta description
-# The title/description here is what a crawler or a WhatsApp preview reads.
-ROUTES = [
-    (
-        "home",
-        "index.html",
-        "Shutterhaus Visuals | photography in Gauteng",
-        "Portraits, couples, families and social content, shot on location across Gauteng by Alwin Newman. Shutterhaus Visuals, Pretoria.",
-    ),
-    (
-        "portfolio",
-        "portfolio.html",
-        "Portfolio | Shutterhaus Visuals",
-        "Selected portrait and place photography from sessions shot around Gauteng. Portraits, couples, families and social content.",
-    ),
-    (
-        "about",
-        "about.html",
-        "About | Shutterhaus Visuals",
-        "Alwin Newman is a photographer working across Gauteng, shooting portraits, couples, families and social content on location.",
-    ),
-    (
-        "services",
-        "services.html",
-        "Services & pricing | Shutterhaus Visuals",
-        "Photography packages and pricing for portraits, couples, families and social content, shot on location across Gauteng, South Africa.",
-    ),
-    (
-        "contact",
-        "contact.html",
-        "Contact | Shutterhaus Visuals",
-        "Enquire about a photography session in Gauteng. WhatsApp or email Alwin Newman at Shutterhaus Visuals. Evenings and weekends by appointment.",
-    ),
-]
+# The same numeric prices power visible cards, booking options and metadata.
+pricing = json.loads((ROOT / "src" / "pricing.json").read_text(encoding="utf-8"))
+package_prices = [tier["price"] for tier in pricing["tiers"]]
+if not package_prices or any(
+    isinstance(price, bool) or not isinstance(price, (int, float)) or not math.isfinite(price) or price <= 0
+    for price in package_prices
+):
+    raise SystemExit("FAIL: package prices must be positive numeric ZAR amounts")
+if len({tier["name"] for tier in pricing["tiers"]}) != len(package_prices):
+    raise SystemExit("FAIL: package names must be unique for booking links")
+
+
+def rand(amount: float) -> str:
+    return "R" + f"{amount:,.2f}".rstrip("0").rstrip(".")
+
+# Shared with the browser so hydration and legacy hash links keep the same metadata.
+seo = json.loads((ROOT / "src" / "seo.json").read_text(encoding="utf-8"))
+ROUTES = [(rid, page["filename"], page["title"], page["description"]) for rid, page in seo.items()]
 
 HEAD = """<!doctype html>
 <html lang="en">
@@ -90,8 +49,8 @@ HEAD = """<!doctype html>
     <title>{title}</title>
     <meta name="description" content="{description}" />
 
-    <link rel="preload" href="./fonts/bodoni-moda-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="./fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./fonts/bodoni-moda-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
 
     <meta property="og:title" content="{og_title}" />
     <meta property="og:description" content="{description}" />
@@ -157,7 +116,10 @@ HEAD = """<!doctype html>
     </script>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app" data-route="{route}">{body}</div>
+    <noscript>
+      <style>.burger {{ display:none!important }} .site-nav {{ position:static!important; visibility:visible!important; opacity:1!important; transform:none!important; width:auto!important; display:flex!important; flex-direction:row!important; flex-wrap:wrap; align-items:center; gap:14px!important; height:auto!important; padding:0!important; background:#fff!important }} .site-nav {{ flex-basis:100%; }} .site-nav a {{ color:#111!important; width:auto!important; padding:12px 0!important; border:0!important; font-size:11px!important; min-height:44px; }} .site-header {{ display:flex!important; flex-wrap:wrap; height:auto!important; gap:16px!important; position:relative!important; background:#fff!important; color:#111!important }} .site-header .logo,.site-header .site-social {{ color:#111!important }} .site-header .logo {{ order:0; }} .site-header .site-social {{ order:1; margin-left:auto; }} .site-header .site-nav {{ order:2; }} .shell--over .site-header {{ margin-bottom:0!important }} .main {{ padding-top:0!important }} .pf-rows {{ display:block; column-count:3; column-gap:var(--gut); }} .pf-col {{ display:contents; }} .pf-cell {{ break-inside:avoid; margin-bottom:var(--gut); }} @media(max-width:760px) {{ .pf-rows {{ column-count:2; }} }}</style>
+    </noscript>
     <script type="module" src="./src/main.ts"></script>
   </body>
 </html>
@@ -188,10 +150,7 @@ def esc(s: str) -> str:
 # is worse than no price at all. priceRange below is the only price claim, and
 # it is derived from the four tiers actually listed.
 #
-# Every value below is read out of src/config.ts or the page copy, so the
-# structured data cannot drift from the visible page. If you change the phone
-# number in config.ts, change it here too — the mismatch is the failure mode
-# markup introduces that plain text does not have.
+# Business identity below is maintained here; prices come from pricing.json.
 ALWIN = {
     "@type": "Person",
     "@id": f"{SITE}/#alwin",
@@ -206,22 +165,21 @@ BIZ = {
     "@id": f"{SITE}/#business",
     "name": "Shutterhaus Visuals",
     "description": (
-        "Photography studio shooting portraits, couples, families and social "
+        "Kempton Park photographer shooting portraits, couples, families and social "
         "content on location across Gauteng."
     ),
     "url": f"{SITE}/",
     "email": "alwin@shutterhausvisuals.co.za",
     "image": f"{SITE}/og-card.jpg",
-    # R800 / R2,000 / R2,500 / R3,500 are the four packages on /services.
-    # The range is the cheapest and dearest of those, nothing invented.
-    "priceRange": "R800–R3,500",
+    "priceRange": f"{rand(min(package_prices))}–{rand(max(package_prices))}",
     "areaServed": [
-        {"@type": "City", "name": "Pretoria"},
+        {"@type": "City", "name": "Kempton Park"},
         {"@type": "City", "name": "Johannesburg"},
         {"@type": "AdministrativeArea", "name": "Gauteng"},
     ],
     "address": {
         "@type": "PostalAddress",
+        "addressLocality": "Kempton Park",
         "addressRegion": "Gauteng",
         "addressCountry": "ZA",
     },
@@ -236,8 +194,7 @@ def json_ld(filename: str, title: str, description: str) -> str:
     Every page carries the same business node plus a WebPage node describing
     that specific page. Repeating the business on all five is deliberate, not
     sloppy: the @id is identical everywhere, so these merge into one entity
-    rather than becoming five competing businesses. A page that described only
-    itself would leave the contact page with no phone number in its markup.
+    rather than becoming five competing businesses.
 
     BreadcrumbList is on the subpages only, and the homepage is omitted from it
     because the breadcrumb trail has to start at Home for the last item to be
@@ -315,6 +272,7 @@ def json_ld(filename: str, title: str, description: str) -> str:
     )
 
 
+bodies = json.loads(subprocess.check_output(["node", "tools/prerender.mjs"], cwd=ROOT, text=True))
 written = []
 for rid, filename, title, description in ROUTES:
     # `index.html` and `/` are the same document. The homepage declares the bare
@@ -332,6 +290,8 @@ for rid, filename, title, description in ROUTES:
     # without changing what JSON.parse sees.
     ld = json_ld(filename, title, description).replace("</", "<\\/")
     html = HEAD.format(
+        route=rid,
+        body=bodies[rid],
         title=esc(title),
         description=esc(description),
         og_title=esc(og_title),
@@ -339,6 +299,7 @@ for rid, filename, title, description in ROUTES:
         site=SITE,
         ld=ld,
     )
+    html = "\n".join(line.rstrip() for line in html.splitlines()) + "\n"
     (ROOT / filename).write_text(html, encoding="utf-8")
     written.append((filename, rid, title, description))
 
@@ -362,46 +323,14 @@ missing = [i for i in nav_ids if i not in emitted]
 # ---------------------------------------------------------------------------
 # Sitemap
 # ---------------------------------------------------------------------------
-# Generated HERE, not maintained by hand in public/sitemap.xml. The header
-# comment on that file claimed "Generated by tools/build-pages.py — do not
-# hand-edit" while nothing in this script wrote it, so ROUTES and the sitemap
-# were free to drift: add a page to ROUTES, ship, and the sitemap silently
-# keeps listing the old set. Generating it removes that failure mode.
-#
-# WHAT CHANGED AND WHY
-# 1. <lastmod> is now emitted. It was absent entirely. Google uses lastmod to
-#    decide how often to recrawl, and the sitemap header comment claimed the
-#    whole point of the split was to get these pages indexed — a sitemap with no
-#    lastmod undercuts that. It is the build date, ISO 8601, which is the one
-#    value that cannot drift out of step with the files.
-# 2. /admin.html is still absent, and that is deliberate: it is noindex in its
-#    own head AND disallowed in robots.txt. Listing a noindex URL in a sitemap
-#    is a contradiction Google warns about.
-# 3. The bare apex is used for index.html, matching the canonical the page
-#    declares. The sitemap must not advertise a URL the page tells the crawler
-#    to ignore.
-LASTMOD = dt.date.today().isoformat()
-sitemap = ['<?xml version="1.0" encoding="UTF-8"?>']
-sitemap.append("<!--")
-sitemap.append("  Generated by tools/build-pages.py — do not hand-edit.")
-sitemap.append("")
-sitemap.append("  Every URL below is built from the ROUTES list in that script, so a")
-sitemap.append("  page cannot exist without being listed, or be listed without existing.")
-sitemap.append("  The bare apex stands in for index.html because that is the canonical")
-sitemap.append("  the homepage declares. /admin.html is deliberately absent: it is")
-sitemap.append("  noindex in its own head and disallowed in robots.txt.")
-sitemap.append("-->")
-sitemap.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+# Only canonical, indexable pages belong here. Omit optional lastmod because
+# a build date is not a content-change date, and published photos change independently.
+sitemap = ['<?xml version="1.0" encoding="UTF-8"?>',
+           '<!-- Generated by tools/build-pages.py. -->',
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
 for filename, rid, _, _ in written:
     loc = f"{SITE}/" if filename == "index.html" else f"{SITE}/{filename}"
-    freq = "weekly" if rid in ("home", "portfolio") else "monthly"
-    prio = {"home": "1.0", "portfolio": "0.9", "services": "0.8", "contact": "0.8"}.get(rid, "0.7")
-    sitemap.append("  <url>")
-    sitemap.append(f"    <loc>{loc}</loc>")
-    sitemap.append(f"    <lastmod>{LASTMOD}</lastmod>")
-    sitemap.append(f"    <changefreq>{freq}</changefreq>")
-    sitemap.append(f"    <priority>{prio}</priority>")
-    sitemap.append("  </url>")
+    sitemap.extend(["  <url>", f"    <loc>{loc}</loc>", "  </url>"])
 sitemap.append("</urlset>")
 sitemap_text = "\n".join(sitemap) + "\n"
 
@@ -409,7 +338,7 @@ sitemap_text = "\n".join(sitemap) + "\n"
 (ROOT / "public" / "sitemap.xml").write_text(sitemap_text, encoding="utf-8")
 
 print(f"{len(written)} page(s) written: " + ", ".join(f for f, _, _, _ in written))
-print(f"sitemap.xml written ({len(written)} urls, lastmod {LASTMOD})")
+print(f"sitemap.xml written ({len(written)} canonical urls)")
 if missing:
     print(f"\nFAIL: nav item(s) with no HTML document: {missing}")
     print("Add it to ROUTES above and re-run.")

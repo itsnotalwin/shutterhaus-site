@@ -34,7 +34,7 @@ for (const path of ['/', '/portfolio.html']) {
     const cell=page.locator(path==='/'?'.hstrip__item':'.pf-cell').first();
     await cell.focus();
     await page.keyboard.press('Enter');
-    const dialog=page.getByRole('dialog', {name:'Photograph viewer'});
+    const dialog=page.getByRole('dialog', {name:'Photo viewer'});
     await expect(dialog).toBeVisible();
     await expect(page.getByRole('button',{name:'Close',exact:true})).toBeFocused();
     const source=await dialog.locator('img').getAttribute('src');
@@ -43,7 +43,7 @@ for (const path of ['/', '/portfolio.html']) {
     await page.keyboard.press('ArrowLeft');
     await expect(dialog.locator('img')).toHaveAttribute('src',source!);
     await page.keyboard.press('Shift+Tab');
-    await expect(page.getByRole('button',{name:'Next',exact:true})).toBeFocused();
+    await expect(page.getByRole('button',{name:'Zoom in',exact:true})).toBeFocused();
     await page.keyboard.press('Tab');
     await expect(page.getByRole('button',{name:'Close',exact:true})).toBeFocused();
     await page.keyboard.press('Escape');
@@ -97,6 +97,10 @@ test('validation and honeypot block sends; failure retains draft; retry sends on
   await page.getByRole('button',{name:'Send message'}).click();
   expect(sends).toBe(0);
   await page.locator('[name=_website]').evaluate((el:HTMLInputElement)=>el.value='');
+  // The live anti-spam flow resets a rejected bot submission.
+  await page.getByLabel('Name',{exact:true}).fill('Test visitor');
+  await page.getByLabel('Email',{exact:true}).fill('review@example.com');
+  await page.getByLabel('Message',{exact:true}).fill('A local test, never delivered.');
   await page.getByRole('button',{name:'Send message'}).click();
   await expect(page.locator('#cform-note')).toContainText("That didn't send");
   await expect(page.getByLabel('Message',{exact:true})).toHaveValue('A local test, never delivered.');

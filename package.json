@@ -15,16 +15,21 @@
     "preview": "vite preview --host 127.0.0.1 --port 4173 --strictPort",
     "typecheck": "tsc --noEmit",
     "probe:packer": "node tools/probe-packer.mjs",
-    "test": "playwright test",
-    "verify:controls": "playwright test tests/controls.spec.ts"
+    "test": "node tools/test-public.mjs && node tools/test-admin.mjs",
+    "verify:admin": "node tools/verify-admin-panel.mjs",
+    "verify:controls": "node tools/verify-controls.mjs",
+    "test:browser": "playwright test",
+    "verify:editorial-controls": "playwright test tests/controls.spec.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.58.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.64.0",
     "@types/node": "^26.6.3",
+    "esbuild": "^0.28.2",
+    "jsdom": "^30.1.2",
     "typescript": "^5.9.2",
-    "vite": "^7.1.5"
+    "vite": "^7.1.5",
+    "@playwright/test": "^1.64.0"
   }
 }

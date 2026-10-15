@@ -10,14 +10,14 @@
          bar. The env() calls are all wrapped in max() against 0px so a
          desktop browser, where these resolve to nothing, is unaffected. -->
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>About | Shutterhaus Visuals</title>
-    <meta name="description" content="Alwin Newman is a photographer working across Gauteng, shooting portraits, couples, families and social content on location." />
+    <title>About Alwin Newman | Shutterhaus Visuals</title>
+    <meta name="description" content="Meet Alwin Newman, the photographer behind Shutterhaus Visuals in Kempton Park. Portraits, couples, families and social content on location." />
 
-    <link rel="preload" href="./fonts/bodoni-moda-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="./fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./fonts/bodoni-moda-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
 
-    <meta property="og:title" content="About | Shutterhaus Visuals" />
-    <meta property="og:description" content="Alwin Newman is a photographer working across Gauteng, shooting portraits, couples, families and social content on location." />
+    <meta property="og:title" content="About Alwin Newman | Shutterhaus Visuals" />
+    <meta property="og:description" content="Meet Alwin Newman, the photographer behind Shutterhaus Visuals in Kempton Park. Portraits, couples, families and social content on location." />
     <meta property="og:type" content="website" />
     <!-- og:title used to be the <title> cut at the first em dash, which threw
          the brand away: "Portfolio", "About", "Contact". A WhatsApp or Facebook
@@ -47,8 +47,8 @@
          regression on the platform Alwin posts links to is not something to
          discover after the ad spend. -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="About | Shutterhaus Visuals" />
-    <meta name="twitter:description" content="Alwin Newman is a photographer working across Gauteng, shooting portraits, couples, families and social content on location." />
+    <meta name="twitter:title" content="About Alwin Newman | Shutterhaus Visuals" />
+    <meta name="twitter:description" content="Meet Alwin Newman, the photographer behind Shutterhaus Visuals in Kempton Park. Portraits, couples, families and social content on location." />
     <meta name="twitter:image" content="https://shutterhausvisuals.co.za/og-card.jpg" />
     <meta name="twitter:image:alt" content="Black and white portrait from a Shutterhaus Visuals session" />
 
@@ -83,7 +83,7 @@
       "@type": "ProfessionalService",
       "@id": "https://shutterhausvisuals.co.za/#business",
       "name": "Shutterhaus Visuals",
-      "description": "Photography studio shooting portraits, couples, families and social content on location across Gauteng.",
+      "description": "Kempton Park photographer shooting portraits, couples, families and social content on location across Gauteng.",
       "url": "https://shutterhausvisuals.co.za/",
       "email": "alwin@shutterhausvisuals.co.za",
       "image": "https://shutterhausvisuals.co.za/og-card.jpg",
@@ -91,7 +91,7 @@
       "areaServed": [
         {
           "@type": "City",
-          "name": "Pretoria"
+          "name": "Kempton Park"
         },
         {
           "@type": "City",
@@ -104,6 +104,7 @@
       ],
       "address": {
         "@type": "PostalAddress",
+        "addressLocality": "Kempton Park",
         "addressRegion": "Gauteng",
         "addressCountry": "ZA"
       },
@@ -128,8 +129,8 @@
       "@type": "WebPage",
       "@id": "https://shutterhausvisuals.co.za/about.html#webpage",
       "url": "https://shutterhausvisuals.co.za/about.html",
-      "name": "About | Shutterhaus Visuals",
-      "description": "Alwin Newman is a photographer working across Gauteng, shooting portraits, couples, families and social content on location.",
+      "name": "About Alwin Newman | Shutterhaus Visuals",
+      "description": "Meet Alwin Newman, the photographer behind Shutterhaus Visuals in Kempton Park. Portraits, couples, families and social content on location.",
       "isPartOf": {
         "@id": "https://shutterhausvisuals.co.za/#website"
       },
@@ -161,7 +162,7 @@
         {
           "@type": "ListItem",
           "position": 2,
-          "name": "About",
+          "name": "About Alwin Newman",
           "item": "https://shutterhausvisuals.co.za/about.html"
         }
       ]
@@ -171,7 +172,41 @@
     </script>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app" data-route="about"><div class="shell"><a class="skip-link" href="#main-content">Skip to content</a><header class="site-header">
+    <a class="logo" href="./" aria-label="SHUTTERHAUS VISUALS | home"><img src="./brand/wordmark-primary.svg" width="240" height="40" alt="SHUTTERHAUS VISUALS" /></a>
+    <button class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="site-nav">
+      <span class="burger__bars" aria-hidden="true"><i></i><i></i></span>
+    </button>
+    <nav class="site-nav" id="site-nav" aria-label="Primary"><a class="nav-link" href="./">Home</a><a class="nav-link" href="./portfolio.html">Work</a><a class="nav-link is-active" href="./about.html" aria-current="page">About</a><a class="nav-link" href="./services.html">Sessions</a><a class="nav-link" href="./contact.html">Contact</a></nav>
+    <a class="header-book cta cta--btn" href="./contact.html">Book a session <span aria-hidden="true">→</span></a>
+    <div class="site-social"><a class="social" href="https://instagram.com/shutterhausvisuals" target="_blank" rel="noopener"
+          aria-label="Instagram" title="Instagram"><svg class="icon" viewBox="0 0 20 20" width="22" height="22" fill="none"
+    stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"
+    aria-hidden="true"><rect x="2.5" y="2.5" width="15" height="15" rx="4.5"/><circle cx="10" cy="10" r="3.2"/><circle cx="14.6" cy="5.4" r="1" fill="currentColor" stroke="none"/></svg></a><a class="social" href="https://wa.me/27730958363" target="_blank" rel="noopener"
+          aria-label="WhatsApp" title="WhatsApp"><svg class="icon" viewBox="0 0 20 20" width="22" height="22" fill="none"
+    stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"
+    aria-hidden="true"><path d="M17.2 10.3c0-3.4-2.8-6.2-6.2-6.2a6.2 6.2 0 0 0-5.4 9.4L3.7 17.4l4-1.4a6.2 6.2 0 0 0 9.5-5.7Z"/><path d="M16.2 10.2c-.3-.2-1.5-.7-1.8-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a8 8 0 0 1-2.3-1.4 8.6 8.6 0 0 1-1.5-1.9c-.2-.3 0-.4.1-.6l.4-.5c.2-.2.2-.3.3-.5a.5.5 0 0 0 0-.5c0-.1-.6-1.3-.8-1.8s-.4-.4-.6-.4h-.4c-.2 0-.4 0-.6.3s-.8.8-.8 1.4a3.7 3.7 0 0 0 .7 1.8 8.7 8.7 0 0 0 3.3 2.9 11 11 0 0 0 4.4.9c.6 0 1.1-.1 1.5-.2a4.4 4.4 0 0 0 2.9-2.5c.2-.8.2-1.4.1-1.5Z" fill="var(--social-bg, #fff)" stroke="none"/></svg></a></div>
+  </header><main class="main" id="main-content" tabindex="-1"><section class="page about">
+    <header class="editorial-intro about-intro">
+      <div class="editorial-intro__copy"><p class="eyebrow eyebrow--rule">About SHUTTERHAUS</p><h1 class="about__h">Behind<br>the lens.</h1><p class="intro-copy">Independent photography from Gauteng. Real connection, careful light, meaningful photographs.</p><a class="cta" href="./contact.html">Let's work together <span aria-hidden="true">→</span></a></div>
+      <figure class="about__fig">
+         <picture><source type="image/webp" srcset="gallery/55-metal-detector-400w.webp 400w, gallery/55-metal-detector-560w.webp 560w, gallery/55-metal-detector-800w.webp 800w, gallery/55-metal-detector-1200w.webp 1200w, gallery/55-metal-detector-1600w.webp 1600w" sizes="(max-width: 1000px) 100vw, 40vw" />
+        <source type="image/jpeg" srcset="gallery/55-metal-detector-400w.jpg 400w, gallery/55-metal-detector-560w.jpg 560w, gallery/55-metal-detector-800w.jpg 800w, gallery/55-metal-detector-1200w.jpg 1200w, gallery/55-metal-detector-1600w.jpg 1600w" sizes="(max-width: 1000px) 100vw, 40vw" />
+           <img src="gallery/55-metal-detector-1600w.jpg" alt="A man walking a beach with a metal detector, seen in black and white against an empty sky"
+                loading="eager" decoding="async"
+                style="aspect-ratio:1736/2170" />
+         </picture>
+       <figcaption class="about__caption">Alwin Newman / Photographer</figcaption></figure><aside class="brand-motif about__motif" aria-hidden="true"><picture><source media="(max-width: 759px)" srcset="./brand/editorial-arcs-horizontal.webp" /><img src="./brand/editorial-arcs-vertical.webp" width="378" height="1040" alt="" /></picture><p>People<br>Places<br>Stories</p></aside>
+    </header>
+    <section class="about-story"><figure class="about-story__photo"><picture><source type="image/webp" srcset="gallery/6-img-0161-400w.webp 400w, gallery/6-img-0161-560w.webp 560w, gallery/6-img-0161-800w.webp 800w, gallery/6-img-0161-1200w.webp 1200w, gallery/6-img-0161-1600w.webp 1600w" sizes="(max-width: 759px) 100vw, 44vw" />
+        <source type="image/jpeg" srcset="gallery/6-img-0161-400w.jpg 400w, gallery/6-img-0161-560w.jpg 560w, gallery/6-img-0161-800w.jpg 800w, gallery/6-img-0161-1200w.jpg 1200w, gallery/6-img-0161-1600w.jpg 1600w" sizes="(max-width: 759px) 100vw, 44vw" /><img src="gallery/6-img-0161-1600w.webp" alt="Sun setting over the sea, orange light on the horizon" width="2400" height="1500" loading="lazy" decoding="async" /></picture></figure>
+      <div class="about-story__copy"><p class="eyebrow">Founder / Photographer</p><h2>Alwin Newman.</h2><div class="prose about__prose"><p>I&#39;m Alwin, a photographer based in Kempton Park. I shoot portraits, couples, families and social content on location.</p><p>I&#39;ll help you choose a location and clothing, and guide you through the shoot. You don&#39;t need to know how to pose.</p><p>Sessions are available in the mornings and on weekends, by appointment.</p></div><a class="cta cta--line" href="./contact.html">Enquire about a session <span aria-hidden="true">→</span></a></div>
+    </section>
+    <section class="about-values"><div><h2>Natural.</h2><p>Unforced moments. True to the person.</p></div><div><h2>Honest.</h2><p>Careful, respectful, thoughtful photography.</p></div><div><h2>Timeless.</h2><p>Images that still feel important years later.</p></div></section>
+  </section></main><footer class="site-footer"><strong>People. Places. Stories.</strong><small>© 2026 SHUTTERHAUS VISUALS · Kempton Park, Gauteng</small><div><a href="mailto:alwin@shutterhausvisuals.co.za">Email</a><a href="https://instagram.com/shutterhausvisuals" target="_blank" rel="noopener">Instagram</a><a href="https://wa.me/27730958363" target="_blank" rel="noopener">WhatsApp</a></div><img src="./brand/editorial-arcs-horizontal.webp" width="104" height="40" alt="" /></footer></div></div>
+    <noscript>
+      <style>.burger { display:none!important } .site-nav { position:static!important; visibility:visible!important; opacity:1!important; transform:none!important; width:auto!important; display:flex!important; flex-direction:row!important; flex-wrap:wrap; align-items:center; gap:14px!important; height:auto!important; padding:0!important; background:#fff!important } .site-nav { flex-basis:100%; } .site-nav a { color:#111!important; width:auto!important; padding:12px 0!important; border:0!important; font-size:11px!important; min-height:44px; } .site-header { display:flex!important; flex-wrap:wrap; height:auto!important; gap:16px!important; position:relative!important; background:#fff!important; color:#111!important } .site-header .logo,.site-header .site-social { color:#111!important } .site-header .logo { order:0; } .site-header .site-social { order:1; margin-left:auto; } .site-header .site-nav { order:2; } .shell--over .site-header { margin-bottom:0!important } .main { padding-top:0!important } .pf-rows { display:block; column-count:3; column-gap:var(--gut); } .pf-col { display:contents; } .pf-cell { break-inside:avoid; margin-bottom:var(--gut); } @media(max-width:760px) { .pf-rows { column-count:2; } }</style>
+    </noscript>
     <script type="module" src="./src/main.ts"></script>
   </body>
 </html>

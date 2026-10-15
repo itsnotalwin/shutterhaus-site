@@ -4,8 +4,9 @@ import { resolve } from "node:path";
 /**
  * Base path for asset URLs.
  *
- * - Cloudflare Pages (custom domain or *.pages.dev): "/" — the default.
- * - GitHub Pages project site: "/shutterhaus-site/", set BASE_PATH in CI.
+ * The Pages workflow builds with BASE_PATH=./ (a relative base), so one build
+ * resolves against the document and serves correctly at both the domain root
+ * and the github.io project subpath. Default "/" is for local dev/preview.
  */
 const base = process.env.BASE_PATH ?? "/";
 

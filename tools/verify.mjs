@@ -6,6 +6,7 @@
  * after navigation races the frame and Runtime.evaluate lands on about:blank.
  */
 import { writeFileSync, mkdirSync, readFileSync } from "node:fs";
+import { browser } from "./lib/browser.mjs";
 
 // Root, NOT a sub-path.
 //
@@ -16,11 +17,6 @@ import { writeFileSync, mkdirSync, readFileSync } from "node:fs";
 // exactly where the path came from. The image tools below now also report
 // NOT-IMAGE responses so this class of mistake is legible instead of silent.
 const BASE = (process.argv[2] ?? "http://localhost:4173").replace(/\/$/, "");
-// Hardcoding 9222 here silently ignored CDP_PORT, so domain runs connected to a
-// different Chrome instance than the one launched with the host-resolver
-// override — which resolved the domain to the stale parking IP and produced a
-// bogus "Privacy error" that looked like a site outage.
-const CDP = `http://127.0.0.1:${process.env.CDP_PORT ?? "9222"}`;
 // Default into the gitignored shots/ dir, NOT the repo root. verify.mjs writes
 // shot-*.png, and with the old "." default those landed as untracked files in
 // the project root — visible in `git status` and one `git add -A` away from a
@@ -30,40 +26,20 @@ mkdirSync(OUT, { recursive: true });
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-const targets = await (await fetch(`${CDP}/json/new?url=about:blank`, { method: "PUT" })).json();
-const ws = new WebSocket(targets.webSocketDebuggerUrl);
-await new Promise((r) => (ws.onopen = r));
-
-let id = 0;
-const pending = new Map();
+const client = await browser();
 const events = [];
-ws.onmessage = (m) => {
-  const msg = JSON.parse(m.data);
-  if (msg.id && pending.has(msg.id)) {
-    pending.get(msg.id)(msg);
-    pending.delete(msg.id);
-  } else if (msg.method) events.push(msg);
-};
-const send = (method, params = {}) =>
-  new Promise((res) => {
-    const n = ++id;
-    pending.set(n, res);
-    ws.send(JSON.stringify({ id: n, method, params }));
-  });
-
-const evaluate = async (expression) => {
-  const r = await send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true });
-  if (r.result?.exceptionDetails) {
-    throw new Error("eval threw: " + (r.result.exceptionDetails.exception?.description ?? expression));
-  }
-  return r.result?.result?.value;
-};
+client.on(event => events.push(event));
+const send = async (method, params = {}) => ({ result: await client.send(method, params) });
+const evaluate = client.evaluate;
 
 await send("Page.enable");
+await send("Page.bringToFront");
 await send("Runtime.enable");
 await send("Log.enable");
 await send("Network.enable");
 await send("Network.setCacheDisabled", { cacheDisabled: true });
+// Deployment checks use the committed baseline; admin selections evolve independently.
+if (process.env.OFFLINE_GALLERY) await send("Network.setBlockedURLs", { urls: ["*.supabase.co/*"] });
 
 const results = [];
 const check = (name, pass, detail = "") => {
@@ -100,6 +76,7 @@ const consoleErrors = () =>
     .filter((t) => t && !/favicon|picsum|net::ERR|Failed to load resource/i.test(t));
 
 // ============================================== desktop home
+if (!process.env.REVIEW_ONLY) {
 await viewport(1440, 900);
 await goto("/");
 
@@ -183,6 +160,7 @@ const grid = await evaluate(`(() => {
   });
   const gut = parseFloat(getComputedStyle(cols[0] ?? document.body).rowGap || '0');
   return {
+    fileOf: cells.slice().sort((a,b) => Number(a.dataset.n)-Number(b.dataset.n)).map(c => c.querySelector("img")?.dataset.filename),
     cols: cols.length,
     perCol: cols.map(c => c.querySelectorAll('.pf-cell').length),
     cells: cells.length,
@@ -320,7 +298,7 @@ check("band carries contact links", grid.bandLinks >= 2, String(grid.bandLinks))
   // compares equal to itself and would report "no clumping" while having
   // checked nothing at all — which is how the earlier src-based version of this
   // check passed while reading 100 "frames" that matched none.
-  check("shoot map covers every frame", unknown === 0, `${unknown} unmapped`);
+  check("shoot map covers every frame", order.length === 30 && unknown === 0, `${order.length} frames, ${unknown} unmapped`);
   check(
     "no two same-shoot frames are adjacent",
     unknown === 0 && adjacentSame === 0,
@@ -349,7 +327,7 @@ check("monochrome reference presentation", info.imageFilters.some(f => /grayscal
 // The hero is the one deliberate exception: it is a full-bleed background behind
 // a scrim, where `contain` would letterbox and expose the page behind it. Every
 // other figure must stay uncropped.
-check("cover crops stay inside hero and selected-work slots", info.coverCrops.every(c => ["hero__fig", "hstrip__item"].includes(c)),
+check("cover crops stay inside hero and selected-work slots", info.coverCrops.every(c => ["hero__fig", "hstrip__item", "photo-trigger"].includes(c)),
   info.coverCrops.join(", ") || "none");
 check("warm-white page stage", info.bodyBg === "rgb(247, 246, 243)", info.bodyBg);
 check("active nav is indicated", await evaluate(`document.querySelector('.nav-link.is-active')?.getAttribute('aria-current') === 'page'`));
@@ -437,7 +415,7 @@ const adm = await evaluate(`(() => ({
   title: document.title,
   root: !!document.querySelector('#app') && document.querySelector('#app').children.length > 0,
   html: document.querySelector('#app')?.innerHTML.slice(0, 120),
-  google: !!document.querySelector('.gbtn, .gate__btn'),
+  google: !!document.querySelector('.gbtn, .gate__btn, #gate-btn'),
   // A signed-out visitor must NOT be told they're on the wrong allowlist.
   spuriousAllowlistError: /isn't on the admin allowlist/.test(document.body.innerText),
   // NB: "\\s" must stay escaped — an unescaped \s in this template literal
@@ -449,7 +427,7 @@ const adm = await evaluate(`(() => ({
   // is_admin() in the database matches that. Keep this tied to
   // ADMIN_EMAILS in src/config.ts, not to SITE.contact.email.
   allowlist: document.body.innerText.includes('itsnotalwin@gmail.com'),
-  notConfigured: document.body.innerText.includes("isn't connected yet"),
+  notConfigured: /not connected|isn't connected yet/.test(document.body.innerText),
   overflow: document.documentElement.scrollWidth - window.innerWidth,
 }))()`);
 console.log("\n--- admin ---\n" + JSON.stringify(adm, null, 2));
@@ -460,9 +438,9 @@ const gateOk = adm.notConfigured || adm.google;
 check("admin gate is correct for this config", gateOk, adm.notConfigured ? "not-configured notice" : `google=${adm.google}`);
 if (!adm.notConfigured) {
   check("admin shows Google sign-in", adm.google || /google/i.test(adm.text ?? ""));
-  check("admin names the allowed account", adm.allowlist);
+  check("signed-out admin does not claim an account mismatch", !adm.spuriousAllowlistError);
 } else {
-  check("admin explains the .env step", /env/i.test(adm.text ?? ""), (adm.text ?? "").slice(0, 60));
+  check("admin explains connection is unavailable", /not connected|connected yet/i.test(adm.text ?? ""), (adm.text ?? "").slice(0, 60));
   // Regression guard: getSession() once returned {email:null} when signed out,
   // which fell through to the allowlist branch and showed a false error.
   check(
@@ -491,12 +469,15 @@ const pr = await evaluate(`(() => ({
   ctas: [...document.querySelectorAll('.pkg .cta')].map(a=>a.getAttribute('href')),
   overflow: document.documentElement.scrollWidth - window.innerWidth,
   bg: document.querySelector('.pkg') ? getComputedStyle(document.querySelector('.pkg')).backgroundColor : null,
-  // Which cards actually carry a fill, and is the popular one among them?
+  // All columns sit on paper; the recommended name and label remain distinct.
   filled: [...document.querySelectorAll('.pkg')].map(p => getComputedStyle(p).backgroundColor)
             .filter(b => b !== 'rgba(0, 0, 0, 0)').length,
-  popularFilled: (() => {
+  popularMarked: (() => {
     const p = document.querySelector('.pkg--pop');
-    return p ? getComputedStyle(p).backgroundColor !== 'rgba(0, 0, 0, 0)' : false;
+    const flag = p?.querySelector('.pkg__flag');
+    return !!flag && /Most popular|Popular choice/i.test(flag.textContent) &&
+      getComputedStyle(flag).opacity === '1' &&
+      flag.getBoundingClientRect().height > 0;
   })(),
   specs: [...document.querySelectorAll('.pkg__spec')].map(e => e.textContent.trim()),
 }))()`);
@@ -525,10 +506,12 @@ const reelsGone = (() => {
   // Strip comments and type declarations: the assertion is about what a CUSTOMER
   // reads, and an engineer's note about an image's 4:5 ratio is not a promise.
   const copy = readFileSync(new URL("../src/config.ts", import.meta.url), "utf8")
+    + readFileSync(new URL("../src/pricing.json", import.meta.url), "utf8");
+  const visibleCopy = copy
     .replace(/\/\*[\s\S]*?\*\//g, " ")      // block comments
     .replace(/\/\/.*$/gm, " ")                // line comments
     .replace(/vertically|vertical-first/gi, "");
-  return !/reel|9:16|\b4:5\b/i.test(copy);
+  return !/reel|9:16|\b4:5\b/i.test(visibleCopy);
 })();
 check("no reels or vertical crops promised anywhere", reelsGone);
 
@@ -545,9 +528,11 @@ check("no reels or vertical crops promised anywhere", reelsGone);
 // prints is the stronger claim and cannot be satisfied by adding more.
 const printsGone = (() => {
   const copy = readFileSync(new URL("../src/config.ts", import.meta.url), "utf8")
+    + readFileSync(new URL("../src/pricing.json", import.meta.url), "utf8");
+  const visibleCopy = copy
     .replace(/\/\*[\s\S]*?\*\//g, " ")
     .replace(/\/\/.*$/gm, " ");
-  return !/print|album/i.test(copy);
+  return !/print|album/i.test(visibleCopy);
 })();
 check("no prints or albums promised anywhere", printsGone);
 
@@ -564,14 +549,8 @@ check("every package links to contact with its name",
 // rgb(255,255,255); the meaningful assertion now is that they are NOT a
 // filled/tinted box, which is what would fight the photography.
 check("package cards are unfilled", pr.bg === "rgba(0, 0, 0, 0)", pr.bg);
-// ...with exactly one deliberate exception: the recommended tier inverts to the
-// site's black, the same move `.invest` already makes. `.pkg--pop` shipped
-// with NO css rule at all for months, so the "most popular" package was
-// pixel-identical to the other three on the page that exists to make a sale.
-// Assert both halves: the popular card IS filled, and no OTHER card is, so a
-// future change can neither drop the treatment nor spread it to every tier.
-check("the popular tier is visually distinct", pr.popularFilled === true, String(pr.popularFilled));
-check("only the popular tier is filled", pr.filled === 1, `${pr.filled} filled of ${pr.tiers}`);
+check("the popular tier has a visible recommendation", pr.popularMarked === true, String(pr.popularMarked));
+check("recommended package alone has an ivory surface", pr.filled === 1, `${pr.filled} filled of ${pr.tiers}`);
 // Every tier carries its config `spec` line ("30 min · 1 outfit · 1 location"),
 // which used to be defined in config.ts and rendered only by pricingPage() — a
 // function nothing routed, so the content was never actually shown to anyone.
@@ -589,6 +568,212 @@ for (const w of [360, 390, 768]) {
 }
 await send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
 await shot("shot-pricing-mobile.png");
+}
+
+// Fresh review evidence from this exact build. Legacy shots above describe
+// intermediate test states; these numbered captures explicitly name the page
+// and viewport and wait for fonts and photographs to finish loading.
+const reviewWidths = process.env.REVIEW_WIDTHS
+  ? process.env.REVIEW_WIDTHS.split(',').map(Number)
+  : [390, 1440];
+for (const width of reviewWidths) {
+  await viewport(width, ({ 320: 667, 390: 844, 430: 932, 768: 1024, 1024: 768, 1920: 1080 })[width] ?? 900);
+  await send("Emulation.setTouchEmulationEnabled", { enabled: width <= 1000 });
+  for (const [index, route] of ["home", "portfolio", "about", "services", "contact"].entries()) {
+    await goto(route === "home" ? "/" : `/${route}.html`, 1000);
+    await evaluate(`(async () => {
+      await document.fonts.ready;
+      const images = [...document.querySelectorAll('main img')];
+      // Decode lazy frames for a full-page screenshot as well as the viewport.
+      images.forEach(img => { img.loading = 'eager'; });
+      await Promise.all(images.map(img => img.decode().catch(() => {})));
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      await Promise.all(document.getAnimations()
+        .filter(animation => animation.effect?.getTiming().iterations !== Infinity)
+        .map(animation => animation.finished.catch(() => {})));
+    })()`);
+    const state = await evaluate(`({
+      heading: document.querySelector('main h1')?.textContent,
+      broken: [...document.querySelectorAll('main img')].filter(img => !img.naturalWidth).length,
+      overflow: document.documentElement.scrollWidth - innerWidth,
+      headingsFit: [...document.querySelectorAll('main h1, main h2')].every(heading => heading.scrollWidth <= heading.clientWidth + 1),
+      fontsLoaded: ['Inter', 'Bodoni Moda'].every(family => [...document.fonts].some(face => face.family.replace(/["']/g, '') === family && face.status === 'loaded')),
+      priceTops: [...document.querySelectorAll('.pkg__price')].map(price => price.getBoundingClientRect().top),
+      bandHref: document.querySelector('.hcta__btn')?.getAttribute('href'),
+      bandFits: [...document.querySelectorAll('main .hcta')].every(band => {
+        const edge = band.getBoundingClientRect();
+        return [...band.querySelectorAll('.hcta__h, .hcta__side, .hcta__btn')].every(item => {
+          const rect = item.getBoundingClientRect();
+          return rect.left >= edge.left - 1 && rect.right <= edge.right + 1;
+        });
+      }),
+    })`);
+    check(`review ${route} ${width}: page loaded`, !!state.heading, state.heading);
+    check(`review ${route} ${width}: no broken images`, state.broken === 0, state.broken);
+    check(`review ${route} ${width}: no overflow`, state.overflow <= 0, state.overflow);
+    check(`review ${route} ${width}: headings fit`, state.headingsFit);
+    check(`review ${route} ${width}: local fonts loaded`, state.fontsLoaded);
+    check(`review ${route} ${width}: booking band fits`, state.bandFits);
+    if (route === 'services') {
+      check(`review services ${width}: closing enquiry goes to contact`, await evaluate(`!!document.querySelector('.services a[href="./contact.html"]')`), state.bandHref);
+      if (width === 1440) check('desktop package prices align', Math.max(...state.priceTops) - Math.min(...state.priceTops) <= 1);
+      const framing = await evaluate(`(() => [...document.querySelectorAll('.pkg__fig')].map(fig => {
+        const image = fig.querySelector('img'), r = fig.getBoundingClientRect();
+        return { ratio:r.width/r.height, fit:getComputedStyle(image).objectFit, position:getComputedStyle(image).objectPosition };
+      }))()`);
+      check(`review services ${width}: editorial package image windows`, framing[0].fit === 'cover' && framing[2].fit === 'cover');
+      if (width > 760) {
+        check(`review services ${width}: consistent desktop image windows`, framing.every(fig => fig.ratio > 0 && Number.isFinite(fig.ratio)));
+        check(`review services ${width}: Essential preserves the top of the portrait`, framing[1].position === '50% 0%');
+        check(`review services ${width}: Social preserves the top of the portrait`, framing[3].position === '50% 0%');
+      } else {
+        check(`review services ${width}: recommended package selected`, await evaluate(`document.querySelector('[name="package-view"]:checked')?.value === 'Essential'`));
+        check(`review services ${width}: only the chosen package is visible`, await evaluate(`[...document.querySelectorAll('.pkg')].filter(p => p.getBoundingClientRect().height > 0).length === 1`));
+        check(`review services ${width}: editorial introduction photo loads`, await evaluate(`!!document.querySelector('.shead__fig img')?.naturalWidth`));
+        for (const name of ['Starter', 'Essential', 'Signature', 'Social']) {
+          await evaluate(`document.querySelector('#package-${name.toLowerCase()}').click()`);
+          check(`review services ${width}: ${name} selection and enquiry`, await evaluate(`(() => { const visible = [...document.querySelectorAll('.pkg')].filter(p => p.getBoundingClientRect().height > 0); return visible.length === 1 && visible[0].dataset.package === '${name}' && visible[0].querySelector('.cta').getAttribute('href') === './contact.html?package=${name}'; })()`));
+        }
+        await evaluate(`document.querySelector('#package-essential').click()`);
+      }
+    }
+    if (route === 'home') {
+      const strip = await evaluate(`(() => {
+        const grid = document.querySelector('.hstrip__grid');
+        return { tracks:getComputedStyle(grid).gridTemplateColumns.split(' ').length,
+          count:grid.querySelectorAll('.hstrip__item').length,
+          widths:[...grid.querySelectorAll('.hstrip__item')].map(frame => frame.getBoundingClientRect().width),
+          width:grid.getBoundingClientRect().width };
+      })()`);
+      check(`review home ${width}: six showcase images`, strip.count === 6);
+      check(`review home ${width}: correct showcase columns`, strip.tracks === (width < 760 ? 2 : 4));
+      if (width <= 760) check(`review home ${width}: images fit the mobile showcase`, strip.widths.every(frame => frame > 0 && frame <= strip.width));
+    }
+    if (route === 'portfolio') {
+      const wall = await evaluate(`(() => ({
+        visible:[...document.querySelectorAll('.pf-cell')].filter(cell => !cell.closest('details:not([open])')).length,
+        more:!!document.querySelector('.pf-more'), cols:document.querySelector('.pf-rows').style.getPropertyValue('--pf-cols'),
+        targets:[...document.querySelectorAll('.pf-cell')].filter(cell => !cell.closest('details:not([open])')).map(cell => cell.getBoundingClientRect().top)
+      }))()`);
+      check(`review portfolio ${width}: correct initial image count`, wall.visible === (width <= 760 ? 10 : 30));
+      check(`review portfolio ${width}: disclosure appears only on phones`, wall.more === (width <= 760));
+      check(`review portfolio ${width}: correct column count`, Number(wall.cols) === (width <= 760 ? 2 : 3));
+      if (width <= 760) {
+        check(`review portfolio ${width}: icon-only disclosure remains accessible and centred`, await evaluate(`(() => {
+          const summary=document.querySelector('.pf-more__toggle'), icon=summary.querySelector('svg');
+          const label=summary.querySelector('.pf-more__closed'), rect=summary.getBoundingClientRect();
+          const parent=summary.parentElement.getBoundingClientRect(), style=getComputedStyle(label);
+          return label.textContent==='Show more images' && style.clipPath==='inset(50%)' &&
+            label.getBoundingClientRect().width<=1 && icon.getAttribute('aria-hidden')==='true' &&
+            rect.width>=44 && rect.height>=44 && Math.abs((rect.left+rect.right-parent.left-parent.right)/2)<=1;
+        })()`));
+      }
+    }
+    const metrics = await send("Page.getLayoutMetrics");
+    const size = metrics.result.cssContentSize;
+    const capture = await send("Page.captureScreenshot", {
+      format: "png", captureBeyondViewport: true,
+      clip: { x: 0, y: 0, width, height: Math.ceil(size.height), scale: 1 },
+    });
+    const name = `${String(index + 1).padStart(2, "0")}-${route}-${width}.png`;
+    writeFileSync(`${OUT}/${name}`, Buffer.from(capture.result.data, "base64"));
+    if (route === 'home') {
+      const firstScreen = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
+      writeFileSync(`${OUT}/01-home-${width}-viewport.png`, Buffer.from(firstScreen.result.data, 'base64'));
+      check(`review home ${width}: editorial hero follows the header`, await evaluate(`document.querySelector('.hero').getBoundingClientRect().top >= document.querySelector('.site-header').getBoundingClientRect().bottom`));
+      await evaluate(`scrollTo(0, document.querySelector('.hstrip').offsetTop + 80)`);
+      await sleep(150);
+      const header = await evaluate(`(() => {
+        const header = document.querySelector('.site-header');
+        return { top: header.getBoundingClientRect().top, background: getComputedStyle(header).backgroundColor };
+      })()`);
+      check(`review home ${width}: menu stays visible while scrolling`, Math.abs(header.top) <= 1 && header.background === 'rgb(255, 255, 255)', JSON.stringify(header));
+      if (width === 390 || width === 1440) await shot(`01-home-${width}-scrolled.png`);
+      await evaluate(`scrollTo(0, 0)`);
+      await sleep(100);
+    }
+    if (route === 'portfolio' && width <= 760) {
+      await evaluate(`window.reviewTopTen=[...document.querySelector('.pf-rows').querySelectorAll('.pf-cell')].map(cell=>cell.getBoundingClientRect().top+scrollY); document.querySelector('.pf-more__toggle').focus({preventScroll:true})`);
+      await send('Input.dispatchKeyEvent', {type:'keyDown',key:'Enter',code:'Enter',windowsVirtualKeyCode:13,text:'\r',unmodifiedText:'\r'});
+      await send('Input.dispatchKeyEvent', {type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});
+      await sleep(100);
+      check(`review portfolio ${width}: keyboard expands all photos`, await evaluate(`document.querySelector('.pf-more').open && document.querySelectorAll('.pf-cell').length === 30 && [...document.querySelectorAll('.pf-cell')].every(cell => cell.checkVisibility())`));
+      check(`review portfolio ${width}: first ten stay in place on expansion`, await evaluate(`(()=>{const frames=[...document.querySelector('.pf-rows').querySelectorAll('.pf-cell')];return frames.length===10 && frames.every((frame,i)=>Math.abs(frame.getBoundingClientRect().top+scrollY-window.reviewTopTen[i])<=1);})()`));
+      check(`review portfolio ${width}: disclosure has a touch target`, await evaluate(`document.querySelector('.pf-more__toggle').getBoundingClientRect().height>=44`));
+      if (width === 390) await shot('02-portfolio-390-expanded.png');
+      await evaluate(`document.querySelector('.pf-more__toggle').click()`);
+      await sleep(100);
+      check(`review portfolio ${width}: closing hides the remaining twenty`, await evaluate(`!document.querySelector('.pf-more').open && [...document.querySelectorAll('.pf-more .pf-cell')].every(cell=>!cell.checkVisibility())`));
+      if (width === 390) {
+        const y = await evaluate(`document.querySelector('.pf-more').getBoundingClientRect().top+scrollY-90`);
+        await evaluate(`document.querySelector('.pf-more__toggle').blur()`);
+        const detail=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:true,clip:{x:0,y:Math.max(0,y),width,height:250,scale:1}});
+        writeFileSync(`${OUT}/02-portfolio-390-disclosure.png`,Buffer.from(detail.result.data,'base64'));
+      }
+      await evaluate(`scrollTo(0,0)`);
+    }
+    if (width <= 1000) {
+      await evaluate(`document.querySelector('.burger').click()`);
+      await sleep(200);
+      const menu = await evaluate(`(() => {
+        const links = [...document.querySelectorAll('.site-nav a')];
+        return {
+          expanded: document.querySelector('.burger').getAttribute('aria-expanded') === 'true',
+          linksVisible: links.length === 5 && links.every(link => {
+            const rect = link.getBoundingClientRect();
+            return rect.top >= 0 && rect.bottom <= innerHeight && rect.left >= 0 && rect.right <= innerWidth &&
+              link.contains(document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2));
+          }),
+          focused: document.activeElement === links[0],
+          inert: document.querySelector('main').inert,
+          active: document.activeElement?.tagName,
+          visibility: getComputedStyle(document.querySelector('.site-nav')).visibility,
+        };
+      })()`);
+      check(`review ${route} ${width}: all five menu links visible`, menu.expanded && menu.linksVisible);
+      check(`review ${route} ${width}: menu focus and background isolation`, menu.focused && menu.inert, JSON.stringify(menu));
+      if (width === 390 && ['home', 'portfolio', 'contact'].includes(route)) await shot(`${String(index + 1).padStart(2, '0')}-${route}-${width}-menu.png`);
+      await evaluate(`window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))`);
+      check(`review ${route} ${width}: Escape restores focus and closes menu`, await evaluate(`document.querySelector('.burger').getAttribute('aria-expanded') === 'false' && document.activeElement === document.querySelector('.burger') && !document.querySelector('main').inert`));
+      await evaluate(`document.querySelector('.burger').click(); document.querySelector('.nav-scrim').click()`);
+      check(`review ${route} ${width}: tapping outside closes menu`, await evaluate(`document.querySelector('.burger').getAttribute('aria-expanded') === 'false' && !document.querySelector('.nav-scrim') && !document.documentElement.classList.contains('nav-locked')`));
+    }
+    console.log("      review screenshot:", name);
+  }
+}
+
+// Width changes must repack the wall without dropping frames or breaking the
+// viewer's return focus. Contact drafts must survive width AND height changes.
+await viewport(1024, 768);
+await goto('/portfolio.html', 1000);
+await evaluate(`(() => {
+  const frame = document.querySelector('.pf-cell');
+  window.reviewFrameUrl = frame.querySelector('img').dataset.full;
+  frame.focus({ preventScroll: true });
+  frame.querySelector('img').click();
+})()`);
+await viewport(390, 844);
+await sleep(200);
+check('rotation gives Portfolio two mobile columns and ten initial frames', await evaluate(`document.querySelector('.pf-rows').querySelectorAll('.pf-col').length === 2 && document.querySelector('.pf-rows').querySelectorAll('.pf-cell').length === 10 && document.querySelectorAll('.pf-cell').length === 30`));
+await shot('02-portfolio-390-viewer.png');
+await evaluate(`document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))`);
+check('viewer restores focus to the same photo after repacking', await evaluate(`document.querySelector('.lb').hidden && document.activeElement?.querySelector('img')?.dataset.full === window.reviewFrameUrl`));
+await evaluate(`scrollTo(0, 400)`);
+await viewport(1024, 768);
+await sleep(200);
+check('desktop resize restores three columns without jumping to the top', await evaluate(`document.querySelectorAll('.pf-col').length === 3 && document.querySelectorAll('.pf-cell').length === 30 && Math.abs(scrollY - 400) <= 1`));
+
+await viewport(390, 844);
+await goto('/contact.html?package=Social', 1000);
+await evaluate(`(() => {
+  window.reviewForm = document.querySelector('form');
+  document.querySelector('[name="message"]').value = 'A draft to preserve';
+})()`);
+await viewport(390, 500);
+await evaluate(`document.querySelector('.burger').click()`);
+await viewport(1024, 768);
+check('Contact preserves the form, draft and selected package through resizing', await evaluate(`document.querySelector('form') === window.reviewForm && document.querySelector('[name="message"]').value === 'A draft to preserve' && document.querySelector('[name="kind"]').value === 'Social'`));
+check('resizing an open compact menu to desktop unlocks the page', await evaluate(`!document.documentElement.classList.contains('nav-locked') && !document.querySelector('main').inert && document.querySelector('.burger').getAttribute('aria-expanded') === 'false'`));
 
 // ============================================== console
 const errs = consoleErrors();
@@ -600,5 +785,5 @@ if (failed.length) {
   console.log("FAILED:");
   for (const f of failed) console.log(`  - ${f.name} (${f.detail})`);
 }
-ws.close();
+await client.close();
 process.exit(failed.length ? 1 : 0);

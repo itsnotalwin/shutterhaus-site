@@ -1,9 +1,11 @@
+import { formatPrice } from "./pricing";
 import { escapeHtml, motif } from "./layout";
 import { SITE } from "./config";
 import type { Photo } from "./types";
-import { PHOTO_ROWS, setLiveRows } from "./rows";
+import { PHOTO_ROWS, COMMITTED_ROWS } from "./rows";
+
+
 import { SHOOT_OF } from "./shoots";
-import { setLiveHome } from "./config";
 // src/rows.ts (justified rows) went away with the row layout — the wall uses
 // `packByHeight()` from this file now, the same packer the home strip uses.
 
@@ -13,6 +15,20 @@ export function columnise<T>(items: T[], cols: number): T[][] {
   items.forEach((it, i) => out[i % cols].push(it));
   return out;
 }
+
+/** Published edits retain the chosen sequence, including the first photo. */
+export function packInOrder<T extends Photo>(items: T[], cols: number): T[][] {
+  const count = Math.max(1, Math.min(cols, items.length || 1));
+  const columns: T[][] = Array.from({length:count},()=>[]);
+  const heights = Array(count).fill(0);
+  for (const photo of items) {
+    const column = heights.indexOf(Math.min(...heights));
+    columns[column].push(photo);
+    heights[column] += photo.width && photo.height ? photo.height / photo.width : 1;
+  }
+  return columns;
+}
+
 
 /**
  * Pack frames into columns by RENDERED HEIGHT, shortest column first.
@@ -179,6 +195,34 @@ export function packByHeight<T extends Photo>(items: T[], cols: number): T[][] {
   // preserves it down each column instead of showing 17 tallest-first.
   for (const b of buckets) b.sort((x, y) => x.i - y.i);
 
+  // Cross-column swaps can settle in a local minimum. Repair remaining
+  // neighbours within a column; its height and frame count stay unchanged.
+  const adjacent = () => {
+    const sequence = buckets.flat();
+    return sequence.slice(1).filter((frame, i) =>
+      shootId.get(frame.i) === shootId.get(sequence[i].i)).length;
+  };
+  let remaining = adjacent();
+  while (remaining > 0) {
+    let improved = false;
+    for (const bucket of buckets) {
+      for (let x = 0; x < bucket.length && !improved; x++) {
+        for (let y = x + 1; y < bucket.length; y++) {
+          [bucket[x], bucket[y]] = [bucket[y], bucket[x]];
+          const score = adjacent();
+          if (score < remaining) {
+            remaining = score;
+            improved = true;
+            break;
+          }
+          [bucket[x], bucket[y]] = [bucket[y], bucket[x]];
+        }
+      }
+      if (improved) break;
+    }
+    if (!improved) break;
+  }
+
   return buckets.map((b) => b.map((s) => s.photo));
 }
 
@@ -287,35 +331,12 @@ export function pictureFor(url: string, sizes: string, sourceWidth?: number | nu
  */
 const SIZES = "100vw";
 
-/**
- * The `sizes` attribute for a WALL cell, derived from the real column count.
- *
- * This used to be a single hardcoded `SIZES` string whose smallest branch was
- * `100vw`, while a wall cell at 393px is 111px (or 186px at two columns). The
- * browser is not allowed to guess: told "100vw" it correctly asks for 393 CSS
- * px, which at DPR 3 is 1179 device px, which is why it correctly picked the
- * 1200w derivative for every one of the 30 frames. Measured on the live site:
- * 1.28 MB of images for one portfolio page, against 333 device px actually
- * needed per cell. Downscaling the current pick to the true box scores
- * PSNR 40-47 dB, i.e. visually lossless — the extra pixels bought nothing.
- *
- * So `sizes` now states the cell width honestly and the browser picks the 400w
- * file that already exists on disk (11.9x smaller than 1200w on these frames).
- *
- * `cols` is the value wallCols() already computed for the measured row width,
- * so the descriptor cannot drift away from the grid that renders it. The
- * arithmetic is done in px against a 393px reference phone and converted to a
- * percentage, then rounded UP so the browser is never told less than it paints.
- * Deliberately generous: overstating costs a little bandwidth, understating
- * costs sharpness.
- */
+/** Match the wall gutters in public.css so high-DPI photos stay sharp. */
 function wallSizes(cols: number): string {
-  const REF = 393; // iPhone 16 CSS width, the viewport the bug was measured at
-  const PAD = 26 * 2; // --pad on both sides
-  const GUT = 14; // --gut between cells
-  const cellPx = (REF - PAD - (cols - 1) * GUT) / cols;
-  const pct = Math.min(100, Math.ceil((cellPx / REF) * 100));
-  return `${pct}vw`;
+  return `(max-width: 640px) calc((100vw - 32px - ${(cols - 1) * 8}px) / ${cols}), ` +
+    `(max-width: 760px) calc((100vw - 40px - ${(cols - 1) * 12}px) / ${cols}), ` +
+    `(max-width: 1100px) calc((100vw - 64px - ${(cols - 1) * 16}px) / ${cols}), ` +
+    `calc((100vw - min(8.8vw, 144px) - ${(cols - 1) * 22}px) / ${cols})`;
 }
 
 /**
@@ -331,11 +352,21 @@ function categoryOf(p: Photo): string {
   return SITE.categories.includes(key) ? key : "portrait";
 }
 
-/** "portrait" -> "Portrait", for the caption line. */
-function titleCase(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
+/**
+ * A portfolio wall cell: a button wrapping the thumbnail.
+  *
+  * It used to carry a second, larger `<img>` that the CSS revealed on hover.
+  * Removed 2026-10-01 — Alwin, "when i hover it destroys the crop... make it
+  * like the home page images". Measured: 247px of thumbnail replaced by 492px of
+  * the same frame, thumbnail underneath at opacity 0. Inside a justified row
+  * that swaps in a differently-cropped copy whose height disagrees with its
+  * neighbours. The wall now inherits the home page's monochrome-at-rest hover
+  * because no element of its own is needed — there is no filter any more.
+  *
+  * The lightbox opens on CLICK of `.cell img[data-full]`, so the thumbnail
+  * keeps that attribute and the button must not swallow the event — hence no
+  * JS here at all.
+  */
 function figure(p: Photo, index: number, sizes?: string): string {
   // The first frame is the LCP element. Marking it lazy forces the browser to
     // discover it, then decide — which is exactly the 6.4s stall we measured.
@@ -354,7 +385,7 @@ function figure(p: Photo, index: number, sizes?: string): string {
   // <picture> entirely still doesn't pull an 1800px original.
   const fb = derivative(p.url, 400, "jpg") ?? p.url;
 
-  return `<figure class="cell">
+  return `<span class="cell">
       <picture>${sources}
         <img src="${escapeHtml(fb)}" alt="${escapeHtml(p.alt || p.filename || "")}"
              loading="${loading}" decoding="async"${priority}${ratio}
@@ -362,24 +393,9 @@ function figure(p: Photo, index: number, sizes?: string): string {
              data-cat="${escapeHtml(categoryOf(p))}"
              data-filename="${escapeHtml(p.filename || "")}" />
       </picture>
-    </figure>`;
+    </span>`;
 }
 
-/**
- * A portfolio wall cell: a button wrapping the thumbnail.
-  *
-  * It used to carry a second, larger `<img>` that the CSS revealed on hover.
-  * Removed 2026-10-01 — Alwin, "when i hover it destroys the crop... make it
-  * like the home page images". Measured: 247px of thumbnail replaced by 492px of
-  * the same frame, thumbnail underneath at opacity 0. Inside a justified row
-  * that swaps in a differently-cropped copy whose height disagrees with its
-  * neighbours. The wall now inherits the home page's monochrome-at-rest hover
-  * because no element of its own is needed — there is no filter any more.
-  *
-  * The lightbox opens on CLICK of `.cell img[data-full]`, so the thumbnail
-  * keeps that attribute and the button must not swallow the event — hence no
-  * JS here at all.
-  */
  function wallCell(p: Photo, n: number, sizes: string): string {
    // No index argument: `figure()` marks index 0 as the eager/high-priority LCP
    // image, and under column packing that would be whichever frame the packer
@@ -390,10 +406,10 @@ function figure(p: Photo, index: number, sizes?: string): string {
    // data-n is the frame's permanent number; the lightbox reads it for its
    // counter and for stepping order. The visible label is decoration only
    // (aria-hidden): the accessible name is already the alt text.
-   return `<span class="pf-cell" role="button" tabindex="0" data-photo-id="${escapeHtml(p.id)}"
+   return `<button class="photo-trigger pf-cell" type="button" role="button" data-photo-id="${escapeHtml(p.id)}"
                 data-n="${n}" aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">
          ${figure(p, -1, sizes)}
-       </span>`;
+       </button>`;
  }
 
 /**
@@ -407,66 +423,16 @@ function figure(p: Photo, index: number, sizes?: string): string {
  * packer and the stylesheet agree about where the phone starts.
  *
  * This is evaluated at PAINT time, not at module load, which is why it reads
- * `innerWidth` here rather than caching a constant. main.ts re-paints on
- * `orientationchange` so a phone that turns gets a new count. It deliberately
- * does NOT listen for `resize`: iOS Safari fires that on every scroll, and
- * repacking 30 frames each time is exactly the thrash that rule exists to
- * avoid. A desktop window dragged across 760px therefore keeps its count until
- * reload — the same trade the home strip already makes at 640/1000px.
+ * `innerWidth` here rather than caching a constant. main.ts repacks only the
+ * portfolio when the width crosses this boundary. Height changes from a
+ * phone's address bar or keyboard leave the markup and scroll position alone.
  */
 function wallCols(): number {
-  return innerWidth <= 760 ? 2 : 3;
+  return mobileGallery() ? 2 : 3;
 }
 
-/**
- * The portfolio filter bar.
- *
- * The `.pfilter` stylesheet shipped in src/editorial.css with nothing emitting
- * it (verify.mjs counted `filters: 0` and nothing complained). This is that
- * markup.
- *
- * Categories come from `photo.album`, which tools/build-demo-ts.py now writes
- * from tools/frame_meta.py — 46 portraits and 4 landscapes in the real gallery.
- * There are no couples, families or social groups in it, so the bar does not
- * claim any. An earlier mockup of this bar showed invented counts of 28/9/7/6
- * against categories the frames do not contain; do not reintroduce those.
- *
- * "All" comes first and is the default, so the bar is a filter rather than a
- * set of tabs that hide work behind them.
- */
-function filterBar(photos: Photo[]): string {
-  const counts = new Map<string, number>();
-  for (const p of photos) {
-    const k = p.album || "other";
-    counts.set(k, (counts.get(k) ?? 0) + 1);
-  }
-  // Only offer a bar when it would actually distinguish something. With one
-  // category the bar is chrome around a single option.
-  if (counts.size < 2) return "";
-
-  const label: Record<string, string> = {
-    portrait: "Portraits",
-    // The data key stays `landscape` (frame_meta.py, demo.ts, the filter handler
-    // all match on it); only the label changed, to echo the page's own copy,
-    // "Portraits and places".
-    landscape: "Places",
-  };
-  const items = [
-    `<button class="pfilter__item is-on" type="button" data-filter="all"
-         aria-pressed="true">All · ${photos.length}</button>`,
-    ...[...counts.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .map(
-        ([cat, n]) =>
-          `<button class="pfilter__item" type="button" data-filter="${escapeHtml(cat)}"
-             aria-pressed="false">${escapeHtml(label[cat] ?? cat)} · ${n}</button>`,
-      ),
-  ].join("");
-
-  // The cue is for mouse users: the column scrollbars are hidden on purpose, so
-  // nothing else says the three columns move independently. Hidden on phones.
-  const cue = `<span class="pfilter__cue" aria-hidden="true">Scroll any column ↓</span>`;
-  return `<nav class="pfilter" aria-label="Filter photographs by category">${items}${cue}</nav>`;
+function mobileGallery(): boolean {
+  return typeof innerWidth !== 'undefined' && innerWidth <= 760;
 }
 
 /**
@@ -492,12 +458,14 @@ function filterBar(photos: Photo[]): string {
  * 30 deliberately chosen ones there is nothing left for it to select between, and
  * a filter over hand-picked work hides work on purpose.
  */
+function titleCase(s: string): string { return s.charAt(0).toUpperCase() + s.slice(1); }
+
 export function editorialFigure(photo: Photo | undefined, className: string, eager = false): string {
   if (!photo) return "";
   return `<figure class="${className}"><picture>${pictureFor(photo.url, "(max-width: 759px) 100vw, 44vw", photo.width)}<img src="${escapeHtml(bestDerivative(photo.url, "webp", photo.width))}" alt="${escapeHtml(photo.alt || photo.filename || "")}" width="${photo.width || 1200}" height="${photo.height || 1600}" loading="${eager ? "eager" : "lazy"}" decoding="async" /></picture></figure>`;
 }
 
-export function portfolioPage(photos: Photo[]): string {
+export function portfolioPage(photos: Photo[], expanded = false): string {
   if (!photos.length) return emptyGallery();
 
   const byId = new Map(photos.map((p) => [p.id, p]));
@@ -554,19 +522,27 @@ export function portfolioPage(photos: Photo[]): string {
     // lightbox counter and stepping order are unchanged. Only the visual
     // arrangement into columns is new.
     const cols = wallCols();
-    const packed = packByHeight(ordered, cols);
+    const manual = PHOTO_ROWS.flat().join('|') !== COMMITTED_ROWS.flat().join('|');
+    const pack = (frames: Photo[]) => manual ? packInOrder(frames, cols) : packByHeight(frames, cols);
 
     // `sizes` is derived from the column count that will actually render, so the
     // browser is never told a two-across width for a three-across layout.
     const sizes = wallSizes(cols);
 
-    let n = 1; // 1-based: the lightbox prints it as "07 / 30"
-    const wall = packed
-      .map(
-        (col) =>
-          `<div class="pf-col">${col.map((p) => wallCell(p, n++, sizes)).join("")}</div>`,
-      )
-      .join("");
+    let n = 1;
+    const wall = (frames: Photo[]) => `<div class="pf-rows" style="--pf-cols:${cols}">${pack(frames)
+      .map(col => `<div class="pf-col">${col.map(p => wallCell(p, n++, sizes)).join("")}</div>`)
+      .join("")}</div>`;
+    // Keep the first ten in place when the visitor opens the rest of the work.
+    // Desktop keeps its existing continuous, balanced wall.
+    const hasMore = mobileGallery() && ordered.length > 10;
+    const gallery = hasMore
+      ? `${wall(ordered.slice(0, 10))}
+        <details class="pf-more"${expanded ? ' open' : ''}>
+          <summary class="pf-more__toggle"><span class="pf-more__label pf-more__closed">Show more images</span><span class="pf-more__label pf-more__open">Show fewer images</span><svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false"><path d="m6 12 10 8 10-8" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" /></svg></summary>
+          ${wall(ordered.slice(10))}
+        </details>`
+      : wall(ordered);
 
   if (missing.length) {
     throw new Error(
@@ -575,7 +551,7 @@ export function portfolioPage(photos: Photo[]): string {
     );
   }
 
-  return `<section class="page portfolio">
+  return `<section class="page portfolio" data-mobile-layout="${mobileGallery()}">
     <header class="phead editorial-intro">
       <div class="editorial-intro__copy"><p class="eyebrow eyebrow--rule">Portfolio / Work</p>
       <h1 class="phead__h">Selected<br>stories.</h1>
@@ -586,7 +562,7 @@ export function portfolioPage(photos: Photo[]): string {
       <div class="portfolio-feature__caption"><h2>${escapeHtml(categoryOf(ordered[0]) === "portrait" ? "Portraits" : titleCase(categoryOf(ordered[0])))}</h2><p>Real people, real moments. Work with a focus on character, light and environment.</p></div>
     </header>
     <div class="section-label"><h2>Our work.</h2><span>${shown.length} photographs / Gauteng</span></div>
-    <div class="pf-rows" style="--pf-cols:${cols}">${wall}</div>
+    ${gallery}
         ${pfBand()}
       </section>`;
 }
@@ -614,25 +590,11 @@ export const WALL_MIN_FRAME_PX = 175;
  * with what Services charges. It also inherits the deliberate choice recorded
  * there: ONE contact line inside the band, not a site-wide footer.
  *
- * The three replacements match on markup that `homeBand()` controls, so a
- * wording change there that breaks one of them fails silently into an unchanged
- * string rather than an error. `verify.mjs` asserts the band and its CTA are
- * present on this route, which is what catches that.
+ * Text and destination are passed as options, so copy edits cannot silently
+ * break the route's enquiry link. The browser gate checks the destination.
  */
 function pfBand(): string {
-  return homeBand()
-    .replace(
-      `<p class="eyebrow">${escapeHtml(SITE.services.eyebrow)}</p>`,
-      `<p class="eyebrow">Book a shoot</p>`,
-    )
-    .replace(
-      `<h2 class="hcta__h">${escapeHtml(SITE.services.heading)}</h2>`,
-      `<h2 class="hcta__h">Like what you see?</h2>`,
-    )
-    .replace(
-      `<a class="hcta__btn" href="./services.html">${escapeHtml(SITE.services.cta)} →</a>`,
-      `<a class="hcta__btn" href="./contact.html">Get a quote →</a>`,
-    );
+  return homeBand({ eyebrow: "Enquiries", heading: "Book a session.", cta: "Enquire about a session", href: "./contact.html" });
 }
 
 /** The shared empty state — reachable from home and portfolio alike. */
@@ -643,45 +605,26 @@ export function emptyGallery(): string {
     </section>`;
 }
 
-/**
- * How many columns the home strip should use.
- *
- * The portfolio drops to a single column under 640px, but the home strip must
- * not: 8 frames stacked in one column on a phone is a very long scroll, and
- * the packer cannot redistribute them after the fact. So the strip is floored
- * at 2 columns, and the CSS grid is driven by the child count rather than a
- * custom property — a mismatch between the two is what left all 8 frames in
- * one column at 390px.
- */
-
-/**
- * The closing band: services pitch, the entry price, and one contact line.
- *
- * Replaces the centred "Capture what matters" strip, which was the only
- * centred block on a site that is otherwise flush-left, and which left the home
- * page ending on a dead end — no price and no way to reach Alwin without going
- * back up to the nav. The contact row is deliberately ONE line inside the band,
- * not a site-wide footer (an earlier footer was reverted).
- */
-export function homeBand(): string {
+/** Full-width photographs on phones; the established two-column desktop strip. */
+export function homeBand(options?: {eyebrow?: string; heading?: string; cta?: string; href?: string}): string {
   const from = cheapestTier();
   const insta = SITE.social.find((x) => x.id === "instagram");
   const names = SITE.pricing.tiers.map((t) => t.name).join(" · ");
   return `<section class="hcta">
       <div class="hcta__grid">
         <div class="hcta__main">
-          <p class="eyebrow">${escapeHtml(SITE.services.eyebrow)}</p>
-          <h2 class="hcta__h">${escapeHtml(SITE.services.heading)}</h2>
+          <p class="eyebrow">${escapeHtml(options?.eyebrow ?? SITE.services.eyebrow)}</p>
+          <h2 class="hcta__h">${escapeHtml(options?.heading ?? SITE.services.heading)}</h2>
         </div>
         <div class="hcta__side">
           ${
             from
               ? `<p class="hcta__k">From</p>
-          <p class="hcta__price">${escapeHtml(from.price)}</p>`
+          <p class="hcta__price">${escapeHtml(formatPrice(from.price))}</p>`
               : ""
           }
           <p class="hcta__note">${escapeHtml(names)}<br>${escapeHtml(SITE.pricing.depositNote)}</p>
-          <a class="hcta__btn" href="./services.html">${escapeHtml(SITE.services.cta)} →</a>
+          <a class="hcta__btn" href="${escapeHtml(options?.href ?? "./services.html")}">${escapeHtml(options?.cta ?? SITE.services.cta)} →</a>
         </div>
       </div>
       <div class="hcta__foot">
@@ -703,21 +646,14 @@ export function homeBand(): string {
  * Prices are display strings ("R1,200"); the digits decide which is cheapest
  * and the original string is what gets shown.
  */
-function cheapestTier(): { name: string; price: string } | null {
-  const tiers = SITE.pricing.tiers.filter((t) => /\d/.test(t.price));
+function cheapestTier(): { name: string; price: number } | null {
+  const tiers = SITE.pricing.tiers.filter((t) => Number.isFinite(t.price));
   if (!tiers.length) return null;
-  const n = (t: { price: string }) => parseInt(t.price.replace(/[^0-9]/g, ""), 10);
+  const n = (t: { price: number }) => t.price;
   return [...tiers].sort((a, b) => n(a) - n(b))[0]!;
 }
 
-/**
- * The home route: editorial split hero, then six curated frames.
- *
- * The hero is a real photograph rather than a flat black block — the reference
- * puts the work behind the headline, and a black rectangle reads as a broken
- * image to a first-time visitor.
- */
-export function homePage(photos: Photo[], cols: number): string {
+export function homePage(photos: Photo[], _cols: number): string {
   const h = SITE.home;
   // The hero is a wide box; most gallery frames are portrait. Taking photos[0]
   // blindly meant a 1440x1800 portrait centre-cropped into a 1440x710 hero —
@@ -757,7 +693,7 @@ export function homePage(photos: Photo[], cols: number): string {
   // pinned frame, and shadowing it is how this briefly compiled into two
   // different variables with the same name.
   const pinnedStrip: Photo[] = SITE.homeStrip
-    .map((name) => photos.find((p) => p.filename === name && p.id !== usedHero))
+    .map((name) => photos.find((p) => p.filename === name))
     .filter((p): p is Photo => !!p)
     .slice(0, SITE.homeGalleryCount);
   const strip: Photo[] = pinnedStrip.length
@@ -780,7 +716,7 @@ export function homePage(photos: Photo[], cols: number): string {
       </figure>`
     : "";
 
-  return `<section class="page home">
+  return `<section class="page home" data-mobile-layout="${mobileGallery()}">
     <div class="hero">
       <div class="hero__body">
         <p class="eyebrow eyebrow--rule">Independent photography / Gauteng, SA</p>
@@ -798,7 +734,7 @@ export function homePage(photos: Photo[], cols: number): string {
         ? (() => {
             return `<section class="hstrip">
             <div class="hstrip__head"><span>Selected work</span><span class="hstrip__subjects">Portraits / Couples / Families / Social</span><a href="./portfolio.html">View all <span aria-hidden="true">→</span></a></div>
-            <div class="hstrip__grid">${strip.map(p => `<div class="hstrip__item" role="button" tabindex="0" aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">${figure(p, -1)}</div>`).join("")}</div>
+            <div class="hstrip__grid">${strip.map(p => `<button type="button" class="photo-trigger hstrip__item" role="button" aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">${figure(p, -1)}</button>`).join("")}</div>
           </section>`;
           })()
         : ""

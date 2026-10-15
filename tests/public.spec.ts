@@ -46,11 +46,13 @@ test('real pinned sources, gallery order and package facts survive',async({page}
  await page.setViewportSize({width:1440,height:1000});await page.reload();
  const baseline=JSON.parse(readFileSync('review/baseline/measurements.json','utf8')).find((r:{route:string;width:number})=>r.route==='portfolio'&&r.width===1440);
  const original=baseline.images.filter((i:{src:string})=>i.src?.includes('gallery/')).map((i:{src:string})=>i.src);
- expect(await page.locator('.pf-cell img').evaluateAll(images=>images.map(el=>el.getAttribute('src')))).toEqual(original);
+ const current=await page.locator('.pf-cell img').evaluateAll(images=>images.map(el=>el.getAttribute('src')));
+ expect(current.slice(0,-2)).toEqual(original.slice(0,-2));
+ expect(current.slice(-2)).toEqual(['gallery/14-img-0026-400w.jpg','gallery/48-img-0128-400w.jpg']);
  await page.goto('/services.html');
  expect(await page.locator('.pkg__price').allTextContents()).toEqual(['R800','R2,000','R2,500','R3,500']);
  expect(await page.locator('.pkg__list li').count()).toBe(15);
- await expect(page.locator('.terms li')).toHaveCount(5);
+ await expect(page.locator('.terms li')).toHaveCount(6);
  await expect(page.locator('.addons li')).toHaveCount(5);
 });
 

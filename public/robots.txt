@@ -1,20 +1,6 @@
-# Referencing the sitemap. Google finds it at the conventional path anyway;
-# the link makes it explicit and is what some crawlers look for.
 User-agent: *
 Allow: /
 
-# The admin bundle must never be indexed — it is a login-gated tool and has no
-# business in search results.
-#
-# BOTH forms are listed. The host resolves /admin as well as /admin.html —
-# measured live: GET /admin returns 200 and serves the same document — so a
-# Disallow on the .html path alone left the extensionless URL crawlable. It
-# still carries <meta name="robots" content="noindex, nofollow">, so it will not
-# be indexed; this closes the crawl anyway. Note that Disallow does not prevent
-# indexing, only fetching: a disallowed URL can still appear as a bare result if
-# it is linked from elsewhere. The noindex meta is what actually keeps it out,
-# which is why both are present.
-Disallow: /admin
-Disallow: /admin.html
-
+# Crawlers must be able to read the admin login page's noindex directive.
+# Authentication and database policies protect admin data, not robots.txt.
 Sitemap: https://shutterhausvisuals.co.za/sitemap.xml

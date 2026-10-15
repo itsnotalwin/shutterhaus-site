@@ -116,7 +116,7 @@ export function header(active: string): string {
 }
 
 /** Shared public header, skip link, landmark and footer. */
-export function renderShell(active: string, body: string): string {
+export function renderShell(active: string, body: string, _over = false): string {
   // No `is-bw` class. It gated the greyscale filter (styles.css:301) and nothing
   // else: after the filter was removed on 2026-10-02 at Alwin's instruction,
   // the class was emitted on every page and matched no rule. Carrying it
@@ -129,7 +129,7 @@ export function motif(className = ""): string {
 }
 
 function footer(): string {
-  return `<footer class="site-footer"><strong>People. Places. Stories.</strong><small>© ${new Date().getFullYear()} SHUTTERHAUS VISUALS · ${escapeHtml(SITE.contact.location)}</small><div>${SITE.social.map(s => `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.label)}</a>`).join("")}</div><img src="./brand/editorial-arcs-horizontal.webp" width="104" height="40" alt="" /></footer>`;
+  return `<footer class="site-footer"><strong>People. Places. Stories.</strong><small>© ${new Date().getFullYear()} SHUTTERHAUS VISUALS · ${escapeHtml(SITE.contact.location)}</small><div><a href="mailto:${escapeHtml(SITE.contact.email)}">Email</a>${SITE.social.map(s => `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.label)}</a>`).join("")}</div><img src="./brand/editorial-arcs-horizontal.webp" width="104" height="40" alt="" /></footer>`;
 }
 
 export { FONTS };

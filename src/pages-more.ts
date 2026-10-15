@@ -1,3 +1,4 @@
+import { formatPrice } from "./pricing";
 import { SITE } from "./config";
 import { escapeHtml, motif } from "./layout";
 import { DEMO_PHOTOS } from "./demo";
@@ -75,8 +76,8 @@ export function servicesPage(photos: Photo[] = []): string {
   // not behind a separate pricing route (there isn't one).
   const card = (t: PricingTier, i: number): string => {
     const ph = shotFor(t, i + 1);
-    return `<article class="pkg${t.popular ? " pkg--pop" : ""}">
-    ${ph ? `<figure class="pkg__fig" style="--focal:${escapeHtml(t.focal ?? "50% 50%")};--ar:${escapeHtml(t.ar ?? "3 / 2")}"><picture>${pictureFor(ph.url, "(max-width: 760px) 100vw, 33vw", ph.width)}
+    return `<article class="pkg${t.popular ? " pkg--pop" : ""}" data-package="${escapeHtml(t.name)}">
+    ${ph ? `<figure class="pkg__fig" style="--focal:${escapeHtml(t.focal ?? "50% 50%")};--desktop-focal:${escapeHtml(t.desktopFocal ?? t.focal ?? "50% 50%")};--ar:${escapeHtml(t.ar ?? "3 / 2")}"><picture>${pictureFor(ph.url, "(max-width: 760px) 100vw, 33vw", ph.width)}
         <img src="${escapeHtml(bestDerivative(ph.url, "jpg", ph.width))}" alt="${escapeHtml(ph.alt || ph.filename || "")}"
              loading="lazy" decoding="async" /></picture></figure>` : ""}
     <p class="pkg__num"><span>${String(i + 1).padStart(2, "0")} / Session</span><span>${escapeHtml(t.spec.split(" · ")[0])}</span>${
@@ -93,7 +94,7 @@ export function servicesPage(photos: Photo[] = []): string {
     <ul class="pkg__list">
       ${t.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}
     </ul>
-    <p class="pkg__price">${escapeHtml(t.price)}</p>
+    <p class="pkg__price">${escapeHtml(formatPrice(t.price))}</p>
     <a class="cta cta--sm" href="./contact.html?package=${encodeURIComponent(t.name)}">Book now</a>
   </article>`;
   };
@@ -110,6 +111,7 @@ export function servicesPage(photos: Photo[] = []): string {
       ${motif()}
     </header>
     <div class="section-label"><h2>Choose your session.</h2><span>Packages / ZAR</span></div>
+    <fieldset class="package-picker"><legend>Choose your session</legend>${p.tiers.map(t => `<label><input type="radio" name="package-view" id="package-${escapeHtml(t.name.toLowerCase())}" value="${escapeHtml(t.name)}"${t.popular ? ' checked' : ''} /><span>${escapeHtml(t.name)}</span></label>`).join("")}</fieldset>
     <div class="pkgrow">${p.tiers.map(card).join("")}</div>
 
     <section class="invest">
@@ -209,12 +211,12 @@ export function contactPage(_photos: Photo[] = []): string {
       <div class="contact__details"><div><p class="eyebrow">Email</p><a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></div><div><p class="eyebrow">Based in</p><p>${escapeHtml(c.location)}</p><p class="eyebrow">By appointment</p><p>${escapeHtml(c.hours)}</p><a href="${escapeHtml(wa)}" target="_blank" rel="noopener">WhatsApp</a></div></div>
       </div>
       <div class="contact__form-panel"><p class="eyebrow eyebrow--rule">Your enquiry</p>
-      <form class="cform" id="cform" novalidate>
+      <form class="cform" id="cform" action="${escapeHtml(c.formEndpoint)}" method="post" novalidate>
         <label>Name<input name="name" type="text" required autocomplete="name" /></label>
         <label>Email<input name="email" type="email" required autocomplete="email" /></label>
         <label>What do you need?
           <select name="kind" id="cform-kind">
-            ${p0.tiers.map((t) => `<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)} package (${escapeHtml(t.price)})</option>`).join("\n            ")}
+            ${p0.tiers.map((t) => `<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)} package (${escapeHtml(formatPrice(t.price))})</option>`).join("\n            ")}
             <option value="Something else">Something else</option>
           </select>
         </label>

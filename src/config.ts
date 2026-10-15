@@ -3,6 +3,7 @@
  * Change something here, commit, and the site redeploys itself.
  */
 import type { IconId } from "./types";
+import pricingData from "./pricing.json";
 
 export interface SiteConfig {
   /** small word, sits inline before nameBig1 */
@@ -46,8 +47,8 @@ export interface SiteConfig {
    * Which frame carries the home hero, by filename. Auto-detection picks the
    * first landscape shot, but that is a guess — this pins it so the choice is
    * deliberate and changeable without touching page code. Set to null to fall
-   * back to auto-detection. **HOME IS LOCKED** (see HOME-LOCKED.md): changing
-   * this needs Alwin to reopen the home route.
+   * fall back to auto-detection. **HOME IS PINNED** (README → Design
+      * invariants): changing this needs a deliberate home-route pass.
    */
   heroPhoto: string | null;
   /** heading block on the services route, reused by the home page CTA */
@@ -56,7 +57,8 @@ export interface SiteConfig {
 
 export interface PricingTier {
   name: string;
-  price: string;
+  /** Package total in South African rand, before optional add-ons. */
+  price: number;
   /** the one-line positioning line, e.g. "headshots & matric farewells" */
   fit: string;
   /** duration / outfits / locations, shown as a compact spec line */
@@ -81,6 +83,8 @@ export interface PricingTier {
    * focal point has very little to do.
    */
   focal?: string;
+  /** Subject position in the shared desktop thumbnail slot. */
+  desktopFocal?: string;
   /**
    * The slot shape for this card's photograph, as CSS `aspect-ratio`, e.g.
    * "4 / 5". One 3:2 slot was being applied to four photographs of three
@@ -137,8 +141,8 @@ export const SITE: SiteConfig = {
          * field removes the affordance; keeping a visible-but-inert string would
          * still read as "call me". Re-add `phone` here if that changes.
          */
-        location: "Gauteng, South Africa",
-    hours: "Evenings & weekends, by appointment",
+        location: "Kempton Park, Gauteng",
+    hours: "Mornings and weekends, by appointment",
     /**
      * Formspree endpoint. Set means the form POSTs here and works on any
      * device, including phones with no mail app. Empty falls back to a
@@ -151,127 +155,8 @@ export const SITE: SiteConfig = {
     "Portraits, couples, families and social content, shot on location across Gauteng. " +
     "Mini sessions and full galleries, with digital delivery.",
 
-  // ---- pricing (source: Shutterhaus_Pricing_Packages.pdf) ----
-  pricing: {
-    show: true,
-    heading: "Packages",
-    intro:
-      "Every session is directed start to finish, you don't need to know how to pose. " +
-      "50% deposit secures your date.",
-
-    tiers: [
-      {
-        name: "Starter",
-        price: "R800",
-        fit: "Headshots, matric farewells, quick portraits.",
-        spec: "30 min · 1 outfit · 1 location",
-        // Alwin, 2026-10-03: "the red haired woman replaces starter" — she is a
-        // distinct model from the other three tiers; the previous Starter frame
-        // shared a face with Signature, so the row read as one person repeated.
-        // He then supplied this frame himself, same rooftop shoot and same white
-        // zip top, as a tighter alternative: head and shoulders at 2048x1152.
-        photo: "56-img-0126.jpg",
-        // A tight head-and-shoulders crop leaves almost no room to move the
-        // window: the face occupies the middle band, so any vertical bias crops
-        // either her chin or the top of her head. 50% keeps the window on the
-        // face, and the horizontal centre is already right.
-        focal: "50% 50%",
-        // slot matches the frame: 16:9 landscape, 1.778
-        //
-        // This was 4/5, then 2/3, across two earlier attempts at this slot, and
-        // it is worth saying why the value moves rather than being a fixed
-        // "phone-shaped" portrait: `ar` is the DESKTOP card aspect, and the
-        // phone layout derives its own slot from the frame's real ratio. Pinning
-        // a guess here is what put a 2:3 frame inside a 4:5 window and cropped
-        // her hair off.
-        ar: "16 / 9",
-        bullets: [
-          "15 edited photos",
-          "Private online gallery",
-          "Clothing guide & location suggestions",
-          "High-res and web-optimised downloads",
-        ],
-      },
-      {
-        name: "Essential",
-        price: "R2,000",
-        fit: "Our go-to for couples, individuals and small families.",
-        spec: "60 min · 2 outfits · 1–2 locations",
-        photo: "19-img-0198-3.jpg",
-        focal: "50% 50%",
-        // slot matches the frame: 4:5 portrait, 0.800
-        ar: "4 / 5",
-        bullets: [
-          "20 edited photos",
-          "Private online gallery (90-day access)",
-          "Clothing guide, location scouting, shot list",
-        ],
-        popular: true,
-      },
-      {
-        name: "Signature",
-        price: "R2,500",
-        fit: "Families, maternity and engagements: the full experience.",
-        spec: "90 min · 2–3 outfits · multiple locations",
-        photo: "54-img-0164.jpg",
-        focal: "50% 50%",
-        // slot matches the frame: landscape, 1.601
-        ar: "3 / 2",
-        bullets: [
-          "40 edited photos",
-          "Private online gallery (90-day access)",
-          "Full prep: clothing guide, shot list, scouting",
-        ],
-      },
-      {
-        name: "Social",
-        price: "R3,500",
-        fit: "Built for creators: quick turnaround, same-day previews.",
-        spec: "45 min · 2 outfits · 1 location",
-        photo: "20-img-0202.jpg",
-        focal: "50% 17%",
-        // slot matches the frame: 9:16 vertical, 0.563
-        ar: "9 / 16",
-        // Focal is high because the DESKTOP slot is the uniform 3/2, which
-        // keeps only 38% of a 9:16 frame. Centred, that window shows her
-        // torso instead of her face. Irrelevant on the phone, where the
-        // 9/16 slot keeps ~94%.
-        bullets: [
-          "20 edited photos",
-          "Private online gallery (90-day access)",
-          "48hr sneak peek, 10 images, not the full set",
-          "High-res and web-optimised downloads",
-          "Commercial licence included",
-        ],
-      },
-    ],
-
-    addonsTitle: "Add-ons",
-    // Prints and albums are gone entirely at Alwin's instruction, 2026-10-03:
-    // "remove the prints completely, we won't be doing those for now." They
-    // were not merely removed from this list; the "Print release for personal
-    // use" bullet is gone from all four tiers too, so nothing on the page
-    // promises a physical product. Re-adding means restoring both.
-    // "Rush delivery" only ever applied to Social's 48hr sneak peek, which it
-    // now qualifies instead of duplicating.
-    addons: [
-      { label: "Extra 30 minutes on the shoot", price: "+R300" },
-      { label: "Extra location", price: "+R400" },
-      { label: "Extra outfit change", price: "+R300" },
-      { label: "Full gallery within 48hr", price: "+R400" },
-      { label: "Travel beyond 25km", price: "+R5/km" },
-    ],
-
-    terms: [
-      "50% non-refundable deposit secures your date; balance before gallery delivery.",
-      "Rescheduling ≥7 days notice is free. Under 7 days: R500 fee, deposit transfers.",
-      "Outdoor shoots include a backup indoor location. Severe weather = free reschedule.",
-      "Delivery: 7 to 14 days for every package. Social can be faster, ask about the 48hr sneak peek.",
-      "Personal use licence with every package. The Social package includes a commercial licence.",
-    ],
-
-    depositNote: "50% deposit to book · EFT accepted",
-  },
+  // Package details and numeric ZAR prices also feed generated search metadata.
+  pricing: pricingData,
 
   // ---- editorial copy for the five-page reference layout ----
   /**
@@ -281,23 +166,23 @@ export const SITE: SiteConfig = {
    * touching page code.
    */
   home: {
-    eyebrow: "Photography is poetry.",
-    heading: "Portraits worth keeping.",
-    lede: "Natural, honest and timeless photography for portraits, couples, families and social content across Gauteng.",
+    eyebrow: "Shutterhaus Visuals",
+    heading: "Timeless portraiture",
+    lede: "Real people. Honest moments. Portraits that look beyond the now.",
     cta: "View portfolio",
     est: "2019",
     tags: ["Portraits", "Couples", "Families"],
   },
   about: {
     eyebrow: "About me",
-    heading: "Photography is poetry.",
+    heading: "Alwin Newman.",
     /** paragraphs, in order, on the left column beside the portrait */
     body: [
-      "I'm a photographer based in Gauteng, drawn to the raw, unfiltered beauty of real people and unfiltered moments. For me, photography isn't just about what you see, it's about what you feel.",
-      "I believe the best images aren't staged. They happen. They live in the in-between, in the quiet looks, the laughter, the chaos, the stillness.",
-      "This is my way of telling your story, honestly, creatively, and with intention.",
+      "I'm Alwin, a photographer based in Kempton Park. I shoot portraits, couples, families and social content on location.",
+      "I'll help you choose a location and clothing, and guide you through the shoot. You don't need to know how to pose.",
+      "Sessions are available in the mornings and on weekends, by appointment.",
     ],
-    cta: "Let's create together",
+    cta: "Enquire about a session",
     // A man walking a beach with a metal detector, black and white. Ratio 4:5
     // (portrait) -- and nothing may crop it hard, see the About figure note.
     photo: "55-metal-detector.jpg",
@@ -319,8 +204,8 @@ export const SITE: SiteConfig = {
   // and 9 both strand a column and are what created the white hole in the
   // first place — 8 divides by neither width.
   //
-  // **HOME IS LOCKED** (see HOME-LOCKED.md). Do not "tidy" this number or the
-  // column count in stripCols() without Alwin reopening the home route.
+  // **HOME IS PINNED** (README → Design invariants). Do not "tidy" this number
+    // or the column count in stripCols() without a deliberate home-route pass.
   homeGalleryCount: 6,
 
   /**
@@ -364,7 +249,7 @@ export const SITE: SiteConfig = {
   // the lower-left for the white headline. Chosen from a side-by-side of all
   // six landscape frames cropped to the hero ratio.
   heroPhoto: "27-img-0297.jpg",
-  services: { eyebrow: "Services", heading: "Sessions, with intention.", cta: "View packages" },
+  services: { eyebrow: "Photography", heading: "Sessions & pricing.", cta: "View packages" },
 };
 
 /** Fonts loaded in index.html. Change these to re-skin the type. */

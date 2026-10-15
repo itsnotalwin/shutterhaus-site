@@ -3,6 +3,28 @@
    Tokens first, then site chrome, gallery, lightbox, admin.
    ============================================================= */
 
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/inter-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/inter-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Archivo Black";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/archivo-black-latin-400-normal.woff2") format("woff2");
+}
+
 :root {
   --ink: #111;
   /* Inactive nav was #8c8c8c — only 3.36:1 on white, failing WCAG AA at 12px.
@@ -107,15 +129,15 @@ img { display: block; max-width: 100%; }
   background: var(--paper);
 }
 
-/* NOTE: the home route's transparent-over-hero header lives in editorial.css
+/* NOTE: the home route's transparent-over-hero header lives in public.css
    (`.shell--over .site-header`), which sets position:absolute plus a measured
    scrim gradient. It was previously ineffective on a PHONE: styles.css sets
    `position: sticky` on .site-header and that wins on equal specificity only if
-   it comes later in the cascade — styles.css is imported after editorial.css, so
+   it comes later in the cascade — styles.css is imported after public.css, so
    sticky was beating absolute and the header stayed in flow. Hence the 92px
    opaque band Alwin called "the grey bar at the top of mobile view".
 
-   The fix belongs in editorial.css where the rule lives, not here. */
+   The fix belongs in public.css where the rule lives, not here. */
 
 
 /* Logo lockup: small word inline, big word wrapping onto a second line. */
@@ -275,8 +297,8 @@ img { display: block; max-width: 100%; }
   cursor: zoom-in;
   transition: opacity 0.25s;
 }
-/* Fade in on decode so a slow frame never pops in at full contrast. */
-.cell img:not(.is-loaded) { opacity: 0; }
+/* Photographs remain visible if JavaScript fails or is disabled. */
+.cell img:not(.is-loaded) { opacity: 1; }
 .cell img.is-loaded { opacity: 1; }
 /* Only dim a frame that has actually loaded, and only where hover exists —
    :hover never fires on touch, and an un-fired rule would leave the frame
@@ -1361,3 +1383,9 @@ img,
 .social { --social-bg: #fff; }
 .shell--over .social { --social-bg: rgba(12, 12, 12, 0.85); }
 .cico--wa { fill: none; stroke: currentColor; stroke-width: 1.15; }
+
+/* Reset browser chrome around the native photograph controls and dialog. */
+.photo-trigger { display: block; width: 100%; padding: 0; border: 0; border-radius: 0; background: none; color: inherit; cursor: zoom-in; text-align: inherit; }
+.photo-trigger .cell { display: block; }
+dialog.lb { margin: 0; padding: 0; border: 0; width: 100%; height: 100%; max-width: none; max-height: none; }
+button.lb__stage { padding: 0; border: 0; background: none; }

@@ -65,8 +65,8 @@ create or replace function public.is_admin()
 returns boolean
 language sql
 stable
-security definer
-set search_path = public
+security invoker
+set search_path = ''
 as $$
   select lower(coalesce(auth.jwt() ->> 'email', '')) = any (
     array[
