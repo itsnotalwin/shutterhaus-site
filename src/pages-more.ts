@@ -1,9 +1,7 @@
 import { SITE } from "./config";
-import { WHATSAPP_PATH } from "./layout";
 import { escapeHtml, motif } from "./layout";
 import { DEMO_PHOTOS } from "./demo";
-import { homeBand } from "./pages";
-import { pictureFor, bestDerivative } from "./pages";
+import { editorialFigure, pictureFor, bestDerivative } from "./pages";
 import type { Photo } from "./types";
 import type { PricingTier } from "./config";
 
@@ -34,18 +32,16 @@ export function aboutPage(photos: Photo[]): string {
        <figcaption class="about__caption">Alwin Newman / Photographer</figcaption></figure>`
     : `<div class="about__fig about__fig--none" aria-hidden="true"></div>`;
 
+  const landscape = photos.find(p => p.album === "landscape") ?? DEMO_PHOTOS.find(p => p.album === "landscape");
   return `<section class="page about">
-    <div class="about__body">
-      <p class="eyebrow">${escapeHtml(a.eyebrow)}</p>
-      <h1 class="about__h">${escapeHtml(a.heading)}</h1>
-      <div class="prose about__prose">
-        ${a.body.map((para) => `<p class="about__p">${escapeHtml(para)}</p>`).join("")}
-      </div>
-      <a class="cta about__cta" href="./contact.html">${escapeHtml(a.cta)}</a>
-    </div>
-    ${fig}
-    ${motif("about__motif")}
-    ${homeBand()}
+    <header class="editorial-intro about-intro">
+      <div class="editorial-intro__copy"><p class="eyebrow eyebrow--rule">About SHUTTERHAUS</p><h1 class="about__h">Behind<br>the lens.</h1><p class="intro-copy">Independent photography from Gauteng. Real connection, careful light, meaningful photographs.</p><a class="cta" href="./contact.html">Let's work together <span aria-hidden="true">→</span></a></div>
+      ${fig}${motif("about__motif")}
+    </header>
+    <section class="about-story">${editorialFigure(landscape, "about-story__photo")}
+      <div class="about-story__copy"><p class="eyebrow">Founder / Photographer</p><h2>Alwin Newman.</h2><div class="prose about__prose">${a.body.map(para => `<p>${escapeHtml(para)}</p>`).join("")}</div><a class="cta cta--line" href="./contact.html">${escapeHtml(a.cta)} <span aria-hidden="true">→</span></a></div>
+    </section>
+    <section class="about-values"><div><h2>Natural.</h2><p>Unforced moments. True to the person.</p></div><div><h2>Honest.</h2><p>Careful, respectful, thoughtful photography.</p></div><div><h2>Timeless.</h2><p>Images that still feel important years later.</p></div></section>
   </section>`;
 }
 
@@ -83,7 +79,7 @@ export function servicesPage(photos: Photo[] = []): string {
     ${ph ? `<figure class="pkg__fig" style="--focal:${escapeHtml(t.focal ?? "50% 50%")};--ar:${escapeHtml(t.ar ?? "3 / 2")}"><picture>${pictureFor(ph.url, "(max-width: 760px) 100vw, 33vw", ph.width)}
         <img src="${escapeHtml(bestDerivative(ph.url, "jpg", ph.width))}" alt="${escapeHtml(ph.alt || ph.filename || "")}"
              loading="lazy" decoding="async" /></picture></figure>` : ""}
-    <p class="pkg__num">${String(i + 1).padStart(2, "0")}.${
+    <p class="pkg__num"><span>${String(i + 1).padStart(2, "0")} / Session</span><span>${escapeHtml(t.spec.split(" · ")[0])}</span>${
       // Real text, not a CSS ::before. Generated content is invisible to screen
       // readers and to anything reading the DOM, so "most popular" — the one
       // thing that steers a purchase on this page — was not in the document at
@@ -105,12 +101,12 @@ export function servicesPage(photos: Photo[] = []): string {
   return `<section class="page services">
     <header class="shead">
       <div class="shead__col">
-        <p class="eyebrow">${escapeHtml(SITE.services.eyebrow)}</p>
-        <h1 class="shead__h">${escapeHtml(SITE.services.heading)}</h1>
+        <p class="eyebrow eyebrow--rule">Sessions / Services</p>
+        <h1 class="shead__h">Sessions,<br>with intention.</h1>
         <p class="shead__p">${escapeHtml(p.intro)}</p>
         <a class="cta" href="./contact.html">Make an enquiry <span aria-hidden="true">→</span></a>
       </div>
-      ${(() => { const shot = shotFor(p.tiers[2], 2); return shot ? `<figure class="shead__fig"><picture>${pictureFor(shot.url, "(max-width: 759px) 100vw, 45vw", shot.width)}<img src="${escapeHtml(bestDerivative(shot.url, "jpg", shot.width))}" alt="${escapeHtml(shot.alt || "")}" loading="eager" decoding="async" /></picture></figure>` : ""; })()}
+      ${(() => { const shot = photos.find(photo => photo.filename === SITE.homeStrip[0]) ?? shotFor(p.tiers[1], 1); return shot ? `<figure class="shead__fig"><picture>${pictureFor(shot.url, "(max-width: 759px) 100vw, 45vw", shot.width)}<img src="${escapeHtml(bestDerivative(shot.url, "jpg", shot.width))}" alt="${escapeHtml(shot.alt || "")}" loading="eager" decoding="async" /></picture></figure>` : ""; })()}
       ${motif()}
     </header>
     <div class="section-label"><h2>Choose your session.</h2><span>Packages / ZAR</span></div>
@@ -142,7 +138,6 @@ export function servicesPage(photos: Photo[] = []): string {
         ${p.terms.map((t) => `<li>${escapeHtml(t)}</li>`).join("")}
       </ul>
     </div>
-${homeBand()}
   </section>`;
 }
 
@@ -206,13 +201,12 @@ export function contactPage(_photos: Photo[] = []): string {
   return `<section class="page contact">
     <div class="contact__col">
       <div class="contact__main">
-      <p class="eyebrow">Get in touch</p>
-      <h1 class="contact__h">Let's Create Something Beautiful.</h1>
-      <p class="contact__p">${escapeHtml(SITE.blurb)}</p>
+      <p class="eyebrow eyebrow--rule">Get in touch / Gauteng, SA</p>
+      <h1 class="contact__h">Let's make<br>something<br>worth keeping.</h1>
+      <p class="contact__p">Whether it’s a portrait session, a couples shoot, a family story or social content, tell me what you have in mind.</p>
 
       ${(() => { const shot = DEMO_PHOTOS.find(p => p.filename === SITE.pricing.tiers[2]?.photo); return shot ? `<figure class="contact__photo"><picture>${pictureFor(shot.url, "(max-width: 759px) 100vw, 35vw", shot.width)}<img src="${escapeHtml(bestDerivative(shot.url, "jpg", shot.width))}" width="${shot.width}" height="${shot.height}" alt="${escapeHtml(shot.alt || "")}" loading="lazy" decoding="async" /></picture></figure>` : ""; })()}
-      <div class="contact__details"><a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a><p>${escapeHtml(c.location)}<br>${escapeHtml(c.hours)}</p></div>
-      ${motif("contact__motif")}
+      <div class="contact__details"><div><p class="eyebrow">Email</p><a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></div><div><p class="eyebrow">Based in</p><p>${escapeHtml(c.location)}</p><p class="eyebrow">By appointment</p><p>${escapeHtml(c.hours)}</p><a href="${escapeHtml(wa)}" target="_blank" rel="noopener">WhatsApp</a></div></div>
       </div>
       <div class="contact__form-panel"><p class="eyebrow eyebrow--rule">Your enquiry</p>
       <form class="cform" id="cform" novalidate>
@@ -231,46 +225,7 @@ export function contactPage(_photos: Photo[] = []): string {
       </form>
       </div>
 
-      <aside class="contact__aside">
-      <ul class="contact__list">
-        <li>${icon("pin")}<span>${escapeHtml(c.location)}</span></li>
-        <li>${icon("mail")}<a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></li>
-        ${/* Phone row removed 2026-10-03 at Alwin's instruction: not taking
-           calls for now. It was a `tel:` link, so on a phone it raised a dial
-           prompt. WhatsApp below is the only direct channel. */""}
-        <li>${icon("whatsapp")}<a href="${escapeHtml(wa)}" target="_blank" rel="noopener">WhatsApp</a></li>
-      </ul>
-      <p class="contact__hours dim">${escapeHtml(c.hours)}</p>
-      </aside>
+
     </div>
   </section>`;
-}
-
-/**
- * Inline glyphs for the contact detail list. Decorative, so aria-hidden.
- *
- * The pin, mail and phone paths are outline shapes and draw correctly against the
- * stroke rules in `.cico`. The old WhatsApp path was a hand-drawn approximation
- * ("M4 4h16v16H4z M9 9c0 4 2 6 6 6 ...") that read as a plain square with a
- * squiggle inside it — it was not recognisable as WhatsApp at 18px, so it looked
- * like a rendering fault rather than an icon.
- *
- * It is now the real mark, drawn as a FILLED silhouette, which is the only way a
- * WhatsApp logo stays legible at 18px. `.cico--fill` turns off the stroke and
- * fills instead; the outline treatment would reduce it to a tangle of hairlines.
- */
-function icon(id: string): string {
-  const outline: Record<string, string> = {
-    pin: "M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z M12 12a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z",
-    mail: "M3 6h18v12H3z M3 7l9 6 9-6",
-    phone: "M6 3h4l2 5-3 2a12 12 0 0 0 5 5l2-3 5 2v4a4 4 0 0 1-2 2A17 17 0 0 1 4 5a4 4 0 0 1 2-2Z",
-  };
-  // WhatsApp is the one glyph that is NOT an outline shape: it is a stroke
-  // bubble with the handset filled in the background colour, which is how Alwin
-  // preferred it. Rendered here at the contact list's own 24x24 with the same
-  // path layout.ts uses, so the two cannot drift apart again.
-  if (id === "whatsapp") {
-    return `<svg class="cico cico--wa" viewBox="0 0 20 20" aria-hidden="true" focusable="false">${WHATSAPP_PATH}</svg>`;
-  }
-  return `<svg class="cico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${outline[id] ?? ""}" /></svg>`;
 }

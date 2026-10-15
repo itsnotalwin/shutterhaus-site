@@ -9,6 +9,8 @@ EVIDENCE = OUT / 'evidence'
 COMPARE = OUT / 'comparisons'
 EVIDENCE.mkdir(exist_ok=True)
 COMPARE.mkdir(exist_ok=True)
+REFERENCE_CROPS = OUT / 'reference-crops'
+REFERENCE_CROPS.mkdir(exist_ok=True)
 ROUTES = ['home', 'portfolio', 'about', 'services', 'contact']
 for state,folder in [('before','baseline'),('after','after')]:
     for route in ROUTES:
@@ -37,7 +39,16 @@ for route in ROUTES:
 for route in ROUTES:
     for width in [390,1440]:
         src=Image.open(REF/'screenshots'/f'{route}-{"mobile-390" if width==390 else "desktop-1440"}.png')
-        src=src.convert('RGB').crop((0,64,width,min(src.height,64+(1500 if width==390 else 1100))))
+        src=src.convert('RGB').crop((0,64,width,src.height))
+        if route == 'home':
+            primary=Image.open(REF/'reference'/'01-primary-reference.png').convert('RGB')
+            region=primary.crop((53,55,978,941)) if width==1440 else primary.crop((1009,67,1265,982))
+            src=region.resize((width,round(region.height*width/region.width)))
+        elif route == 'portfolio' and width == 390:
+            primary=Image.open(REF/'reference'/'01-primary-reference.png').convert('RGB')
+            region=primary.crop((1292,67,1544,982));src=region.resize((390,round(region.height*390/region.width)))
+        src.save(REFERENCE_CROPS/f'{route}-{width}.webp',quality=92,method=6)
+        src=src.crop((0,0,width,min(src.height,1500 if width==390 else 1100)))
         actual=Image.open(OUT/'after'/f'{route}-{width}.png').convert('RGB')
         actual=actual.crop((0,0,width,min(actual.height,1500 if width==390 else 1100)))
         scale=1 if width==390 else .65

@@ -18,7 +18,7 @@ for (const width of [320, 390, 768, 1000]) {
     await expect(button).toBeFocused();
     await expect(page.locator('main')).toHaveJSProperty('inert',false);
     await button.click();
-    await page.locator('.nav-scrim').click({position:{x:5,y:650}});
+    await page.locator('.site-nav').click({position:{x:5,y:650}});
     await expect(button).toHaveAttribute('aria-expanded','false');
     await button.click();
     await page.setViewportSize({width:1440,height:1000});
@@ -112,7 +112,7 @@ test('drawer navigation and legacy links reach real pages',async({page})=>{
  await page.setViewportSize({width:390,height:844});
  await page.goto('/');
  await page.getByRole('button',{name:'Open menu'}).click();
- await page.getByRole('navigation',{name:'Primary'}).getByRole('link',{name:'Services'}).click();
+ await page.getByRole('navigation',{name:'Primary'}).getByRole('link',{name:'Sessions'}).click();
  await expect(page).toHaveURL(/services.html$/);
  await expect(page.locator('.pkg')).toHaveCount(4);
  for(const route of ['/#/photo','/index.html#/portfolio']) {

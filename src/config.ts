@@ -115,9 +115,9 @@ export const SITE: SiteConfig = {
     // The route is `portfolio`; `photo` is the legacy alias kept working in
     // main.ts for old links. Using the real id here means the nav href and the
     // active-state check agree instead of relying on the alias.
-    { id: "portfolio", label: "Portfolio" },
+    { id: "portfolio", label: "Work" },
     { id: "about", label: "About" },
-    { id: "services", label: "Services" },
+    { id: "services", label: "Sessions" },
     { id: "contact", label: "Contact" },
   ],
 
@@ -282,8 +282,8 @@ export const SITE: SiteConfig = {
    */
   home: {
     eyebrow: "Photography is poetry.",
-    heading: "Timeless Portraiture",
-    lede: "Real people. Honest moments. Portraits that look beyond the now.",
+    heading: "Portraits worth keeping.",
+    lede: "Natural, honest and timeless photography for portraits, couples, families and social content across Gauteng.",
     cta: "View portfolio",
     est: "2019",
     tags: ["Portraits", "Couples", "Families"],
@@ -364,7 +364,7 @@ export const SITE: SiteConfig = {
   // the lower-left for the white headline. Chosen from a side-by-side of all
   // six landscape frames cropped to the hero ratio.
   heroPhoto: "27-img-0297.jpg",
-  services: { eyebrow: "Services", heading: "Capture What Matters.", cta: "View packages" },
+  services: { eyebrow: "Services", heading: "Sessions, with intention.", cta: "View packages" },
 };
 
 /** Fonts loaded in index.html. Change these to re-skin the type. */

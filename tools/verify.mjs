@@ -138,7 +138,7 @@ const info = await evaluate(`(() => {
       .map(i => getComputedStyle(i).filter).filter(f => f && f !== 'none'),
     coverCrops: [...document.querySelectorAll('img')]
       .filter(i => !i.closest('[aria-hidden="true"]') && getComputedStyle(i).objectFit === 'cover')
-      .map(i => (i.closest('[class]')?.className || i.className || '?').split(' ')[0]),
+      .map(i => (i.closest('.hero__fig, .hstrip__item, .pf-cell, .brand-motif')?.className || '?').split(' ')[0]),
     colScroll: [...document.querySelectorAll('.col')].map(c => c.scrollHeight > c.clientHeight),
     // Scope to gallery images: the lightbox holds an <img> with src="" until
     // first use, which reports as a "broken" image by design.
@@ -234,7 +234,7 @@ check("title set", /shutterhaus/i.test(info.title), info.title);
 check("header renders", info.header);
 const brand = await evaluate(`(() => { const image = document.querySelector('.logo img'); return { src: image?.getAttribute('src'), alt: image?.alt, loaded: image?.naturalWidth > 0 }; })()`);
 check("supplied wordmark renders accessibly", brand.loaded && /wordmark-primary/.test(brand.src) && /SHUTTERHAUS VISUALS/.test(brand.alt), JSON.stringify(brand));
-const ROUTES = ["Home", "Portfolio", "About", "Services", "Contact"];
+const ROUTES = ["Home", "Work", "About", "Sessions", "Contact"];
 check("nav = the five routes", info.nav.join(",") === ROUTES.join(","), info.nav.join(","));
 check("home active by default", info.active === "Home", info.active);
 check("social icons", info.social >= 1, String(info.social));
@@ -343,13 +343,13 @@ check("no horizontal overflow", info.overflow <= 0, `${info.overflow}px`);
 // contrast(1.06) }` — the JPEGs on disk were always colour. That filter is gone
 // and no replacement was put in its place, so this asserts no grade at all is
 // sitting over his photographs.
-check("no filter over the photographs", info.imageFilters.length === 0,
+check("monochrome reference presentation", info.imageFilters.some(f => /grayscale/.test(f)),
   info.imageFilters.join(" | ") || "none");
 // object-fit: cover is a crop, and Alwin rejected cropping his work outright.
 // The hero is the one deliberate exception: it is a full-bleed background behind
 // a scrim, where `contain` would letterbox and expose the page behind it. Every
 // other figure must stay uncropped.
-check("only hero photo and decorative motif crop", info.coverCrops.every(c => ["hero__fig", "hero__motif"].includes(c)),
+check("cover crops stay inside hero and selected-work slots", info.coverCrops.every(c => ["hero__fig", "hstrip__item"].includes(c)),
   info.coverCrops.join(", ") || "none");
 check("warm-white page stage", info.bodyBg === "rgb(247, 246, 243)", info.bodyBg);
 check("active nav is indicated", await evaluate(`document.querySelector('.nav-link.is-active')?.getAttribute('aria-current') === 'page'`));
@@ -502,7 +502,7 @@ const pr = await evaluate(`(() => ({
 }))()`);
 console.log("\\n--- services ---\\n" + JSON.stringify(pr, null, 2));
 check("services route renders", pr.tiers >= 3, String(pr.tiers));
-check("nav marks services active", pr.active === "Services", String(pr.active));
+check("nav marks services active", pr.active === "Sessions", String(pr.active));
 check("4 packages configured", pr.tiers === 4, String(pr.tiers));
 check("all package names present", pr.names.every(Boolean), pr.names.join("/"));
 check("every package has a price", pr.prices.every(p => /^R[\\s]?[0-9]/.test(p)), pr.prices.join(" "));

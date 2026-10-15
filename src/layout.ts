@@ -129,7 +129,7 @@ export function motif(className = ""): string {
 }
 
 function footer(): string {
-  return `<footer class="site-footer"><a class="footer-brand" href="./" aria-label="Shutterhaus Visuals home"><img src="./brand/wordmark-primary.svg" width="210" height="35" alt="SHUTTERHAUS VISUALS" /></a><p>${escapeHtml(SITE.contact.location)}</p><div>${SITE.social.map(s => `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.label)}</a>`).join("")}</div><small>© ${new Date().getFullYear()} SHUTTERHAUS VISUALS</small></footer>`;
+  return `<footer class="site-footer"><strong>People. Places. Stories.</strong><small>© ${new Date().getFullYear()} SHUTTERHAUS VISUALS · ${escapeHtml(SITE.contact.location)}</small><div>${SITE.social.map(s => `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.label)}</a>`).join("")}</div><img src="./brand/arc-tile.svg" width="52" height="52" alt="" /></footer>`;
 }
 
 export { FONTS };

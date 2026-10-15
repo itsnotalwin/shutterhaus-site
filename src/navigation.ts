@@ -34,6 +34,7 @@ export function wireNavigation(): () => void {
   const toggle = () => set(!opened);
   const navigate = (event: MouseEvent) => {
     if ((event.target as Element).closest('a')) set(false, false);
+    else if (event.target === nav) set(false);
   };
   const keys = (event: KeyboardEvent) => {
     if (!opened) return;

@@ -58,7 +58,7 @@ test('reduced motion, self-hosted type and signed-out admin gate',async({page})=
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.goto('/');
  await page.evaluate(()=>document.fonts.ready);
- expect(await page.locator('h1').evaluate(el=>getComputedStyle(el).fontFamily)).toContain('EB Garamond');
+ expect(await page.locator('h1').evaluate(el=>getComputedStyle(el).fontFamily)).toContain('Bodoni Moda');
  expect(await page.locator('.cell img').first().evaluate(el=>getComputedStyle(el).transitionDuration)).toBe('0s');
  await expect(page.locator('link[href*="fonts.googleapis"]')).toHaveCount(0);
  await page.goto('/admin.html');

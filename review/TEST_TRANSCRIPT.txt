@@ -1,7 +1,6 @@
-SHUTTERHAUS REFRESH — FINAL VERIFICATION TRANSCRIPT
-14 October 2026
-All commands below returned exit 0 in the final passing run.
-Public screenshots: 35 route/viewport captures, no overflow/broken media/page exceptions.
+SHUTTERHAUS REVISION 2 — FUNCTIONAL VERIFICATION
+The first visual match was rejected. Current owner visual approval is pending.
+All final functional commands returned exit 0.
 
 
 COMMAND LOG: typecheck
@@ -17,7 +16,7 @@ COMMAND LOG: build
 > tsc --noEmit && python tools/build-pages.py && python tools/check-rows.py && python tools/check-srcset.py && vite build
 
 5 page(s) written: index.html, portfolio.html, about.html, services.html, contact.html
-sitemap.xml written (5 urls, lastmod 2026-10-14)
+sitemap.xml written (5 urls, lastmod 2026-10-15)
 every nav route has a document: ['home', 'portfolio', 'about', 'services', 'contact']
 metadata self-check passed: titles <=60, descriptions 120-160, no duplicates, JSON-LD parses
 ok    fifteen rows  (15)
@@ -45,12 +44,12 @@ dist/about.html                        8.59 kB │ gzip:  2.72 kB
 dist/portfolio.html                    8.63 kB │ gzip:  2.74 kB
 dist/contact.html                      8.68 kB │ gzip:  2.75 kB
 dist/services.html                     8.72 kB │ gzip:  2.74 kB
-dist/assets/composition-OJUjXoyC.css  18.48 kB │ gzip:  4.68 kB
-dist/assets/main-CHNyrejc.css         19.18 kB │ gzip:  4.81 kB
-dist/assets/admin-CNGi4ouT.js         13.17 kB │ gzip:  4.85 kB
-dist/assets/composition-DPbsIibA.js   24.55 kB │ gzip:  7.94 kB
-dist/assets/main-BCRMMgm_.js          27.56 kB │ gzip: 10.05 kB
-✓ built in 586ms
+dist/assets/composition-gfWv6GPy.css  18.48 kB │ gzip:  4.68 kB
+dist/assets/main-Bnh1u4g4.css         27.72 kB │ gzip:  6.34 kB
+dist/assets/admin-TTWzeIAZ.js         13.17 kB │ gzip:  4.85 kB
+dist/assets/composition-DIeqDe9z.js   24.53 kB │ gzip:  7.94 kB
+dist/assets/main-DE2rXzTc.js          28.36 kB │ gzip: 10.22 kB
+✓ built in 724ms
 
 
 COMMAND LOG: test
@@ -58,36 +57,36 @@ COMMAND LOG: test
 > shutterhaus-site@1.0.0 test
 > playwright test
 
-[WebServer] (node:7821) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (node:6174) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
 
 Running 21 tests using 1 worker
 
-(node:7839) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:6191) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓   1 tests/controls.spec.ts:4:3 › drawer traps focus, closes with Escape and scrim, releases desktop at 320 (1.4s)
-  ✓   2 tests/controls.spec.ts:4:3 › drawer traps focus, closes with Escape and scrim, releases desktop at 390 (1.0s)
+  ✓   1 tests/controls.spec.ts:4:3 › drawer traps focus, closes with Escape and scrim, releases desktop at 320 (1.9s)
+  ✓   2 tests/controls.spec.ts:4:3 › drawer traps focus, closes with Escape and scrim, releases desktop at 390 (2.0s)
   ✓   3 tests/controls.spec.ts:4:3 › drawer traps focus, closes with Escape and scrim, releases desktop at 768 (1.1s)
-  ✓   4 tests/controls.spec.ts:4:3 › drawer traps focus, closes with Escape and scrim, releases desktop at 1000 (1.1s)
-  ✓   5 tests/controls.spec.ts:32:3 › keyboard lightbox opens, steps, traps focus and restores opener on / (1.1s)
-  ✓   6 tests/controls.spec.ts:32:3 › keyboard lightbox opens, steps, traps focus and restores opener on /portfolio.html (1.0s)
+  ✓   4 tests/controls.spec.ts:4:3 › drawer traps focus, closes with Escape and scrim, releases desktop at 1000 (1.5s)
+  ✓   5 tests/controls.spec.ts:32:3 › keyboard lightbox opens, steps, traps focus and restores opener on / (973ms)
+  ✓   6 tests/controls.spec.ts:32:3 › keyboard lightbox opens, steps, traps focus and restores opener on /portfolio.html (1.5s)
   ✓   7 tests/controls.spec.ts:56:1 › package selection, draft recovery and rotation retain an enquiry (1.1s)
-  ✓   8 tests/controls.spec.ts:77:1 › validation and honeypot block sends; failure retains draft; retry sends once (2.5s)
-  ✓   9 tests/controls.spec.ts:111:1 › drawer navigation and legacy links reach real pages (1.2s)
-  ✓  10 tests/controls.spec.ts:124:1 › skip link focuses content without changing the homepage (608ms)
-  ✓  11 tests/controls.spec.ts:134:2 › skip link preserves legacy route /#/contact (649ms)
-  ✓  12 tests/controls.spec.ts:134:2 › skip link preserves legacy route /#/portfolio (573ms)
-  ✓  13 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 320 (3.0s)
-  ✓  14 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 390 (3.0s)
-  ✓  15 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 430 (3.1s)
-  ✓  16 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 768 (3.2s)
-  ✓  17 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 1024 (3.2s)
-  ✓  18 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 1440 (3.5s)
-  ✓  19 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 1920 (3.7s)
-  ✓  20 tests/public.spec.ts:36:1 › real pinned sources, gallery order and package facts survive (1.3s)
-  ✓  21 tests/public.spec.ts:57:1 › reduced motion, self-hosted type and signed-out admin gate (773ms)
+  ✓   8 tests/controls.spec.ts:77:1 › validation and honeypot block sends; failure retains draft; retry sends once (2.9s)
+  ✓   9 tests/controls.spec.ts:111:1 › drawer navigation and legacy links reach real pages (1.4s)
+  ✓  10 tests/controls.spec.ts:124:1 › skip link focuses content without changing the homepage (932ms)
+  ✓  11 tests/controls.spec.ts:134:2 › skip link preserves legacy route /#/contact (796ms)
+  ✓  12 tests/controls.spec.ts:134:2 › skip link preserves legacy route /#/portfolio (681ms)
+  ✓  13 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 320 (3.4s)
+  ✓  14 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 390 (3.3s)
+  ✓  15 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 430 (3.9s)
+  ✓  16 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 768 (3.6s)
+  ✓  17 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 1024 (3.4s)
+  ✓  18 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 1440 (3.7s)
+  ✓  19 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 1920 (4.1s)
+  ✓  20 tests/public.spec.ts:36:1 › real pinned sources, gallery order and package facts survive (1.7s)
+  ✓  21 tests/public.spec.ts:57:1 › reduced motion, self-hosted type and signed-out admin gate (1.2s)
 
-  21 passed (39.8s)
+  21 passed (46.6s)
 
 
 COMMAND LOG: controls
@@ -95,27 +94,27 @@ COMMAND LOG: controls
 > shutterhaus-site@1.0.0 verify:controls
 > playwright test tests/controls.spec.ts
 
-[WebServer] (node:3956) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (node:3421) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
 
 Running 12 tests using 1 worker
 
-(node:3974) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:3438) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓   1 tests/controls.spec.ts:4:3 › drawer traps focus, closes with Escape and scrim, releases desktop at 320 (1.3s)
-  ✓   2 tests/controls.spec.ts:4:3 › drawer traps focus, closes with Escape and scrim, releases desktop at 390 (953ms)
+  ✓   1 tests/controls.spec.ts:4:3 › drawer traps focus, closes with Escape and scrim, releases desktop at 320 (1.2s)
+  ✓   2 tests/controls.spec.ts:4:3 › drawer traps focus, closes with Escape and scrim, releases desktop at 390 (1.1s)
   ✓   3 tests/controls.spec.ts:4:3 › drawer traps focus, closes with Escape and scrim, releases desktop at 768 (1.1s)
-  ✓   4 tests/controls.spec.ts:4:3 › drawer traps focus, closes with Escape and scrim, releases desktop at 1000 (1.8s)
-  ✓   5 tests/controls.spec.ts:32:3 › keyboard lightbox opens, steps, traps focus and restores opener on / (1.3s)
-  ✓   6 tests/controls.spec.ts:32:3 › keyboard lightbox opens, steps, traps focus and restores opener on /portfolio.html (1.3s)
-  ✓   7 tests/controls.spec.ts:56:1 › package selection, draft recovery and rotation retain an enquiry (1.5s)
-  ✓   8 tests/controls.spec.ts:77:1 › validation and honeypot block sends; failure retains draft; retry sends once (2.6s)
+  ✓   4 tests/controls.spec.ts:4:3 › drawer traps focus, closes with Escape and scrim, releases desktop at 1000 (1.1s)
+  ✓   5 tests/controls.spec.ts:32:3 › keyboard lightbox opens, steps, traps focus and restores opener on / (1.8s)
+  ✓   6 tests/controls.spec.ts:32:3 › keyboard lightbox opens, steps, traps focus and restores opener on /portfolio.html (1.1s)
+  ✓   7 tests/controls.spec.ts:56:1 › package selection, draft recovery and rotation retain an enquiry (1.4s)
+  ✓   8 tests/controls.spec.ts:77:1 › validation and honeypot block sends; failure retains draft; retry sends once (2.7s)
   ✓   9 tests/controls.spec.ts:111:1 › drawer navigation and legacy links reach real pages (1.3s)
-  ✓  10 tests/controls.spec.ts:124:1 › skip link focuses content without changing the homepage (794ms)
-  ✓  11 tests/controls.spec.ts:134:2 › skip link preserves legacy route /#/contact (1.1s)
-  ✓  12 tests/controls.spec.ts:134:2 › skip link preserves legacy route /#/portfolio (973ms)
+  ✓  10 tests/controls.spec.ts:124:1 › skip link focuses content without changing the homepage (644ms)
+  ✓  11 tests/controls.spec.ts:134:2 › skip link preserves legacy route /#/contact (624ms)
+  ✓  12 tests/controls.spec.ts:134:2 › skip link preserves legacy route /#/portfolio (609ms)
 
-  12 passed (17.6s)
+  12 passed (16.2s)
 
 
 COMMAND LOG: verify
@@ -130,9 +129,9 @@ COMMAND LOG: verify
   "logo": "",
   "nav": [
     "Home",
-    "Portfolio",
+    "Work",
     "About",
-    "Services",
+    "Sessions",
     "Contact"
   ],
   "active": "Home",
@@ -141,25 +140,38 @@ COMMAND LOG: verify
   "imgs": 6,
   "perCol": [],
   "overflow": 0,
-  "headerH": 84,
+  "headerH": 116,
   "bodyBg": "rgb(247, 246, 243)",
   "bodyColor": "rgb(17, 17, 17)",
   "navColor": "rgb(17, 17, 17)",
-  "navSize": "10px",
+  "navSize": "12px",
   "activeColor": "rgb(17, 17, 17)",
   "bw": false,
-  "imageFilters": [],
+  "imageFilters": [
+    "grayscale(1)",
+    "grayscale(1)",
+    "grayscale(1)",
+    "grayscale(1)",
+    "grayscale(1)",
+    "grayscale(1)"
+  ],
   "coverCrops": [
-    "hero__fig"
+    "hero__fig",
+    "hstrip__item",
+    "hstrip__item",
+    "hstrip__item",
+    "hstrip__item",
+    "hstrip__item",
+    "hstrip__item"
   ],
   "colScroll": [],
   "broken": 0
 }
---- portfolio ---{"cols":3,"perCol":[10,10,10],"cells":30,"imgs":30,"tracks":3,"cellW":424,"gutter":24,"worstGap":24,"bottomSpread":106,"scrollables":0,"overflowX":0,"printedNumbers":0,"filterBar":false,"dataN":30,"nSeq":true,"band":true,"bandCta":"./contact.html","bandLinks":2,"headings":[{"tag":"H1","text":"Selected stories.","overflowing":false,"size":100.8},{"tag":"H2","text":"Like what you see?","overflowing":false,"size":79.2}]}
+--- portfolio ---{"cols":3,"perCol":[10,10,10],"cells":30,"imgs":30,"tracks":3,"cellW":424,"gutter":24,"worstGap":24,"bottomSpread":106,"scrollables":0,"overflowX":0,"printedNumbers":0,"filterBar":false,"dataN":30,"nSeq":true,"band":true,"bandCta":"./contact.html","bandLinks":2,"headings":[{"tag":"H1","text":"Selectedstories.","overflowing":false,"size":86.4},{"tag":"H2","text":"Portraits","overflowing":false,"size":22.5},{"tag":"H2","text":"Our work.","overflowing":false,"size":42},{"tag":"H2","text":"Like what you see?","overflowing":false,"size":54.7}]}
 PASS  title set  — SHUTTERHAUS VISUALS | photography in Gauteng
 PASS  header renders
 PASS  supplied wordmark renders accessibly  — {"src":"./brand/wordmark-primary.svg","alt":"SHUTTERHAUS VISUALS","loaded":true}
-PASS  nav = the five routes  — Home,Portfolio,About,Services,Contact
+PASS  nav = the five routes  — Home,Work,About,Sessions,Contact
 PASS  home active by default  — Home
 PASS  social icons  — 2
 PASS  index.html serves the homepage, not the wall  — {"hero":true,"cells":0,"title":"SHUTTERHAUS VISUALS | photography in Gauteng"}
@@ -184,13 +196,13 @@ PASS  shoot map covers every frame  — 0 unmapped
 PASS  no two same-shoot frames are adjacent  — 0 adjacent pair(s) of 0
 PASS  longest same-shoot run stays short  — 1 in a row
 PASS  no horizontal overflow  — 0px
-PASS  no filter over the photographs  — none
-PASS  only hero photo and decorative motif crop  — hero__fig
+PASS  monochrome reference presentation  — grayscale(1) | grayscale(1) | grayscale(1) | grayscale(1) | grayscale(1) | grayscale(1)
+PASS  cover crops stay inside hero and selected-work slots  — hero__fig, hstrip__item, hstrip__item, hstrip__item, hstrip__item, hstrip__item, hstrip__item
 PASS  warm-white page stage  — rgb(247, 246, 243)
 PASS  active nav is indicated
-PASS  nav text size  — 10px
+PASS  nav text size  — 12px
 PASS  no broken images  — 0
-PASS  no heading splits or clips a word  — 2 headings clean
+PASS  no heading splits or clips a word  — 4 headings clean
       shot: shot-home.png
 PASS  lightbox opens on click  — {"hidden":false,"hasImg":true}
       shot: shot-lightbox.png
@@ -201,7 +213,7 @@ PASS  form has name/email/message  — name,email,kind,message,_website
 PASS  mailto link
 PASS  contact no overflow  — 0px
       shot: shot-contact.png
-PASS  no video nav item  — Home,Portfolio,About,Services,Contact
+PASS  no video nav item  — Home,Work,About,Sessions,Contact
 PASS  #/video falls back to the gallery  — active=undefined cells=30
 PASS  no video empty-state leaked
 PASS  mobile 360: no overflow  — 0px
@@ -232,7 +244,7 @@ PASS  admin no overflow  — 0px
       shot: shot-admin.png
 \n--- services ---\n{
   "route": "#/services",
-  "active": "Services",
+  "active": "Sessions",
   "tiers": 4,
   "names": [
     "Starter",
@@ -268,7 +280,7 @@ PASS  admin no overflow  — 0px
   ]
 }
 PASS  services route renders  — 4
-PASS  nav marks services active  — Services
+PASS  nav marks services active  — Sessions
 PASS  4 packages configured  — 4
 PASS  all package names present  — Starter/Essential/Signature/Social
 PASS  every package has a price  — R800 R2,000 R2,500 R3,500

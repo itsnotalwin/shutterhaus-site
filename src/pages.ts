@@ -492,6 +492,11 @@ function filterBar(photos: Photo[]): string {
  * 30 deliberately chosen ones there is nothing left for it to select between, and
  * a filter over hand-picked work hides work on purpose.
  */
+export function editorialFigure(photo: Photo | undefined, className: string, eager = false): string {
+  if (!photo) return "";
+  return `<figure class="${className}"><picture>${pictureFor(photo.url, "(max-width: 759px) 100vw, 44vw", photo.width)}<img src="${escapeHtml(bestDerivative(photo.url, "webp", photo.width))}" alt="${escapeHtml(photo.alt || photo.filename || "")}" width="${photo.width || 1200}" height="${photo.height || 1600}" loading="${eager ? "eager" : "lazy"}" decoding="async" /></picture></figure>`;
+}
+
 export function portfolioPage(photos: Photo[]): string {
   if (!photos.length) return emptyGallery();
 
@@ -571,11 +576,16 @@ export function portfolioPage(photos: Photo[]): string {
   }
 
   return `<section class="page portfolio">
-    <header class="phead">
-      <p class="eyebrow">${shown.length} photographs · Gauteng</p>
-      <h1 class="phead__h">Selected stories.</h1>
-      <p class="phead__p">Portraits and places, shot around Gauteng.</p>
+    <header class="phead editorial-intro">
+      <div class="editorial-intro__copy"><p class="eyebrow eyebrow--rule">Portfolio / Work</p>
+      <h1 class="phead__h">Selected<br>stories.</h1>
+      <p class="phead__p">Real people, real moments. Work with a focus on character, light and environment.</p>
+      <a class="cta" href="./contact.html">Enquire about a session <span aria-hidden="true">→</span></a></div>
+      ${editorialFigure(ordered[0], "editorial-intro__photo portfolio-feature", true)}
+      ${motif()}
+      <div class="portfolio-feature__caption"><h2>${escapeHtml(categoryOf(ordered[0]) === "portrait" ? "Portraits" : titleCase(categoryOf(ordered[0])))}</h2><p>Real people, real moments. Work with a focus on character, light and environment.</p></div>
     </header>
+    <div class="section-label"><h2>Our work.</h2><span>${shown.length} photographs / Gauteng</span></div>
     <div class="pf-rows" style="--pf-cols:${cols}">${wall}</div>
         ${pfBand()}
       </section>`;
@@ -643,12 +653,6 @@ export function emptyGallery(): string {
  * custom property — a mismatch between the two is what left all 8 frames in
  * one column at 390px.
  */
-function stripCols(frameCount: number): number {
-  // Six curated frames: three columns on desktop, two on smaller screens.
-  // Continue using the existing height-aware packer and live image selection.
-  const want = innerWidth >= 1001 ? 3 : 2;
-  return Math.min(want, frameCount);
-}
 
 /**
  * The closing band: services pitch, the entry price, and one contact line.
@@ -772,7 +776,7 @@ export function homePage(photos: Photo[], cols: number): string {
         <img src="${escapeHtml(bestDerivative(hero.url, "webp", hero.width))}"
              alt="${escapeHtml(hero.alt || hero.filename || "")}"
              loading="eager" decoding="async" fetchpriority="high"
-             width="${hero.width ?? 1600}" height="${hero.height ?? 1067}" /></picture><figcaption>${escapeHtml(SITE.contact.location)} <span>Portraiture / Selected frame</span></figcaption>
+             width="${hero.width ?? 1600}" height="${hero.height ?? 1067}" /></picture>
       </figure>`
     : "";
 
@@ -780,38 +784,21 @@ export function homePage(photos: Photo[], cols: number): string {
     <div class="hero">
       <div class="hero__body">
         <p class="eyebrow eyebrow--rule">Independent photography / Gauteng, SA</p>
-        <h1 class="hero__h">${escapeHtml(h.heading)}</h1>
+        <h1 class="hero__h">Portraits<br>worth<br>keeping.</h1>
         <p class="hero__lede">${escapeHtml(h.lede)}</p>
-        <div class="hero__actions"><a class="cta cta--btn" href="./contact.html">Book a session <span aria-hidden="true">→</span></a><a class="cta cta--line" href="./portfolio.html">${escapeHtml(h.cta)}</a></div>
+        <div class="hero__actions"><a class="cta cta--btn" href="./contact.html">Book a session <span aria-hidden="true">→</span></a><a class="cta cta--line" href="./portfolio.html">View work <span aria-hidden="true">→</span></a></div>
       </div>
       ${heroFig}
       ${motif("hero__motif")}
-      <div class="hero__meta">
-        <span>Est. ${escapeHtml(h.est)} | ${escapeHtml(SITE.contact.location)}</span>
-        <span class="hero__meta-tags">${h.tags.map(escapeHtml).join(" / ")}</span>
-        <span class="hero__meta-cue" aria-hidden="true">Scroll ↓</span>
-      </div>
+
     </div>
 
     ${
       strip.length
         ? (() => {
-            const columns = packByHeight(strip, stripCols(strip.length));
             return `<section class="hstrip">
-            <div class="hstrip__head"><span>Selected work</span><span>${String(strip.length).padStart(2, "0")} frames</span></div>
-            <div class="hstrip__grid" style="--strip-cols:${stripCols(strip.length)}">${columns
-              .map(
-                (col) =>
-                  `<div class="hstrip__col">${col
-                    // No number printed on the frame. Alwin, 2026-10-01: "I dont
-                    // like the number on my photos". The strip does not need
-                    // numbering to read as a curated set, and the digit sitting in
-                    // the corner of every photograph was the thing he objected to.
-                    .map((p) => `<div class="hstrip__item" role="button" tabindex="0" aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">${figure(p, -1)}</div>`)
-                    .join("")}</div>`,
-              )
-              .join("")}</div>
-            <a class="cta cta--line" href="./portfolio.html">See the full portfolio</a>
+            <div class="hstrip__head"><span>Selected work</span><span class="hstrip__subjects">Portraits / Couples / Families / Social</span><a href="./portfolio.html">View all <span aria-hidden="true">→</span></a></div>
+            <div class="hstrip__grid">${strip.map(p => `<div class="hstrip__item" role="button" tabindex="0" aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">${figure(p, -1)}</div>`).join("")}</div>
           </section>`;
           })()
         : ""

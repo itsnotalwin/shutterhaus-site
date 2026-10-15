@@ -1,64 +1,55 @@
-# SHUTTERHAUS VISUALS — review build
+# SHUTTERHAUS VISUALS — revised mockup review
 
-14 October 2026. Branch: `design/editorial-brand-refresh`. Base: `ffd120d0543aa96a3335d18c953bb40bed514849`.
+Branch: `design/editorial-brand-refresh`. Original repository base: `ffd120d0543aa96a3335d18c953bb40bed514849`. Rejected first attempt: `343997b`.
 
-## Result
+The owner rejected the first build's visual match. **This revised package supersedes the first screenshots and withdraws the earlier visual acceptance claim.** Automated tests demonstrate functionality; the owner decides whether the visual result meets the mockups.
 
-The five real public pages share a white editorial header, supplied SVG identity, self-hosted EB Garamond/Inter typography, restrained arc artwork, generous spacing, square booking buttons and a cohesive footer. Home uses a split statement/photo/motif composition and all six curated photographs. Portfolio preserves the 30-frame dataset, order, packer and lightbox. About preserves the authentic photographer portrait and biography. Services retains all package benefits, terms and add-ons. Contact pairs the studio invitation with an accessible, working enquiry form.
+## Revision 2
 
-The explicit owner price change is applied: **Social R3,500**. Starter R800, Essential R2,000 and Signature R2,500 remain unchanged. The package selector and structured-data price range follow the update.
+- Home now uses **“Portraits / worth / keeping.”**, a sharper self-hosted Bodoni Moda display face, the reference's tall split photograph/motif composition, four-up monochrome work tiles on desktop and the mobile image → copy → booking → motif sequence.
+- Portfolio now has the reference introduction and featured photo. On mobile, the title leads directly to the large photograph, caption and image grid. The original 30-frame gallery data, packing/order and lightbox are retained.
+- About now has **“Behind the lens.”**, the pinned real photographer photograph, a separate landscape/biography composition and three value blocks.
+- Services now has **“Sessions, with intention.”**, a curated real portrait, light bordered cards, monochrome image crops and restrained recommendation styling.
+- Contact now has **“Let's make / something / worth keeping.”**, a plain white form, supporting photography and the reference's editorial contact details.
+- The header uses **Work / About / Sessions / Contact**. Mobile navigation is a dark full-screen panel with large serif links and the supplied motif.
+- The closing elements use a compact booking band and **“People. Places. Stories.”** footer.
 
-## Main changes
+Social remains **R3,500**. Starter R800, Essential R2,000 and Signature R2,500 are unchanged. All benefits, add-ons, deposits, terms, appointment hours and contact details remain data-driven. Real photography and original source bytes are preserved.
 
-| Files | Purpose |
-|---|---|
-| `src/public.css`, `src/fonts.css`, `public/fonts/`, `public/brand/` | One coherent public visual layer, licensed local fonts and supplied artwork |
-| `src/layout.ts`, `src/pages.ts`, `src/pages-more.ts` | Shared chrome/footer, split Home, editorial gallery, authentic About, package cards and Contact |
-| `src/navigation.ts`, `src/contact-form.ts`, `src/lightbox.ts`, `src/main.ts` | Accessible drawer lifecycle, tab-scoped draft recovery, validation/send protection, keyboard lightbox and route integration |
-| `src/config.ts`, `tools/build-pages.py`, generated public HTML | Social price, local-font preload, retained SEO/canonicals and corrected price range |
-| `src/admin.ts`, `admin.html` | Existing admin fonts served locally; auth/data/upload code remains intact |
-| `tests/`, `playwright.config.ts`, `tools/verify.mjs`, `tools/review/` | Meaningful interaction/regression coverage and reproducible screenshot/CDP review |
+## Review evidence
 
-## Screenshots and visual review
+Open [review/index.html](../review/index.html). It defaults to **Mockup vs revised build**, with page and viewport selectors; switch to **Original website vs revised build** for before/after views.
 
-Open [the review gallery](../review/index.html) for before/after views of all five pages at 390 and 1440, and final captures at **320, 390, 430, 768, 1024, 1440 and 1920**. Density is 1; the dedicated capture uses touch/mobile emulation below 760px. Original lossless PNG captures remain in `review/baseline/` and `review/after/`. Portable WebP evidence is versioned in `review/evidence/`.
+- `review/evidence/`: all five final pages at 320/390/430/768/1024/1440/1920, plus original-site before images at 390/1440.
+- `review/reference-crops/`: normalized supplied mockup regions used by the viewer.
+- `review/comparisons/`: combined reference/revision and before/after boards.
+- `review/after/`: full-resolution lossless PNG captures, measurements, and command logs.
+- `review/changes.patch`: text-code diff; font binaries and screenshot evidence are included separately in the branch.
+- [REFRESH_REVISION_2.md](REFRESH_REVISION_2.md): concrete corrections after owner feedback.
+- [design-qa.md](../design-qa.md): comparison and review status.
 
-Comparison boards are in `review/comparisons/`. Source/implementation screenshots were opened and compared, including focused hero, gallery, Services and form details. Corrections included moving desktop hero copy toward the photo's upper edge, scaling the serif headline, lengthening the motif panel, reducing desktop Services photo-stage whitespace, and completing menu/field focus states. The image capture waits for decoding/reveals to avoid false blank frames in full-page evidence.
+## Main code files
 
-Intentional differences from the concept are recorded in [the audit](REFRESH_AUDIT.md): real photos, full founder image, six curated Home frames, existing headline/copy, real pricing and full terms, actual category-free portfolio, original colour work, and a functional enquiry form.
+`src/public.css` owns the visual system. `src/layout.ts`, `src/pages.ts` and `src/pages-more.ts` implement the five page compositions. `src/fonts.css` and `public/fonts/` provide licensed self-hosted type. `src/config.ts` owns identity and pricing. `src/navigation.ts`, `src/contact-form.ts` and `src/lightbox.ts` retain accessible interactions, recovery and submission handling. The Vite/TypeScript/static-document architecture, Supabase store/auth/composition contracts, page paths, canonicals and SEO remain intact.
 
-## Verification
+## Functional verification
 
-| Command/check | Result |
-|---|---|
-| `npm run typecheck` | Passed, exit 0 |
-| `npm run build` | Passed, exit 0 |
-| `npm run test` | 21 browser tests passed, exit 0 |
-| `npm run verify:controls` | 12 interaction tests passed, exit 0 |
-| `npm run verify` | 77/77 public/admin-gate assertions passed, exit 0 |
-| `node tools/verify-admin-panel.mjs` | 15/15 layout/markup probes passed, exit 0 |
-| `node tools/verify-admin-upload.mjs` | 8/8 available image-resize/layout probes passed, exit 0 |
-| Final screenshot measurements | 35 route/viewport captures; no overflow, broken media or page exceptions |
+The final command transcript is `review/TEST_TRANSCRIPT.txt`.
 
-Transcripts are saved under `review/after/`. The baseline had a passing build and 80 browser checks, but no `test` or `verify:controls` script; the added suite now verifies the handoff's requirements. The existing visual gate's old Archivo wordmark assertions were replaced with supplied-wordmark checks; gallery/order/pricing/route assertions were retained. The final gate has 77 assertions because four old wordmark checks became one meaningful SVG check.
+- Typecheck and production build passed.
+- `npm test`: 21 browser tests passed, covering all five routes across seven widths, media/heading/SEO integrity, real pinned sources, exact gallery order, pricing, reduced motion, signed-out admin gate and primary interactions.
+- `npm run verify:controls`: 12 interaction tests passed, including full-screen menu focus trap/return and dismissal, lightbox keys/focus, package preselection, draft reload/rotation, mocked success/error/retry, honeypot and duplicate-send protection, skip links and legacy routes.
+- `npm run verify`: 77/77 existing public/admin-gate checks passed with visual assertions updated for the approved reference treatment.
+- Admin panel probe: 15/15 available markup/layout checks; admin upload probe: 8/8 available resize/layout checks.
+- Final screenshot set: 35 route/viewport captures, no horizontal overflow, broken media or page exceptions.
 
-Enquiry tests intercept Formspree locally and cover required fields, email validation, honeypot, duplicate-send protection, error/retry, success clearing, package preselection and reload/rotation recovery. No test enquiry was sent to the real inbox. Drawer and lightbox tests cover focus trap/return, Escape, outside dismissal and next/previous. Tests include legacy URLs and skip links. Public checks cover a single H1, image alt/media, reduced motion, canonical/OG/JSON-LD and no public telephone links.
+## Remaining review limits
 
-## Performance sanity check
+The new renders are presented for owner visual review; they are not described as approved or pixel-identical. The exact original concept font file was not supplied; Bodoni Moda is the revised match. Supplied SVG arc artwork differs in texture from the raster mockup. Real pinned photographs, the authentic photographer's full environmental portrait, six curated Home images and full package details intentionally differ from illustrative concept content.
 
-Ten unthrottled Chromium observations (five routes × 390/1440) recorded **CLS 0** during the first two seconds and no external resource hosts. Details are in `review/after/performance.json`. This is a local sanity check, not a field benchmark or Lighthouse score. Public images retain WebP/JPEG derivative selection and lazy loading; the hero remains eager/high priority. Fonts are local and preloaded selectively. The only new dependency is development-only browser test tooling.
+Live Google authentication, authenticated database writes, physical iOS Safari and real inbox delivery were not exercised. Form tests intercept Formspree locally and do not send test enquiries to the live inbox. Admin probes do not prove authenticated publishing. Local performance measurements are recorded in `review/after/performance.json`; they are not field benchmarks.
 
-## Practical limits and owner review
-
-- Live Google authentication, authenticated admin writes and actual Formspree inbox delivery require the owner's configured test session; they were not exercised. The admin panel probe mounts its existing test markup and the upload probe validates the available browser resize pipeline. They do not prove an end-to-end authenticated publish.
-- Native iOS Safari/safe-area behaviour needs a physical device check; browser emulation and landscape draft recovery passed.
-- The supplied SVG wordmark uses editable text/fallback type. Outlined logo masters and an SH favicon remain future owner/design decisions; the existing favicon is retained.
-- The Home headline remains “Timeless Portraiture.” The proposed “Portraits worth keeping.” is available as an explicit later copy change.
-- Review the serif, real image crops, colour/monochrome balance, logo and footer. No merge or deployment has been performed.
-
-## Local review
-
-From the repository root:
+## Run locally
 
 ```bash
 npm ci
@@ -66,8 +57,6 @@ npm run build
 npm run preview
 ```
 
-Open `http://127.0.0.1:4173/`, then the Portfolio, About, Services and Contact links. For development use `npm run dev`. To inspect the screenshot gallery in a browser, serve the repository with `python -m http.server 8080` and open `http://127.0.0.1:8080/review/index.html`.
+Open `http://127.0.0.1:4173/`. For the screenshot viewer, serve the repository using `python -m http.server 8080` and open `http://127.0.0.1:8080/review/index.html`. Browser tests use `/usr/bin/chromium`; set `CHROME_BIN` for another Chrome/Chromium installation.
 
-For browser tests, use installed Chromium at `/usr/bin/chromium`, or set `CHROME_BIN` to your local Chrome/Chromium executable. Run `npm test` and `npm run verify:controls`. `node tools/review/verify-legacy.mjs` starts an isolated Vite preview plus Chrome CDP and runs the existing probes. `node tools/review/capture.mjs` regenerates all screenshots; it uses a separate local port. `python tools/review/package.py` regenerates the portable review boards when Pillow and the extracted design reference are available.
-
-The text-code diff is in `review/changes.patch`; licensed font binaries and screenshot evidence are included in the branch alongside it. Work is preserved in the development branch. **Awaiting owner approval before merge or publication.**
+No merge, production push, hosting change or deployment has occurred. **Awaiting owner review of this revision.**

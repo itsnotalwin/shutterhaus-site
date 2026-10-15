@@ -29,7 +29,7 @@ The uploaded package was extracted intact to `/workspace/design-reference/SHUTTE
 - Screenshots: all five pages at 390 and 1440 CSS px, density 1, in `review/baseline/`.
 - Build regenerated sitemap dates; this was generated task output, not pre-existing user work.
 
-## Resolved reference conflicts
+## Initial implementation decisions (superseded where noted in Revision 2)
 
 - Newer paths (`public.css`, `visual-refresh.css`, `pricing.json`, `navigation.ts`, `contact-form.ts`) described by the handoff did not exist. Implement against actual code rather than assume those files were present.
 - Preserve the real Home headline “Timeless Portraiture”; the proposed “Portraits worth keeping.” remains a copy option for owner review. Retain the real About/Services/Contact copy and appointment hours; do not use the prototype's conflicting mornings/location claims.
@@ -39,3 +39,8 @@ The uploaded package was extracted intact to `/workspace/design-reference/SHUTTE
 - Keep the real photographer image with its full composition. The mockup's client portrait is not suitable for About.
 - Natural colour is retained in the curated portfolio/selected work. Existing monochrome hero and CSS-only monochrome family images establish the restrained page palette. Source image bytes remain unchanged.
 - No new categories, Journal route, service promises, testimonials or response-time claims.
+
+
+## Owner feedback and revised authority
+
+The owner rejected the first visual match. See [REFRESH_REVISION_2.md](REFRESH_REVISION_2.md). The revised build adopts the supplied mockup headings and section structures, a sharper display serif, monochrome presentation, four-up desktop work tiles, light package cards and a full-screen dark menu. The earlier decisions to retain the old headline, colour-first thumbnails and altered page structures no longer apply. Real photo/data/functional constraints remain in force.

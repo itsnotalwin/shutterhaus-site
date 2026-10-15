@@ -90,7 +90,7 @@ HEAD = """<!doctype html>
     <title>{title}</title>
     <meta name="description" content="{description}" />
 
-    <link rel="preload" href="./fonts/eb-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./fonts/bodoni-moda-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="./fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
 
     <meta property="og:title" content="{og_title}" />

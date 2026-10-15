@@ -1,12 +1,12 @@
 # Self-hosted type
 
-Latin WOFF2 subsets obtained from the public Fontsource npm distributions on 2026-10-14:
+Latin WOFF2 subsets from public Fontsource distributions:
 
-- `@fontsource/eb-garamond`: regular 400, display text.
+- `@fontsource/bodoni-moda`: regular 400, high-contrast display serif selected for the revised reference match.
 - `@fontsource/inter`: regular 400, medium 500, semibold 600, interface text.
 - `@fontsource/archivo-black`: regular 400, existing admin identity.
 
-Upstream sources: https://fontsource.org/fonts/eb-garamond, https://fontsource.org/fonts/inter, https://fontsource.org/fonts/archivo-black.
-The unmodified SIL Open Font License for each family is included alongside the files.
-Only EB Garamond and Inter regular are preloaded on the public pages; other weights load on use.
-The supplied SVG wordmark remains the package's editable-text artwork, with its own sans-serif fallback. It is not an outlined logo master.
+The unmodified SIL Open Font License for each family is included alongside its files.
+Bodoni Moda and Inter regular are preloaded on public pages; other faces load only when used.
+The first attempt used EB Garamond, which proved too soft and narrow relative to the selected mockup. That unused font was removed in the revision.
+The supplied SVG wordmark remains editable-text artwork with its own sans-serif fallback, not an outlined master.

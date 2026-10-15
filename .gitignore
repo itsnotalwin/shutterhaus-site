@@ -65,3 +65,6 @@ review/**/*.jpg
 review/**/*.zip
 test-results/
 playwright-report/
+
+# Temporary revision inspection crops and intermediate captures.
+review/revision-2/

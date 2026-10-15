@@ -1,6 +1,6 @@
 /* Self-hosted Latin subsets. SIL Open Font Licenses in public/fonts. */
-@font-face{font-family:'EB Garamond';src:url('/fonts/eb-garamond-latin-400-normal.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
 @font-face{font-family:Inter;src:url('/fonts/inter-latin-400-normal.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
 @font-face{font-family:Inter;src:url('/fonts/inter-latin-500-normal.woff2') format('woff2');font-style:normal;font-weight:500;font-display:swap}
 @font-face{font-family:Inter;src:url('/fonts/inter-latin-600-normal.woff2') format('woff2');font-style:normal;font-weight:600;font-display:swap}
 @font-face{font-family:'Archivo Black';src:url('/fonts/archivo-black-latin-400-normal.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:'Bodoni Moda';src:url('/fonts/bodoni-moda-latin-400-normal.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}

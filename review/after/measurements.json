@@ -1,599 +1,11 @@
 [
   {
-    "route": "about",
-    "width": 320,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Photography is poetry."
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/55-metal-detector-1600w.jpg",
-        "ok": true,
-        "alt": "A man walking a beach with a metal detector, seen in black and white against an empty sky"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/about.html"
-  },
-  {
-    "route": "about",
-    "width": 390,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Photography is poetry."
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/55-metal-detector-1600w.jpg",
-        "ok": true,
-        "alt": "A man walking a beach with a metal detector, seen in black and white against an empty sky"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/about.html"
-  },
-  {
-    "route": "about",
-    "width": 430,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Photography is poetry."
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/55-metal-detector-1600w.jpg",
-        "ok": true,
-        "alt": "A man walking a beach with a metal detector, seen in black and white against an empty sky"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/about.html"
-  },
-  {
-    "route": "about",
-    "width": 768,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Photography is poetry."
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/55-metal-detector-1600w.jpg",
-        "ok": true,
-        "alt": "A man walking a beach with a metal detector, seen in black and white against an empty sky"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/about.html"
-  },
-  {
-    "route": "about",
-    "width": 1024,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Photography is poetry."
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/55-metal-detector-1600w.jpg",
-        "ok": true,
-        "alt": "A man walking a beach with a metal detector, seen in black and white against an empty sky"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/about.html"
-  },
-  {
-    "route": "about",
-    "width": 1440,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Photography is poetry."
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/55-metal-detector-1600w.jpg",
-        "ok": true,
-        "alt": "A man walking a beach with a metal detector, seen in black and white against an empty sky"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/about.html"
-  },
-  {
-    "route": "about",
-    "width": 1920,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Photography is poetry."
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/55-metal-detector-1600w.jpg",
-        "ok": true,
-        "alt": "A man walking a beach with a metal detector, seen in black and white against an empty sky"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/about.html"
-  },
-  {
-    "route": "services",
-    "width": 320,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Capture What Matters."
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/54-img-0164-1600w.jpg",
-        "ok": true,
-        "alt": "Family portrait of six people outdoors, laughing together on a path"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "gallery/56-img-0126-1600w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman with auburn hair in a white zip top, looking straight at the camera in bright sunlight"
-      },
-      {
-        "src": "gallery/19-img-0198-3-1600w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman smiling, lit by warm afternoon light"
-      },
-      {
-        "src": "gallery/54-img-0164-1600w.jpg",
-        "ok": true,
-        "alt": "Family portrait of six people outdoors, laughing together on a path"
-      },
-      {
-        "src": "gallery/20-img-0202-1200w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman seated on a chair in a black top, lit warmly"
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/services.html"
-  },
-  {
-    "route": "services",
-    "width": 390,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Capture What Matters."
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/54-img-0164-1600w.jpg",
-        "ok": true,
-        "alt": "Family portrait of six people outdoors, laughing together on a path"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "gallery/56-img-0126-1600w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman with auburn hair in a white zip top, looking straight at the camera in bright sunlight"
-      },
-      {
-        "src": "gallery/19-img-0198-3-1600w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman smiling, lit by warm afternoon light"
-      },
-      {
-        "src": "gallery/54-img-0164-1600w.jpg",
-        "ok": true,
-        "alt": "Family portrait of six people outdoors, laughing together on a path"
-      },
-      {
-        "src": "gallery/20-img-0202-1200w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman seated on a chair in a black top, lit warmly"
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/services.html"
-  },
-  {
-    "route": "services",
-    "width": 430,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Capture What Matters."
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/54-img-0164-1600w.jpg",
-        "ok": true,
-        "alt": "Family portrait of six people outdoors, laughing together on a path"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "gallery/56-img-0126-1600w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman with auburn hair in a white zip top, looking straight at the camera in bright sunlight"
-      },
-      {
-        "src": "gallery/19-img-0198-3-1600w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman smiling, lit by warm afternoon light"
-      },
-      {
-        "src": "gallery/54-img-0164-1600w.jpg",
-        "ok": true,
-        "alt": "Family portrait of six people outdoors, laughing together on a path"
-      },
-      {
-        "src": "gallery/20-img-0202-1200w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman seated on a chair in a black top, lit warmly"
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/services.html"
-  },
-  {
-    "route": "services",
-    "width": 768,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Capture What Matters."
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/54-img-0164-1600w.jpg",
-        "ok": true,
-        "alt": "Family portrait of six people outdoors, laughing together on a path"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "gallery/56-img-0126-1600w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman with auburn hair in a white zip top, looking straight at the camera in bright sunlight"
-      },
-      {
-        "src": "gallery/19-img-0198-3-1600w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman smiling, lit by warm afternoon light"
-      },
-      {
-        "src": "gallery/54-img-0164-1600w.jpg",
-        "ok": true,
-        "alt": "Family portrait of six people outdoors, laughing together on a path"
-      },
-      {
-        "src": "gallery/20-img-0202-1200w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman seated on a chair in a black top, lit warmly"
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/services.html"
-  },
-  {
-    "route": "services",
-    "width": 1024,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Capture What Matters."
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/54-img-0164-1600w.jpg",
-        "ok": true,
-        "alt": "Family portrait of six people outdoors, laughing together on a path"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "gallery/56-img-0126-1600w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman with auburn hair in a white zip top, looking straight at the camera in bright sunlight"
-      },
-      {
-        "src": "gallery/19-img-0198-3-1600w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman smiling, lit by warm afternoon light"
-      },
-      {
-        "src": "gallery/54-img-0164-1600w.jpg",
-        "ok": true,
-        "alt": "Family portrait of six people outdoors, laughing together on a path"
-      },
-      {
-        "src": "gallery/20-img-0202-1200w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman seated on a chair in a black top, lit warmly"
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/services.html"
-  },
-  {
-    "route": "services",
-    "width": 1440,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Capture What Matters."
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/54-img-0164-1600w.jpg",
-        "ok": true,
-        "alt": "Family portrait of six people outdoors, laughing together on a path"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "gallery/56-img-0126-1600w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman with auburn hair in a white zip top, looking straight at the camera in bright sunlight"
-      },
-      {
-        "src": "gallery/19-img-0198-3-1600w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman smiling, lit by warm afternoon light"
-      },
-      {
-        "src": "gallery/54-img-0164-1600w.jpg",
-        "ok": true,
-        "alt": "Family portrait of six people outdoors, laughing together on a path"
-      },
-      {
-        "src": "gallery/20-img-0202-1200w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman seated on a chair in a black top, lit warmly"
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/services.html"
-  },
-  {
-    "route": "services",
-    "width": 1920,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Capture What Matters."
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/54-img-0164-1600w.jpg",
-        "ok": true,
-        "alt": "Family portrait of six people outdoors, laughing together on a path"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "gallery/56-img-0126-1600w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman with auburn hair in a white zip top, looking straight at the camera in bright sunlight"
-      },
-      {
-        "src": "gallery/19-img-0198-3-1600w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman smiling, lit by warm afternoon light"
-      },
-      {
-        "src": "gallery/54-img-0164-1600w.jpg",
-        "ok": true,
-        "alt": "Family portrait of six people outdoors, laughing together on a path"
-      },
-      {
-        "src": "gallery/20-img-0202-1200w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman seated on a chair in a black top, lit warmly"
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/services.html"
-  },
-  {
     "route": "home",
     "width": 320,
     "errors": [],
     "overflow": false,
     "h1": [
-      "Timeless Portraiture"
+      "Portraitsworthkeeping."
     ],
     "images": [
       {
@@ -617,6 +29,16 @@
         "alt": "Close portrait of a woman with loose hair, warm light across her face"
       },
       {
+        "src": "gallery/21-img-0234-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
+      },
+      {
+        "src": "gallery/18-img-0043-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors, looking down"
+      },
+      {
         "src": "gallery/26-img-0253-400w.jpg",
         "ok": true,
         "alt": "Portrait of a woman outdoors, backlit by low sun"
@@ -625,6 +47,48 @@
         "src": "gallery/46-img-0119-400w.jpg",
         "ok": true,
         "alt": "Portrait of a woman in a black top and pale skirt, both arms raised overhead"
+      },
+      {
+        "src": "gallery/1-20240718113728-img-0065-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a white top with her hair tied back, looking off into the distance"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/"
+  },
+  {
+    "route": "home",
+    "width": 390,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Portraitsworthkeeping."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/27-img-0297-1600w.webp",
+        "ok": true,
+        "alt": "Black and white portrait of a woman seated on the ground, legs to one side"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/22-img-0239-400w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with loose hair, warm light across her face"
       },
       {
         "src": "gallery/21-img-0234-400w.jpg",
@@ -637,14 +101,334 @@
         "alt": "Black and white portrait of a woman outdoors, looking down"
       },
       {
+        "src": "gallery/26-img-0253-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman outdoors, backlit by low sun"
+      },
+      {
+        "src": "gallery/46-img-0119-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, both arms raised overhead"
+      },
+      {
         "src": "gallery/1-20240718113728-img-0065-400w.jpg",
         "ok": true,
         "alt": "Portrait of a woman in a white top with her hair tied back, looking off into the distance"
       },
       {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/"
+  },
+  {
+    "route": "home",
+    "width": 430,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Portraitsworthkeeping."
+    ],
+    "images": [
+      {
         "src": "./brand/wordmark-primary.svg",
         "ok": true,
         "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/27-img-0297-1600w.webp",
+        "ok": true,
+        "alt": "Black and white portrait of a woman seated on the ground, legs to one side"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/22-img-0239-400w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with loose hair, warm light across her face"
+      },
+      {
+        "src": "gallery/21-img-0234-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
+      },
+      {
+        "src": "gallery/18-img-0043-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors, looking down"
+      },
+      {
+        "src": "gallery/26-img-0253-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman outdoors, backlit by low sun"
+      },
+      {
+        "src": "gallery/46-img-0119-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, both arms raised overhead"
+      },
+      {
+        "src": "gallery/1-20240718113728-img-0065-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a white top with her hair tied back, looking off into the distance"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/"
+  },
+  {
+    "route": "home",
+    "width": 768,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Portraitsworthkeeping."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/27-img-0297-1600w.webp",
+        "ok": true,
+        "alt": "Black and white portrait of a woman seated on the ground, legs to one side"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/22-img-0239-400w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with loose hair, warm light across her face"
+      },
+      {
+        "src": "gallery/21-img-0234-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
+      },
+      {
+        "src": "gallery/18-img-0043-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors, looking down"
+      },
+      {
+        "src": "gallery/26-img-0253-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman outdoors, backlit by low sun"
+      },
+      {
+        "src": "gallery/46-img-0119-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, both arms raised overhead"
+      },
+      {
+        "src": "gallery/1-20240718113728-img-0065-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a white top with her hair tied back, looking off into the distance"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/"
+  },
+  {
+    "route": "home",
+    "width": 1024,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Portraitsworthkeeping."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/27-img-0297-1600w.webp",
+        "ok": true,
+        "alt": "Black and white portrait of a woman seated on the ground, legs to one side"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/22-img-0239-400w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with loose hair, warm light across her face"
+      },
+      {
+        "src": "gallery/21-img-0234-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
+      },
+      {
+        "src": "gallery/18-img-0043-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors, looking down"
+      },
+      {
+        "src": "gallery/26-img-0253-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman outdoors, backlit by low sun"
+      },
+      {
+        "src": "gallery/46-img-0119-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, both arms raised overhead"
+      },
+      {
+        "src": "gallery/1-20240718113728-img-0065-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a white top with her hair tied back, looking off into the distance"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/"
+  },
+  {
+    "route": "home",
+    "width": 1440,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Portraitsworthkeeping."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/27-img-0297-1600w.webp",
+        "ok": true,
+        "alt": "Black and white portrait of a woman seated on the ground, legs to one side"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/22-img-0239-400w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with loose hair, warm light across her face"
+      },
+      {
+        "src": "gallery/21-img-0234-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
+      },
+      {
+        "src": "gallery/18-img-0043-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors, looking down"
+      },
+      {
+        "src": "gallery/26-img-0253-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman outdoors, backlit by low sun"
+      },
+      {
+        "src": "gallery/46-img-0119-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, both arms raised overhead"
+      },
+      {
+        "src": "gallery/1-20240718113728-img-0065-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a white top with her hair tied back, looking off into the distance"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/"
+  },
+  {
+    "route": "home",
+    "width": 1920,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Portraitsworthkeeping."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/27-img-0297-1600w.webp",
+        "ok": true,
+        "alt": "Black and white portrait of a woman seated on the ground, legs to one side"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/22-img-0239-400w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with loose hair, warm light across her face"
+      },
+      {
+        "src": "gallery/21-img-0234-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
+      },
+      {
+        "src": "gallery/18-img-0043-400w.jpg",
+        "ok": true,
+        "alt": "Black and white portrait of a woman outdoors, looking down"
+      },
+      {
+        "src": "gallery/26-img-0253-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman outdoors, backlit by low sun"
+      },
+      {
+        "src": "gallery/46-img-0119-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a black top and pale skirt, both arms raised overhead"
+      },
+      {
+        "src": "gallery/1-20240718113728-img-0065-400w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman in a white top with her hair tied back, looking off into the distance"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
       }
     ],
     "canonical": "https://shutterhausvisuals.co.za/"
@@ -655,13 +439,23 @@
     "errors": [],
     "overflow": false,
     "h1": [
-      "Selected stories."
+      "Selectedstories."
     ],
     "images": [
       {
         "src": "./brand/wordmark-primary.svg",
         "ok": true,
         "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/2-20240718114526-img-0124-1600w.webp",
+        "ok": true,
+        "alt": "Portrait of a woman in a white top outdoors, hair pulled back, in bright light"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
       },
       {
         "src": "gallery/2-20240718114526-img-0124-400w.jpg",
@@ -814,12 +608,101 @@
         "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
       },
       {
-        "src": "./brand/wordmark-primary.svg",
+        "src": "./brand/arc-tile.svg",
         "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
+        "alt": ""
       }
     ],
     "canonical": "https://shutterhausvisuals.co.za/portfolio.html"
+  },
+  {
+    "route": "about",
+    "width": 320,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Behindthe lens."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/55-metal-detector-1600w.jpg",
+        "ok": true,
+        "alt": "A man walking a beach with a metal detector, seen in black and white against an empty sky"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/6-img-0161-1600w.webp",
+        "ok": true,
+        "alt": "Sun setting over the sea, orange light on the horizon"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/about.html"
+  },
+  {
+    "route": "services",
+    "width": 320,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Sessions,with intention."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/22-img-0239-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with loose hair, warm light across her face"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/56-img-0126-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with auburn hair in a white zip top, looking straight at the camera in bright sunlight"
+      },
+      {
+        "src": "gallery/19-img-0198-3-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman smiling, lit by warm afternoon light"
+      },
+      {
+        "src": "gallery/54-img-0164-1600w.jpg",
+        "ok": true,
+        "alt": "Family portrait of six people outdoors, laughing together on a path"
+      },
+      {
+        "src": "gallery/20-img-0202-1200w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman seated on a chair in a black top, lit warmly"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/services.html"
   },
   {
     "route": "contact",
@@ -827,7 +710,7 @@
     "errors": [],
     "overflow": false,
     "h1": [
-      "Let's Create Something Beautiful."
+      "Let's makesomethingworth keeping."
     ],
     "images": [
       {
@@ -841,79 +724,12 @@
         "alt": "Family portrait of six people outdoors, laughing together on a path"
       },
       {
-        "src": "./brand/arc-grid.svg",
+        "src": "./brand/arc-tile.svg",
         "ok": true,
         "alt": ""
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
       }
     ],
     "canonical": "https://shutterhausvisuals.co.za/contact.html"
-  },
-  {
-    "route": "home",
-    "width": 390,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Timeless Portraiture"
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/27-img-0297-1600w.webp",
-        "ok": true,
-        "alt": "Black and white portrait of a woman seated on the ground, legs to one side"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "gallery/22-img-0239-400w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman with loose hair, warm light across her face"
-      },
-      {
-        "src": "gallery/26-img-0253-400w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman outdoors, backlit by low sun"
-      },
-      {
-        "src": "gallery/46-img-0119-400w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman in a black top and pale skirt, both arms raised overhead"
-      },
-      {
-        "src": "gallery/21-img-0234-400w.jpg",
-        "ok": true,
-        "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
-      },
-      {
-        "src": "gallery/18-img-0043-400w.jpg",
-        "ok": true,
-        "alt": "Black and white portrait of a woman outdoors, looking down"
-      },
-      {
-        "src": "gallery/1-20240718113728-img-0065-400w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman in a white top with her hair tied back, looking off into the distance"
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/"
   },
   {
     "route": "portfolio",
@@ -921,13 +737,23 @@
     "errors": [],
     "overflow": false,
     "h1": [
-      "Selected stories."
+      "Selectedstories."
     ],
     "images": [
       {
         "src": "./brand/wordmark-primary.svg",
         "ok": true,
         "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/2-20240718114526-img-0124-1600w.webp",
+        "ok": true,
+        "alt": "Portrait of a woman in a white top outdoors, hair pulled back, in bright light"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
       },
       {
         "src": "gallery/2-20240718114526-img-0124-400w.jpg",
@@ -1080,12 +906,101 @@
         "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
       },
       {
-        "src": "./brand/wordmark-primary.svg",
+        "src": "./brand/arc-tile.svg",
         "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
+        "alt": ""
       }
     ],
     "canonical": "https://shutterhausvisuals.co.za/portfolio.html"
+  },
+  {
+    "route": "about",
+    "width": 390,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Behindthe lens."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/55-metal-detector-1600w.jpg",
+        "ok": true,
+        "alt": "A man walking a beach with a metal detector, seen in black and white against an empty sky"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/6-img-0161-1600w.webp",
+        "ok": true,
+        "alt": "Sun setting over the sea, orange light on the horizon"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/about.html"
+  },
+  {
+    "route": "services",
+    "width": 390,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Sessions,with intention."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/22-img-0239-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with loose hair, warm light across her face"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/56-img-0126-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with auburn hair in a white zip top, looking straight at the camera in bright sunlight"
+      },
+      {
+        "src": "gallery/19-img-0198-3-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman smiling, lit by warm afternoon light"
+      },
+      {
+        "src": "gallery/54-img-0164-1600w.jpg",
+        "ok": true,
+        "alt": "Family portrait of six people outdoors, laughing together on a path"
+      },
+      {
+        "src": "gallery/20-img-0202-1200w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman seated on a chair in a black top, lit warmly"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/services.html"
   },
   {
     "route": "contact",
@@ -1093,7 +1008,7 @@
     "errors": [],
     "overflow": false,
     "h1": [
-      "Let's Create Something Beautiful."
+      "Let's makesomethingworth keeping."
     ],
     "images": [
       {
@@ -1107,79 +1022,12 @@
         "alt": "Family portrait of six people outdoors, laughing together on a path"
       },
       {
-        "src": "./brand/arc-grid.svg",
+        "src": "./brand/arc-tile.svg",
         "ok": true,
         "alt": ""
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
       }
     ],
     "canonical": "https://shutterhausvisuals.co.za/contact.html"
-  },
-  {
-    "route": "home",
-    "width": 430,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Timeless Portraiture"
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/27-img-0297-1600w.webp",
-        "ok": true,
-        "alt": "Black and white portrait of a woman seated on the ground, legs to one side"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "gallery/22-img-0239-400w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman with loose hair, warm light across her face"
-      },
-      {
-        "src": "gallery/26-img-0253-400w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman outdoors, backlit by low sun"
-      },
-      {
-        "src": "gallery/46-img-0119-400w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman in a black top and pale skirt, both arms raised overhead"
-      },
-      {
-        "src": "gallery/21-img-0234-400w.jpg",
-        "ok": true,
-        "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
-      },
-      {
-        "src": "gallery/18-img-0043-400w.jpg",
-        "ok": true,
-        "alt": "Black and white portrait of a woman outdoors, looking down"
-      },
-      {
-        "src": "gallery/1-20240718113728-img-0065-400w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman in a white top with her hair tied back, looking off into the distance"
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/"
   },
   {
     "route": "portfolio",
@@ -1187,13 +1035,23 @@
     "errors": [],
     "overflow": false,
     "h1": [
-      "Selected stories."
+      "Selectedstories."
     ],
     "images": [
       {
         "src": "./brand/wordmark-primary.svg",
         "ok": true,
         "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/2-20240718114526-img-0124-1600w.webp",
+        "ok": true,
+        "alt": "Portrait of a woman in a white top outdoors, hair pulled back, in bright light"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
       },
       {
         "src": "gallery/2-20240718114526-img-0124-400w.jpg",
@@ -1346,12 +1204,101 @@
         "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
       },
       {
-        "src": "./brand/wordmark-primary.svg",
+        "src": "./brand/arc-tile.svg",
         "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
+        "alt": ""
       }
     ],
     "canonical": "https://shutterhausvisuals.co.za/portfolio.html"
+  },
+  {
+    "route": "about",
+    "width": 430,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Behindthe lens."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/55-metal-detector-1600w.jpg",
+        "ok": true,
+        "alt": "A man walking a beach with a metal detector, seen in black and white against an empty sky"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/6-img-0161-1600w.webp",
+        "ok": true,
+        "alt": "Sun setting over the sea, orange light on the horizon"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/about.html"
+  },
+  {
+    "route": "services",
+    "width": 430,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Sessions,with intention."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/22-img-0239-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with loose hair, warm light across her face"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/56-img-0126-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with auburn hair in a white zip top, looking straight at the camera in bright sunlight"
+      },
+      {
+        "src": "gallery/19-img-0198-3-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman smiling, lit by warm afternoon light"
+      },
+      {
+        "src": "gallery/54-img-0164-1600w.jpg",
+        "ok": true,
+        "alt": "Family portrait of six people outdoors, laughing together on a path"
+      },
+      {
+        "src": "gallery/20-img-0202-1200w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman seated on a chair in a black top, lit warmly"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/services.html"
   },
   {
     "route": "contact",
@@ -1359,7 +1306,7 @@
     "errors": [],
     "overflow": false,
     "h1": [
-      "Let's Create Something Beautiful."
+      "Let's makesomethingworth keeping."
     ],
     "images": [
       {
@@ -1373,79 +1320,12 @@
         "alt": "Family portrait of six people outdoors, laughing together on a path"
       },
       {
-        "src": "./brand/arc-grid.svg",
+        "src": "./brand/arc-tile.svg",
         "ok": true,
         "alt": ""
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
       }
     ],
     "canonical": "https://shutterhausvisuals.co.za/contact.html"
-  },
-  {
-    "route": "home",
-    "width": 768,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Timeless Portraiture"
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/27-img-0297-1600w.webp",
-        "ok": true,
-        "alt": "Black and white portrait of a woman seated on the ground, legs to one side"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "gallery/22-img-0239-400w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman with loose hair, warm light across her face"
-      },
-      {
-        "src": "gallery/26-img-0253-400w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman outdoors, backlit by low sun"
-      },
-      {
-        "src": "gallery/46-img-0119-400w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman in a black top and pale skirt, both arms raised overhead"
-      },
-      {
-        "src": "gallery/21-img-0234-400w.jpg",
-        "ok": true,
-        "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
-      },
-      {
-        "src": "gallery/18-img-0043-400w.jpg",
-        "ok": true,
-        "alt": "Black and white portrait of a woman outdoors, looking down"
-      },
-      {
-        "src": "gallery/1-20240718113728-img-0065-400w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman in a white top with her hair tied back, looking off into the distance"
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/"
   },
   {
     "route": "portfolio",
@@ -1453,13 +1333,23 @@
     "errors": [],
     "overflow": false,
     "h1": [
-      "Selected stories."
+      "Selectedstories."
     ],
     "images": [
       {
         "src": "./brand/wordmark-primary.svg",
         "ok": true,
         "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/2-20240718114526-img-0124-1600w.webp",
+        "ok": true,
+        "alt": "Portrait of a woman in a white top outdoors, hair pulled back, in bright light"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
       },
       {
         "src": "gallery/2-20240718114526-img-0124-400w.jpg",
@@ -1612,12 +1502,101 @@
         "alt": "Black and white portrait of a woman with a hand in her hair"
       },
       {
-        "src": "./brand/wordmark-primary.svg",
+        "src": "./brand/arc-tile.svg",
         "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
+        "alt": ""
       }
     ],
     "canonical": "https://shutterhausvisuals.co.za/portfolio.html"
+  },
+  {
+    "route": "about",
+    "width": 768,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Behindthe lens."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/55-metal-detector-1600w.jpg",
+        "ok": true,
+        "alt": "A man walking a beach with a metal detector, seen in black and white against an empty sky"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/6-img-0161-1600w.webp",
+        "ok": true,
+        "alt": "Sun setting over the sea, orange light on the horizon"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/about.html"
+  },
+  {
+    "route": "services",
+    "width": 768,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Sessions,with intention."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/22-img-0239-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with loose hair, warm light across her face"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/56-img-0126-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with auburn hair in a white zip top, looking straight at the camera in bright sunlight"
+      },
+      {
+        "src": "gallery/19-img-0198-3-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman smiling, lit by warm afternoon light"
+      },
+      {
+        "src": "gallery/54-img-0164-1600w.jpg",
+        "ok": true,
+        "alt": "Family portrait of six people outdoors, laughing together on a path"
+      },
+      {
+        "src": "gallery/20-img-0202-1200w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman seated on a chair in a black top, lit warmly"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/services.html"
   },
   {
     "route": "contact",
@@ -1625,7 +1604,7 @@
     "errors": [],
     "overflow": false,
     "h1": [
-      "Let's Create Something Beautiful."
+      "Let's makesomethingworth keeping."
     ],
     "images": [
       {
@@ -1639,79 +1618,12 @@
         "alt": "Family portrait of six people outdoors, laughing together on a path"
       },
       {
-        "src": "./brand/arc-grid.svg",
+        "src": "./brand/arc-tile.svg",
         "ok": true,
         "alt": ""
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
       }
     ],
     "canonical": "https://shutterhausvisuals.co.za/contact.html"
-  },
-  {
-    "route": "home",
-    "width": 1024,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Timeless Portraiture"
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/27-img-0297-1600w.webp",
-        "ok": true,
-        "alt": "Black and white portrait of a woman seated on the ground, legs to one side"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "gallery/22-img-0239-400w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman with loose hair, warm light across her face"
-      },
-      {
-        "src": "gallery/21-img-0234-400w.jpg",
-        "ok": true,
-        "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
-      },
-      {
-        "src": "gallery/18-img-0043-400w.jpg",
-        "ok": true,
-        "alt": "Black and white portrait of a woman outdoors, looking down"
-      },
-      {
-        "src": "gallery/1-20240718113728-img-0065-400w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman in a white top with her hair tied back, looking off into the distance"
-      },
-      {
-        "src": "gallery/26-img-0253-400w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman outdoors, backlit by low sun"
-      },
-      {
-        "src": "gallery/46-img-0119-400w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman in a black top and pale skirt, both arms raised overhead"
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/"
   },
   {
     "route": "portfolio",
@@ -1719,13 +1631,23 @@
     "errors": [],
     "overflow": false,
     "h1": [
-      "Selected stories."
+      "Selectedstories."
     ],
     "images": [
       {
         "src": "./brand/wordmark-primary.svg",
         "ok": true,
         "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/2-20240718114526-img-0124-1600w.webp",
+        "ok": true,
+        "alt": "Portrait of a woman in a white top outdoors, hair pulled back, in bright light"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
       },
       {
         "src": "gallery/2-20240718114526-img-0124-400w.jpg",
@@ -1878,12 +1800,101 @@
         "alt": "Black and white portrait of a woman with a hand in her hair"
       },
       {
-        "src": "./brand/wordmark-primary.svg",
+        "src": "./brand/arc-tile.svg",
         "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
+        "alt": ""
       }
     ],
     "canonical": "https://shutterhausvisuals.co.za/portfolio.html"
+  },
+  {
+    "route": "about",
+    "width": 1024,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Behindthe lens."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/55-metal-detector-1600w.jpg",
+        "ok": true,
+        "alt": "A man walking a beach with a metal detector, seen in black and white against an empty sky"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/6-img-0161-1600w.webp",
+        "ok": true,
+        "alt": "Sun setting over the sea, orange light on the horizon"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/about.html"
+  },
+  {
+    "route": "services",
+    "width": 1024,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Sessions,with intention."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/22-img-0239-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with loose hair, warm light across her face"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/56-img-0126-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with auburn hair in a white zip top, looking straight at the camera in bright sunlight"
+      },
+      {
+        "src": "gallery/19-img-0198-3-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman smiling, lit by warm afternoon light"
+      },
+      {
+        "src": "gallery/54-img-0164-1600w.jpg",
+        "ok": true,
+        "alt": "Family portrait of six people outdoors, laughing together on a path"
+      },
+      {
+        "src": "gallery/20-img-0202-1200w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman seated on a chair in a black top, lit warmly"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/services.html"
   },
   {
     "route": "contact",
@@ -1891,7 +1902,7 @@
     "errors": [],
     "overflow": false,
     "h1": [
-      "Let's Create Something Beautiful."
+      "Let's makesomethingworth keeping."
     ],
     "images": [
       {
@@ -1905,79 +1916,12 @@
         "alt": "Family portrait of six people outdoors, laughing together on a path"
       },
       {
-        "src": "./brand/arc-grid.svg",
+        "src": "./brand/arc-tile.svg",
         "ok": true,
         "alt": ""
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
       }
     ],
     "canonical": "https://shutterhausvisuals.co.za/contact.html"
-  },
-  {
-    "route": "home",
-    "width": 1440,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Timeless Portraiture"
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/27-img-0297-1600w.webp",
-        "ok": true,
-        "alt": "Black and white portrait of a woman seated on the ground, legs to one side"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "gallery/22-img-0239-400w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman with loose hair, warm light across her face"
-      },
-      {
-        "src": "gallery/21-img-0234-400w.jpg",
-        "ok": true,
-        "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
-      },
-      {
-        "src": "gallery/18-img-0043-400w.jpg",
-        "ok": true,
-        "alt": "Black and white portrait of a woman outdoors, looking down"
-      },
-      {
-        "src": "gallery/1-20240718113728-img-0065-400w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman in a white top with her hair tied back, looking off into the distance"
-      },
-      {
-        "src": "gallery/26-img-0253-400w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman outdoors, backlit by low sun"
-      },
-      {
-        "src": "gallery/46-img-0119-400w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman in a black top and pale skirt, both arms raised overhead"
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/"
   },
   {
     "route": "portfolio",
@@ -1985,13 +1929,23 @@
     "errors": [],
     "overflow": false,
     "h1": [
-      "Selected stories."
+      "Selectedstories."
     ],
     "images": [
       {
         "src": "./brand/wordmark-primary.svg",
         "ok": true,
         "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/2-20240718114526-img-0124-1600w.webp",
+        "ok": true,
+        "alt": "Portrait of a woman in a white top outdoors, hair pulled back, in bright light"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
       },
       {
         "src": "gallery/2-20240718114526-img-0124-400w.jpg",
@@ -2144,12 +2098,101 @@
         "alt": "Black and white portrait of a woman with a hand in her hair"
       },
       {
-        "src": "./brand/wordmark-primary.svg",
+        "src": "./brand/arc-tile.svg",
         "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
+        "alt": ""
       }
     ],
     "canonical": "https://shutterhausvisuals.co.za/portfolio.html"
+  },
+  {
+    "route": "about",
+    "width": 1440,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Behindthe lens."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/55-metal-detector-1600w.jpg",
+        "ok": true,
+        "alt": "A man walking a beach with a metal detector, seen in black and white against an empty sky"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/6-img-0161-1600w.webp",
+        "ok": true,
+        "alt": "Sun setting over the sea, orange light on the horizon"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/about.html"
+  },
+  {
+    "route": "services",
+    "width": 1440,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Sessions,with intention."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/22-img-0239-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with loose hair, warm light across her face"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/56-img-0126-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with auburn hair in a white zip top, looking straight at the camera in bright sunlight"
+      },
+      {
+        "src": "gallery/19-img-0198-3-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman smiling, lit by warm afternoon light"
+      },
+      {
+        "src": "gallery/54-img-0164-1600w.jpg",
+        "ok": true,
+        "alt": "Family portrait of six people outdoors, laughing together on a path"
+      },
+      {
+        "src": "gallery/20-img-0202-1200w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman seated on a chair in a black top, lit warmly"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/services.html"
   },
   {
     "route": "contact",
@@ -2157,7 +2200,7 @@
     "errors": [],
     "overflow": false,
     "h1": [
-      "Let's Create Something Beautiful."
+      "Let's makesomethingworth keeping."
     ],
     "images": [
       {
@@ -2171,79 +2214,12 @@
         "alt": "Family portrait of six people outdoors, laughing together on a path"
       },
       {
-        "src": "./brand/arc-grid.svg",
+        "src": "./brand/arc-tile.svg",
         "ok": true,
         "alt": ""
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
       }
     ],
     "canonical": "https://shutterhausvisuals.co.za/contact.html"
-  },
-  {
-    "route": "home",
-    "width": 1920,
-    "errors": [],
-    "overflow": false,
-    "h1": [
-      "Timeless Portraiture"
-    ],
-    "images": [
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      },
-      {
-        "src": "gallery/27-img-0297-1600w.webp",
-        "ok": true,
-        "alt": "Black and white portrait of a woman seated on the ground, legs to one side"
-      },
-      {
-        "src": "./brand/arc-grid.svg",
-        "ok": true,
-        "alt": ""
-      },
-      {
-        "src": "gallery/22-img-0239-400w.jpg",
-        "ok": true,
-        "alt": "Close portrait of a woman with loose hair, warm light across her face"
-      },
-      {
-        "src": "gallery/21-img-0234-400w.jpg",
-        "ok": true,
-        "alt": "Black and white portrait of a woman outdoors in a thin-strapped top"
-      },
-      {
-        "src": "gallery/18-img-0043-400w.jpg",
-        "ok": true,
-        "alt": "Black and white portrait of a woman outdoors, looking down"
-      },
-      {
-        "src": "gallery/1-20240718113728-img-0065-400w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman in a white top with her hair tied back, looking off into the distance"
-      },
-      {
-        "src": "gallery/26-img-0253-400w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman outdoors, backlit by low sun"
-      },
-      {
-        "src": "gallery/46-img-0119-400w.jpg",
-        "ok": true,
-        "alt": "Portrait of a woman in a black top and pale skirt, both arms raised overhead"
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
-      }
-    ],
-    "canonical": "https://shutterhausvisuals.co.za/"
   },
   {
     "route": "portfolio",
@@ -2251,13 +2227,23 @@
     "errors": [],
     "overflow": false,
     "h1": [
-      "Selected stories."
+      "Selectedstories."
     ],
     "images": [
       {
         "src": "./brand/wordmark-primary.svg",
         "ok": true,
         "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/2-20240718114526-img-0124-1600w.webp",
+        "ok": true,
+        "alt": "Portrait of a woman in a white top outdoors, hair pulled back, in bright light"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
       },
       {
         "src": "gallery/2-20240718114526-img-0124-400w.jpg",
@@ -2410,12 +2396,101 @@
         "alt": "Black and white portrait of a woman with a hand in her hair"
       },
       {
-        "src": "./brand/wordmark-primary.svg",
+        "src": "./brand/arc-tile.svg",
         "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
+        "alt": ""
       }
     ],
     "canonical": "https://shutterhausvisuals.co.za/portfolio.html"
+  },
+  {
+    "route": "about",
+    "width": 1920,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Behindthe lens."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/55-metal-detector-1600w.jpg",
+        "ok": true,
+        "alt": "A man walking a beach with a metal detector, seen in black and white against an empty sky"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/6-img-0161-1600w.webp",
+        "ok": true,
+        "alt": "Sun setting over the sea, orange light on the horizon"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/about.html"
+  },
+  {
+    "route": "services",
+    "width": 1920,
+    "errors": [],
+    "overflow": false,
+    "h1": [
+      "Sessions,with intention."
+    ],
+    "images": [
+      {
+        "src": "./brand/wordmark-primary.svg",
+        "ok": true,
+        "alt": "SHUTTERHAUS VISUALS"
+      },
+      {
+        "src": "gallery/22-img-0239-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with loose hair, warm light across her face"
+      },
+      {
+        "src": "./brand/arc-grid.svg",
+        "ok": true,
+        "alt": ""
+      },
+      {
+        "src": "gallery/56-img-0126-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman with auburn hair in a white zip top, looking straight at the camera in bright sunlight"
+      },
+      {
+        "src": "gallery/19-img-0198-3-1600w.jpg",
+        "ok": true,
+        "alt": "Close portrait of a woman smiling, lit by warm afternoon light"
+      },
+      {
+        "src": "gallery/54-img-0164-1600w.jpg",
+        "ok": true,
+        "alt": "Family portrait of six people outdoors, laughing together on a path"
+      },
+      {
+        "src": "gallery/20-img-0202-1200w.jpg",
+        "ok": true,
+        "alt": "Portrait of a woman seated on a chair in a black top, lit warmly"
+      },
+      {
+        "src": "./brand/arc-tile.svg",
+        "ok": true,
+        "alt": ""
+      }
+    ],
+    "canonical": "https://shutterhausvisuals.co.za/services.html"
   },
   {
     "route": "contact",
@@ -2423,7 +2498,7 @@
     "errors": [],
     "overflow": false,
     "h1": [
-      "Let's Create Something Beautiful."
+      "Let's makesomethingworth keeping."
     ],
     "images": [
       {
@@ -2437,14 +2512,9 @@
         "alt": "Family portrait of six people outdoors, laughing together on a path"
       },
       {
-        "src": "./brand/arc-grid.svg",
+        "src": "./brand/arc-tile.svg",
         "ok": true,
         "alt": ""
-      },
-      {
-        "src": "./brand/wordmark-primary.svg",
-        "ok": true,
-        "alt": "SHUTTERHAUS VISUALS"
       }
     ],
     "canonical": "https://shutterhausvisuals.co.za/contact.html"
