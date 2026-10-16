@@ -1,5 +1,8 @@
 # Production visual QA — 16 October 2026
 
+Later follow-up: the owner reported an image-rendering defect on physical iPhone
+Safari after this review. See [the Safari correction and regression coverage](SAFARI_IMAGE_LAYOUT.md), including the limits of desktop-hosted WebKit reproduction.
+
 **Result: production pass complete; corrections are live.** The final live release is `50ebcb41ecb3578993e3ee721fd62326d8322e84`. All five public pages were rendered and checked in Chromium and WebKit after deployment. No outstanding visual or functional regression was found within the tested coverage.
 
 Fresh evidence was captured from the actual live domain, release e582fb994fbb27ed112ca751f0b06ca7b0aaac14, in GitHub Actions run 38763572850. Forty page states cover all five pages at 320, 390, 430, 768, 1024, 1440, 1920 and 844×390. This is separate from local preview verification.

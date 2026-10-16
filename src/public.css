@@ -54,9 +54,10 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 .hstrip__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .hstrip__col{display:flex;flex-direction:column;gap:var(--gut)}
 .hstrip__item{cursor:zoom-in;aspect-ratio:1;overflow:hidden}
-.cell,.cell picture,.cell img{object-fit:contain;transition:filter .4s var(--ease),opacity .26s var(--ease);opacity:1;filter:grayscale(1)}
+.photo-trigger{appearance:none;-webkit-appearance:none}
+.cell,.cell picture,.cell img{object-fit:contain;opacity:1}
 .cell{overflow:hidden;background:var(--ivory)}
-.cell img{object-fit:contain;transition:opacity .26s var(--ease);opacity:1}
+.cell img{object-fit:contain;transition:opacity .26s var(--ease);opacity:1;filter:grayscale(1)}
 @media(hover:hover){.cell img:hover{opacity:.9}}
 .hcta{margin:48px 0 0;padding:28px 0;border-top:1px solid var(--line);background:var(--ivory)}
 .hcta__grid{display:grid;grid-template-columns:1.4fr 1fr;gap:32px;align-items:center;padding:0 32px}
@@ -169,7 +170,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
    percentage-height chain against an aspect-ratio grid item. Keep the photo
    out of intrinsic button sizing and anchor each layer to the actual frame.
    Filter only the image: nested filtered wrappers also create needless layers. */
-.hstrip__item{position:relative;min-width:0;min-height:0;appearance:none;-webkit-appearance:none}
+.hstrip__item{position:relative;min-width:0;min-height:0}
 .hstrip__item>.cell,.hstrip__item picture,.hstrip__item img{position:absolute;inset:0;display:block}
 .hstrip__item>.cell,.hstrip__item picture{filter:none;transition:none}
 .site-footer strong{font:400 30px/1 var(--font-display);letter-spacing:-.05em;color:var(--ink)}
