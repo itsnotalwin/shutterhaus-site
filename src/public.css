@@ -165,6 +165,13 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 .hstrip__head>a{order:2;min-height:44px;display:flex;align-items:center;gap:18px}
 .hstrip__item:nth-child(n+5){grid-column:span 2;aspect-ratio:2/1}
 .hstrip__item .cell,.hstrip__item picture,.hstrip__item img{width:100%;height:100%;object-fit:cover;object-position:center 28%}
+/* Safari's native button content box does not reliably resolve this nested
+   percentage-height chain against an aspect-ratio grid item. Keep the photo
+   out of intrinsic button sizing and anchor each layer to the actual frame.
+   Filter only the image: nested filtered wrappers also create needless layers. */
+.hstrip__item{position:relative;min-width:0;min-height:0;appearance:none;-webkit-appearance:none}
+.hstrip__item>.cell,.hstrip__item picture,.hstrip__item img{position:absolute;inset:0;display:block}
+.hstrip__item>.cell,.hstrip__item picture{filter:none;transition:none}
 .site-footer strong{font:400 30px/1 var(--font-display);letter-spacing:-.05em;color:var(--ink)}
 .site-footer>img{width:104px;height:40px;object-fit:contain}
 .phead.editorial-intro,.editorial-intro{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.1fr) minmax(90px,.36fr);gap:28px;align-items:stretch;padding:48px 0 0;margin:0 0 42px}

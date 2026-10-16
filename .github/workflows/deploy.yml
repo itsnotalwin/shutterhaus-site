@@ -93,9 +93,71 @@ jobs:
         with:
           path: dist
 
+  browser:
+    name: Photo layout (${{ matrix.engine }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci
+      - name: Install the Safari browser engine
+        if: matrix.engine == 'webkit'
+        run: npx playwright install --with-deps webkit
+      - name: Build and start the browser preview
+        run: |
+          npm run build
+          npm run preview &
+          for i in $(seq 1 40); do
+            curl -sf http://127.0.0.1:4173/ >/dev/null && break
+            sleep 0.5
+          done
+          curl -sf -o /dev/null http://127.0.0.1:4173/
+      - name: Capture previous CSS on the reported iPhone width
+        if: github.event_name == 'push'
+        env:
+          PREVIOUS_SHA: ${{ github.event.before }}
+          CHROME_BIN: /usr/bin/google-chrome
+          SAFARI_CAPTURE_BASELINE: '1'
+        run: |
+          cp src/public.css "$RUNNER_TEMP/current-public.css"
+          git show "$PREVIOUS_SHA:src/public.css" > src/public.css
+          npm run build
+          npx playwright test tests/safari-layout.spec.ts --project=${{ matrix.engine }} --grep '393px'
+      - name: Restore and build the current CSS
+        if: always()
+        run: |
+          git restore src/public.css
+          npm run build
+      - name: Check normal scrolling, lazy photos, frame bounds and controls
+        env:
+          CHROME_BIN: /usr/bin/google-chrome
+        run: npx playwright test tests/safari-layout.spec.ts --project=${{ matrix.engine }}
+      - name: Save Safari and Chromium review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scrolling-photo-layout-${{ matrix.engine }}
+          path: |
+            shots/safari-layout/
+            test-results/
+          retention-days: 14
+
   deploy:
     if: github.event_name != 'pull_request'
-    needs: verify
+    needs: [verify, browser]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -113,3 +175,31 @@ jobs:
         env:
           LIVE_URL: https://shutterhausvisuals.co.za/
           EXPECTED_SHA: ${{ github.sha }}
+
+  live-webkit:
+    name: Live Safari scrolling check
+    if: github.event_name != 'pull_request'
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps webkit
+      - name: Check the deployed pages at iPhone and landscape sizes
+        env:
+          BROWSER_TEST_URL: https://shutterhausvisuals.co.za
+        run: npx playwright test tests/safari-layout.spec.ts --project=webkit --grep '393px|844px'
+      - name: Save actual production Safari captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-safari-scrolling
+          path: |
+            shots/safari-layout/
+            test-results/
+          retention-days: 14
