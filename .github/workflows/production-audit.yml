@@ -1,0 +1,60 @@
+name: Production visual audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - engine: chromium
+            widths: '320,390,430,768,1024,1440,1920'
+          - engine: webkit
+            widths: '390,768,1440'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Install WebKit for Safari engine coverage
+        if: matrix.engine == 'webkit'
+        run: npx playwright install --with-deps webkit
+      - name: Wait for this main release to be live
+        env:
+          EXPECTED_RELEASE: ${{ github.sha }}
+        run: |
+          node --input-type=module <<'JS'
+          let ready = false;
+          for (let attempt = 0; attempt < 60; attempt++) {
+            try {
+              const response = await fetch('https://shutterhausvisuals.co.za/release.json?audit=' + Date.now());
+              if ((await response.json()).commit === process.env.EXPECTED_RELEASE) { ready = true; break; }
+            } catch {}
+            await new Promise(resolve => setTimeout(resolve, 5000));
+          }
+          if (!ready) throw new Error('The corrected production release is not live yet');
+          JS
+      - name: Capture and measure the real production website
+        run: node tools/review/audit-production.mjs
+        env:
+          LIVE_URL: https://shutterhausvisuals.co.za/
+          CHROME_BIN: /usr/bin/google-chrome
+          BROWSER_ENGINE: ${{ matrix.engine }}
+          AUDIT_WIDTHS: ${{ matrix.widths }}
+      - name: Save production evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-visual-audit-${{ matrix.engine }}
+          path: shots/production-audit/
+          if-no-files-found: error
+          retention-days: 14

@@ -1,0 +1,560 @@
+EDITORIAL REFRESH — RELEASE VERIFICATION
+Production: e582fb994fbb27ed112ca751f0b06ca7b0aaac14
+Actions: https://github.com/itsnotalwin/shutterhaus-site/actions/runs/38761642987
+
+
+Build/typecheck
+
+> shutterhaus-site@1.0.0 build
+> tsc --noEmit && python tools/build-pages.py && python tools/check-rows.py && python tools/check-srcset.py && vite build
+
+5 page(s) written: index.html, portfolio.html, about.html, services.html, contact.html
+sitemap.xml written (5 canonical urls)
+every nav route has a document: ['home', 'portfolio', 'about', 'services', 'contact']
+metadata self-check passed: titles <=60, descriptions 120-160, no duplicates, JSON-LD parses
+ok    fifteen rows  (15)
+ok    two frames per row  ([2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2])
+ok    30 frames  (30)
+ok    no duplicates  (30 unique)
+ok    every frame exists on disk
+ok    every frame is in the gallery
+ok    every row is ONE aspect ratio (zero gap under any photo)
+ok    ratios present for every frame  (30)
+ok    no frame numbering is printed
+ok    emitted ids still point at the chosen frames  (15 rows resolved)
+
+15 rows, 30 frames, every row exactly one ratio
+53 frame(s) in demo.ts, 255 advertised candidate(s) checked
+ok    every candidate the srcset advertises exists on disk
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 79 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/admin.html                         1.10 kB │ gzip:  0.53 kB
+dist/contact.html                      15.83 kB │ gzip:  5.12 kB
+dist/about.html                        16.25 kB │ gzip:  5.21 kB
+dist/index.html                        22.12 kB │ gzip:  5.76 kB
+dist/services.html                     22.44 kB │ gzip:  6.44 kB
+dist/portfolio.html                    62.93 kB │ gzip:  8.70 kB
+dist/assets/admin-Bv7arK2S.css          9.02 kB │ gzip:  2.25 kB
+dist/assets/composition-Dnej9kvG.css   49.75 kB │ gzip: 10.71 kB
+dist/assets/admin-DFMwc8Gg.js          17.18 kB │ gzip:  5.98 kB
+dist/assets/main-ksK84wh4.js           23.83 kB │ gzip:  8.48 kB
+dist/assets/composition-C8twpP-G.js   260.46 kB │ gzip: 70.64 kB
+✓ built in 1.26s
+
+
+Public and admin DOM tests
+
+> shutterhaus-site@1.0.0 test
+> node tools/test-public.mjs && node tools/test-admin.mjs
+
+✔ approved prices and Social's 40 images agree across pages and metadata (175.196892ms)
+✔ Contact preselects Social and preserves a draft through rotation (392.366945ms)
+✔ validation focuses missing fields and status feedback is announced (614.248902ms)
+✔ sending blocks duplicate enquiries and recovers after failure (156.443439ms)
+✔ honeypot submissions make no network request (113.323544ms)
+✔ native home photo buttons open the modal, trap focus, and restore focus (392.712815ms)
+✔ same-route history restores the existing form, scroll and draft (130.330806ms)
+✔ an identical late gallery response preserves an open menu and scroll (158.829017ms)
+✔ a late package photograph update preserves the selected package and keyboard focus (114.180255ms)
+✔ UUID gallery rows and an uploaded wall photo render without replacing the menu (195.284625ms)
+✔ a stale composition response cannot overwrite a newer enquiry route (122.906097ms)
+✔ every built public document has readable content, navigation and contact without JavaScript (409.533031ms)
+✔ mobile Portfolio shows ten photos, keeps an open disclosure through updates, and restores it after rotation (506.402467ms)
+✔ mobile photo viewer counts only disclosed photos and reveals the return frame after desktop rotation (412.754515ms)
+✔ pre-rendered editorial Home retains six images and focus across breakpoints (315.651374ms)
+✔ page metadata stays aligned after hydration and legacy hash navigation (461.635287ms)
+✔ sitemap agrees with canonical pages and admin noindex remains readable (164.139203ms)
+✔ leaving Contact aborts pending delivery and preserves the saved draft (57.4172ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4907.926971
+✔ page controls reorder and remove photos only in a draft; failed publishing retains retry (772.723887ms)
+✔ dragging reorders the real editor and restores an unpublished draft after reload (407.003053ms)
+✔ replacement, hidden-photo protection and descriptions survive draft edits (582.63301ms)
+✔ home photo count is guarded and an empty portfolio can be published deliberately (431.122094ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2308.492563
+
+
+Playwright browser suite
+
+> shutterhaus-site@1.0.0 test:browser
+> playwright test
+
+[WebServer] (node:17498) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 21 tests using 1 worker
+
+(node:17516) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/controls.spec.ts:4:3 › drawer traps focus, closes with Escape and scrim, releases desktop at 320 (1.4s)
+  ✓   2 tests/controls.spec.ts:4:3 › drawer traps focus, closes with Escape and scrim, releases desktop at 390 (1.2s)
+  ✓   3 tests/controls.spec.ts:4:3 › drawer traps focus, closes with Escape and scrim, releases desktop at 768 (1.8s)
+  ✓   4 tests/controls.spec.ts:4:3 › drawer traps focus, closes with Escape and scrim, releases desktop at 1000 (1.4s)
+  ✓   5 tests/controls.spec.ts:32:3 › keyboard lightbox opens, steps, traps focus and restores opener on / (1.5s)
+  ✓   6 tests/controls.spec.ts:32:3 › keyboard lightbox opens, steps, traps focus and restores opener on /portfolio.html (1.5s)
+  ✓   7 tests/controls.spec.ts:56:1 › package selection, draft recovery and rotation retain an enquiry (1.6s)
+  ✓   8 tests/controls.spec.ts:77:1 › validation and honeypot block sends; failure retains draft; retry sends once (2.6s)
+  ✓   9 tests/controls.spec.ts:115:1 › drawer navigation and legacy links reach real pages (1.8s)
+  ✓  10 tests/controls.spec.ts:128:1 › skip link focuses content without changing the homepage (1.3s)
+  ✓  11 tests/controls.spec.ts:138:2 › skip link preserves legacy route /#/contact (990ms)
+  ✓  12 tests/controls.spec.ts:138:2 › skip link preserves legacy route /#/portfolio (1.4s)
+  ✓  13 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 320 (3.7s)
+  ✓  14 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 390 (3.6s)
+  ✓  15 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 430 (3.7s)
+  ✓  16 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 768 (3.7s)
+  ✓  17 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 1024 (3.9s)
+  ✓  18 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 1440 (4.4s)
+  ✓  19 tests/public.spec.ts:5:2 › all five pages: layout, media, semantics and SEO at 1920 (4.5s)
+  ✓  20 tests/public.spec.ts:36:1 › real pinned sources, gallery order and package facts survive (2.1s)
+  ✓  21 tests/public.spec.ts:59:1 › reduced motion, self-hosted type and signed-out admin gate (1.3s)
+
+  21 passed (51.3s)
+
+
+Native controls
+
+> shutterhaus-site@1.0.0 verify:controls
+> node tools/verify-controls.mjs http://127.0.0.1:4175
+
+PASS home photo opens with native Enter
+PASS zoom scales only the stage
+PASS next photo resets zoom
+PASS viewer returns photo focus
+PASS home photo opens with native Space
+PASS navigation closes viewer and restores scrolling
+PASS mobile drawer exposes links and disables background
+PASS desktop resize clears the drawer and scroll lock
+PASS portfolio opens with native Space
+9/9 native control checks passed
+
+
+Rendered verification
+
+> shutterhaus-site@1.0.0 verify
+> node tools/verify.mjs http://127.0.0.1:4175
+
+
+--- home ---{
+  "title": "Kempton Park Photographer | Shutterhaus Visuals",
+  "header": true,
+  "logo": "",
+  "nav": [
+    "Home",
+    "Work",
+    "About",
+    "Sessions",
+    "Contact"
+  ],
+  "active": "Home",
+  "social": 2,
+  "cols": 0,
+  "imgs": 6,
+  "perCol": [],
+  "overflow": 0,
+  "headerH": 116,
+  "bodyBg": "rgb(247, 246, 243)",
+  "bodyColor": "rgb(17, 17, 17)",
+  "navColor": "rgb(17, 17, 17)",
+  "navSize": "12px",
+  "activeColor": "rgb(17, 17, 17)",
+  "bw": false,
+  "imageFilters": [
+    "grayscale(1)",
+    "grayscale(1)",
+    "grayscale(1)",
+    "grayscale(1)",
+    "grayscale(1)",
+    "grayscale(1)"
+  ],
+  "coverCrops": [
+    "hero__fig",
+    "photo-trigger",
+    "photo-trigger",
+    "photo-trigger",
+    "photo-trigger",
+    "photo-trigger",
+    "photo-trigger"
+  ],
+  "colScroll": [],
+  "broken": 0
+}
+--- portfolio ---{"fileOf":["2-20240718114526-img-0124.jpg","34-img-0461.jpg","44-img-0098.jpg","25-img-0249.jpg","50-img-0143.jpg","30-img-0396.jpg","40-img-0092.jpg","12-img-0019.jpg","46-img-0119.jpg","13-img-0020.jpg","18-img-0043.jpg","53-img-0155.jpg","28-img-0308.jpg","51-img-0145.jpg","32-img-0404.jpg","15-img-0025.jpg","41-img-0094.jpg","37-img-0124.jpg","26-img-0253.jpg","21-img-0234.jpg","19-img-0198-3.jpg","47-img-0121.jpg","24-img-0245.jpg","49-img-0131.jpg","5-img-0086.jpg","45-img-0118.jpg","20-img-0202.jpg","42-img-0095.jpg","14-img-0026.jpg","48-img-0128.jpg"],"cols":3,"perCol":[10,10,10],"cells":30,"imgs":30,"tracks":3,"cellW":424,"gutter":24,"worstGap":24,"bottomSpread":106,"scrollables":0,"overflowX":0,"printedNumbers":0,"filterBar":false,"dataN":30,"nSeq":true,"band":true,"bandCta":"./contact.html","bandLinks":2,"headings":[{"tag":"H1","text":"Selectedstories.","overflowing":false,"size":86.4},{"tag":"H2","text":"Portraits","overflowing":false,"size":22.5},{"tag":"H2","text":"Our work.","overflowing":false,"size":42},{"tag":"H2","text":"Book a session.","overflowing":false,"size":54.7}]}
+PASS  title set  — Kempton Park Photographer | Shutterhaus Visuals
+PASS  header renders
+PASS  supplied wordmark renders accessibly  — {"src":"./brand/wordmark-primary.svg","alt":"SHUTTERHAUS VISUALS","loaded":true}
+PASS  nav = the five routes  — Home,Work,About,Sessions,Contact
+PASS  home active by default  — Home
+PASS  social icons  — 2
+PASS  index.html serves the homepage, not the wall  — {"hero":true,"cells":0,"title":"Kempton Park Photographer | Shutterhaus Visuals"}
+PASS  index.html has the homepage title  — Kempton Park Photographer | Shutterhaus Visuals
+PASS  three columns on desktop  — 3 columns, 10/10/10
+PASS  30 frames in the wall  — 30
+PASS  one image per frame  — 30
+PASS  three CSS tracks  — 3
+PASS  no gap under any photo (frames butt up to the gutter)  — worst under-gap 24px vs gutter 24px
+PASS  column bottoms are level enough  — spread 106px
+PASS  cells are photo-sized  — 424px
+PASS  nothing on the page scrolls  — 0
+PASS  no horizontal page scroll  — 0px
+PASS  no numbers printed on the images  — 0
+PASS  no filter bar
+PASS  data-n kept for the lightbox counter  — 30
+PASS  data-n is a contiguous 1..30 run  — true
+PASS  portfolio ends with the band
+PASS  band CTA goes to contact  — ./contact.html
+PASS  band carries contact links  — 2
+PASS  shoot map covers every frame  — 30 frames, 0 unmapped
+PASS  no two same-shoot frames are adjacent  — 0 adjacent pair(s) of 30
+PASS  longest same-shoot run stays short  — 1 in a row
+PASS  no horizontal overflow  — 0px
+PASS  monochrome reference presentation  — grayscale(1) | grayscale(1) | grayscale(1) | grayscale(1) | grayscale(1) | grayscale(1)
+PASS  cover crops stay inside hero and selected-work slots  — hero__fig, photo-trigger, photo-trigger, photo-trigger, photo-trigger, photo-trigger, photo-trigger
+PASS  warm-white page stage  — rgb(247, 246, 243)
+PASS  active nav is indicated
+PASS  nav text size  — 12px
+PASS  no broken images  — 0
+PASS  no heading splits or clips a word  — 4 headings clean
+      shot: shot-home.png
+PASS  lightbox opens on click  — {"hidden":false,"hasImg":true}
+      shot: shot-lightbox.png
+PASS  Esc closes lightbox
+PASS  contact route  — Contact
+PASS  contact form
+PASS  form has name/email/message  — name,email,kind,message,_website
+PASS  mailto link
+PASS  contact no overflow  — 0px
+      shot: shot-contact.png
+PASS  no video nav item  — Home,Work,About,Sessions,Contact
+PASS  #/video falls back to the gallery  — active=undefined cells=30
+PASS  no video empty-state leaked
+PASS  mobile 360: no overflow  — 0px
+PASS  mobile 360: no clipped chrome  — 0
+PASS  mobile 390: no overflow  — 0px
+PASS  mobile 390: no clipped chrome  — 0
+      shot: shot-mobile.png
+PASS  mobile 768: no overflow  — 0px
+PASS  mobile 768: no clipped chrome  — 0
+
+--- admin ---
+{
+  "title": "Admin | Shutterhaus Visuals",
+  "root": true,
+  "html": "<main class=\"admin-gate\"><a class=\"admin-brand\" href=\"./index.html\">Shutterhaus</a><h1>Photo manager.</h1><p>Sign in to ",
+  "google": true,
+  "spuriousAllowlistError": false,
+  "text": "Shutterhaus Photo manager. Sign in to upload photos and arrange your website. Continue with Google Back to the website",
+  "allowlist": false,
+  "notConfigured": false,
+  "overflow": 0
+}
+PASS  admin mounts
+PASS  admin gate is correct for this config  — google=true
+PASS  admin shows Google sign-in
+PASS  signed-out admin does not claim an account mismatch
+PASS  admin no overflow  — 0px
+      shot: shot-admin.png
+\n--- services ---\n{
+  "route": "#/services",
+  "active": "Sessions",
+  "tiers": 4,
+  "names": [
+    "Starter",
+    "Essential",
+    "Signature",
+    "Social"
+  ],
+  "prices": [
+    "R800",
+    "R2,000",
+    "R2,500",
+    "R3,500"
+  ],
+  "popular": 1,
+  "figs": 4,
+  "addons": 5,
+  "terms": 6,
+  "ctas": [
+    "./contact.html?package=Starter",
+    "./contact.html?package=Essential",
+    "./contact.html?package=Signature",
+    "./contact.html?package=Social"
+  ],
+  "overflow": 0,
+  "bg": "rgba(0, 0, 0, 0)",
+  "filled": 1,
+  "popularMarked": true,
+  "specs": [
+    "30 min · 1 outfit · 1 location",
+    "60 min · 2 outfits · 1–2 locations",
+    "90 min · 2–3 outfits · multiple locations",
+    "45 min · 2 outfits · 1 location"
+  ]
+}
+PASS  services route renders  — 4
+PASS  nav marks services active  — Sessions
+PASS  4 packages configured  — 4
+PASS  all package names present  — Starter/Essential/Signature/Social
+PASS  every package has a price  — R800 R2,000 R2,500 R3,500
+PASS  exactly one 'most popular'  — 1
+PASS  each package has a photo  — 4/4
+PASS  add-ons listed  — 5 add-ons
+PASS  booking terms listed  — 6
+PASS  no reels or vertical crops promised anywhere
+PASS  no prints or albums promised anywhere
+PASS  every package links to contact with its name  — ./contact.html?package=Starter,./contact.html?package=Essential,./contact.html?package=Signature,./contact.html?package=Social
+PASS  package cards are unfilled  — rgba(0, 0, 0, 0)
+PASS  the popular tier has a visible recommendation  — true
+PASS  recommended package alone has an ivory surface  — 1 filled of 4
+PASS  every tier shows its spec line  — 30 min · 1 outfit · 1 location | 60 min · 2 outfits · 1–2 locations | 90 min · 2–3 outfits · multiple locations | 45 min · 2 outfits · 1 location
+PASS  services no overflow  — 0px
+      shot: shot-services.png
+PASS  pricing mobile 360: no overflow  — 0px
+PASS  pricing mobile 390: no overflow  — 0px
+PASS  pricing mobile 768: no overflow  — 0px
+      shot: shot-pricing-mobile.png
+PASS  review home 390: page loaded  — Portraitsworthkeeping.
+PASS  review home 390: no broken images
+PASS  review home 390: no overflow
+PASS  review home 390: headings fit
+PASS  review home 390: local fonts loaded
+PASS  review home 390: booking band fits
+PASS  review home 390: six showcase images
+PASS  review home 390: correct showcase columns
+PASS  review home 390: images fit the mobile showcase
+PASS  review home 390: editorial hero follows the header
+PASS  review home 390: menu stays visible while scrolling  — {"top":0,"background":"rgb(255, 255, 255)"}
+      shot: 01-home-390-scrolled.png
+PASS  review home 390: all five menu links visible
+PASS  review home 390: menu focus and background isolation  — {"expanded":true,"linksVisible":true,"focused":true,"inert":true,"active":"A","visibility":"visible"}
+      shot: 01-home-390-menu.png
+PASS  review home 390: Escape restores focus and closes menu
+PASS  review home 390: tapping outside closes menu
+      review screenshot: 01-home-390.png
+PASS  review portfolio 390: page loaded  — Selectedstories.
+PASS  review portfolio 390: no broken images
+PASS  review portfolio 390: no overflow
+PASS  review portfolio 390: headings fit
+PASS  review portfolio 390: local fonts loaded
+PASS  review portfolio 390: booking band fits
+PASS  review portfolio 390: correct initial image count
+PASS  review portfolio 390: disclosure appears only on phones
+PASS  review portfolio 390: correct column count
+PASS  review portfolio 390: icon-only disclosure remains accessible and centred
+PASS  review portfolio 390: keyboard expands all photos
+PASS  review portfolio 390: first ten stay in place on expansion
+PASS  review portfolio 390: disclosure has a touch target
+      shot: 02-portfolio-390-expanded.png
+PASS  review portfolio 390: closing hides the remaining twenty
+PASS  review portfolio 390: all five menu links visible
+PASS  review portfolio 390: menu focus and background isolation  — {"expanded":true,"linksVisible":true,"focused":true,"inert":true,"active":"A","visibility":"visible"}
+      shot: 02-portfolio-390-menu.png
+PASS  review portfolio 390: Escape restores focus and closes menu
+PASS  review portfolio 390: tapping outside closes menu
+      review screenshot: 02-portfolio-390.png
+PASS  review about 390: page loaded  — Behindthe lens.
+PASS  review about 390: no broken images
+PASS  review about 390: no overflow
+PASS  review about 390: headings fit
+PASS  review about 390: local fonts loaded
+PASS  review about 390: booking band fits
+PASS  review about 390: all five menu links visible
+PASS  review about 390: menu focus and background isolation  — {"expanded":true,"linksVisible":true,"focused":true,"inert":true,"active":"A","visibility":"visible"}
+PASS  review about 390: Escape restores focus and closes menu
+PASS  review about 390: tapping outside closes menu
+      review screenshot: 03-about-390.png
+PASS  review services 390: page loaded  — Sessions,with intention.
+PASS  review services 390: no broken images
+PASS  review services 390: no overflow
+PASS  review services 390: headings fit
+PASS  review services 390: local fonts loaded
+PASS  review services 390: booking band fits
+PASS  review services 390: closing enquiry goes to contact
+PASS  review services 390: editorial package image windows
+PASS  review services 390: recommended package selected
+PASS  review services 390: only the chosen package is visible
+PASS  review services 390: editorial introduction photo loads
+PASS  review services 390: Starter selection and enquiry
+PASS  review services 390: Essential selection and enquiry
+PASS  review services 390: Signature selection and enquiry
+PASS  review services 390: Social selection and enquiry
+PASS  review services 390: all five menu links visible
+PASS  review services 390: menu focus and background isolation  — {"expanded":true,"linksVisible":true,"focused":true,"inert":true,"active":"A","visibility":"visible"}
+PASS  review services 390: Escape restores focus and closes menu
+PASS  review services 390: tapping outside closes menu
+      review screenshot: 04-services-390.png
+PASS  review contact 390: page loaded  — Let's makesomethingworth keeping.
+PASS  review contact 390: no broken images
+PASS  review contact 390: no overflow
+PASS  review contact 390: headings fit
+PASS  review contact 390: local fonts loaded
+PASS  review contact 390: booking band fits
+PASS  review contact 390: all five menu links visible
+PASS  review contact 390: menu focus and background isolation  — {"expanded":true,"linksVisible":true,"focused":true,"inert":true,"active":"A","visibility":"visible"}
+      shot: 05-contact-390-menu.png
+PASS  review contact 390: Escape restores focus and closes menu
+PASS  review contact 390: tapping outside closes menu
+      review screenshot: 05-contact-390.png
+PASS  review home 1440: page loaded  — Portraitsworthkeeping.
+PASS  review home 1440: no broken images
+PASS  review home 1440: no overflow
+PASS  review home 1440: headings fit
+PASS  review home 1440: local fonts loaded
+PASS  review home 1440: booking band fits
+PASS  review home 1440: six showcase images
+PASS  review home 1440: correct showcase columns
+PASS  review home 1440: editorial hero follows the header
+PASS  review home 1440: menu stays visible while scrolling  — {"top":0,"background":"rgb(255, 255, 255)"}
+      shot: 01-home-1440-scrolled.png
+      review screenshot: 01-home-1440.png
+PASS  review portfolio 1440: page loaded  — Selectedstories.
+PASS  review portfolio 1440: no broken images
+PASS  review portfolio 1440: no overflow
+PASS  review portfolio 1440: headings fit
+PASS  review portfolio 1440: local fonts loaded
+PASS  review portfolio 1440: booking band fits
+PASS  review portfolio 1440: correct initial image count
+PASS  review portfolio 1440: disclosure appears only on phones
+PASS  review portfolio 1440: correct column count
+      review screenshot: 02-portfolio-1440.png
+PASS  review about 1440: page loaded  — Behindthe lens.
+PASS  review about 1440: no broken images
+PASS  review about 1440: no overflow
+PASS  review about 1440: headings fit
+PASS  review about 1440: local fonts loaded
+PASS  review about 1440: booking band fits
+      review screenshot: 03-about-1440.png
+PASS  review services 1440: page loaded  — Sessions,with intention.
+PASS  review services 1440: no broken images
+PASS  review services 1440: no overflow
+PASS  review services 1440: headings fit
+PASS  review services 1440: local fonts loaded
+PASS  review services 1440: booking band fits
+PASS  review services 1440: closing enquiry goes to contact
+PASS  desktop package prices align
+PASS  review services 1440: editorial package image windows
+PASS  review services 1440: consistent desktop image windows
+PASS  review services 1440: Essential preserves the top of the portrait
+PASS  review services 1440: Social preserves the top of the portrait
+      review screenshot: 04-services-1440.png
+PASS  review contact 1440: page loaded  — Let's makesomethingworth keeping.
+PASS  review contact 1440: no broken images
+PASS  review contact 1440: no overflow
+PASS  review contact 1440: headings fit
+PASS  review contact 1440: local fonts loaded
+PASS  review contact 1440: booking band fits
+      review screenshot: 05-contact-1440.png
+PASS  rotation gives Portfolio two mobile columns and ten initial frames
+      shot: 02-portfolio-390-viewer.png
+PASS  viewer restores focus to the same photo after repacking
+PASS  desktop resize restores three columns without jumping to the top
+PASS  Contact preserves the form, draft and selected package through resizing
+PASS  resizing an open compact menu to desktop unlocks the page
+PASS  no console errors
+
+197/197 checks passed
+
+
+Admin and fallback verification
+PASS admin 320: real editor renders 30 selected photos
+PASS admin 320: no horizontal overflow
+PASS admin 320: touch targets are at least 44px
+PASS library 320: every bundled photo is available
+PASS library 320: no horizontal overflow
+PASS library 320: inputs avoid mobile zoom
+PASS admin 390: real editor renders 30 selected photos
+PASS admin 390: no horizontal overflow
+PASS admin 390: touch targets are at least 44px
+PASS library 390: every bundled photo is available
+PASS library 390: no horizontal overflow
+PASS library 390: inputs avoid mobile zoom
+PASS admin 430: real editor renders 30 selected photos
+PASS admin 430: no horizontal overflow
+PASS admin 430: touch targets are at least 44px
+PASS library 430: every bundled photo is available
+PASS library 430: no horizontal overflow
+PASS library 430: inputs avoid mobile zoom
+PASS admin 768: real editor renders 30 selected photos
+PASS admin 768: no horizontal overflow
+PASS admin 768: touch targets are at least 44px
+PASS library 768: every bundled photo is available
+PASS library 768: no horizontal overflow
+PASS library 768: inputs avoid mobile zoom
+PASS admin 1024: real editor renders 30 selected photos
+PASS admin 1024: no horizontal overflow
+PASS admin 1024: touch targets are at least 44px
+PASS library 1024: every bundled photo is available
+PASS library 1024: no horizontal overflow
+PASS library 1024: inputs avoid mobile zoom
+PASS admin 1440: real editor renders 30 selected photos
+PASS admin 1440: no horizontal overflow
+PASS admin 1440: touch targets are at least 44px
+PASS library 1440: every bundled photo is available
+PASS library 1440: no horizontal overflow
+PASS library 1440: inputs avoid mobile zoom
+PASS admin 1920: real editor renders 30 selected photos
+PASS admin 1920: no horizontal overflow
+PASS admin 1920: touch targets are at least 44px
+PASS library 1920: every bundled photo is available
+PASS library 1920: no horizontal overflow
+PASS library 1920: inputs avoid mobile zoom
+PASS reordering and removal remain unpublished
+PASS drag reorder changes the stored draft
+PASS preview displays the actual public gallery for the draft
+PASS closing preview restores focus to its button
+PASS failed publication preserves the draft and enables retry
+PASS retry publishes the chosen order and count
+PASS upload stays hidden until it is selected and published
+PASS browser prepares a correctly proportioned JPEG no larger than 1800px
+PASS uploaded photo reaches the published selection
+PASS a hidden uploaded file can be removed after publishing
+PASS admin produces no uncaught browser errors
+PASS uploaded public wall 390: UUID rows and all five selected photos render
+PASS uploaded public wall 390: no broken images or horizontal overflow
+PASS uploaded public wall 390: photograph ratio is preserved
+PASS uploaded public wall 1440: UUID rows and all five selected photos render
+PASS uploaded public wall 1440: no broken images or horizontal overflow
+PASS uploaded public wall 1440: photograph ratio is preserved
+PASS index 390: readable without JavaScript
+PASS index 390: photos remain visible without JavaScript
+PASS portfolio 390: readable without JavaScript
+PASS portfolio 390: photos remain visible without JavaScript
+PASS about 390: readable without JavaScript
+PASS about 390: photos remain visible without JavaScript
+PASS services 390: readable without JavaScript
+PASS services 390: photos remain visible without JavaScript
+PASS services without JavaScript: Starter can be selected
+PASS services without JavaScript: Essential can be selected
+PASS services without JavaScript: Signature can be selected
+PASS services without JavaScript: Social can be selected
+PASS contact 390: readable without JavaScript
+PASS contact 390: photos remain visible without JavaScript
+PASS contact 390: native form posts to the enquiry endpoint
+PASS index 1440: readable without JavaScript
+PASS index 1440: photos remain visible without JavaScript
+PASS portfolio 1440: readable without JavaScript
+PASS portfolio 1440: photos remain visible without JavaScript
+PASS about 1440: readable without JavaScript
+PASS about 1440: photos remain visible without JavaScript
+PASS services 1440: readable without JavaScript
+PASS services 1440: photos remain visible without JavaScript
+PASS contact 1440: readable without JavaScript
+PASS contact 1440: photos remain visible without JavaScript
+PASS contact 1440: native form posts to the enquiry endpoint
+
+85 admin and fallback checks passed.

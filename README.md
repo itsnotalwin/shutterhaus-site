@@ -6,6 +6,16 @@ Google-authenticated admin gallery backed by Supabase.
 
 **Live:** <https://shutterhausvisuals.co.za>
 
+## One active branch: main
+
+`main` contains the current website, approved design, production fixes, review
+reports and verification tools. Use `main` for this project. Older development
+branches were consolidated on 16 October 2026; their history is preserved under
+`archive/2026-10-16/` tags. See [the consolidation record](docs/BRANCH_CONSOLIDATION.md).
+
+Production visual checks can be run from **Actions → Production visual audit →
+Run workflow** on `main`; a separate QA branch is not needed.
+
 ## Screenshots
 
 | Home | Portfolio |

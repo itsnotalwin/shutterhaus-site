@@ -17,3 +17,10 @@ This repository is the primary Codex workspace.
 - Do not load unrelated personal information.
 
 HERMES location: C:\Users\Operations 3\Documents\HERMES
+
+## Branch policy
+
+The owner requires one active branch: `main`. Keep the approved website, fixes,
+documentation and QA tools together on main. Do not create development, QA or
+backup branches unless the owner explicitly asks. Run the existing build and
+regression checks before publishing. Historical recovery points use archive tags.

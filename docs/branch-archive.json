@@ -1,0 +1,38 @@
+{
+  "activeBranch": "main",
+  "tagPrefix": "archive/2026-10-16",
+  "branches": [
+    {
+      "name": "deploy/mornings-weekends",
+      "sha": "f2349119a8cb5a208744103fa3945e81218dcbe0"
+    },
+    {
+      "name": "design/approved-visual-refresh",
+      "sha": "865867c12169d517ae68be532ebf29597227b4b1"
+    },
+    {
+      "name": "design/editorial-brand-refresh",
+      "sha": "e582fb994fbb27ed112ca751f0b06ca7b0aaac14"
+    },
+    {
+      "name": "editorial-redesign",
+      "sha": "ef82c7c2eb6dd9b998c5f267faafcc4eddaf6660"
+    },
+    {
+      "name": "favourites-gallery",
+      "sha": "39e9a283826b06d950fc1c90d196b9f60c394a5f"
+    },
+    {
+      "name": "master",
+      "sha": "4c7a7bd23b81fbc0df60e9308ba8dea6d2b49c69"
+    },
+    {
+      "name": "qa/production-visual-pass",
+      "sha": "70275d005e6a1b248efffa84d1255e8881f6c755"
+    },
+    {
+      "name": "redesign-spec",
+      "sha": "5f5e3a545e7534236163338ee1db83cfc5be9582"
+    }
+  ]
+}
