@@ -13,7 +13,7 @@ Fresh evidence was captured from the actual live domain, release e582fb994fbb27e
 
 ## Baseline checks
 
-All 40 page states loaded without horizontal overflow, missing images, uncaught JavaScript errors or detected heading clipping. Every gallery photograph retained its full source frame and ratio. Mobile disclosure, keyboard lightbox, focus return, navigation and Social package preselection worked. No enquiries were submitted and no gallery/auth/database data was written.
+All 40 page states loaded without horizontal overflow, missing images, uncaught JavaScript errors or detected heading clipping. Every Portfolio gallery photograph retained its full source frame and ratio. Mobile disclosure, keyboard lightbox, focus return, portrait navigation and Social package preselection worked. Landscape navigation had the confirmed failure described above. No enquiries were submitted and no gallery/auth/database data was written.
 
 ## Final live verification
 
