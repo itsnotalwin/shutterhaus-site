@@ -184,12 +184,11 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 .editorial-intro__photo picture,.about-intro .about__fig picture{display:block;height:100%;width:100%}
 .editorial-intro__photo img{width:100%;height:100%;object-fit:cover;object-position:center 25%;filter:grayscale(1)}
 .about-intro .about__fig img{width:100%;height:100%;object-fit:contain;filter:grayscale(1)}
-.about-intro .about__caption{position:absolute;bottom:0;left:0;background:#fff;padding:8px 12px;font-size:10px}
 .editorial-intro .brand-motif{max-height:470px;margin:0}
 .editorial-intro .brand-motif img{height:100%;min-height:0;flex:1;object-fit:cover}
 .editorial-intro .brand-motif p{display:none}
-.about-story{display:grid;grid-template-columns:1.15fr 1fr;gap:80px;align-items:start;margin-top:48px}
-.about-story__photo img{width:100%;height:540px;object-fit:cover;filter:grayscale(1)}
+.about-story{display:grid;grid-template-columns:minmax(0,1fr);gap:0;align-items:start;margin-top:48px}
+.about-story__copy{max-width:760px}
 .about-story__copy .eyebrow{margin-bottom:24px}
 .about-story__copy h2{font-size:56px;margin:0 0 28px}
 .about-values{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;border-top:1px solid var(--line);margin-top:60px;padding-top:30px}
@@ -277,12 +276,9 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 
 .cform input:focus-visible,.cform select:focus-visible,.cform textarea:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
 
-.about__caption{font-size:12px;line-height:1.6;letter-spacing:.04em;color:var(--grey);padding-top:14px}
-
 @media(max-width:1000px){
  .phead.editorial-intro,.editorial-intro{grid-template-columns:1fr 1.1fr;gap:24px}.editorial-intro .brand-motif{display:none}
  .page .editorial-intro h1,.page .shead__h{font-size:clamp(58px,7vw,76px)}
- .about-story{gap:40px}.about-story__photo img{height:460px}
  body.nav-open{color:#fff}.nav-open .site-header{background:#111;color:#fff}.nav-open .logo img{filter:invert(1)}
  .nav-open .burger__bars i{background:#fff}.nav-open .burger{color:#fff}
  .site-nav{position:fixed;top:calc(var(--head) + var(--sat));bottom:0;left:0;right:0;padding:32px var(--pad) 160px;background:#111;color:#fff;border:0;max-height:none;justify-content:flex-start}
@@ -300,7 +296,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
  .page .editorial-intro h1,.page .shead__h{font-size:clamp(58px,15vw,78px);line-height:.92;margin:18px 0 24px}
  .editorial-intro__photo{height:440px;margin:28px 0 0}.about-intro .about__fig{height:auto;margin:28px 0 0}.about-intro .about__fig img{height:auto}
  .editorial-intro__copy>.cta{width:100%;margin-bottom:0}.phead .phead__p,.intro-copy{max-width:34ch}
- .about-story{grid-template-columns:1fr;gap:28px;margin-top:36px}.about-story__photo img{height:280px}.about-story__copy h2{font-size:44px}
+ .about-story{grid-template-columns:1fr;gap:0;margin-top:36px}.about-story__copy h2{font-size:44px}
  .about-values{grid-template-columns:1fr;gap:18px;margin-top:36px}.about-values h2{font-size:34px}
  .shead{display:block;padding:32px 0 36px}.shead__fig{height:350px;aspect-ratio:auto;margin-top:28px}.shead__col>.cta{width:100%}
  .contact{padding-top:32px}.page .contact__h{font-size:clamp(54px,14.8vw,72px);line-height:.95;margin:18px 0 26px}

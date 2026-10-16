@@ -2,7 +2,7 @@ import { formatPrice } from "./pricing";
 import { SITE } from "./config";
 import { escapeHtml, motif } from "./layout";
 import { DEMO_PHOTOS } from "./demo";
-import { editorialFigure, pictureFor, bestDerivative } from "./pages";
+import { pictureFor, bestDerivative } from "./pages";
 import type { Photo } from "./types";
 import type { PricingTier } from "./config";
 
@@ -30,16 +30,15 @@ export function aboutPage(photos: Photo[]): string {
                 loading="eager" decoding="async"
                 style="aspect-ratio:${shot.width ?? 1200}/${shot.height ?? 1600}" />
          </picture>
-       <figcaption class="about__caption">Alwin Newman / Photographer</figcaption></figure>`
+       </figure>`
     : `<div class="about__fig about__fig--none" aria-hidden="true"></div>`;
 
-  const landscape = photos.find(p => p.album === "landscape") ?? DEMO_PHOTOS.find(p => p.album === "landscape");
   return `<section class="page about">
     <header class="editorial-intro about-intro">
       <div class="editorial-intro__copy"><p class="eyebrow eyebrow--rule">About SHUTTERHAUS</p><h1 class="about__h">Behind<br>the lens.</h1><p class="intro-copy">Independent photography from Gauteng. Real connection, careful light, meaningful photographs.</p><a class="cta" href="./contact.html">Let's work together <span aria-hidden="true">→</span></a></div>
       ${fig}${motif("about__motif")}
     </header>
-    <section class="about-story">${editorialFigure(landscape, "about-story__photo")}
+    <section class="about-story">
       <div class="about-story__copy"><p class="eyebrow">Founder / Photographer</p><h2>Alwin Newman.</h2><div class="prose about__prose">${a.body.map(para => `<p>${escapeHtml(para)}</p>`).join("")}</div><a class="cta cta--line" href="./contact.html">${escapeHtml(a.cta)} <span aria-hidden="true">→</span></a></div>
     </section>
     <section class="about-values"><div><h2>Natural.</h2><p>Unforced moments. True to the person.</p></div><div><h2>Honest.</h2><p>Careful, respectful, thoughtful photography.</p></div><div><h2>Timeless.</h2><p>Images that still feel important years later.</p></div></section>
