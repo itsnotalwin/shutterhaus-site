@@ -9,14 +9,15 @@ const engine = process.env.BROWSER_ENGINE === 'webkit' ? 'webkit' : 'chromium';
 const routes = (process.env.AUDIT_ROUTES || 'home,portfolio,about,services,contact').split(',');
 const widths = (process.env.AUDIT_WIDTHS || '320,390,430,768,1024,1440,1920').split(',').map(Number);
 const navOnly = process.env.AUDIT_NAV_ONLY === '1';
+const proxy = process.env.AUDIT_PROXY ? { server: process.env.AUDIT_PROXY } : undefined;
 const viewports = widths.map(width => ({ width, height: Number(process.env.AUDIT_HEIGHT) || (width <= 768 ? 844 : 1000), label: String(width) }));
 if (process.env.AUDIT_LANDSCAPE !== '0') viewports.push({ width: 844, height: 390, label: '844-landscape' });
 mkdirSync(output, { recursive: true });
 const report = { generatedAt: new Date().toISOString(), origin, engine, readOnly: true, navOnly, release: null, pages: [], interactions: [], accessFailures: [] };
 const save = () => writeFileSync(`${output}/measurements.json`, JSON.stringify(report, null, 2));
 const browser = engine === 'webkit'
-  ? await webkit.launch()
-  : await chromium.launch({ executablePath: process.env.CHROME_BIN || '/usr/bin/google-chrome', args: ['--no-sandbox', '--disable-dev-shm-usage'] });
+  ? await webkit.launch({ proxy })
+  : await chromium.launch({ proxy, executablePath: process.env.CHROME_BIN || '/usr/bin/google-chrome', args: ['--no-sandbox', '--disable-dev-shm-usage'] });
 const routeURL = route => `${origin}/${route === 'home' ? '' : `${route}.html`}`;
 
 async function settle(page) {
@@ -112,7 +113,7 @@ async function checkInteraction(label, operation) {
 }
 
 try {
-  const api = await request.newContext();
+  const api = await request.newContext({ proxy });
   const response = await api.get(`${origin}/release.json?audit=${Date.now()}`, { timeout: 30000 });
   report.release = { status: response.status(), body: await response.text() };
   await api.dispose();
@@ -247,4 +248,6 @@ try {
   report.summary = { pages: report.pages.length, horizontalOverflows: report.pages.filter(page => page.horizontalOverflow).length, brokenImages: report.pages.reduce((count, page) => count + page.brokenImages.length, 0), exceptions: report.pages.reduce((count, page) => count + page.exceptions.length, 0), headingClips: report.pages.reduce((count, page) => count + page.headings.filter(heading => heading.clippedBy.length || heading.horizontallyOutsideViewport).length, 0), interactionErrors: report.interactions.filter(result => result.error).length, accessFailures: report.accessFailures.length };
   save(); await browser.close(); console.log(JSON.stringify(report.summary));
 }
-if (report.accessFailures.length) process.exitCode = 1;
+// A completed capture is not a passing audit when measured defects remain.
+if (['horizontalOverflows', 'brokenImages', 'exceptions', 'headingClips', 'interactionErrors', 'accessFailures']
+  .some(key => report.summary[key] > 0)) process.exitCode = 1;

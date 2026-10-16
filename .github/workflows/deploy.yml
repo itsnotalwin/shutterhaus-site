@@ -41,9 +41,10 @@ jobs:
       - name: Build the public pages and admin
         run: npm run build
         env:
+          # Pull-request checks intercept gallery I/O; deployment requires real values above.
           BASE_PATH: ./
-          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL || (github.event_name == 'pull_request' && 'https://offline-test.supabase.co') }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY || (github.event_name == 'pull_request' && 'offline-test') }}
       - name: Pricing, enquiries, delayed data, and admin drafts
         run: npm test
       - name: Identify the verified release

@@ -1,339 +1,227 @@
 # Shutterhaus Visuals
 
-Portfolio site for **Shutterhaus Visuals**, a Gauteng-based portrait, couples and
-family photographer. Static output — Vite + TypeScript, no framework — with a
-Google-authenticated admin gallery backed by Supabase.
+Photography portfolio for Alwin Newman, based in Kempton Park, Gauteng.
+**Production:** <https://shutterhausvisuals.co.za>
 
-**Live:** <https://shutterhausvisuals.co.za>
+Vite and TypeScript generate five static public pages. Supabase supplies the
+published photo selections, image storage and Google-authenticated photo manager.
+GitHub Actions verifies the build before publishing it to GitHub Pages.
 
-## One active branch: main
+## Source of truth
 
-`main` contains the current website, approved design, production fixes, review
-reports and verification tools. Use `main` for this project. Older development
-branches were consolidated on 16 October 2026; their history is preserved under
-`archive/2026-10-16/` tags. See [the consolidation record](docs/BRANCH_CONSOLIDATION.md).
+Use `main`, the project's only active branch. Before a production pass, fetch
+`origin/main` and compare it with the commit served by `/release.json` on the
+live domain. Review the actual deployed pages before proposing visual changes.
+Do not use historical screenshots or an older checkout as the approved design.
+Branch recovery tags are recorded in [docs/BRANCH_CONSOLIDATION.md](docs/BRANCH_CONSOLIDATION.md).
 
-Production visual checks can be run from **Actions → Production visual audit →
-Run workflow** on `main`; a separate QA branch is not needed.
+The approved public site uses Bodoni Moda headings, Inter body text, a white
+editorial layout, geometric artwork and monochrome photography. Home begins
+“Portraits worth keeping.” The current About page has one photograph with no
+caption. Preserve these choices during maintenance.
 
-## Screenshots
+## Run locally
 
-| Home | Portfolio |
-| --- | --- |
-| ![Home page](docs/screenshots/home.jpg) | ![Portfolio wall](docs/screenshots/portfolio.jpg) |
+Requires Node 22 or newer and Python 3. Pillow is needed only for image tools.
 
-| Services | Contact |
-| --- | --- |
-| ![Services page](docs/screenshots/services.jpg) | ![Contact page](docs/screenshots/contact.jpg) |
-
-| About | Home (390px) |
-| --- | --- |
-| ![About page](docs/screenshots/about.jpg) | ![Home on a phone](docs/screenshots/home-mobile.jpg) |
-
----
-
-## Stack
-
-| Piece | What it does |
-| --- | --- |
-| **Vite 7 + TypeScript** | Build and typecheck. No SPA framework — every route is a real document. |
-| **Supabase** | Postgres rows, image Storage, and Google sign-in for the admin. |
-| **GitHub Pages** | Hosting, deployed by `.github/workflows/deploy.yml` on every push to `main`. |
-| **HostAfrica** | DNS for the custom domain. |
-
-## Run it locally
-
-Requires **Node ≥ 22** and **Python 3** with [Pillow](https://pypi.org/project/Pillow/)
-(the build runs the Python page/image tools).
-
-```bash
-npm install
-cp .env.example .env      # optional — fill in after you create the Supabase project
-npm run dev               # builds the pages, then serves at http://localhost:5173
+```sh
+npm ci
+cp .env.example .env   # optional: add the public Supabase connection values
+npm run dev
 ```
 
-It works immediately with placeholder content from `src/demo.ts`. Without a
-`.env` the site runs entirely off the demo data and nothing breaks; Supabase is
-only needed to upload real work.
+Without connection values, public pages use the bundled photographs. The admin
+requires a configured connection and an authorised account. Never put a
+service-role or secret key in a `VITE_` variable: these values ship to the browser.
 
-```bash
-npm run build     # typecheck + generate pages + row/srcset checks + vite build → dist/
-npm run preview   # serve the production build at http://127.0.0.1:4173
-npm run test      # pricing, enquiry and photo-viewer DOM regressions
-npm run verify    # rendered-design gate (see below)
+```sh
+npm run build         # typecheck, generate pages, validate gallery assets, bundle
+npm test              # public interactions and admin draft regressions
+npm run preview       # production build at http://127.0.0.1:4173
+npm run probe:packer  # gallery packing edge cases
 ```
 
-`npm run build` chains `tsc --noEmit`, `tools/build-pages.py`,
-`tools/check-rows.py`, `tools/check-srcset.py` and `vite build` — a type error,
-a broken gallery row or a missing image derivative fails the build.
+## Verification
 
-`npm run verify` renders the built site in headless Chrome and asserts the
-design (responsive layout, photograph integrity, gallery geometry and navigation). It needs a Chrome exposing
-CDP on port 9222; CI starts one automatically. Locally:
+The Playwright suite covers public layouts, keyboard controls and scrolling
+photograph frames. Install WebKit once for Safari engine coverage:
 
-```bash
-npm run build
-npm run preview &
-"/c/Program Files/Google/Chrome/Application/chrome.exe" \
-  --headless=new --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-verify about:blank &
-node tools/verify.mjs http://127.0.0.1:4173
+```sh
+npx playwright install --with-deps webkit
+npm run test:browser
 ```
 
-## Package prices and regression checks
+Chromium defaults to `/usr/bin/chromium`; set `CHROME_BIN` for another installation.
+Tests start the preview automatically when needed. Use `CAPTURE_REVIEW=1` to
+save public screenshots under `shots/public/`. WebKit is useful engine coverage,
+but does not replace testing on the affected physical iPhone.
 
-`src/pricing.json` supplies Services, Contact, the Home price and generated
-search metadata. Package prices are numeric rand amounts, for example `2500`.
-Run `npm run build` after editing it. Social includes 40 edited images and a
-10-image preview within 48 hours; full galleries arrive in 7–14 days.
+The CDP checks also exercise the admin with mocked I/O. Start a separate Chrome
+instance with debugging enabled and keep the preview server running:
 
-`npm run test` checks pricing consistency, Social deliverables, form validation,
-draft preservation during rotation, duplicate submission protection, failure
-recovery and photo-viewer focus using a simulated DOM and mocked requests.
-`npm run verify` checks browser layouts, and `npm run verify:controls` checks
-native keyboard activation, modal zoom and responsive drawer cleanup.
+```sh
+chromium --headless=new --remote-debugging-port=9222 \
+  --user-data-dir=/tmp/shutterhaus-chrome about:blank
+```
 
-## Editorial presentation
+In another terminal:
 
-`src/public.css` contains the shared page layouts and presentation rules.
-`src/visual-refresh.css` applies the approved photographic design: strong Archivo
-headings, generous margins and quiet controls. Home shows six photographs in one
-column on phones and two on desktop. Services has a photographic introduction,
-a mobile package chooser and an enquiry link to Contact. Contact has a dark
-introduction beside the desktop form, stacked above it on phones.
+```sh
+OFFLINE_GALLERY=1 REVIEW_WIDTHS=320,390,430,768,1024,1440,1920 npm run verify
+npm run verify:controls
+npm run verify:admin
+```
 
-The Home header stays transparent at the top of the photograph and becomes
-solid white while scrolling or opening the mobile menu. The compact menu is
-used through 1000px and stays within reach on every page. Home and Portfolio
-repack when crossing 760px; height-only
-changes never redraw the page, and Contact keeps its form draft during rotation.
+The uploaded-gallery admin check needs a configured build so that the public
+client makes requests for the test to intercept. For offline local verification:
 
-Inter 400/500 and Archivo Black 400 are served from `public/fonts/`; their OFL
-licenses are included there. The browser gate checks font loading, heading
-overflow, aligned desktop prices and the closing enquiry destination, and saves
-fresh desktop and phone screenshots for all five public pages. Use
-`REVIEW_WIDTHS=320,390,430,768,1024,1440,1920 npm run verify` for the broader
-responsive review. The gate also checks menu visibility, dismissal and focus,
-Home header behavior, gallery repacking and draft preservation.
+```sh
+VITE_SUPABASE_URL=https://offline-test.supabase.co VITE_SUPABASE_ANON_KEY=offline-test npm run build
+```
+
+Never deploy that test build; rebuild normally when finished. Enquiry tests
+intercept delivery and do not send messages. Admin tests mock authentication and
+database/storage I/O while exercising the real UI and browser image preparation.
+They do not establish production account permissions or inbox delivery.
+
+### Check the live site
+
+**Actions → Production visual audit → Run workflow** captures production in
+Chromium and WebKit. To run the read-only audit locally:
+
+```sh
+CHROME_BIN=/usr/bin/chromium node tools/review/audit-production.mjs
+```
+
+It records the deployed release, screenshots, image/frame measurements and
+navigation checks in `shots/production-audit/`. Set `AUDIT_WIDTHS`,
+`AUDIT_OUT`, `LIVE_URL` or `BROWSER_ENGINE=webkit` as needed. Environments requiring
+an outbound proxy can set `AUDIT_PROXY` to their configured proxy address.
+The audit never signs in, publishes gallery changes or submits an enquiry.
 
 ## Project layout
 
-```
-index.html            home shell          ← generated by tools/build-pages.py
-portfolio.html        real document per route (about, services, contact, admin too)
-src/
-  main.ts             router + wiring
-  admin.ts            admin panel UI
-  config.ts           brand, nav and contact
-  pricing.json        packages, numeric ZAR prices, add-ons and booking terms
-  pricing.ts          shared currency formatting
-  layout.ts           header / footer chrome, icons
-  pages.ts            the column gallery and page bodies
-  pages-more.ts       video + contact routes
-  supabase.ts         client, Google sign-in, admin allowlist
-  store.ts            photo queries, upload, delete
-  lightbox.ts         full-size viewer
-  demo.ts             placeholder gallery + DEMO_VIDEOS
-  styles.css          base design
-  public.css          shared public layouts, typography and page refinement
-tools/                Python/MJS build + verification tools (see below)
-public/               static assets copied verbatim into dist/
-  gallery/            the committed photo files + their -<width>w derivatives
-  CNAME               custom domain (must match Settings → Pages)
-  fonts/              self-hosted Inter / Archivo Black WOFF2 + OFL licenses
-  _headers            security headers — only honoured if ever fronted by Cloudflare
-  robots.txt, sitemap.xml, 404.html
-supabase/
-  schema.sql          run once in the SQL editor (table, bucket, RLS)
-  composition.sql     example pgvector-backed composition seed
-.github/workflows/deploy.yml   CI: build → rendered gate → publish
-interleave-order.json the gallery interleave input used by tools/rows.py
-```
-
-## Connect Supabase (one-time, ~10 minutes)
-
-Supabase provides the database, image storage and Google sign-in in one place;
-the free tier is plenty for a portfolio.
-
-1. Create a project at [supabase.com](https://supabase.com).
-2. **SQL Editor → New query** → paste `supabase/schema.sql` → **Run**. This
-   creates the `photos` table, the public `photos` bucket, and the Row Level
-   Security policies that restrict all writes to your email.
-3. **Project Settings → API** → copy the Project URL and the `anon` public key.
-4. Copy `.env.example` to `.env` and paste both values in.
-5. Restart `npm run dev`.
-
-The `anon` key is safe to commit — it is public by design, and RLS is what
-actually protects the data. Never put the `service_role` key in `.env`; it
-bypasses RLS.
-
-## Turn on Google sign-in
-
-1. In the [Google Cloud Console](https://console.cloud.google.com/), create a
-   project (or pick an existing one).
-2. **APIs & Services → Credentials → Create Credentials → OAuth client ID → Web application.**
-3. Under *Authorized redirect URIs* add exactly
-   `https://YOUR-PROJECT-REF.supabase.co/auth/v1/callback`.
-4. Copy the Client ID and Client Secret.
-5. Supabase → **Authentication → Providers → Google** → enable, paste both, **Save**.
-
-Only these addresses can sign in *and* pass the database policies — add an admin
-to **both**:
-
-- `src/config.ts` → `ADMIN_EMAILS` — the client-side gate.
-- `supabase/schema.sql` → `is_admin()` — the real gate, enforced by Postgres.
-
-Editing only the TypeScript list changes who sees the admin screen but grants no
-database access.
-
-## Upload photos (admin)
-
-Go to `/admin.html` and sign in with Google. Open **Photo library** to upload, then select photos for Home or Portfolio. Arrange the Page editor, preview the draft, and choose **Publish changes**. Full instructions are in **Photo manager** below.
-
-## Edit the site content
-
-| What | Where |
+| Path | Purpose |
 | --- | --- |
-| Wordmark | `src/config.ts` → `nameTop` / `nameBig1` / `nameBig2` |
-| Monochrome look on/off | `src/config.ts` → `blackAndWhite` |
-| Nav items | `src/config.ts` → `nav` |
-| Instagram / WhatsApp links | `src/config.ts` → `social` |
-| Email, phone, location, hours | `src/config.ts` → `contact` |
-| Contact form endpoint | `src/config.ts` → `contact.formEndpoint` |
-| About paragraph | `src/config.ts` → `blurb` |
-| Pricing packages | `src/pricing.json` tiers |
-| Hero / home strip picks | `src/config.ts` → `heroPhoto`, `homeGalleryCount` (see **Design invariants**) |
-| Videos | `src/demo.ts` → `DEMO_VIDEOS` (host the files on Supabase Storage or Cloudinary and paste the URL) |
+| `src/main.ts` | Public route rendering and live gallery updates |
+| `src/layout.ts`, `src/pages.ts`, `src/pages-more.ts` | Header, footer and page renderers |
+| `src/navigation.ts`, `src/contact-form.ts`, `src/lightbox.ts` | Menu, enquiry and photo-viewer behavior |
+| `src/booking-band.ts` | Shared booking section |
+| `src/config.ts`, `src/pricing.json` | Brand/contact defaults and numeric ZAR package facts |
+| `src/seo.json`, `src/seo.ts` | Metadata and client updates |
+| `src/public.css`, `src/styles.css`, `src/fonts.css` | Approved public presentation, base rules and self-hosted fonts |
+| `src/admin.ts`, `src/admin.css` | Photo manager |
+| `src/gallery-model.ts`, `src/rows.ts`, `src/composition.ts` | Drafts, bundled order and published selections |
+| `src/store.ts`, `src/supabase.ts` | Database, storage and authentication access |
+| `public/` | Shipped photographs, brand artwork, fonts, icons and hosting files |
+| `tools/` | Repeatable generation and verification tools |
+| `tests/` | Browser regressions and explicit fixtures |
+| `supabase/` | Schema, composition setup and migrations |
+| `docs/` | Operational guidance and branch recovery records |
+| `.github/workflows/` | Build, deployment and live visual audit |
 
-Leave `contact.formEndpoint` empty and the form opens the visitor's email app;
-paste a [Formspree](https://formspree.io) or [Basin](https://usebasin.com)
-endpoint and it posts there instead.
+Root public HTML files are generated build inputs. Edit the renderers or metadata
+and run `npm run pages`; do not edit generated markup. `interleave-order.json`
+supplies the bundled gallery curation. Preserve photo originals, responsive
+derivatives and font licences.
 
-## Adding photos to the gallery
+Keep captures, measurement dumps, temporary review notes and mockups in ignored
+`shots/` or outside the repository. CI retains evidence as workflow artifacts.
+Historical release notes and screenshots remain recoverable in Git history.
 
-Images live in the repository under `public/gallery/` (committed), so adding a
-shoot is a git operation rather than a browser upload.
+## Editing content and photographs
 
-```bash
-python tools/add-photos.py "C:/path/to/shoot"            # resize to web JPEGs
-python tools/add-photos.py "C:/path/to/shoot" --start 9  # continue numbering
-python tools/add-photos.py "C:/path/to/shoot" --dry-run  # don't write
+Use `src/config.ts` for contact information, availability, social links, biography
+and bundled photo defaults. `src/pricing.json` supplies Services, Contact, Home and
+search metadata. The current packages are Starter R800, Essential R2,000,
+Signature R2,500 and Social R3,500; edit the JSON rather than duplicating prices.
 
-python tools/make-derivatives.py                         # build the -<width>w responsive set
-python tools/rows.py                                     # re-curate the portfolio wall
+`src/public.css` owns the current editorial design. Preserve the deliberate
+monochrome treatment, crop positions, photograph order and geometric artwork.
+Apply grayscale once per gallery image; avoid adding filters to its wrappers.
+See [Safari photograph guidance](docs/SAFARI_IMAGE_LAYOUT.md) before changing
+photo positioning or compositing.
+
+For bundled photographs (requires Pillow):
+
+```sh
+python tools/add-photos.py /path/to/shoot --dry-run
+python tools/add-photos.py /path/to/shoot
+python tools/make-derivatives.py
+python tools/rows.py
+npm run build
 ```
 
-- `add-photos.py` resizes to a 1800px longest edge, progressive JPEG q82, applies
-  EXIF rotation, refuses files already present, and prints the ready-to-paste git
-  command plus the SQL to seed the metadata rows. It never touches the database —
-  credentials never sit on disk here.
-- `make-derivatives.py` writes the `-400w/560w/800w/1200w/1600w` files the grid
-  and `srcset` request. Originals are left intact for the lightbox.
-- `rows.py` picks and lays out the portfolio wall (30 frames, 15 rows) from
-  `interleave-order.json`. `tools/verify.mjs` and `check-rows.py` assert the
-  result.
-
-## Deploy — GitHub Pages
-
-`.github/workflows/deploy.yml` builds on every push to `main` (and on manual
-dispatch). The `verify` job runs the rendered-design gate first; the `build` job
-then publishes `dist/` through `actions/deploy-pages`. The repo stays **private**
-— the Actions deploy path works without a paid Pages plan, unlike the legacy
-Pages-for-private-repos route.
-
-The build uses `BASE_PATH: ./` (a **relative** base). Assets then resolve against
-the document, so one build serves correctly at both the domain root and the
-`github.io` project subpath; an absolute base can only ever be right for one of
-them.
-
-### DNS records at HostAfrica — all four A records are required
-
-| Type | Name | Value |
-| --- | --- | --- |
-| A | `@` | `185.199.108.153` |
-| A | `@` | `185.199.109.153` |
-| A | `@` | `185.199.110.153` |
-| A | `@` | `185.199.111.153` |
-| CNAME | `www` | `shutterhausvisuals.co.za` |
-
-The Pages DNS check passes on a single A record (it only needs to resolve), but
-**ACME/TLS validation round-robins across all four IPs** — three that do not
-answer and the cert request fails with `bad_authz` while the DNS check still
-shows green. If a certificate is failing, count the A records first.
-
-`public/CNAME` (two lines: apex + `www`) declares the domain in the published
-artifact. With `build_type: workflow` the authoritative copy is **Settings →
-Pages**; the two must agree.
-
-### If the certificate gets stuck in `bad_authz`
-
-`bad_authz` does not self-heal and re-saving the domain does not clear it. What
-works:
-
-1. Confirm all four A records are present.
-2. In **Settings → Pages**, **remove** the custom domain (save blank). That drops
-   Pages back to the `github.io` subpath and clears the ACME state.
-3. **Re-add** the domain and save.
-
-GitHub then reports **"Certificate Requested"** and retries on its own backoff —
-often minutes to an hour. A still-`bad_authz` state straight after the re-add is
-normal. An existing valid certificate keeps serving throughout; only the
-`http → https` redirect waits. Check with:
-
-```bash
-curl -s -o /dev/null -w "code=%{http_code} ssl=%{ssl_verify_result}\n" \
-  https://shutterhausvisuals.co.za/
-gh api repos/itsnotalwin/shutterhaus-site/pages   # https_certificate.state, https_enforced
-```
-
-## Design invariants — do not "tidy" these
-
-Locked decisions that earlier cleanups broke. Change them only by deliberately
-reopening the work.
-
-- **Home is pinned.** `heroPhoto` in `src/config.ts` fixes which frame carries the
-  hero, and `homeGalleryCount: 6` fixes the home strip in two packed columns on
-  desktop and one column at 760px and below. Changing either needs a deliberate home-route pass.
-- **Specificity trap.** `.page h1` (0,1,1) beats a bare class such as `.about__h`
-  (0,1,0). The `.page` / `.portfolio` prefixes in `public.css` are load-bearing,
-  not decoration — remove one and a heading's margin collapses to 0.
-- **The portfolio wall** is 30 curated frames in three packed columns above
-  760px and two below. Phones show the first ten, with a centred fine chevron
-  disclosure for the rest; its screen-reader label changes between Show more images
-  and Show fewer images. Desktop shows the full wall. `rows.ts` supplies the chosen frames and their order;
-  `wallCols()` and the CSS share the breakpoint. Every photo retains its ratio,
-  with consistent gutters and no printed frame numbering.
-- **Photographs stay as uploaded.** No greyscale or colour filters on either
-  touch or hover devices. Gallery and About photographs remain uncropped; the
-  hero is a deliberate full-bleed crop. Service thumbnails use natural ratios
-  on phones and shared slots on desktop, with landscape groups shown in full.
-- **Admin stays out of search.** Keep its `noindex` meta and omit it from the sitemap.
-  Allow crawling in `public/robots.txt` so search engines can read that directive.
-  Authentication and database policies protect private data.
-
-## Notes
-
-- **Demo vs live photos.** `src/demo.ts` is the fallback; `listPublicPhotos()`
-  replaces it only when a live query returns rows — an empty table shows the demo
-  grid, not a blank page.
-- **Video is demo-only.** The video route renders `DEMO_VIDEOS` and does not read
-  from Supabase yet.
-- **Routing.** Every route is a real document generated by
-  `tools/build-pages.py`; `src/main.ts` reads the filename first and falls back to
-  the old `#/…` hash, so legacy links still work. `public/404.html` redirects
-  `/admin` and `/admin/` to `/admin.html` (GitHub Pages has no server redirects).
-- **Share the bare domain, never `www.`** — the `www` hostname has no certificate
-  of its own and will throw a security warning.
+The importer refuses existing files. Derivatives supply responsive image sizes;
+originals remain available to the viewer. Missing advertised candidates fail
+the build. Prefer the admin for normal publication changes.
 
 ## Photo manager
 
-Open `https://shutterhausvisuals.co.za/admin.html` and sign in with the authorised Google account. The Page editor manages the Home hero, Home photos and Portfolio. Drag a photo to reorder it, or use its arrow buttons. Replace and Remove affect the selected page; they keep the original in the library.
+Open `/admin.html` and sign in with an authorised Google account. Upload through
+**Photo library**, choose a destination, and add photographs to the page. In
+**Page editor**, drag to reorder or use the arrow buttons. Replace and Remove
+change the page selection while retaining the original in the library.
 
-In Photo library, upload files from your device or drop them onto Add photos. Images are resized on the device to a maximum edge of 1800px and encoded as JPEG. Select the destination, then Add a photo. Edit its description for accessible image text. Hide removes it from the Home/Portfolio draft. Original bundled photographs remain in the library; an uploaded file can be permanently deleted after hiding it and publishing.
+Drafts stay in the current browser tab. Preview, then **Publish changes** to save
+library metadata and page positions in one transaction. Failed publication keeps
+the draft for retry. Concurrent publication raises a revision conflict instead
+of overwriting another session. **Discard draft** reloads published data.
 
-Changes are kept as a draft in the current browser tab. Preview checks the draft. Publish changes saves the library metadata and all page positions in one database transaction. A failed publication keeps the draft for retry. Discard draft reloads the published layout. Another session's publication causes a revision conflict instead of silently overwriting its work. Drafts are not shared across devices.
+Uploads are resized to a maximum edge of 1800px and encoded as JPEG. Add accurate
+image descriptions. To delete an uploaded file permanently, hide it and publish
+first. Bundled originals remain in the library.
 
-The additive database migration is `supabase/migrations/20261006193000_gallery_publishing.sql`. It adds the transactional publishing RPC, a filename index and an invoker-only JWT helper; it does not change the current selections or files. Apply it before deploying this admin. Only the administrator allowed by the existing RLS policies can publish or change stored photographs.
+## Supabase setup
 
-Run `npm run build`, `npm test`, `npm run verify`, and `npm run verify:admin` with Chrome on port 9222 and Vite preview on 4173. Admin verification runs the shipped UI with mocked auth/storage/database I/O; real image decoding and resizing run in Chrome. It never signs into or edits the production gallery. CI also checks seven public viewport widths and usable pages with JavaScript disabled. The exact verified `dist` artifact is deployed; pull requests verify without deploying.
+For a new project:
 
-Enquiry drafts are stored for up to 24 hours in the current tab's session storage and cleared after a successful send. Mocked enquiry tests verify validation, failure recovery and duplicate prevention; they do not confirm delivery to the production inbox.
+1. Run `supabase/schema.sql`, then `supabase/composition.sql` for the composition
+   table, policies and bundled selections.
+2. Apply `supabase/migrations/20261006193000_gallery_publishing.sql` for
+   transactional publishing and revision checks.
+3. Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in `.env` locally.
+4. Create a Google OAuth web client with callback
+   `https://YOUR-PROJECT-REF.supabase.co/auth/v1/callback` and enable Google in
+   Supabase Authentication with its client ID and secret.
+5. Keep admin emails aligned in `src/config.ts` and the database `is_admin()`
+   function. The client list controls the UI; database policies enforce access.
+
+Do not reapply initial photo seeds over an existing project's published choices.
+Apply the publishing migration before deploying the photo manager.
+
+## Behavior constraints
+
+- Keep the six-photo Home showcase and bundled hero unless deliberately changing
+  the Home route. Published admin selections can override the bundled photos.
+- Portfolio has 30 bundled frames in three packed desktop columns and two phone
+  columns. Phones initially show ten with an accessible disclosure for the rest.
+- Retain the current crops on editorial images and package portraits. Portfolio
+  frames keep their natural ratios; package landscapes are shown in full.
+- The compact menu is used through 1000px. Height-only viewport changes must not
+  rebuild pages. Rotation must retain enquiry drafts and package choice.
+- Contact drafts last up to 24 hours in tab session storage and clear after a
+  successful send. `contact.formEndpoint` controls delivery; an empty value uses
+  the email-app fallback.
+- Public content and navigation remain usable without JavaScript. Keep admin
+  `noindex`, omit it from the sitemap, and let crawlers read that directive.
+
+## Deployment and operations
+
+Pushes to `main` and manual runs verify and deploy; pull requests only verify.
+Set repository variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to the
+public production connection values. Production builds fail if either is absent. Pull-request verification can use
+non-production placeholders because gallery I/O is intercepted by the tests.
+
+The exact verified `dist/` artifact is deployed. Chromium and WebKit scrolling
+checks gate publication, and the live WebKit job checks the deployed site afterward.
+`tools/verify-live.mjs` verifies the live release commit, pages and assets.
+`BASE_PATH=./` supports both the custom-domain root and a Pages project subpath.
+
+Set the Pages custom domain to `shutterhausvisuals.co.za`, matching `public/CNAME`.
+DNS uses all four GitHub Pages A records for `@`:
+`185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`.
+Point `www` to the apex with a CNAME and verify HTTPS for each shared hostname.
+`public/_headers` is not honoured by GitHub Pages.
+
+Search setup is documented in [docs/google-search.md](docs/google-search.md).

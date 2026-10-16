@@ -25,8 +25,8 @@ for(const width of [320,390,430,768,1024,1440,1920]) {
    expect(await page.locator('script[type="application/ld+json"]').evaluate(el=>!!JSON.parse(el.textContent||'{}'))).toBe(true);
    await expect(page.locator('a[href^="tel:"]')).toHaveCount(0);
    if(process.env.CAPTURE_REVIEW){
-    mkdirSync('review/after',{recursive:true});
-    await page.screenshot({path:`review/after/${route}-${width}.png`,fullPage:true});
+    mkdirSync('shots/public',{recursive:true});
+    await page.screenshot({path:`shots/public/${route}-${width}.png`,fullPage:true});
    }
   }
   expect(errors).toEqual([]);
@@ -44,11 +44,9 @@ test('real pinned sources, gallery order and package facts survive',async({page}
  await page.goto('/portfolio.html');
  await expect(page.locator('.pf-cell')).toHaveCount(30);
  await page.setViewportSize({width:1440,height:1000});await page.reload();
- const baseline=JSON.parse(readFileSync('review/baseline/measurements.json','utf8')).find((r:{route:string;width:number})=>r.route==='portfolio'&&r.width===1440);
- const original=baseline.images.filter((i:{src:string})=>i.src?.includes('gallery/')).map((i:{src:string})=>i.src);
+ const expected=JSON.parse(readFileSync('tests/fixtures/portfolio-order.json','utf8'));
  const current=await page.locator('.pf-cell img').evaluateAll(images=>images.map(el=>el.getAttribute('src')));
- expect(current.slice(0,-2)).toEqual(original.slice(0,-2));
- expect(current.slice(-2)).toEqual(['gallery/14-img-0026-400w.jpg','gallery/48-img-0128-400w.jpg']);
+ expect(current).toEqual(expected);
  await page.goto('/services.html');
  expect(await page.locator('.pkg__price').allTextContents()).toEqual(['R800','R2,000','R2,500','R3,500']);
  expect(await page.locator('.pkg__list li').count()).toBe(15);

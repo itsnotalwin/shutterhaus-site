@@ -1,7 +1,9 @@
 // Local unthrottled sanity measurements; these are not Lighthouse scores.
 import {preview} from 'vite';
 import {chromium} from '@playwright/test';
-import {writeFileSync} from 'node:fs';
+import {writeFileSync,mkdirSync} from 'node:fs';
+const output=process.env.REVIEW_OUT || 'shots/performance';
+mkdirSync(output,{recursive:true});
 const server=await preview({preview:{host:'127.0.0.1',port:4188,strictPort:true}});
 const browser=await chromium.launch({executablePath:process.env.CHROME_BIN||'/usr/bin/chromium',args:['--no-sandbox','--disable-dev-shm-usage']});
 const rows=[];
@@ -20,6 +22,6 @@ for(const width of [390,1440]){
  }
  await context.close();
 }
-writeFileSync('review/after/performance.json',JSON.stringify({conditions:'Local Vite production preview, unthrottled Chromium, 2-second observation, no scroll; a sanity check, not a benchmark.',measurements:rows},null,2));
+writeFileSync(`${output}/measurements.json`,JSON.stringify({conditions:'Local Vite production preview, unthrottled Chromium, 2-second observation, no scroll; a sanity check, not a benchmark.',measurements:rows},null,2));
 console.log(JSON.stringify(rows.map(({route,width,cls,lcp})=>({route,width,cls,lcp}))));
 await browser.close();await new Promise(resolve=>server.httpServer.close(resolve));

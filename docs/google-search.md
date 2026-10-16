@@ -39,7 +39,7 @@ actual appointment availability. Complete Google's requested verification.
 Suggested factual description:
 
 > On-location portraits, couples, family photography and social content by
-> Alwin Newman, based in Kempton Park. Sessions are available in the evenings
+> Alwin Newman, based in Kempton Park. Sessions are available in the mornings
 > and on weekends by appointment. Travel within 25 km of Kempton Park is
 > included in the photography packages.
 

@@ -1,70 +1,35 @@
+# Dependencies and generated output
 node_modules/
 dist/
+__pycache__/
+*.pyc
+
+# Local configuration and editor state
 .env
-.env.local
-shots/
+.env.*
+!.env.example
 .DS_Store
 *.log
 .vscode/
 .idea/
-# Python bytecode from the tools/ generators (shootorder.py, build-demo-ts.py).
-# These are build artifacts of a local tool, never inputs.
-__pycache__/
-*.pyc
-# verify.mjs screenshots, if SHOT_DIR is ever pointed back at the root
-shot-*.png
-# Headless Chrome profiles created by the audit tools (tools/audit2-*.mjs).
-# These are real browser profiles: they contain Cookies and "Account Web Data".
-# They must never be committed or pushed anywhere.
-audit2*-chrome-profile*/
-audit-v2chrome-profile/
-*.chrome-profile/
 
-# Audit tool output folders (generated locally, not for commit)
+# Browser evidence, reports and temporary design work
+shots/
+review/
+test-results/
+playwright-report/
+shot-*.png
 audit-v2/
 mobile-audit/
 mockups/
 mockups-v2/
 verification/
+audit2*-chrome-profile*/
+audit-v2chrome-profile/
+*.chrome-profile/
+*.pkl
 
-# Audit scratch. The reports themselves are committed (AUDIT.md, RESOLVED.md,
-# the .json measurements); the screenshots they point at are not. mobile-audit
-# alone is 172MB of a11y before/after captures from a previous pass.
-audit-v2/**/*.png
-audit-v2/**/*.jpg
-mobile-audit/**/*.png
-mobile-audit/**/*.jpg
-shot-*.png
-
-# verify.mjs screenshots, if SHOT_DIR is ever pointed back at the root
-shot-*.png
+# Temporary commit messages
 .commitmsg.txt
 commit-msg.txt
 cm.txt
-
-# The audit .gitignore rules above covered .png/.jpg only, but the scratch these
-# tools emit is overwhelmingly .webp — 31 untracked .webp were slipping past and
-# would have been swept in by `git add -A`. Same for the a11y tooling's pickle
-# cache and its raw base64 dumps.
-audit-v2/**/*.webp
-mobile-audit/**/*.webp
-audit-v2/**/*.b64
-mobile-audit/**/*.b64
-*.pkl
-# Re-downloadable copies of already-committed site assets, captured per width.
-mobile-audit/served/
-# Snapshot CSS pulled live during an audit run; the built copy is in dist/.
-audit-v2/**/tmp/
-# Stubs the verification loop creates before any worker has filled them in.
-verification/round*/
-verification/fix-queue.md
-
-# Local browser review artefacts; reports and capture tools are versioned.
-review/**/*.png
-review/**/*.jpg
-review/**/*.zip
-test-results/
-playwright-report/
-
-# Temporary revision inspection crops and intermediate captures.
-review/revision-2/

@@ -4,7 +4,7 @@ import {preview} from 'vite';
 const port=Number(process.env.REVIEW_PORT || 4174);
 const server=await preview({preview:{host:'127.0.0.1',port,strictPort:true}});
 import {mkdirSync,writeFileSync} from 'node:fs';
-const out=process.argv[2] || 'review/after';
+const out=process.argv[2] || 'shots/public';
 const routes=(process.env.REVIEW_ROUTES || 'home,portfolio,about,services,contact').split(',');
 const widths=(process.env.REVIEW_WIDTHS || '320,390,430,768,1024,1440,1920').split(',').map(Number);
 mkdirSync(out,{recursive:true});
@@ -29,8 +29,8 @@ for(const width of widths){
  await context.close();
 }
 if(process.env.REVIEW_ROUTES) {
- const {readFileSync}=await import('node:fs');
- const old=JSON.parse(readFileSync(`${out}/measurements.json`,'utf8'));
+ const {readFileSync,existsSync}=await import('node:fs');
+ const old=existsSync(`${out}/measurements.json`) ? JSON.parse(readFileSync(`${out}/measurements.json`,'utf8')) : [];
  results.push(...old.filter(row=>!routes.includes(row.route)));
 }
 writeFileSync(`${out}/measurements.json`,JSON.stringify(results,null,2));
