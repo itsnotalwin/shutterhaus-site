@@ -93,7 +93,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 .shead__p{font-size:15px;color:var(--dim);line-height:1.7;max-width:35ch;margin-bottom:24px}
 .shead__fig{height:440px;overflow:hidden}
 .shead__fig picture{height:100%;display:block}
-.shead__fig img{width:100%;height:100%;object-fit:cover;object-position:50% 35%;filter:grayscale(1)}
+.shead__fig img{width:100%;height:100%;object-fit:cover;object-position:50% 0%;filter:grayscale(1)}
 .shead .brand-motif{max-height:440px;align-self:stretch}
 .section-label{display:flex;justify-content:space-between;gap:20px;align-items:baseline;border-top:1px solid var(--line);padding-top:20px;margin-bottom:24px}
 .page .section-label h2{font-size:42px}
@@ -252,7 +252,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
  .about__body .eyebrow{order:0;margin:0}.page .about__h{order:1;font-size:64px;margin:0;max-width:10ch}
  .about__fig{order:2;width:100%}.about__prose{order:3}.about__cta{order:4;margin:0}.about>.hcta{order:5;margin-top:20px}
  .shead{grid-template-columns:1fr;gap:28px;padding:36px 0}.page .shead__h{font-size:64px;max-width:10ch}.shead__p{font-size:14px;margin-bottom:24px}
- .shead__fig{height:auto;aspect-ratio:4/3}.shead__fig img{object-position:50% 50%}
+ .shead__fig{height:auto;aspect-ratio:4/3}.shead__fig img{object-position:50% 0%}
  .page .section-label h2{font-size:38px}.section-label{flex-direction:column;gap:12px;margin-bottom:24px}
  .pkgrow{grid-template-columns:1fr;gap:24px}.pkg{padding:24px}.pkg__fig{aspect-ratio:auto;height:240px}.pkg__fig img{height:100%;max-height:none;object-fit:cover}
  .page .pkg__name{font-size:44px}.pkg__desc,.pkg__list{font-size:14px}.pkg__price{font-size:19px}.pkg__spec{font-size:12px}
