@@ -642,12 +642,12 @@ for (const width of reviewWidths) {
         const grid = document.querySelector('.hstrip__grid');
         return { tracks:getComputedStyle(grid).gridTemplateColumns.split(' ').length,
           count:grid.querySelectorAll('.hstrip__item').length,
-          widths:[...grid.querySelectorAll('.hstrip__item')].map(frame => frame.getBoundingClientRect().width),
+          widths:[...grid.querySelectorAll('.hstrip__item')].filter(frame => frame.getClientRects().length > 0).map(frame => frame.getBoundingClientRect().width),
           width:grid.getBoundingClientRect().width };
       })()`);
       check(`review home ${width}: six showcase images`, strip.count === 6);
       check(`review home ${width}: correct showcase columns`, strip.tracks === (width < 760 ? 2 : 4));
-      if (width <= 760) check(`review home ${width}: images fit the mobile showcase`, strip.widths.every(frame => frame > 0 && frame <= strip.width));
+      if (width <= 760) check(`review home ${width}: images fit the mobile showcase`, strip.widths.length === 5 && strip.widths.every(frame => frame > 0 && frame <= strip.width));
     }
     if (route === 'portfolio') {
       const wall = await evaluate(`(() => ({
