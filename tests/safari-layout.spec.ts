@@ -43,7 +43,7 @@ for (const viewport of viewports) {
         if (route==='home') {
           await page.evaluate(()=>window.scrollTo({top:document.querySelector('.hstrip')!.getBoundingClientRect().top+scrollY-100,behavior:'instant'}));
           await screenshot('home-grid-initial');
-          for (const cell of await page.locator('.hstrip__item').all()) {
+          for (const cell of await page.locator('.hstrip__item:visible').all()) {
             await cell.scrollIntoViewIfNeeded();
             await cell.locator('img').evaluate((image:HTMLImageElement)=>image.decode());
             await frames('Home lazy-loaded selected work','.hstrip__item',true);
