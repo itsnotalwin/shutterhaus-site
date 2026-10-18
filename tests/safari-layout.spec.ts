@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { mkdirSync, writeFileSync } from 'node:fs';
 
 const viewports = [
-  {width:320,height:740}, {width:375,height:812}, {width:393,height:852},
+  {width:320,height:568}, {width:320,height:740}, {width:375,height:812}, {width:393,height:852},
   {width:430,height:932}, {width:768,height:1024}, {width:1024,height:768},
   {width:1440,height:1000}, {width:844,height:390},
 ];
@@ -41,7 +41,17 @@ for (const viewport of viewports) {
         await page.evaluate(()=>document.fonts.ready);
         await expect(page.locator('h1')).toBeVisible();
         if (route==='home') {
+          if (viewport.width < 760 && !baseline) {
+            const cover = (await page.locator('.hero__fig').boundingBox())!;
+            const title = (await page.locator('.hero__title').boundingBox())!;
+            const header = (await page.locator('.site-header').boundingBox())!;
+            expect(cover.y, 'Cover starts at the top of the screen').toBeCloseTo(0, 0);
+            expect(cover.height, 'Cover fills one stable screen').toBeCloseTo(Math.max(viewport.height, 560), 0);
+            expect(title.y, 'Hero title clears the navigation').toBeGreaterThanOrEqual(header.y + header.height);
+            expect(title.y + title.height, 'Hero title stays inside the cover').toBeLessThanOrEqual(cover.y + cover.height + 1);
+          }
           await page.evaluate(()=>window.scrollTo({top:document.querySelector('.hstrip')!.getBoundingClientRect().top+scrollY-100,behavior:'instant'}));
+          if (viewport.width < 760 && !baseline) await expect(page.locator('.site-header')).toHaveClass(/is-solid/);
           await screenshot('home-grid-initial');
           for (const cell of await page.locator('.hstrip__item:visible').all()) {
             await cell.scrollIntoViewIfNeeded();
@@ -95,9 +105,11 @@ for (const viewport of viewports) {
         await page.evaluate(()=>window.scrollTo({top:document.body.scrollHeight,behavior:'instant'}));
         await screenshot(`${route}-footer`);
         const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1);
-        measurements.push({route,overflow});
+        const photos=await page.locator('main img').evaluateAll(images=>images.map(image=>({src:image.getAttribute('src'),filename:(image as HTMLImageElement).dataset.filename,loaded:(image as HTMLImageElement).naturalWidth>0})));
+        measurements.push({route,overflow,photos});
         if(!baseline) expect(overflow,`${route} horizontal overflow`).toBe(false);
         await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
+        if (route==='home' && viewport.width < 760 && !baseline) await expect(page.locator('.site-header')).not.toHaveClass(/is-solid/);
         await screenshot(route,true);
         if (route==='contact') {
           const burger=page.locator('.burger');

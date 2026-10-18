@@ -39,6 +39,8 @@ export interface SiteConfig {
   about: { eyebrow: string; heading: string; body: string[]; cta: string; photo: string };
   /** portfolio filter keys; each must match a `cat-` prefix the store sets */
   categories: string[];
+  /** Lead photographs are separate from the gallery and package selections. */
+  portfolioFeaturePhoto: string;
   /** how many frames the home page features under its hero */
   homeGalleryCount: number;
   /** Pinned, ordered filenames for the home strip. See homeStrip below. */
@@ -52,7 +54,7 @@ export interface SiteConfig {
    */
   heroPhoto: string | null;
   /** heading block on the services route, reused by the home page CTA */
-  services: { eyebrow: string; heading: string; cta: string };
+  services: { eyebrow: string; heading: string; cta: string; photo: string };
 }
 
 export interface PricingTier {
@@ -194,62 +196,22 @@ export const SITE: SiteConfig = {
    */
   // Alwin's favourites, 50 frames. All on the portfolio, no category filter.
   categories: ["portrait", "couple", "family", "creative"],
-  // 6, and the count is load-bearing. The strip is 3 columns on desktop and 2
-  // on mobile, so the count has to divide by BOTH. Measured across 6..12 with
-  // the height-aware packer, the only counts with no leftover column at any
-  // viewport are 6 (2/2/2 and 3/3) and 12 (4/4/4 and 6/6).
-  //
-  // I picked 12 first and Alwin's verdict was "too many images on home now",
-  // so 6 is the fix that keeps the columns even without filling the page. 8
-  // and 9 both strand a column and are what created the white hole in the
-  // first place — 8 divides by neither width.
-  //
-  // **HOME IS PINNED** (README → Design invariants). Do not "tidy" this number
-    // or the column count in stripCols() without a deliberate home-route pass.
-  homeGalleryCount: 6,
-
-  /**
-   * The home strip, pinned BY FILENAME and in this exact order.
-   *
-   * Alwin, 2026-10-03: "the 3 images on home page are almost duplicates, we
-   * should fix that, these should be my best shots."
-   *
-   * This was `photos.slice(0, 6)` — the first six frames in gallery order — so
-   * the home page showed whatever the interleave happened to put first. That
-   * produced three shots of the same model in the same black top and pale skirt
-   * against the same green wall (51-img-0145, 52-img-0149, 49-img-0131), which
-   * is what he saw as near-duplicates. They were genuinely different frames;
-   * they read as the same photograph because the pose, the clothing and the
-   * backdrop were identical.
-   *
-   * A strip this short is art direction, not a sample, so it is now named here
-   * where the choice is visible. Ordered so the eye moves between looks rather
-   * than between outfits:
-   *   1. 22-img-0239  colour, gold hour, red hair, movement in the frame
-   *   2. 21-img-0234  B&W, straight to camera, lace — the strongest face here
-   *   3. 18-img-0043  B&W, hand to cheek, outdoors under palms
-   *   4. 26-img-0253  B&W, close, shallow depth against city bokeh
-   *   5. 46-img-0119  colour, arms raised, dark interior
-   *   6. 1-...-0065   wide, the pier — a landscape to break the run of faces
-   *
-   * Three models, five settings, colour and monochrome interleaved rather than
-   * blocked, and no two adjacent frames share a look. Frames missing from the
-   * gallery are skipped rather than shifting the list, so a removed photo
-   * thins the strip instead of silently promoting a duplicate into it.
-   */
+  portfolioFeaturePhoto: "35-img-0482.jpg",
+  // A concise introduction to four different people and settings. The approved
+  // cover has its own subject; none of these frames repeats that shoot.
+  // Four forms one complete desktop row and four substantial mobile slides.
+  homeGalleryCount: 6, // Published admin selections may still use up to six.
   homeStrip: [
-    "22-img-0239.jpg",
-    "21-img-0234.jpg",
-    "18-img-0043.jpg",
-    "26-img-0253.jpg",
+    "5-img-0086.jpg",
+    "37-img-0124.jpg",
+    "2-20240718114526-img-0124.jpg",
     "46-img-0119.jpg",
-    "1-20240718113728-img-0065.jpg",
   ],
   // Pinned deliberately: strongest subject in the set AND real dark space in
   // the lower-left for the white headline. Chosen from a side-by-side of all
   // six landscape frames cropped to the hero ratio.
   heroPhoto: "27-img-0297.jpg",
-  services: { eyebrow: "Photography", heading: "Sessions & pricing.", cta: "View packages" },
+  services: { eyebrow: "Photography", heading: "Sessions & pricing.", cta: "View packages", photo: "22-img-0239.jpg" },
 };
 
 /** Fonts loaded in index.html. Change these to re-skin the type. */

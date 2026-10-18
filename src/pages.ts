@@ -551,15 +551,17 @@ export function portfolioPage(photos: Photo[], expanded = false): string {
     );
   }
 
+  const feature = photos.find(photo => photo.filename === SITE.portfolioFeaturePhoto) ?? ordered[0];
+  const featureCategory = feature ? categoryOf(feature) : "portrait";
   return `<section class="page portfolio" data-mobile-layout="${mobileGallery()}">
     <header class="phead editorial-intro">
       <div class="editorial-intro__copy"><p class="eyebrow eyebrow--rule">Portfolio / Work</p>
       <h1 class="phead__h">Selected<br>stories.</h1>
       <p class="phead__p">Real people, real moments. Work with a focus on character, light and environment.</p>
       <a class="cta" href="./contact.html">Enquire about a session <span aria-hidden="true">→</span></a></div>
-      ${editorialFigure(ordered[0], "editorial-intro__photo portfolio-feature", true)}
+      ${editorialFigure(feature, "editorial-intro__photo portfolio-feature", true)}
       ${motif()}
-      <div class="portfolio-feature__caption"><h2>${escapeHtml(categoryOf(ordered[0]) === "portrait" ? "Portraits" : titleCase(categoryOf(ordered[0])))}</h2><p>Real people, real moments. Work with a focus on character, light and environment.</p></div>
+      <div class="portfolio-feature__caption"><h2>${escapeHtml(featureCategory === "portrait" ? "Portraits" : titleCase(featureCategory))}</h2><p>Real people, real moments. Work with a focus on character, light and environment.</p></div>
     </header>
     <div class="section-label"><h2>Our work.</h2><span>${shown.length} photographs / Gauteng</span></div>
     ${gallery}
@@ -719,9 +721,9 @@ export function homePage(photos: Photo[], _cols: number): string {
   return `<section class="page home" data-mobile-layout="${mobileGallery()}">
     <div class="hero">
       <div class="hero__body">
-        <p class="eyebrow eyebrow--rule">Independent photography / Gauteng, SA</p>
+        <div class="hero__title"><p class="eyebrow eyebrow--rule">Independent photography / Gauteng, SA</p>
         <h1 class="hero__h">Portraits<br>worth<br>keeping.</h1>
-        <span class="hero__cue" aria-hidden="true">Scroll</span>
+        <span class="hero__cue" aria-hidden="true">Scroll</span></div>
         <p class="hero__lede">${escapeHtml(h.lede)}</p>
         <div class="hero__actions"><a class="cta cta--btn" href="./contact.html">Book a session <span aria-hidden="true">→</span></a><a class="cta cta--line" href="./portfolio.html">View work <span aria-hidden="true">→</span></a></div>
       </div>

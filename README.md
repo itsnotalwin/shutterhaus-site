@@ -192,7 +192,7 @@ Apply the publishing migration before deploying the photo manager.
 
 ## Behavior constraints
 
-- Keep the six-photo Home showcase and bundled hero unless deliberately changing
+- Keep the four-photo Home showcase and bundled hero unless deliberately changing
   the Home route. Published admin selections can override the bundled photos.
 - Portfolio has 30 bundled frames in three packed desktop columns and two phone
   columns. Phones initially show ten with an accessible disclosure for the rest.

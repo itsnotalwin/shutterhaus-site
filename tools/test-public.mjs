@@ -342,7 +342,7 @@ test('mobile photo viewer counts only disclosed photos and reveals the return fr
   } finally { dom.window.close(); }
 });
 
-test('pre-rendered editorial Home retains six images and focus across breakpoints', async () => {
+test('pre-rendered editorial Home retains four images and focus across breakpoints', async () => {
   const dom = fixture('https://shutterhausvisuals.co.za/', false, 390);
   const built = new JSDOM(await readFile('dist/index.html', 'utf8'));
   try {
@@ -350,8 +350,8 @@ test('pre-rendered editorial Home retains six images and focus across breakpoint
     w.document.getElementById('app').innerHTML = built.window.document.querySelector('#app').innerHTML;
     w.document.getElementById('app').dataset.route = 'home';
     w.eval(mainBundle.outputFiles[0].text);
-    assert.equal(w.document.querySelectorAll('.hstrip__item').length, 6);
-    assert.equal(w.document.querySelectorAll('.hstrip__item').length, 6);
+    assert.equal(w.document.querySelectorAll('.hstrip__item').length, 4);
+    assert.equal(w.document.querySelectorAll('.hstrip__item').length, 4);
     const frames = [...w.document.querySelectorAll('.hstrip img')].map(im => im.dataset.filename);
     assert.deepEqual(frames, Array.from(w.PublicPages.SITE.homeStrip));
     const grid = w.document.querySelector('.hstrip__grid');
@@ -364,7 +364,7 @@ test('pre-rendered editorial Home retains six images and focus across breakpoint
     frame.focus();
     w.innerWidth = 1440; w.dispatchEvent(new w.Event('resize'));
     await new Promise(resolve => setTimeout(resolve, 120));
-    assert.equal(w.document.querySelectorAll('.hstrip__item').length, 6);
+    assert.equal(w.document.querySelectorAll('.hstrip__item').length, 4);
     assert.equal(w.document.querySelector('.site-header'), header);
     assert.equal(w.document.activeElement.querySelector('img').dataset.filename, filename);
     assert.equal(w.scrollY, 450);

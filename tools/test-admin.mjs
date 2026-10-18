@@ -69,9 +69,11 @@ test('replacement, hidden-photo protection and descriptions survive draft edits'
 
 test('home photo count is guarded and an empty portfolio can be published deliberately',async()=>{
   const dom=await boot();try{
-    const w=dom.window;change(w,'#page-group','strip');click(w,'[data-open-library]');
-    const unused=fixture.photos.find(p=>!fixture.composition.homeStrip.includes(p.filename));
-    click(w,`[data-add="${unused.filename}"]`);
+    const w=dom.window;change(w,'#page-group','strip');
+    const unused=fixture.photos.filter(p=>!fixture.composition.homeStrip.includes(p.filename));
+    for (const photo of unused.slice(0, 7-fixture.composition.homeStrip.length)) {
+      click(w,'[data-open-library]');click(w,`[data-add="${photo.filename}"]`);
+    }
     assert.match(w.document.querySelector('.admin-notice').textContent,/six photos/);
     click(w,'[data-tab="pages"]');change(w,'#page-group','wall');
     for(let i=0;i<30;i++)click(w,'[data-remove="0"]');

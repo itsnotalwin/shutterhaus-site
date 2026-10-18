@@ -165,7 +165,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 .hstrip__subjects{margin-left:auto;order:1;font-size:9px;color:var(--grey)}
 .hstrip__head>a{order:2;min-height:44px;display:flex;align-items:center;gap:18px}
 .hstrip__item:nth-child(n+5){grid-column:span 2;aspect-ratio:2/1}
-.hstrip__item .cell,.hstrip__item picture,.hstrip__item img{width:100%;height:100%;object-fit:cover;object-position:center 28%}
+.hstrip__item .cell,.hstrip__item picture,.hstrip__item img{width:100%;height:100%;object-fit:cover;object-position:center top}
 /* Safari's native button content box does not reliably resolve this nested
    percentage-height chain against an aspect-ratio grid item. Keep the photo
    out of intrinsic button sizing and anchor each layer to the actual frame.
@@ -187,8 +187,12 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 .editorial-intro .brand-motif{max-height:470px;margin:0}
 .editorial-intro .brand-motif img{height:100%;min-height:0;flex:1;object-fit:cover}
 .editorial-intro .brand-motif p{display:none}
-.about-story{display:grid;grid-template-columns:minmax(0,1fr);gap:0;align-items:start;margin-top:48px}
-.about-story__copy{max-width:760px}
+.about-story{margin-top:48px;padding-top:36px;border-top:1px solid var(--line)}
+.about-story__copy{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.1fr);grid-template-areas:"label prose" "name prose" "link prose";grid-template-rows:auto auto 1fr;column-gap:clamp(32px,6vw,96px)}
+.about-story__copy>.eyebrow{grid-area:label}
+.about-story__copy>h2{grid-area:name}
+.about-story__copy>.prose{grid-area:prose;max-width:48ch}
+.about-story__copy>.cta{grid-area:link;justify-self:start;align-self:start}
 .about-story__copy .eyebrow{margin-bottom:24px}
 .about-story__copy h2{font-size:56px;margin:0 0 28px}
 .about-values{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;border-top:1px solid var(--line);margin-top:60px;padding-top:30px}
@@ -248,7 +252,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
  .hero__motif p{display:none}
  .hero__meta{grid-row:7;flex-wrap:wrap;gap:8px;padding-top:14px;font-size:8px}
  .hero__meta-tags{display:none}
- .hstrip{padding-top:44px}.hstrip__head{font-size:9px;margin-bottom:16px}
+ .hstrip{padding-top:44px}.hstrip__head{font-size:10px;margin-bottom:16px}
  .hcta{margin-top:48px;padding-top:32px}
  .hcta__grid{grid-template-columns:1fr;gap:32px;padding:0 24px 32px}
  .page .hcta__h{font-size:52px}.hcta__price{font-size:48px}
@@ -296,7 +300,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
  .page .editorial-intro h1,.page .shead__h{font-size:clamp(58px,15vw,78px);line-height:.92;margin:18px 0 24px}
  .editorial-intro__photo{height:440px;margin:28px 0 0}.about-intro .about__fig{height:auto;margin:28px 0 0}.about-intro .about__fig img{height:auto}
  .editorial-intro__copy>.cta{width:100%;margin-bottom:0}.phead .phead__p,.intro-copy{max-width:34ch}
- .about-story{grid-template-columns:1fr;gap:0;margin-top:36px}.about-story__copy h2{font-size:44px}
+ .about-story{margin-top:36px;padding-top:28px}.about-story__copy{display:block}.about-story__copy h2{font-size:44px}
  .about-values{grid-template-columns:1fr;gap:18px;margin-top:36px}.about-values h2{font-size:34px}
  .shead{display:block;padding:32px 0 36px}.shead__fig{height:350px;aspect-ratio:auto;margin-top:28px}.shead__col>.cta{width:100%}
  .contact{padding-top:32px}.page .contact__h{font-size:clamp(54px,14.8vw,72px);line-height:.95;margin:18px 0 26px}
@@ -310,7 +314,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 @media(max-width:759px){
  .page .contact__h{font-size:clamp(46px,13.2vw,62px);letter-spacing:-.065em}
  .portfolio .editorial-intro__copy .phead__p,.portfolio .editorial-intro__copy>.cta{display:none}
- .portfolio-feature__caption{display:block;padding:24px 14px 0}
+ .portfolio-feature__caption{display:block;padding:24px 0 0}
  .portfolio-feature__caption h2{font-size:34px;margin:0 0 16px}
  .portfolio-feature__caption p{font-size:14px;color:var(--dim);margin:0}
  .portfolio .section-label{display:none}
@@ -339,9 +343,9 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 @media(min-width:1001px) and (max-width:1200px){.logo{width:300px}.page .hero__h{font-size:8.8vw}.hero__lede{font-size:17px}.hero__actions .cta--btn{padding:16px 24px;font-size:11px}.hero__fig picture{height:640px}}
 @media(max-width:759px){
  .hero__actions .cta{font-size:11px;min-height:52px}
- .portfolio .editorial-intro{padding-top:72px}
+ .portfolio .editorial-intro{padding-top:32px}
  .page.portfolio .editorial-intro h1{font-size:clamp(66px,19.5vw,84px);line-height:.94;margin:30px 0}
- .portfolio .portfolio-feature{height:auto;aspect-ratio:.64;margin-top:40px}
+ .portfolio .portfolio-feature{height:auto;aspect-ratio:4/5;margin:28px calc(var(--pad) * -1) 0;width:calc(100% + 2 * var(--pad))}
 }
 @media(min-width:1201px){
  .hero__body{padding:20px 0 0}
@@ -376,10 +380,10 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 
 /* Native dialog retains the full-screen viewer geometry. */
 .lb{width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;color:#fff}.lb::backdrop{background:#0c0c0c}.lb__stage{width:100%;height:100%;padding:0;border:0;background:transparent;color:inherit}
-.package-picker{border:0;padding:0;margin:32px 0 0;display:flex;gap:24px;flex-wrap:wrap}.package-picker legend{font-size:11px;text-transform:uppercase;letter-spacing:.12em;margin-bottom:12px}.package-picker label{display:flex;align-items:center;gap:8px;min-height:44px;font-size:13px;cursor:pointer}.package-picker input{accent-color:#111;width:18px;height:18px}
+.package-picker{border:0;padding:0;margin:0 0 24px;display:flex;gap:24px;flex-wrap:wrap}.package-picker legend{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}.package-picker label{display:flex;align-items:center;gap:8px;min-height:44px;font-size:13px;cursor:pointer}.package-picker input{accent-color:#111;width:18px;height:18px}
 @media(max-width:760px){
  .services:has(#package-starter:checked) .pkg:not([data-package="Starter"]),.services:has(#package-essential:checked) .pkg:not([data-package="Essential"]),.services:has(#package-signature:checked) .pkg:not([data-package="Signature"]),.services:has(#package-social:checked) .pkg:not([data-package="Social"]){display:none}
- .package-picker{gap:4px 18px}
+ .package-picker{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 18px}
 }
 .pf-more__open{display:none}.pf-more[open] .pf-more__closed{display:none}.pf-more[open] .pf-more__open{display:inline}
 @media(min-width:761px){.pkg__fig img{object-position:var(--desktop-focal,var(--focal,50% 50%))}}
@@ -404,11 +408,16 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 @media(max-width:759px){
   :root{--pad:18px}
   .pf-rows{--gut:3px;margin-inline:calc(var(--pad) * -1)}
+  .shead__fig{height:auto;aspect-ratio:4/5;margin-inline:calc(var(--pad) * -1);width:calc(100% + 2 * var(--pad))}
+  .intro-copy,.shead__p,.contact__p,.hero__lede{font-size:15px}
+  .package-picker label{border-bottom:1px solid var(--line)}
+  .package-picker label:has(input:checked){font-weight:600}
 }
 
 /* ==== Mobile overhaul (phones only): full-screen cover + swipe row ====
    No type, colour, theme or photo changes. Desktop is untouched: the new elements are
    hidden above 759px. To revert, delete everything from this comment to the end of the file. */
+.hero__title{display:contents}
 .hero__cue,.hstrip__meter{display:none}
 
 @media(max-width:759px){
@@ -419,36 +428,35 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   .shell--cover .site-header:not(.is-solid) .logo img{filter:invert(1)}
   .shell--cover .site-header:not(.is-solid) .burger__bars i{background:#fff}
 
-  /* Cover: the photo fills the first screen and the headline sits on it.
-     Row 1 is the open photo area, rows 2-4 are eyebrow, headline and scroll cue.
-     --cover-text is their exact height, so the photo is always one screen tall. */
+  /* The cover is a fixed grid row. Its overlaid title sizes naturally so a
+     wrapped label or a mobile safe area never pushes the photo past the screen. */
   .shell--cover .hero{
     --cover-fs:clamp(56px,16.5vw,75px);
-    --cover-text:calc(2.7 * var(--cover-fs) + 102.2px);
     --cover-h:max(100vh,560px);
     display:grid;grid-template-columns:minmax(0,1fr);
-    grid-template-rows:calc(var(--cover-h) - var(--cover-text)) auto auto auto auto auto auto;
+    grid-template-rows:var(--cover-h) auto auto auto;
     gap:0;margin:0 calc(var(--pad) * -1)
   }
   @supports (height:100svh){.shell--cover .hero{--cover-h:max(100svh,560px)}}
   @media(max-width:359px){.shell--cover .hero{--cover-fs:50px}}
 
-  .shell--cover .hero__fig{grid-row:1/5;grid-column:1;position:relative;display:block;margin:0;min-height:0}
+  .shell--cover .hero__fig{grid-row:1;grid-column:1;position:relative;display:block;margin:0;min-height:0}
   .shell--cover .hero__fig picture{position:absolute;inset:0;display:block;height:auto;min-height:0;max-height:none;aspect-ratio:auto}
   .shell--cover .hero__fig picture:after{content:'';position:absolute;left:0;right:0;bottom:0;height:62%;background:linear-gradient(to bottom,rgba(0,0,0,0),rgba(0,0,0,.74));pointer-events:none}
   .shell--cover .hero__fig img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:80% 50%}
 
-  .shell--cover .hero__body .eyebrow{grid-row:2;grid-column:1;position:relative;z-index:2;margin:0 0 18px;padding:0 var(--pad);color:#fff}
+  .shell--cover .hero__title{display:block;grid-row:1;grid-column:1;align-self:end;position:relative;z-index:2;min-width:0;padding:0 var(--pad) calc(30px + var(--sab))}
+  .shell--cover .hero__body .eyebrow{margin:0 0 18px;padding:0;color:#fff}
   .shell--cover .hero__body .eyebrow:before{background:#fff}
-  .shell--cover .page .hero__h{grid-row:3;grid-column:1;position:relative;z-index:2;margin:0;padding:0 var(--pad);font-size:var(--cover-fs);line-height:.9;color:#fff}
-  .shell--cover .hero__cue{display:flex;grid-row:4;grid-column:1;position:relative;z-index:2;align-items:center;gap:12px;margin:26px 0 0;padding:0 var(--pad) 30px;font:500 10px/12px var(--font-body);letter-spacing:.2em;text-transform:uppercase;color:#fff}
+  .shell--cover .page .hero__h{margin:0;padding:0;font-size:var(--cover-fs);line-height:.9;color:#fff}
+  .shell--cover .hero__cue{display:flex;align-items:center;gap:12px;margin:26px 0 0;padding:0;font:500 10px/12px var(--font-body);letter-spacing:.2em;text-transform:uppercase;color:#fff}
   .shell--cover .hero__cue:before{content:'';width:36px;height:1px;background:#fff}
 
   /* The sheet: intro, booking button and the arcs band, edge to edge. */
-  .shell--cover .hero__lede{grid-row:5;grid-column:1;margin:0;padding:36px var(--pad) 0;max-width:calc(36ch + 2 * var(--pad))}
+  .shell--cover .hero__lede{grid-row:2;grid-column:1;margin:0;padding:36px var(--pad) 0;max-width:calc(36ch + 2 * var(--pad))}
   .shell--cover .hero__lede:before{left:var(--pad)}
-  .shell--cover .hero__actions{grid-row:6;grid-column:1;margin:0;padding:26px var(--pad) 0}
-  .shell--cover .hero__motif{grid-row:7;grid-column:1;margin:32px 0 0;padding:0;height:auto;background:transparent}
+  .shell--cover .hero__actions{grid-row:3;grid-column:1;margin:0;padding:26px var(--pad) 0}
+  .shell--cover .hero__motif{grid-row:4;grid-column:1;margin:32px 0 0;padding:0;height:auto;background:transparent}
   .shell--cover .hero__motif picture{aspect-ratio:auto;height:150px}
   .shell--cover .hero__motif picture img{width:100%;height:100%;object-fit:cover;object-position:50% 55%}
 
@@ -462,3 +470,12 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   .hstrip__bar i{position:absolute;left:0;top:0;bottom:0;width:calc(100% / var(--n,1));background:var(--ink);transform:translateX(calc(var(--p,0) * (var(--n,1) - 1) * 100%))}
 }
 @media(max-width:759px) and (prefers-reduced-motion:reduce){.shell--cover .site-header{transition:none}}
+
+/* Tablet footer: give the brand line room and align the contact links below it. */
+@media(min-width:760px) and (max-width:1000px){
+ .site-footer{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px 24px}
+ .site-footer>strong{grid-column:1;grid-row:1;white-space:nowrap}
+ .site-footer>small{grid-column:1;grid-row:2}
+ .site-footer>div{grid-column:2;grid-row:2}
+ .site-footer>img{grid-column:2;grid-row:1;justify-self:end}
+}

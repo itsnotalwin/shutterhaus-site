@@ -106,7 +106,7 @@ export function servicesPage(photos: Photo[] = []): string {
         <p class="shead__p">${escapeHtml(p.intro)}</p>
         <a class="cta" href="./contact.html">Make an enquiry <span aria-hidden="true">→</span></a>
       </div>
-      ${(() => { const shot = photos.find(photo => photo.filename === SITE.homeStrip[0]) ?? shotFor(p.tiers[1], 1); return shot ? `<figure class="shead__fig"><picture>${pictureFor(shot.url, "(max-width: 759px) 100vw, 45vw", shot.width)}<img src="${escapeHtml(bestDerivative(shot.url, "jpg", shot.width))}" alt="${escapeHtml(shot.alt || "")}" loading="eager" decoding="async" /></picture></figure>` : ""; })()}
+      ${(() => { const shot = photos.find(photo => photo.filename === SITE.services.photo) ?? shotFor(p.tiers[1], 1); return shot ? `<figure class="shead__fig"><picture>${pictureFor(shot.url, "(max-width: 759px) 100vw, 45vw", shot.width)}<img src="${escapeHtml(bestDerivative(shot.url, "jpg", shot.width))}" alt="${escapeHtml(shot.alt || "")}" loading="eager" decoding="async" /></picture></figure>` : ""; })()}
       ${motif()}
     </header>
     <div class="section-label"><h2>Choose your session.</h2><span>Packages / ZAR</span></div>

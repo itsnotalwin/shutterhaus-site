@@ -36,9 +36,9 @@ for(const width of [320,390,430,768,1024,1440,1920]) {
 test('real pinned sources, gallery order and package facts survive',async({page})=>{
  await page.goto('/');
  await expect(page.locator('.hero__fig img')).toHaveAttribute('src',/27-img-0297/);
- await expect(page.locator('.hstrip__item')).toHaveCount(6);
+ await expect(page.locator('.hstrip__item')).toHaveCount(4);
  const homeSources=await page.locator('.hstrip__item img').evaluateAll(images=>images.map((el:HTMLImageElement)=>el.dataset.filename));
- expect(new Set(homeSources).size).toBe(6);
+ expect(new Set(homeSources).size).toBe(4);
  await page.goto('/about.html');
  await expect(page.locator('.about__fig img')).toHaveAttribute('src',/55-metal-detector/);
  await page.goto('/portfolio.html');
