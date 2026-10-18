@@ -640,14 +640,15 @@ for (const width of reviewWidths) {
     if (route === 'home') {
       const strip = await evaluate(`(() => {
         const grid = document.querySelector('.hstrip__grid');
-        return { tracks:getComputedStyle(grid).gridTemplateColumns.split(' ').length,
+        return { carousel:getComputedStyle(grid).display==='flex' && getComputedStyle(grid).scrollSnapType.startsWith('x'),
+          tracks:getComputedStyle(grid).gridTemplateColumns.split(' ').length,
           count:grid.querySelectorAll('.hstrip__item').length,
           widths:[...grid.querySelectorAll('.hstrip__item')].filter(frame => frame.getClientRects().length > 0).map(frame => frame.getBoundingClientRect().width),
           width:grid.getBoundingClientRect().width };
       })()`);
       check(`review home ${width}: six showcase images`, strip.count === 6);
-      check(`review home ${width}: correct showcase columns`, strip.tracks === (width < 760 ? 2 : 4));
-      if (width <= 760) check(`review home ${width}: images fit the mobile showcase`, strip.widths.length === 5 && strip.widths.every(frame => frame > 0 && frame <= strip.width));
+      check(`review home ${width}: correct showcase columns`, width < 760 ? strip.carousel : strip.tracks === 4);
+      if (width <= 760) check(`review home ${width}: images fit the mobile showcase`, strip.widths.length === 6 && strip.widths.every(frame => frame > 0 && frame <= strip.width));
     }
     if (route === 'portfolio') {
       const wall = await evaluate(`(() => ({
@@ -680,7 +681,7 @@ for (const width of reviewWidths) {
     if (route === 'home') {
       const firstScreen = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
       writeFileSync(`${OUT}/01-home-${width}-viewport.png`, Buffer.from(firstScreen.result.data, 'base64'));
-      check(`review home ${width}: editorial hero follows the header`, await evaluate(`document.querySelector('.hero').getBoundingClientRect().top >= document.querySelector('.site-header').getBoundingClientRect().bottom`));
+      check(`review home ${width}: ${width < 760 ? 'cover photo fills the first screen under the header' : 'editorial hero follows the header'}`, await evaluate(`(() => { const hero = document.querySelector('.hero').getBoundingClientRect(), bar = document.querySelector('.site-header').getBoundingClientRect(); if (innerWidth >= 760) return hero.top >= bar.bottom; const photo = document.querySelector('.hero__fig').getBoundingClientRect(); return hero.top <= 1 && photo.top <= 1 && photo.height >= innerHeight - 2 && photo.height <= innerHeight + 40; })()`));
       await evaluate(`scrollTo(0, document.querySelector('.hstrip').offsetTop + 80)`);
       await sleep(150);
       const header = await evaluate(`(() => {

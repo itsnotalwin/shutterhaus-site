@@ -103,7 +103,7 @@ let cleanupPage = () => {};
 let refreshGalleryLayout: (() => void) | null = null;
 
 function syncHeader(): void {
-  const header = document.querySelector<HTMLElement>(".shell--over .site-header");
+  const header = document.querySelector<HTMLElement>(".shell--over .site-header, .shell--cover .site-header");
   header?.classList.toggle("is-solid", scrollY > 24 || !!header.querySelector(".site-nav.is-open"));
 }
 
@@ -260,6 +260,23 @@ addEventListener('orientationchange', () => {
   setTimeout(() => refreshGalleryLayout?.(), 250);
 });
 addEventListener('scroll', syncHeader, { passive: true });
+
+// Home "Selected work" is a swipe row on phones. Keep its counter and progress
+// bar in step with the swipe. Scroll events do not bubble, so one capturing
+// listener on the window serves every render of the row and needs no cleanup.
+addEventListener('scroll', (event) => {
+  const row = event.target;
+  if (!(row instanceof HTMLElement) || !row.classList.contains('hstrip__grid')) return;
+  const meter = row.closest('.hstrip')?.querySelector<HTMLElement>('.hstrip__meter');
+  if (!meter) return;
+  const total = row.querySelectorAll('.hstrip__item').length;
+  const span = row.scrollWidth - row.clientWidth;
+  const progress = span > 0 ? Math.min(1, Math.max(0, row.scrollLeft / span)) : 0;
+  const current = total > 1 ? Math.round(progress * (total - 1)) + 1 : 1;
+  meter.style.setProperty('--p', progress.toFixed(3));
+  const count = meter.querySelector('.hstrip__count');
+  if (count) count.textContent = `${String(current).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+}, { capture: true, passive: true });
 
 // Re-paint when the URL changes WITHOUT a document load.
 //

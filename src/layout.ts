@@ -116,12 +116,12 @@ export function header(active: string): string {
 }
 
 /** Shared public header, skip link, landmark and footer. */
-export function renderShell(active: string, body: string, _over = false): string {
+export function renderShell(active: string, body: string, over = false): string {
   // No `is-bw` class. It gated the greyscale filter (styles.css:301) and nothing
   // else: after the filter was removed on 2026-10-02 at Alwin's instruction,
   // the class was emitted on every page and matched no rule. Carrying it
   // suggested a monochrome treatment that no longer exists.
-  return `<div class="shell"><a class="skip-link" href="#main-content">Skip to content</a>${header(active)}<main class="main" id="main-content" tabindex="-1">${body}</main>${footer()}</div>`;
+  return `<div class="shell${over ? " shell--cover" : ""}"><a class="skip-link" href="#main-content">Skip to content</a>${header(active)}<main class="main" id="main-content" tabindex="-1">${body}</main>${footer()}</div>`;
 }
 
 export function motif(className = ""): string {

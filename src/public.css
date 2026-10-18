@@ -400,32 +400,65 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
  .site-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 24px;align-content:start}
 }
 
-/* ==== Mobile visual pass: crops and edge-to-edge only. No type, colour or theme changes. ====
-   Delete everything from this comment to the end of the file to revert. */
+/* ==== Mobile pass, kept from the first round: wider gutters and an edge-to-edge portfolio grid ==== */
 @media(max-width:759px){
-  /* Gutter: 32px -> 18px so content fills the screen (header, pages and footer follow --pad) */
   :root{--pad:18px}
-
-  /* Hero: full-bleed 6:5 frame keeps the whole seated pose (was a 4:5 crop of a landscape photo) */
-  .hero__fig{margin-inline:calc(var(--pad) * -1)}
-  .hero__fig picture{position:relative;aspect-ratio:6/5;height:auto;min-height:0;max-height:none}
-  .hero__fig img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 50%}
-
-  /* Arcs band: edge to edge, 150px tall */
-  .hero__motif{margin-inline:calc(var(--pad) * -1);padding:0}
-  .hero__motif picture{aspect-ratio:auto;height:150px}
-  .hero__motif picture img{width:100%;height:100%;object-fit:cover;object-position:50% 55%}
-
-  /* Selected work: edge-to-edge, 3px gaps. Row 1 = tiles 1-2, row 2 = wide tile (6th), row 3 = tiles 3-4.
-     The 5th tile is hidden on phones. This is tied to the current tile order: the 6th photo is the landscape one. */
-  .hstrip{padding-top:36px}
-  .hstrip__grid{margin-inline:calc(var(--pad) * -1);gap:3px}
-  .hstrip__item img{object-position:50% 24%}
-  .hstrip__item:nth-child(5){display:none}
-  .hstrip__item:nth-child(6){grid-column:1/-1;aspect-ratio:5/3;order:1}
-  .hstrip__item:nth-child(6) img{object-position:50% 35%}
-  .hstrip__item:nth-child(3),.hstrip__item:nth-child(4){order:2}
-
-  /* Portfolio grid: edge-to-edge, 3px gaps (--gut drives both column and row gaps) */
   .pf-rows{--gut:3px;margin-inline:calc(var(--pad) * -1)}
 }
+
+/* ==== Mobile overhaul (phones only): full-screen cover + swipe row ====
+   No type, colour, theme or photo changes. Desktop is untouched: the new elements are
+   hidden above 759px. To revert, delete everything from this comment to the end of the file. */
+.hero__cue,.hstrip__meter{display:none}
+
+@media(max-width:759px){
+  /* Header floats over the cover and turns solid once the page scrolls (main.ts syncHeader). */
+  .shell--cover .site-header{position:fixed;left:0;right:0;top:0;transition:background-color .25s ease}
+  .shell--cover .site-header:not(.is-solid){background:transparent;color:#fff}
+  .shell--cover .site-header:not(.is-solid):before{content:'';position:absolute;left:0;right:0;top:0;bottom:-56px;z-index:-1;pointer-events:none;background:linear-gradient(to bottom,rgba(0,0,0,.6),rgba(0,0,0,.32) 55%,rgba(0,0,0,0))}
+  .shell--cover .site-header:not(.is-solid) .logo img{filter:invert(1)}
+  .shell--cover .site-header:not(.is-solid) .burger__bars i{background:#fff}
+
+  /* Cover: the photo fills the first screen and the headline sits on it.
+     Row 1 is the open photo area, rows 2-4 are eyebrow, headline and scroll cue.
+     --cover-text is their exact height, so the photo is always one screen tall. */
+  .shell--cover .hero{
+    --cover-fs:clamp(56px,16.5vw,75px);
+    --cover-text:calc(2.7 * var(--cover-fs) + 102.2px);
+    --cover-h:max(100vh,560px);
+    display:grid;grid-template-columns:minmax(0,1fr);
+    grid-template-rows:calc(var(--cover-h) - var(--cover-text)) auto auto auto auto auto auto;
+    gap:0;margin:0 calc(var(--pad) * -1)
+  }
+  @supports (height:100svh){.shell--cover .hero{--cover-h:max(100svh,560px)}}
+  @media(max-width:359px){.shell--cover .hero{--cover-fs:50px}}
+
+  .shell--cover .hero__fig{grid-row:1/5;grid-column:1;position:relative;display:block;margin:0;min-height:0}
+  .shell--cover .hero__fig picture{position:absolute;inset:0;display:block;height:auto;min-height:0;max-height:none;aspect-ratio:auto}
+  .shell--cover .hero__fig picture:after{content:'';position:absolute;left:0;right:0;bottom:0;height:62%;background:linear-gradient(to bottom,rgba(0,0,0,0),rgba(0,0,0,.74));pointer-events:none}
+  .shell--cover .hero__fig img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:80% 50%}
+
+  .shell--cover .hero__body .eyebrow{grid-row:2;grid-column:1;position:relative;z-index:2;margin:0 0 18px;padding:0 var(--pad);color:#fff}
+  .shell--cover .hero__body .eyebrow:before{background:#fff}
+  .shell--cover .page .hero__h{grid-row:3;grid-column:1;position:relative;z-index:2;margin:0;padding:0 var(--pad);font-size:var(--cover-fs);line-height:.9;color:#fff}
+  .shell--cover .hero__cue{display:flex;grid-row:4;grid-column:1;position:relative;z-index:2;align-items:center;gap:12px;margin:26px 0 0;padding:0 var(--pad) 30px;font:500 10px/12px var(--font-body);letter-spacing:.2em;text-transform:uppercase;color:#fff}
+  .shell--cover .hero__cue:before{content:'';width:36px;height:1px;background:#fff}
+
+  /* The sheet: intro, booking button and the arcs band, edge to edge. */
+  .shell--cover .hero__lede{grid-row:5;grid-column:1;margin:0;padding:36px var(--pad) 0;max-width:calc(36ch + 2 * var(--pad))}
+  .shell--cover .hero__lede:before{left:var(--pad)}
+  .shell--cover .hero__actions{grid-row:6;grid-column:1;margin:0;padding:26px var(--pad) 0}
+  .shell--cover .hero__motif{grid-row:7;grid-column:1;margin:32px 0 0;padding:0;height:auto;background:transparent}
+  .shell--cover .hero__motif picture{aspect-ratio:auto;height:150px}
+  .shell--cover .hero__motif picture img{width:100%;height:100%;object-fit:cover;object-position:50% 55%}
+
+  /* Selected work: a swipe row of large frames with a counter and progress bar. */
+  .hstrip{padding-top:44px}
+  .hstrip__grid{display:flex;align-items:flex-start;gap:10px;margin:0 calc(var(--pad) * -1);padding:0 var(--pad);overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scroll-padding-inline:var(--pad);scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .hstrip__grid::-webkit-scrollbar{display:none}
+  .hstrip__item,.hstrip__item:nth-child(n+5){flex:0 0 min(78vw,340px);width:min(78vw,340px);height:calc(min(78vw,340px) * 1.25);grid-column:auto;aspect-ratio:4/5;scroll-snap-align:start}
+  .hstrip__meter{display:flex;align-items:center;gap:14px;margin-top:20px;font:500 10px/1 var(--font-body);letter-spacing:.16em;color:var(--ink)}
+  .hstrip__bar{position:relative;flex:1;height:2px;background:var(--line);overflow:hidden}
+  .hstrip__bar i{position:absolute;left:0;top:0;bottom:0;width:calc(100% / var(--n,1));background:var(--ink);transform:translateX(calc(var(--p,0) * (var(--n,1) - 1) * 100%))}
+}
+@media(max-width:759px) and (prefers-reduced-motion:reduce){.shell--cover .site-header{transition:none}}

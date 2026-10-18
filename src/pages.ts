@@ -708,7 +708,7 @@ export function homePage(photos: Photo[], _cols: number): string {
   // browsers take, and it is free. "webp" is requested and the JPEG <source>
   // stays as the real fallback for a browser with no WebP support at all.
   const heroFig = hero
-    ? `<figure class="hero__fig"><picture>${pictureFor(hero.url, "(max-width: 759px) 100vw, 50vw", hero.width)}
+    ? `<figure class="hero__fig"><picture>${pictureFor(hero.url, "(max-width: 759px) 280vw, 50vw", hero.width)}
         <img src="${escapeHtml(bestDerivative(hero.url, "webp", hero.width))}"
              alt="${escapeHtml(hero.alt || hero.filename || "")}"
              loading="eager" decoding="async" fetchpriority="high"
@@ -721,6 +721,7 @@ export function homePage(photos: Photo[], _cols: number): string {
       <div class="hero__body">
         <p class="eyebrow eyebrow--rule">Independent photography / Gauteng, SA</p>
         <h1 class="hero__h">Portraits<br>worth<br>keeping.</h1>
+        <span class="hero__cue" aria-hidden="true">Scroll</span>
         <p class="hero__lede">${escapeHtml(h.lede)}</p>
         <div class="hero__actions"><a class="cta cta--btn" href="./contact.html">Book a session <span aria-hidden="true">→</span></a><a class="cta cta--line" href="./portfolio.html">View work <span aria-hidden="true">→</span></a></div>
       </div>
@@ -735,6 +736,7 @@ export function homePage(photos: Photo[], _cols: number): string {
             return `<section class="hstrip">
             <div class="hstrip__head"><span>Selected work</span><span class="hstrip__subjects">Portraits / Couples / Families / Social</span><a href="./portfolio.html">View all <span aria-hidden="true">→</span></a></div>
             <div class="hstrip__grid">${strip.map(p => `<button type="button" class="photo-trigger hstrip__item" role="button" aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">${figure(p, -1)}</button>`).join("")}</div>
+            <div class="hstrip__meter" aria-hidden="true" style="--n:${strip.length};--p:0"><span class="hstrip__count">01 / ${String(strip.length).padStart(2, "0")}</span><span class="hstrip__bar"><i></i></span></div>
           </section>`;
           })()
         : ""
