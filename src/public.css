@@ -51,7 +51,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 .hstrip__head{display:flex;justify-content:space-between;gap:24px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;align-items:center;margin-bottom:18px}
 .hstrip__head:after{content:'';height:1px;width:80px;background:#aaa;order:0;flex:none}
 .hstrip__head span:last-child{color:var(--grey)}
-.hstrip__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.hstrip__grid{display:grid;grid-template-columns:repeat(var(--showcase-cols,4),minmax(0,1fr));gap:8px}
 .hstrip__col{display:flex;flex-direction:column;gap:var(--gut)}
 .hstrip__item{cursor:zoom-in;aspect-ratio:1;overflow:hidden}
 .photo-trigger{appearance:none;-webkit-appearance:none}

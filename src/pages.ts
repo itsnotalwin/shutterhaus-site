@@ -737,7 +737,7 @@ export function homePage(photos: Photo[], _cols: number): string {
         ? (() => {
             return `<section class="hstrip">
             <div class="hstrip__head"><span>Selected work</span><span class="hstrip__subjects">Portraits / Couples / Families / Social</span><a href="./portfolio.html">View all <span aria-hidden="true">→</span></a></div>
-            <div class="hstrip__grid">${strip.map(p => `<button type="button" class="photo-trigger hstrip__item" role="button" aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">${figure(p, -1)}</button>`).join("")}</div>
+            <div class="hstrip__grid" style="--showcase-cols:${Math.min(4, strip.length)}">${strip.map(p => `<button type="button" class="photo-trigger hstrip__item" role="button" aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">${figure(p, -1)}</button>`).join("")}</div>
             <div class="hstrip__meter" aria-hidden="true" style="--n:${strip.length};--p:0"><span class="hstrip__count">01 / ${String(strip.length).padStart(2, "0")}</span><span class="hstrip__bar"><i></i></span></div>
           </section>`;
           })()
