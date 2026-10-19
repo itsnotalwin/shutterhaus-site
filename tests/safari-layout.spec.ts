@@ -172,10 +172,11 @@ test('393px and 844px safe areas keep menu controls whole and page backgrounds c
         const nav=document.querySelector('.site-nav')!,button=document.querySelector('.burger')!;
         const outer=button.getBoundingClientRect(),r=nav.getBoundingClientRect();
         const lines=[...button.querySelectorAll('.burger__bars i')].map(line=>{const b=line.getBoundingClientRect();return{x:b.x+b.width/2,y:b.y+b.height/2,inside:b.left>=outer.left&&b.right<=outer.right&&b.top>=outer.top&&b.bottom<=outer.bottom};});
-        return {bottom:r.bottom,height:innerHeight,art:getComputedStyle(nav,'::after').content,background:getComputedStyle(document.documentElement).backgroundColor,lines};
+        return {bottom:r.bottom,height:innerHeight,controlVisible:outer.top>=0&&outer.bottom<=innerHeight&&outer.left>=0&&outer.right<=innerWidth,art:getComputedStyle(nav,'::after').content,background:getComputedStyle(document.documentElement).backgroundColor,lines};
       });
       expect(Math.abs(menu.bottom-menu.height)).toBeLessThanOrEqual(1);
       expect(menu.art).toBe('none');expect(menu.background).toBe('rgb(17, 17, 17)');
+      expect(menu.controlVisible,`${route} close button stays in the viewport after scrolling`).toBe(true);
       expect(menu.lines.every(l=>l.inside)).toBe(true);
       expect(Math.abs(menu.lines[0].x-menu.lines[1].x)).toBeLessThan(0.5);
       expect(Math.abs(menu.lines[0].y-menu.lines[1].y)).toBeLessThan(0.5);
