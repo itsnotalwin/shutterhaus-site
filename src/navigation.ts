@@ -10,6 +10,8 @@ export function mountNavigation(syncHeader: () => void): { close: () => void; de
   const scrim = document.createElement("div");
   scrim.className = "nav-scrim";
   scrim.setAttribute("aria-hidden", "true");
+  const theme = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  const pageTheme = theme?.content ?? "#ffffff";
   let open = false;
 
   function set(next: boolean): void {
@@ -23,6 +25,7 @@ export function mountNavigation(syncHeader: () => void): { close: () => void; de
     nav!.inert = mobile.matches && !open;
     if (main) main.inert = open;
     document.body.classList.toggle("nav-open", open);
+    if (theme) theme.content = open ? "#111111" : pageTheme;
     document.documentElement.classList.toggle("nav-locked", open);
     if (open) {
       document.body.appendChild(scrim);

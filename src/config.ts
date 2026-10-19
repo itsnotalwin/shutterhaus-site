@@ -197,10 +197,12 @@ export const SITE: SiteConfig = {
   // Alwin's favourites, 50 frames. All on the portfolio, no category filter.
   categories: ["portrait", "couple", "family", "creative"],
   portfolioFeaturePhoto: "35-img-0482.jpg",
-  // The two Home selections retained at the owner's request.
-  // The cover has its own photograph; admin selections may still hold six.
+  // Four Home selections. The two rejected portraits stay out of this edit;
+  // replacement close-ups sit alongside the retained location portraits.
   homeGalleryCount: 6, // Published admin selections may still use up to six.
   homeStrip: [
+    "19-img-0198-3.jpg",
+    "33-img-0426.jpg",
     "2-20240718114526-img-0124.jpg",
     "46-img-0119.jpg",
   ],

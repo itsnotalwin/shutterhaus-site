@@ -46,6 +46,7 @@ HEAD = """<!doctype html>
          bar. The env() calls are all wrapped in max() against 0px so a
          desktop browser, where these resolve to nothing, is unaffected. -->
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" />
     <title>{title}</title>
     <meta name="description" content="{description}" />
 

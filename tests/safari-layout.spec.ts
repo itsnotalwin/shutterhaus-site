@@ -135,3 +135,54 @@ for (const viewport of viewports) {
     });
   });
 }
+
+// Native browser toolbars are outside Playwright's page surface. Exercise the
+// CSS insets they expose, including the landscape notch and home indicator.
+test('393px and 844px safe areas keep menu controls whole and page backgrounds continuous', async ({page}, testInfo) => {
+  test.skip(baseline, 'Previous CSS is captured without current safe-area assertions');
+  test.setTimeout(120000);
+  const folder=`shots/safari-layout/after/${testInfo.project.name}`;
+  mkdirSync(folder,{recursive:true});
+  const results:unknown[]=[];
+  for(const viewport of [{width:393,height:852},{width:844,height:390}]) {
+    await page.setViewportSize(viewport);
+    for(const route of routes) {
+      await page.goto(route==='home'?'/':`/${route}.html`);
+      await page.evaluate(async portrait=>{
+        const insets={'--sat':portrait?'59px':'0px','--sab':'34px','--sal':portrait?'0px':'44px','--sar':portrait?'0px':'44px'};
+        for(const [name,value] of Object.entries(insets))document.documentElement.style.setProperty(name,value);
+        await document.fonts.ready;
+      },viewport.width<760);
+      await page.evaluate(()=>scrollTo({top:document.documentElement.scrollHeight,behavior:'instant'}));
+      const geometry=await page.evaluate(()=>({
+        rootBottom:getComputedStyle(document.documentElement).paddingBottom,
+        bodyBottom:getComputedStyle(document.body).paddingBottom,
+        bottomGap:document.documentElement.scrollHeight-(document.querySelector('.shell')!.getBoundingClientRect().bottom+scrollY),
+        overflow:document.documentElement.scrollWidth>innerWidth+1,
+      }));
+      expect(geometry.rootBottom).toBe('0px');expect(geometry.bodyBottom).toBe('0px');
+      expect(Math.abs(geometry.bottomGap)).toBeLessThanOrEqual(1);expect(geometry.overflow).toBe(false);
+      await page.screenshot({path:`${folder}/safe-footer-${route}-${viewport.width}.jpg`,type:'jpeg',quality:85,scale:'css'});
+      const button=page.locator('.burger');await button.click();
+      await expect(button).toHaveAttribute('aria-expanded','true');
+      await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content','#111111');
+      // Wait for the line rotation before measuring the final close glyph.
+      await page.waitForTimeout(220);
+      const menu=await page.evaluate(()=>{
+        const nav=document.querySelector('.site-nav')!,button=document.querySelector('.burger')!;
+        const outer=button.getBoundingClientRect(),r=nav.getBoundingClientRect();
+        const lines=[...button.querySelectorAll('.burger__bars i')].map(line=>{const b=line.getBoundingClientRect();return{x:b.x+b.width/2,y:b.y+b.height/2,inside:b.left>=outer.left&&b.right<=outer.right&&b.top>=outer.top&&b.bottom<=outer.bottom};});
+        return {bottom:r.bottom,height:innerHeight,art:getComputedStyle(nav,'::after').content,background:getComputedStyle(document.documentElement).backgroundColor,lines};
+      });
+      expect(Math.abs(menu.bottom-menu.height)).toBeLessThanOrEqual(1);
+      expect(menu.art).toBe('none');expect(menu.background).toBe('rgb(17, 17, 17)');
+      expect(menu.lines.every(l=>l.inside)).toBe(true);
+      expect(Math.abs(menu.lines[0].x-menu.lines[1].x)).toBeLessThan(0.5);
+      expect(Math.abs(menu.lines[0].y-menu.lines[1].y)).toBeLessThan(0.5);
+      await page.screenshot({path:`${folder}/safe-menu-${route}-${viewport.width}.jpg`,type:'jpeg',quality:85,scale:'css'});
+      await button.click();await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content','#ffffff');
+      results.push({route,viewport,geometry,menu});
+    }
+  }
+  writeFileSync(`${folder}/safe-area-geometry.json`,JSON.stringify(results,null,2));
+});
