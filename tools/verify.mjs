@@ -619,11 +619,12 @@ for (const width of reviewWidths) {
       if (width === 1440) check('desktop package prices align', Math.max(...state.priceTops) - Math.min(...state.priceTops) <= 1);
       const framing = await evaluate(`(() => [...document.querySelectorAll('.pkg__fig')].map(fig => {
         const image = fig.querySelector('img'), r = fig.getBoundingClientRect();
-        return { ratio:r.width/r.height, fit:getComputedStyle(image).objectFit, position:getComputedStyle(image).objectPosition };
+        const [a,b=1] = getComputedStyle(fig).aspectRatio.split('/').map(Number);
+        return { ratio:r.height ? r.width/r.height : a/b, natural:image.naturalWidth/image.naturalHeight, fit:getComputedStyle(image).objectFit, position:getComputedStyle(image).objectPosition };
       }))()`);
-      check(`review services ${width}: editorial package image windows`, framing[0].fit === 'contain' && framing[2].fit === 'contain');
+      check(`review services ${width}: landscape photos retain their full frame without bands`, [framing[0],framing[2]].every(fig => fig.fit === 'cover' && Math.abs(fig.ratio - fig.natural) < .01));
       if (width > 760) {
-        check(`review services ${width}: consistent desktop image windows`, framing.every(fig => Math.abs(fig.ratio - 1.25) < .01));
+        check(`review services ${width}: portraits have room for faces and hands`, [framing[1],framing[3]].every(fig => Math.abs(fig.ratio - .8) < .01));
         check(`review services ${width}: Essential preserves the top of the portrait`, framing[1].position === '50% 0%');
         check(`review services ${width}: Social preserves the top of the portrait`, framing[3].position === '50% 0%');
       } else {
