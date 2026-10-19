@@ -392,13 +392,12 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
  .package-picker{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 18px}
 }
 .pf-more__open{display:none}.pf-more[open] .pf-more__closed{display:none}.pf-more[open] .pf-more__open{display:inline}
-@media(min-width:761px){.pkg__fig img{object-position:var(--desktop-focal,var(--focal,50% 50%))}}
-
-/* Production crop review: a 5:4 window keeps complete portrait heads visible.
-   Group/landscape photographs retain their full frame inside the same window. */
-.pkg__fig{height:auto;aspect-ratio:5/4;flex:none;background:var(--ivory)}
+/* Portraits need room for the face, hands and upper body. Landscape photos
+   keep their own frame, without letterbox bands or cropped family members. */
+.pkg__fig{height:auto;aspect-ratio:4/5;flex:none;background:var(--ivory)}
 .pkg__fig img{object-position:50% 0%}
-.pkg__fig--landscape img{object-fit:contain;object-position:center}
+.pkg__fig--landscape{aspect-ratio:var(--photo-ar,16/9)}
+.pkg__fig--landscape img{object-fit:cover;object-position:center}
 /* Decorative art cannot cover links or intercept a tap. */
 .site-nav:after{pointer-events:none}
 @media(max-width:1000px) and (max-height:600px){
