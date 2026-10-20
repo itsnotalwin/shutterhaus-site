@@ -544,7 +544,6 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   .pkg__desc{font-size:14px;min-height:68px}
   .pkg__list{font-size:13px;line-height:1.7}
   .pkg .cta{min-height:48px}
-  .package-picker{display:none}
 
   .about-story{margin-top:64px;padding-top:40px}
   .about-story__copy h2{font-size:52px;letter-spacing:-.04em}
