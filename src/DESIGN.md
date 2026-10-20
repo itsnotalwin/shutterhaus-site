@@ -26,8 +26,10 @@ supports an obvious offer and action; [image-focused design](https://www.nngroup
 supports balancing a strong photograph with navigation and actions. The hero
 remains eager and high priority, following [web.dev LCP guidance](https://web.dev/articles/optimize-lcp).
 
-Capture route `/`, viewport targets 1440×900, 1920×1080 and 390×844; capture date
-2026-10-21. Updated `SCREENSHOT.png` and `SCREENSHOT-MOBILE.png` are pending the CI
-capture pass. The local preview browser remains blocked, so CI and the live
-browser provide actual render evidence. Do not claim visual verification until
-those captures have been inspected.
+Capture route `/`: `SCREENSHOT.png` is the 1440×900 desktop viewport;
+`SCREENSHOT-MOBILE.png` is the full phone page at a 390×844 viewport. Capture date
+2026-10-21, from [rendered CI evidence](https://github.com/itsnotalwin/shutterhaus-site/actions/runs/39505896205).
+All five pages were inspected at desktop and phone sizes; Home was also inspected
+at 1024, 1920 and tablet widths. No additional UI corrections were needed.
+The mechanical detector's one warning is intentional: the hidden photo-viewer
+image has no source until a real selected photograph is opened.

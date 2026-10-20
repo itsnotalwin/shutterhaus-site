@@ -17,9 +17,9 @@ The approved phone cover and swipe gallery remain the responsive baseline.
 The owner explicitly authorized research, implementation and deployment on
 2026-10-21. Preserve the sole main branch and gated deployment workflow.
 
-Validation on 2026-10-20: production build and all 22 public/admin DOM regression
-tests pass. Original CSS is unchanged and every added rule is scoped above
-1000px; the Impeccable mechanical detector reports no findings. Fresh browser
-captures are blocked by the preview browser's `ERR_BLOCKED_BY_CLIENT` response.
-The folder checker still reports missing screenshots and pre-existing folder
-documentation; this pass does not claim repository-wide documentation compliance.
+Validation on 2026-10-21: production build and all 22 public/admin DOM regression
+tests pass, including the visible-caption regression. The seven-width verifier
+checks desktop shell bounds, complete Home artwork and uncropped desktop hero
+presentation. Desktop and mobile captures for all five pages were inspected.
+Current Home screenshots live at the root and in `src/`; see `src/DESIGN.md`.
+Inherited documentation gaps in untouched folders remain separate backfill work.
