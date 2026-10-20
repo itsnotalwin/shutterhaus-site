@@ -65,6 +65,7 @@ export function initLightbox(): () => void {
   box.setAttribute("aria-modal", "true");
   box.setAttribute("aria-label", "Photo viewer");
   box.hidden = true;
+  // The hidden dialog has no image request until show() assigns a real frame.
   box.innerHTML = `<button class="lb__x" type="button" aria-label="Close"><span class="lb__g">×</span><span class="lb__t">Close</span></button>
                    <button class="lb__nav lb__nav--p" type="button" aria-label="Previous"><span class="lb__g">‹</span><span class="lb__t">← Prev</span></button>
                    <img class="lb__img" alt="" />
@@ -103,9 +104,9 @@ export function initLightbox(): () => void {
     img.alt = f.dataset.alt || f.alt;
     const cell = f.closest<HTMLElement>(".pf-cell");
     const totalVisible = frames.length;
-    cap.textContent = cell
-      ? `${pad2(Number(cell.dataset.n))} / ${pad2(totalVisible)}`
-      : (f.dataset.alt ?? "");
+    // Descriptions belong to the image's alt attribute, never a visible caption.
+    const position = cell ? Number(cell.dataset.n) : at + 1;
+    cap.textContent = `${pad2(position)} / ${pad2(totalVisible)}`;
   }
 
   function open(target: HTMLImageElement): void {

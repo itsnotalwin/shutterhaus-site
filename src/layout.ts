@@ -125,7 +125,7 @@ export function renderShell(active: string, body: string, over = false): string 
 }
 
 export function motif(className = ""): string {
-  return `<aside class="brand-motif ${className}" aria-hidden="true"><picture><source media="(max-width: 759px)" srcset="./brand/editorial-arcs-horizontal.webp" /><img src="./brand/editorial-arcs-vertical.webp" width="378" height="1040" alt="" /></picture><p>People<br>Places<br>Stories</p></aside>`;
+  return `<aside class="brand-motif ${className}" aria-hidden="true"><picture><source media="(max-width: 1000px)" srcset="./brand/editorial-arcs-horizontal.webp" /><img src="./brand/editorial-arcs-vertical.webp" width="378" height="1040" alt="" /></picture><p>People<br>Places<br>Stories</p></aside>`;
 }
 
 function footer(): string {

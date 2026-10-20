@@ -686,6 +686,13 @@ for (const width of reviewWidths) {
     const name = `${String(index + 1).padStart(2, "0")}-${route}-${width}.png`;
     writeFileSync(`${OUT}/${name}`, Buffer.from(capture.result.data, "base64"));
     if (route === 'home') {
+      const artwork = await evaluate(`(() => {
+        const frame=document.querySelector('.hero__motif'), image=frame.querySelector('img');
+        const rect=frame.getBoundingClientRect();
+        return {visible:rect.width>0&&rect.height>0, fits:rect.left>=-1&&rect.right<=document.documentElement.clientWidth+1, fit:getComputedStyle(image).objectFit, source:image.currentSrc};
+      })()`);
+      check(`review home ${width}: complete brand artwork stays visible and fits`, artwork.visible && artwork.fits && artwork.fit === 'contain', JSON.stringify(artwork));
+      if (width>1000) check(`review home ${width}: hero preserves the photograph`, await evaluate(`getComputedStyle(document.querySelector('.hero__fig img')).objectFit==='contain'`));
       const firstScreen = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
       writeFileSync(`${OUT}/01-home-${width}-viewport.png`, Buffer.from(firstScreen.result.data, 'base64'));
       check(`review home ${width}: ${width < 760 ? 'cover photo fills the first screen under the header' : 'editorial hero follows the header'}`, await evaluate(`(() => { const hero = document.querySelector('.hero').getBoundingClientRect(), bar = document.querySelector('.site-header').getBoundingClientRect(); if (innerWidth >= 760) return hero.top >= bar.bottom; const photo = document.querySelector('.hero__fig').getBoundingClientRect(); return hero.top <= 1 && photo.top <= 1 && photo.height >= innerHeight - 2 && photo.height <= innerHeight + 40; })()`));

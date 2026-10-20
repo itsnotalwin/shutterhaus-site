@@ -162,6 +162,13 @@ test("native home photo buttons open the modal, trap focus, and restore focus", 
     frame.click();
     const box = w.document.querySelector(".lb");
     assert.equal(box.hidden, false);
+    const photo = box.querySelector('.lb__img');
+    assert.equal(photo.alt, frame.querySelector('img').alt);
+    assert.equal(box.querySelector('.lb__cap').textContent, '01 / 04');
+    assert.equal(box.querySelector('.lb__cap').textContent.includes(photo.alt), false);
+    w.document.dispatchEvent(new w.KeyboardEvent('keydown', {key:'ArrowRight', bubbles:true}));
+    assert.equal(box.querySelector('.lb__cap').textContent, '02 / 04');
+    assert.ok(photo.alt.length > 0);
     assert.equal(w.document.getElementById("app").inert, true);
     assert.equal(w.document.activeElement.className, "lb__x");
     w.document.activeElement.dispatchEvent(new w.KeyboardEvent("keydown", { key: "Tab", shiftKey: true, bubbles: true, cancelable: true }));

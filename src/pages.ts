@@ -710,7 +710,7 @@ export function homePage(photos: Photo[], _cols: number): string {
   // browsers take, and it is free. "webp" is requested and the JPEG <source>
   // stays as the real fallback for a browser with no WebP support at all.
   const heroFig = hero
-    ? `<figure class="hero__fig"><picture>${pictureFor(hero.url, "(max-width: 759px) 280vw, 50vw", hero.width)}
+    ? `<figure class="hero__fig" style="--hero-ratio:${hero.width ?? 2400}/${hero.height ?? 1866}"><picture>${pictureFor(hero.url, "(max-width: 759px) 280vw, (max-width: 1000px) 56vw, (min-width: 1920px) 980px, 54vw", hero.width)}
         <img src="${escapeHtml(bestDerivative(hero.url, "webp", hero.width))}"
              alt="${escapeHtml(hero.alt || hero.filename || "")}"
              loading="eager" decoding="async" fetchpriority="high"
