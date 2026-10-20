@@ -329,7 +329,7 @@ check("monochrome reference presentation", info.imageFilters.some(f => /grayscal
 // other figure must stay uncropped.
 check("cover crops stay inside hero and selected-work slots", info.coverCrops.every(c => ["hero__fig", "hstrip__item", "photo-trigger"].includes(c)),
   info.coverCrops.join(", ") || "none");
-check("warm-white page stage", info.bodyBg === "rgb(247, 246, 243)", info.bodyBg);
+check("white page stage without grey outer bars", info.bodyBg === "rgb(255, 255, 255)", info.bodyBg);
 check("active nav is indicated", await evaluate(`document.querySelector('.nav-link.is-active')?.getAttribute('aria-current') === 'page'`));
 check("nav text size", parseFloat(info.navSize) >= 10, info.navSize);
 check("no broken images", info.broken === 0, String(info.broken));
@@ -596,6 +596,11 @@ for (const width of reviewWidths) {
       heading: document.querySelector('main h1')?.textContent,
       broken: [...document.querySelectorAll('main img')].filter(img => !img.naturalWidth).length,
       overflow: document.documentElement.scrollWidth - innerWidth,
+      desktopFrameFits: innerWidth <= 1000 || (() => {
+        const shell = document.querySelector('.shell').getBoundingClientRect();
+        return Math.abs(shell.left) <= 1 && Math.abs(shell.right - document.documentElement.clientWidth) <= 1 &&
+          getComputedStyle(document.body).backgroundColor === 'rgb(255, 255, 255)';
+      })(),
       headingsFit: [...document.querySelectorAll('main h1, main h2')].every(heading => heading.scrollWidth <= heading.clientWidth + 1),
       fontsLoaded: ['Inter', 'Bodoni Moda'].every(family => [...document.fonts].some(face => face.family.replace(/["']/g, '') === family && face.status === 'loaded')),
       priceTops: [...document.querySelectorAll('.pkg__price')].map(price => price.getBoundingClientRect().top),
@@ -611,6 +616,7 @@ for (const width of reviewWidths) {
     check(`review ${route} ${width}: page loaded`, !!state.heading, state.heading);
     check(`review ${route} ${width}: no broken images`, state.broken === 0, state.broken);
     check(`review ${route} ${width}: no overflow`, state.overflow <= 0, state.overflow);
+    if (width > 1000) check(`review ${route} ${width}: full-width white desktop frame`, state.desktopFrameFits);
     check(`review ${route} ${width}: headings fit`, state.headingsFit);
     check(`review ${route} ${width}: local fonts loaded`, state.fontsLoaded);
     check(`review ${route} ${width}: booking band fits`, state.bandFits);
