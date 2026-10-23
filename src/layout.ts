@@ -124,8 +124,9 @@ export function renderShell(active: string, body: string, over = false): string 
   return `<div class="shell${over ? " shell--cover" : ""}"><a class="skip-link" href="#main-content">Skip to content</a>${header(active)}<main class="main" id="main-content" tabindex="-1">${body}</main>${footer()}</div>`;
 }
 
-export function motif(className = ""): string {
-  return `<aside class="brand-motif ${className}" aria-hidden="true"><picture><source media="(max-width: 1000px)" srcset="./brand/editorial-arcs-horizontal.webp" /><img src="./brand/editorial-arcs-vertical.webp" width="378" height="1040" alt="" /></picture><p>People<br>Places<br>Stories</p></aside>`;
+export function motif(className = "", orientation: "responsive" | "horizontal" = "responsive"): string {
+  const horizontal = orientation === "horizontal";
+  return `<aside class="brand-motif ${className}" aria-hidden="true"><picture><source media="(max-width: 1000px)" srcset="./brand/editorial-arcs-horizontal.webp" /><img src="./brand/editorial-arcs-${horizontal ? "horizontal" : "vertical"}.webp" width="${horizontal ? 1010 : 378}" height="${horizontal ? 389 : 1040}" alt="" /></picture><p>People<br>Places<br>Stories</p></aside>`;
 }
 
 function footer(): string {

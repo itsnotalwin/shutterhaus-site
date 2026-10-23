@@ -722,13 +722,13 @@ export function homePage(photos: Photo[], _cols: number): string {
     <div class="hero">
       <div class="hero__body">
         <div class="hero__title"><p class="eyebrow eyebrow--rule">Independent photography / Gauteng, SA</p>
-        <h1 class="hero__h">Portraits<br>worth<br>keeping.</h1>
+        <h1 class="hero__h">Portraits<br>worth<br class="hero__break"> keeping.</h1>
         <span class="hero__cue" aria-hidden="true">Scroll</span></div>
         <p class="hero__lede">${escapeHtml(h.lede)}</p>
         <div class="hero__actions"><a class="cta cta--btn" href="./contact.html">Book a session <span aria-hidden="true">→</span></a><a class="cta cta--line" href="./portfolio.html">View work <span aria-hidden="true">→</span></a></div>
       </div>
       ${heroFig}
-      ${motif("hero__motif")}
+      ${motif("hero__motif", "horizontal")}
 
     </div>
 

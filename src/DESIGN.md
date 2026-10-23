@@ -2,20 +2,27 @@
 
 White editorial pages, Bodoni Moda headings, Inter body/UI, monochrome portfolio
 photography and the existing geometric artwork. Desktop uses a full-width white
-shell with fluid 32–56px gutters and content bounded only above 1920px. This
-removes the former grey outer bars. A compact 96px header and aligned copy, photo
-and artwork columns establish the grid. The hero headline tops out at 112px with gentler tracking;
-the photograph uses its intrinsic aspect ratio, contained without a desktop crop,
-and stays below 760px tall. Supporting copy stays around 34 characters per
-line. Selected work uses portrait frames and 16px gaps. Inner-page introductions
-share a fluid 440–600px photo height. Session cards retain all four packages and facts.
+shell with fluid 32–56px gutters and content bounded only above 1920px. The
+compact 96px header remains the navigation baseline.
 
-The desktop hero uses a .95/1.7/.4 grid, giving photography more of the horizontal
-space. The complete vertical artwork shares the hero's available height, with
-the existing small brand line below it. Phones retain their fullscreen cover,
-typography, navigation and touch gallery. The horizontal artwork keeps its native
-1010/389 ratio; tablets now show it too. Viewer captions display position counts;
-descriptive image alt remains available to assistive technology.
+The Home desktop hero has two columns, split .43/.57 with 48px between them
+(32px at compact desktop widths). The complete photograph leads the right
+column, uses its intrinsic aspect ratio and stays below 760px tall. The left
+column groups a two-line “Portraits / worth keeping.” heading, supporting copy
+and booking controls. The display scale runs from 56px to 96px. The actual
+horizontal artwork sits below that group with the small People / Places /
+Stories line beside it; it no longer competes with the photograph as a tall
+third column. Artwork remains complete at its native 1010/389 ratio. The
+`motif` renderer accepts a horizontal variant for Home only; inner pages retain
+their responsive artwork selection. The existing heading break returns below
+1001px, retaining the approved three-line phone cover and tablet heading.
+
+Phones retain their fullscreen cover, typography, navigation and touch gallery.
+The phone/tablet CSS preceding the desktop block is unchanged. Selected work
+uses four portrait frames with 16px desktop gaps. Inner-page introductions share
+a fluid 440–600px photo height. Session cards retain all four packages and facts.
+Viewer captions display position counts; descriptive image alt remains
+available to assistive technology.
 
 Hero asset `27-img-0297.jpg` was verified against the published composition and
 live browser on 2026-10-21; the preview and live selection match. Different crops
@@ -52,3 +59,9 @@ corrections are checked by the same gated workflow before publication. Local
 Chromium is absent and the cloud browser cannot access the local preview;
 rendered CI evidence and live public inspection provide visual verification.
 Inherited documentation gaps in untouched folders remain separate backfill work.
+
+Hero follow-up, 2026-10-23: the owner identified the Home hero as still needing
+work after the broader desktop pass. The current implementation replaces the
+crowded three-column hero with the composition described above. The earlier
+Home captures listed above document the preceding release; new captures and
+rendered breakpoint verification will be recorded after the gated build.

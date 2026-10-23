@@ -31,3 +31,10 @@ the existing gated CI provides rendered browser verification. Release 9dce8cf
 passed the seven-width public verifier and both browser engines; root and `src/`
 captures now show the reviewed 23 October build. The final inner-page corrections
 use the same gated workflow. Phone/tablet CSS remains byte-for-byte unchanged.
+
+2026-10-23 hero follow-up: the owner requested a stronger Home hero after the
+broader desktop pass. The hero now pairs a two-line headline and booking group
+with the complete photograph; the actual horizontal artwork anchors the left
+column. Desktop-only CSS controls the structural change. Preserve the phone
+cover and the published hero selection. Gated rendered checks follow the local
+build and DOM regressions.

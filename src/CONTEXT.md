@@ -19,3 +19,9 @@ Desktop refinements use the existing `min-width:1001px` block: proportionate
 inner-page artwork, an intrinsic About portrait, subgrid package comparison rows,
 and a two-column Contact name/email row. Keep the natural photo ratios and the
 eight package content rows together. Phone/tablet CSS remains unchanged.
+
+The Home desktop hero now uses two columns: copy and horizontal brand artwork on
+the left, full-frame photograph on the right. `pages.ts` marks the second heading
+break for desktop removal and requests the horizontal `motif` variant from
+`layout.ts`. The default motif used by inner pages remains responsive. Keep the
+phone's existing three-line heading and cover layout.

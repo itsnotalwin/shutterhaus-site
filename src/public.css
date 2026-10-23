@@ -502,23 +502,27 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   .site-nav .nav-link{font-size:11px;letter-spacing:.12em}
   .header-book{min-height:48px;padding:14px 22px;font-size:10px;gap:20px}
 
-  .hero{grid-template-columns:minmax(0,.95fr) minmax(0,1.7fr) minmax(100px,.4fr);gap:24px;margin-top:32px;align-items:center}
-  .hero__body{padding:0;justify-content:center}
-  .hero__body .eyebrow{position:static;font-size:10px;letter-spacing:.14em;line-height:1.7;margin-bottom:22px}
+  /* A single portrait leads the right column. The text and complete, native
+     horizontal artwork form one quieter editorial column beside it. */
+  .hero{grid-template-columns:minmax(0,.43fr) minmax(0,.57fr);grid-template-rows:1fr auto;gap:32px 48px;margin-top:32px;align-items:center}
+  .hero__body{grid-column:1;grid-row:1;padding:0;justify-content:center;align-self:center}
+  .hero__body .eyebrow{position:static;font-size:10px;letter-spacing:.14em;line-height:1.7;margin-bottom:24px}
   .hero__body .eyebrow:before{width:24px}
-  .page .hero__h{font-size:clamp(76px,7.2vw,112px);line-height:.95;letter-spacing:-.04em;margin-bottom:24px}
-  .hero__lede{font-size:16px;line-height:1.7;max-width:34ch;padding-top:16px;margin-bottom:24px}
-  .hero__lede:before{width:40px}
+  .page .hero__h{font-size:clamp(56px,5.35vw,96px);line-height:1.04;letter-spacing:-.04em;margin-bottom:24px}
+  .hero__break{display:none}
+  .hero__lede{font-size:16px;line-height:1.75;max-width:34ch;padding-top:0;margin-bottom:28px}
+  .hero__lede:before{display:none}
   .hero__actions{gap:24px}
   .hero__actions .cta--btn{min-height:50px;padding:15px 24px;font-size:10px;gap:20px}
   .hero__actions .cta--line{font-size:10px;gap:12px}
   .hero__actions .cta--line:after{width:28px}
-  .hero__fig picture{height:auto;aspect-ratio:var(--hero-ratio,2400/1866);max-height:min(760px,calc(100svh - 176px))}
+  .hero__fig{grid-column:2;grid-row:1/span 2;justify-content:center;align-self:stretch}
+  .hero__fig picture{height:auto;aspect-ratio:var(--hero-ratio,2400/1866);max-height:min(760px,calc(100svh - 176px));background:transparent}
   .hero__fig img{object-fit:contain;object-position:center}
-  .hero__motif{display:flex;align-self:stretch;flex-direction:column;justify-content:space-between;gap:20px;padding:0}
-  .hero__motif picture{aspect-ratio:auto;flex:1;height:0;min-height:0}
-  .hero__motif picture img{height:100%;object-fit:contain;object-position:center top}
-  .hero__motif p{position:static;width:auto;min-height:0;padding:12px 0 12px 16px;margin:0;font-size:9px;letter-spacing:.16em}
+  .hero__motif{grid-column:1;grid-row:2;display:flex;align-self:end;flex-direction:row;align-items:center;justify-content:flex-start;gap:24px;padding:0}
+  .hero__motif picture{width:clamp(184px,18vw,280px);aspect-ratio:1010/389;flex:none;height:auto;min-height:0}
+  .hero__motif picture img{height:100%;object-fit:contain;object-position:center}
+  .hero__motif p{position:static;width:auto;min-height:0;padding:4px 0 4px 20px;margin:0;font-size:9px;letter-spacing:.16em}
 
   .hstrip{padding-top:72px}
   .hstrip__head{font-size:11px;margin-bottom:24px}
@@ -600,9 +604,8 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   .logo{width:290px}
   .site-nav{gap:20px}
   .header-book{padding-inline:16px;gap:12px}
-  .hero,.phead.editorial-intro,.editorial-intro,.shead{gap:24px}
-  .hero{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) 110px}
-  .page .hero__h{font-size:clamp(64px,6.7vw,80px)}
+  .phead.editorial-intro,.editorial-intro,.shead{gap:24px}
+  .hero{column-gap:32px}
   .hero__actions{gap:18px}
   .hero__actions .cta--btn{padding-inline:18px;gap:12px}
   .hero__actions .cta--line:after{display:none}
