@@ -1,27 +1,19 @@
 # Source context
 
-Owns public rendering, image presentation, navigation, enquiry interactions and
-the separate photo manager. `main.ts` loads shared `styles.css` then public-only
-`public.css`; admin uses `admin.css`. `pages.ts`, `pages-more.ts` and `layout.ts`
-generate page content; `pricing.json` supplies approved package facts.
+Owns public rendering, image presentation, navigation, enquiries and the separate
+photo manager. `main.ts` loads shared `styles.css` then public-only `public.css`;
+admin uses `admin.css`. `pages.ts`, `pages-more.ts` and `layout.ts` render content;
+`pricing.json` supplies approved package facts.
 
-Preserve actual portfolio assets, gallery ordering, focal points, image ratios,
-package terms and form behavior. Desktop hero composition lives in `public.css`
-under `min-width:1001px`, with its photo ratio supplied by `pages.ts`. Phone cover
-styles stay intact; the artwork band preserves its intrinsic ratio and tablets
-also show the horizontal artwork. `lightbox.ts` keeps descriptions in image alt
-attributes and shows position counters instead of visible description captions.
-Regenerate static HTML with `npm run pages`, then run `npm run build` and
-`npm test`. Visually inspect all five public routes and the mobile cover before
-publishing. See `DESIGN.md` for composition and current capture evidence.
+Preserve published photo choices, gallery order, focal points, natural ratios,
+package terms and enquiry behavior. Desktop rules start at `min-width:1001px`.
+Home uses two columns: copy and horizontal brand artwork on the left, complete
+photograph on the right. `pages.ts` marks the second heading break for desktop
+removal and requests the horizontal `motif` variant from `layout.ts`; inner
+pages retain the default responsive artwork. Phones keep the approved cover,
+three-line heading, horizontal artwork band and swipe gallery. Desktop packages
+share eight comparison rows; Contact uses a compact Name/Email row.
 
-Desktop refinements use the existing `min-width:1001px` block: proportionate
-inner-page artwork, an intrinsic About portrait, subgrid package comparison rows,
-and a two-column Contact name/email row. Keep the natural photo ratios and the
-eight package content rows together. Phone/tablet CSS remains unchanged.
-
-The Home desktop hero now uses two columns: copy and horizontal brand artwork on
-the left, full-frame photograph on the right. `pages.ts` marks the second heading
-break for desktop removal and requests the horizontal `motif` variant from
-`layout.ts`. The default motif used by inner pages remains responsive. Keep the
-phone's existing three-line heading and cover layout.
+Regenerate static HTML with `npm run pages`; run `npm run build` and `npm test`.
+Use the existing gated browser checks and inspect actual rendered captures.
+See `DESIGN.md` for current composition, evidence and remaining inherited gaps.

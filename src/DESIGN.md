@@ -33,12 +33,14 @@ supports an obvious offer and action; [image-focused design](https://www.nngroup
 supports balancing a strong photograph with navigation and actions. The hero
 remains eager and high priority, following [web.dev LCP guidance](https://web.dev/articles/optimize-lcp).
 
-Capture route `/`: `SCREENSHOT.png` is the 1440×900 desktop viewport;
-`SCREENSHOT-MOBILE.png` is the full phone page at a 390×844 viewport. Capture date
-2026-10-23, from [rendered CI evidence](https://github.com/itsnotalwin/shutterhaus-site/actions/runs/39977888626).
-The captured Home and phone presentation is unchanged by the final inner-page
-artwork-height and Sessions headline-wrap corrections. Desktop and phone views
-of all five public routes were inspected, plus Home at 1920px and About at 1024px.
+Capture route `/`, date 2026-10-23, UI commit `3654d2e`: `SCREENSHOT.png` is the
+1440×900 desktop viewport; `SCREENSHOT-MOBILE.png` is the full phone page at
+viewport 390×844. These are genuine captures from [run 39988308443](https://github.com/itsnotalwin/shutterhaus-site/actions/runs/39988308443).
+The mobile PNG is byte-identical to the preceding reviewed capture, and the
+393px browser comparison is pixel-identical before and after. Home was also
+visually inspected at 1024px, 1920px and in the live desktop browser. The full
+photograph, two-line desktop heading, complete artwork and absence of horizontal
+overflow were confirmed. Header, gallery and inner-page rules remain intact.
 
 Desktop refinement, 2026-10-23: the five live public pages were visually reviewed.
 Inner-page artwork now occupies a proportionate column and centers alongside
@@ -51,17 +53,17 @@ borders; on viewports at least 800px tall its enquiry panel stays in view while
 reading the left column. Footer text is slightly larger. All changes are scoped
 to widths above 1000px; the approved phone/tablet rules remain intact.
 
-Validation: production build and 22 DOM interaction tests pass; the mechanical
-CSS scan has no findings. Release 9dce8cf passed the seven-width public verifier,
-public/admin controls and both Chromium and WebKit photo-layout jobs. Current
-root/source captures replace the 21 October images. The final inner-page
-corrections are checked by the same gated workflow before publication. Local
-Chromium is absent and the cloud browser cannot access the local preview;
+Validation: production build and all 22 DOM interaction tests pass. The CSS
+mechanical scan reports no findings. Run 39988308443 passed the seven-width
+public verifier, public/admin controls, Chromium and WebKit photo-layout jobs,
+GitHub Pages deployment with release-SHA confirmation and live Safari scrolling.
+Local Chromium is absent and the cloud browser cannot access the local preview;
 rendered CI evidence and live public inspection provide visual verification.
-Inherited documentation gaps in untouched folders remain separate backfill work.
+The evidence commit changes documentation and captures only. Inherited folder
+context gaps outside this visual scope remain separate backfill work.
 
 Hero follow-up, 2026-10-23: the owner identified the Home hero as still needing
-work after the broader desktop pass. The current implementation replaces the
-crowded three-column hero with the composition described above. The earlier
-Home captures listed above document the preceding release; new captures and
-rendered breakpoint verification will be recorded after the gated build.
+work after the broader desktop pass. This composition supersedes that pass's
+three-column hero and 112px heading cap; it does not imply owner approval of the
+new result. Preserve the current photograph selection and successful phone
+cover in later refinements.

@@ -2,20 +2,19 @@
 
 The approved theme is a white editorial frame, Bodoni Moda display type, Inter
 body/UI, monochrome portfolio photography and the supplied geometric artwork.
-Generated HTML lives at the root; author rendering and styles in `src/` and
-regenerate with `npm run build`. Keep the public pages, static fallback and
-hydrated interface visually aligned. The mobile cover and navigation remain the
-baseline; the desktop Home hero pairs the full photo with a two-line heading and clear
-booking path. The complete horizontal artwork grounds the text column. See `src/DESIGN.md` for responsive details.
+Generate the root HTML from `src/`; keep the static and hydrated pages aligned.
 
-Actual capture route `/`, capture date 2026-10-23: `SCREENSHOT.png` at viewport
-1440×900; `SCREENSHOT-MOBILE.png` is a full-page capture at viewport 390×844.
-Both come from the reviewed CI build in run 39977888626. Subsequent corrections
-only constrain the inner-page artwork height and Sessions headline wrapping;
-the captured Home and phone presentation is unchanged. Desktop package details
-share comparison rows; Contact uses a compact name/email row and clearer fields.
+The desktop Home hero uses two columns: a two-line headline, support copy,
+booking controls and complete horizontal artwork on the left; the full
+photograph on the right. White space separates these groups without a competing
+tall artwork column. The mobile cover, three-line heading and swipe gallery
+remain the responsive baseline. See `src/DESIGN.md` for implementation details.
 
-Home hero follow-up, 2026-10-23: two desktop columns replace the tall three-column
-composition. The heading, support copy and controls form a quieter group; the
-existing horizontal artwork sits beneath it. The previous captures above are
-retained until the new build supplies current desktop and phone evidence.
+Actual capture route `/`, date 2026-10-23, UI commit `3654d2e`:
+`SCREENSHOT.png` is the 1440×900 viewport; `SCREENSHOT-MOBILE.png` is a full-page
+capture at viewport 390×844. Both come from [run 39988308443](https://github.com/itsnotalwin/shutterhaus-site/actions/runs/39988308443).
+The mobile PNG is byte-identical to the preceding reviewed capture. Desktop was
+also inspected at 1024px, 1920px and in the live browser. Build, 22 DOM tests,
+seven-width layout/control verification, Chromium and WebKit photo checks,
+deployment and live Safari scrolling all passed. Inner-page layouts and package
+alignment from the preceding desktop pass remain intact.

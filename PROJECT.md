@@ -38,3 +38,10 @@ with the complete photograph; the actual horizontal artwork anchors the left
 column. Desktop-only CSS controls the structural change. Preserve the phone
 cover and the published hero selection. Gated rendered checks follow the local
 build and DOM regressions.
+
+Hero validation: UI commit `3654d2e` and run 39988308443 passed all build,
+interaction, seven-width layout, Chromium, WebKit, deployment and live Safari
+checks. New root/source desktop captures show the two-column hero. The phone
+capture matches the preceding PNG byte for byte. The live desktop hero was
+independently inspected. The evidence follow-up changes documentation and
+screenshots only; it does not change the verified UI.
