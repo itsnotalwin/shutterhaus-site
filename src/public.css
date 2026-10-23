@@ -492,7 +492,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 /* Desktop composition. Keep phone/tablet rules above intact: the cover,
    swipe gallery and compact navigation retain their approved presentation. */
 @media(min-width:1001px){
-  :root{--head:96px;--pad:clamp(32px,3.6vw,56px);--gut:20px}
+  :root{--head:96px;--pad:clamp(32px,3.6vw,56px);--gut:20px;--intro-height:clamp(440px,37vw,600px)}
   body{background:var(--paper)}
   .shell{max-width:none;width:100%}
   .main,.site-header{max-width:1920px;width:100%;margin-inline:auto}
@@ -506,7 +506,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   .hero__body{padding:0;justify-content:center}
   .hero__body .eyebrow{position:static;font-size:10px;letter-spacing:.14em;line-height:1.7;margin-bottom:22px}
   .hero__body .eyebrow:before{width:24px}
-  .page .hero__h{font-size:clamp(76px,7.2vw,120px);line-height:.95;letter-spacing:-.04em;margin-bottom:24px}
+  .page .hero__h{font-size:clamp(76px,7.2vw,112px);line-height:.95;letter-spacing:-.04em;margin-bottom:24px}
   .hero__lede{font-size:16px;line-height:1.7;max-width:34ch;padding-top:16px;margin-bottom:24px}
   .hero__lede:before{width:40px}
   .hero__actions{gap:24px}
@@ -527,13 +527,19 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   .hstrip__grid{gap:16px}
   .hstrip__item{aspect-ratio:4/5}
 
-  .phead.editorial-intro,.editorial-intro,.shead{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) minmax(72px,.2fr);gap:28px;padding-top:40px;margin-bottom:56px}
+  .phead.editorial-intro,.editorial-intro,.shead{grid-template-columns:minmax(0,1.1fr) minmax(0,1.5fr) minmax(88px,.4fr);gap:28px;padding-top:40px;margin-bottom:56px}
   .shead{padding-bottom:0}
-  .page .editorial-intro h1,.page .shead__h{font-size:clamp(64px,5.8vw,84px);line-height:1;letter-spacing:-.04em;margin:24px 0}
+  .page .editorial-intro h1,.page .shead__h{font-size:clamp(60px,5.45vw,88px);line-height:1;letter-spacing:-.04em;margin:24px 0}
   .phead .phead__p,.intro-copy,.shead__p{font-size:15px;line-height:1.75;max-width:34ch;margin-bottom:28px}
-  .editorial-intro__photo,.about-intro .about__fig,.shead__fig{height:500px}
-  .editorial-intro .brand-motif,.shead .brand-motif{max-height:500px;padding-top:24px}
-  .editorial-intro .brand-motif picture,.shead .brand-motif picture{height:auto;aspect-ratio:378/1040}
+  .editorial-intro__photo,.shead__fig{height:var(--intro-height)}
+  .editorial-intro .brand-motif,.shead .brand-motif{max-height:none;padding:0;justify-content:center}
+  .editorial-intro .brand-motif picture,.shead .brand-motif picture{height:100%;aspect-ratio:auto}
+  .editorial-intro .brand-motif picture img,.shead .brand-motif picture img{object-position:right center}
+  /* The About portrait owns its column. Containing it in the generic wide
+     photo column left large invisible gutters on both sides of the frame. */
+  .about{padding-top:0}
+  .about-intro{grid-template-columns:minmax(0,1fr) minmax(0,clamp(352px,29.6vw,480px)) minmax(88px,.32fr)}
+  .about-intro .about__fig,.about-intro .about__fig picture,.about-intro .about__fig img{height:auto}
   .section-label{padding-top:24px;margin-bottom:28px}
   .page .section-label h2{font-size:44px;letter-spacing:-.04em}
   .pf-rows{gap:20px}
@@ -544,11 +550,19 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   .pkg__num{margin-bottom:28px}
   .pkg__flag{top:20px}
   .page .pkg__name{font-size:36px;letter-spacing:-.04em}
-  .pkg__price{font-size:18px;margin-bottom:24px}
+  .pkg__price{font:400 26px/1.2 var(--font-display);letter-spacing:-.02em;margin-bottom:24px}
   .pkg__spec{font-size:12px;min-height:42px}
   .pkg__desc{font-size:14px;min-height:68px}
   .pkg__list{font-size:13px;line-height:1.7}
   .pkg .cta{min-height:48px}
+  /* Share the eight content rows across the packages. Each photograph keeps
+     its own real frame while specs, descriptions, inclusions and booking
+     actions line up, even when one package has a longer list. */
+  @supports(grid-template-rows:subgrid){
+    .pkgrow{row-gap:0}
+    .pkg{display:grid;grid-template-rows:subgrid;grid-row:span 8;row-gap:0;align-items:start}
+    .pkg .cta{align-self:end;margin-top:0}
+  }
 
   .about-story{margin-top:64px;padding-top:40px}
   .about-story__copy h2{font-size:52px;letter-spacing:-.04em}
@@ -556,18 +570,28 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   .about-values p,.prose{font-size:15px;line-height:1.8}
   .contact{padding-top:48px}
   .contact__col{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(48px,6vw,96px)}
-  .page .contact__h{font-size:clamp(64px,6.2vw,88px);line-height:1;letter-spacing:-.04em;margin:24px 0 28px}
+  .page .contact__h{font-size:clamp(60px,5.7vw,84px);line-height:1;letter-spacing:-.04em;margin:24px 0 28px}
   .contact__form-panel{padding-top:4px}
   .contact__form-panel>.eyebrow{margin-bottom:28px}
+  .cform{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 20px}
+  .cform>*{grid-column:1/-1}
+  .cform>label:has(input[name="name"]),.cform>label:has(input[name="email"]){grid-column:auto}
+  .cform input,.cform textarea,.cform select{border-color:#b8b6b0;caret-color:var(--ink);transition:border-color .18s}
+  .cform input:hover,.cform textarea:hover,.cform select:hover{border-color:var(--grey)}
+  .cform input:focus,.cform textarea:focus,.cform select:focus{border-color:var(--ink)}
   .contact__details{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
   .hcta{margin-top:64px;padding:40px 0}
   .hcta__grid{padding:0 40px;gap:48px}
   .page .hcta__h{font-size:48px;letter-spacing:-.04em}
   .site-footer{display:grid;grid-template-columns:1fr auto;gap:12px 32px;width:calc(100% - 2 * var(--pad));max-width:1808px;margin:72px auto 0;padding-top:28px;padding-bottom:28px}
   .site-footer strong{font-size:28px;letter-spacing:-.04em}
-  .site-footer>small{grid-column:1;grid-row:2;font-size:10px}
-  .site-footer>div{grid-column:2;grid-row:1/3;gap:28px}
+  .site-footer>small{grid-column:1;grid-row:2;font-size:11px}
+  .site-footer>div{grid-column:2;grid-row:1/3;gap:28px;font-size:12px}
   .site-footer>img{display:none}
+}
+
+@media(min-width:1001px) and (min-height:800px){
+  .contact__form-panel{position:sticky;top:calc(var(--head) + 32px)}
 }
 
 @media(min-width:1001px) and (max-width:1150px){

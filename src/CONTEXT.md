@@ -14,3 +14,8 @@ attributes and shows position counters instead of visible description captions.
 Regenerate static HTML with `npm run pages`, then run `npm run build` and
 `npm test`. Visually inspect all five public routes and the mobile cover before
 publishing. See `DESIGN.md` for composition and current capture evidence.
+
+Desktop refinements use the existing `min-width:1001px` block: proportionate
+inner-page artwork, an intrinsic About portrait, subgrid package comparison rows,
+and a two-column Contact name/email row. Keep the natural photo ratios and the
+eight package content rows together. Phone/tablet CSS remains unchanged.
