@@ -45,3 +45,9 @@ checks. New root/source desktop captures show the two-column hero. The phone
 capture matches the preceding PNG byte for byte. The live desktop hero was
 independently inspected. The evidence follow-up changes documentation and
 screenshots only; it does not change the verified UI.
+
+2026-10-23 Sessions follow-up: the owner requested consistent package imagery.
+Desktop cards now use one 3:2 photo frame and individual crop positions, removing
+empty gaps beneath landscape images. Existing phone/tablet frames and package
+facts remain unchanged. The public verifier checks equal frame edges and saves
+package-section captures for the browser review.

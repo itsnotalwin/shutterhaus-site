@@ -18,3 +18,8 @@ also inspected at 1024px, 1920px and in the live browser. Build, 22 DOM tests,
 seven-width layout/control verification, Chromium and WebKit photo checks,
 deployment and live Safari scrolling all passed. Inner-page layouts and package
 alignment from the preceding desktop pass remain intact.
+
+Sessions follow-up, 2026-10-23: desktop package images now use matching 3:2
+landscape frames with individual focal positions. This replaces the previous
+mixed landscape/portrait photo heights and the gaps they created. Phone/tablet
+image frames stay intact. New package-section captures follow browser QA.

@@ -11,8 +11,8 @@ Home uses two columns: copy and horizontal brand artwork on the left, complete
 photograph on the right. `pages.ts` marks the second heading break for desktop
 removal and requests the horizontal `motif` variant from `layout.ts`; inner
 pages retain the default responsive artwork. Phones keep the approved cover,
-three-line heading, horizontal artwork band and swipe gallery. Desktop packages
-share eight comparison rows; Contact uses a compact Name/Email row.
+three-line heading, horizontal artwork band and swipe gallery. Desktop package photos share 3:2 frames with per-package `--desktop-focal`
+positions from `pricing.json`; the cards share eight comparison rows; Contact uses a compact Name/Email row.
 
 Regenerate static HTML with `npm run pages`; run `npm run build` and `npm test`.
 Use the existing gated browser checks and inspect actual rendered captures.

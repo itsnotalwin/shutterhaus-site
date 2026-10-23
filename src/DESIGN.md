@@ -67,3 +67,18 @@ work after the broader desktop pass. This composition supersedes that pass's
 three-column hero and 112px heading cap; it does not imply owner approval of the
 new result. Preserve the current photograph selection and successful phone
 cover in later refinements.
+
+Sessions image follow-up, 2026-10-23: the owner flagged mixed package image
+heights and crops. Above 1000px, all four images now share a 3:2 landscape frame
+with `object-fit:cover`. `pages-more.ts` supplies `--desktop-focal` from the
+existing package curation fields: Starter/Signature center, Essential 50% 18%,
+Social 50% 0%. This supersedes the earlier desktop rule that kept separate
+landscape and portrait frame shapes. The family image retains every face; the
+portrait crops are composed around the face and upper body. Shared subgrid rows
+keep image edges and package details aligned. Phone/tablet frame rules, photo
+choices, pricing, package terms and booking links are unchanged.
+
+The rendered verifier now checks equal 3:2 desktop frame sizes and aligned top
+and bottom edges; it retains the existing phone/tablet framing checks. It also
+captures the desktop package section at 1024, 1440 and 1920px for review. Updated
+Sessions captures will replace the representative evidence after browser QA.

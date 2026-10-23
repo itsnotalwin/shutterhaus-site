@@ -556,13 +556,16 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   .pkg__flag{top:20px}
   .page .pkg__name{font-size:36px;letter-spacing:-.04em}
   .pkg__price{font:400 26px/1.2 var(--font-display);letter-spacing:-.02em;margin-bottom:24px}
+  /* A shared landscape slot keeps the four package photos and details aligned.
+     Each image has its own desktop focal point; phone frames stay unchanged. */
+  .pkg__fig{aspect-ratio:3/2}
+  .pkg__fig img{object-fit:cover;object-position:var(--desktop-focal,50% 50%)}
   .pkg__spec{font-size:12px;min-height:42px}
   .pkg__desc{font-size:14px;min-height:68px}
   .pkg__list{font-size:13px;line-height:1.7}
   .pkg .cta{min-height:48px}
-  /* Share the eight content rows across the packages. Each photograph keeps
-     its own real frame while specs, descriptions, inclusions and booking
-     actions line up, even when one package has a longer list. */
+  /* Share the eight content rows across the packages so photo frames, specs,
+     descriptions, inclusions and booking actions line up across the cards. */
   @supports(grid-template-rows:subgrid){
     .pkgrow{row-gap:0}
     .pkg{display:grid;grid-template-rows:subgrid;grid-row:span 8;row-gap:0;align-items:start}

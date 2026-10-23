@@ -10,3 +10,9 @@ Keep assertions aligned with approved product behavior. Desktop now has a white,
 full-width shell; the verifier checks its actual bounds at 1024, 1440 and 1920px.
 Phone cover and scrolling-gallery checks remain in place. Run `npm run build`
 and `npm test`; the deployment workflow additionally runs browser verification.
+
+The desktop Sessions check expects four equally sized 3:2 image frames with
+aligned top and bottom edges. Phone/tablet checks preserve the existing varied
+frame shapes. `04-services-<width>-packages.png` captures the actual desktop
+package section for crop review. Update this contract if the owner changes the
+package presentation; do not bypass the photo-frame or booking checks.

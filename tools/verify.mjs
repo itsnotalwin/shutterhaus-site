@@ -626,14 +626,20 @@ for (const width of reviewWidths) {
       const framing = await evaluate(`(() => [...document.querySelectorAll('.pkg__fig')].map(fig => {
         const image = fig.querySelector('img'), r = fig.getBoundingClientRect();
         const [a,b=1] = getComputedStyle(fig).aspectRatio.split('/').map(Number);
-        return { ratio:r.height ? r.width/r.height : a/b, natural:image.naturalWidth/image.naturalHeight, fit:getComputedStyle(image).objectFit, position:getComputedStyle(image).objectPosition };
+        return { top:r.top, bottom:r.bottom, ratio:r.height ? r.width/r.height : a/b, natural:image.naturalWidth/image.naturalHeight, fit:getComputedStyle(image).objectFit, position:getComputedStyle(image).objectPosition };
       }))()`);
-      check(`review services ${width}: landscape photos retain their full frame without bands`, [framing[0],framing[2]].every(fig => fig.fit === 'cover' && Math.abs(fig.ratio - fig.natural) < .01));
-      if (width > 760) {
-        check(`review services ${width}: portraits have room for faces and hands`, [framing[1],framing[3]].every(fig => Math.abs(fig.ratio - .8) < .01));
-        check(`review services ${width}: Essential preserves the top of the portrait`, framing[1].position === '50% 0%');
-        check(`review services ${width}: Social preserves the top of the portrait`, framing[3].position === '50% 0%');
+      if (width > 1000) {
+        check(`review services ${width}: all package photos fill one landscape format`, framing.length === 4 && framing.every(fig => fig.fit === 'cover' && Math.abs(fig.ratio - 1.5) < .01));
+        check(`review services ${width}: package photo top and bottom edges align`, Math.max(...framing.map(fig => fig.top)) - Math.min(...framing.map(fig => fig.top)) <= 1 && Math.max(...framing.map(fig => fig.bottom)) - Math.min(...framing.map(fig => fig.bottom)) <= 1);
       } else {
+        check(`review services ${width}: landscape photos retain their full frame without bands`, [framing[0],framing[2]].every(fig => fig.fit === 'cover' && Math.abs(fig.ratio - fig.natural) < .01));
+        if (width > 760) {
+          check(`review services ${width}: portraits have room for faces and hands`, [framing[1],framing[3]].every(fig => Math.abs(fig.ratio - .8) < .01));
+          check(`review services ${width}: Essential preserves the top of the portrait`, framing[1].position === '50% 0%');
+          check(`review services ${width}: Social preserves the top of the portrait`, framing[3].position === '50% 0%');
+        }
+      }
+      if (width <= 760) {
         check(`review services ${width}: recommended package selected`, await evaluate(`document.querySelector('[name="package-view"]:checked')?.value === 'Essential'`));
         check(`review services ${width}: only the chosen package is visible`, await evaluate(`[...document.querySelectorAll('.pkg')].filter(p => p.getBoundingClientRect().height > 0).length === 1`));
         check(`review services ${width}: editorial introduction photo loads`, await evaluate(`!!document.querySelector('.shead__fig img')?.naturalWidth`));
@@ -642,6 +648,15 @@ for (const width of reviewWidths) {
           check(`review services ${width}: ${name} selection and enquiry`, await evaluate(`(() => { const visible = [...document.querySelectorAll('.pkg')].filter(p => p.getBoundingClientRect().height > 0); return visible.length === 1 && visible[0].dataset.package === '${name}' && visible[0].querySelector('.cta').getAttribute('href') === './contact.html?package=${name}'; })()`));
         }
         await evaluate(`document.querySelector('#package-essential').click()`);
+      }
+      if (width > 1000) {
+        const bounds = await evaluate(`(() => {
+          const top=document.querySelector('.services .section-label').getBoundingClientRect().top+scrollY;
+          const bottom=document.querySelector('.pkgrow').getBoundingClientRect().bottom+scrollY;
+          return {y:Math.max(0,top-24),height:Math.ceil(bottom-top+48)};
+        })()`);
+        const packages = await send('Page.captureScreenshot', {format:'png',captureBeyondViewport:true,clip:{x:0,y:bounds.y,width,height:bounds.height,scale:1}});
+        writeFileSync(`${OUT}/04-services-${width}-packages.png`,Buffer.from(packages.result.data,'base64'));
       }
     }
     if (route === 'home') {
