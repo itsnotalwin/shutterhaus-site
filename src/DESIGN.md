@@ -80,5 +80,17 @@ choices, pricing, package terms and booking links are unchanged.
 
 The rendered verifier now checks equal 3:2 desktop frame sizes and aligned top
 and bottom edges; it retains the existing phone/tablet framing checks. It also
-captures the desktop package section at 1024, 1440 and 1920px for review. Updated
-Sessions captures will replace the representative evidence after browser QA.
+captures the desktop package section at 1024, 1440 and 1920px for review. Current
+Sessions evidence is `SCREENSHOT-SESSIONS.png` (the package section captured from
+a 1440×900 viewport, resulting image 1440×1031) and
+`SCREENSHOT-SESSIONS-MOBILE.png` (full page at viewport 390×844). Capture route
+`/services.html`, date 2026-10-23, UI commit `2f4237b`, from
+[run 39991738484](https://github.com/itsnotalwin/shutterhaus-site/actions/runs/39991738484).
+The 393px Sessions before/after browser capture is pixel-identical. Package crops
+were reviewed at 1024, 1440 and 1920px and independently on the live desktop
+site; every face in the family photograph remains visible. Live image frames
+measure the same 258.47×172.31px, with identical top and bottom edges and no
+horizontal overflow. The Home captures above remain byte-identical to the
+current build. Build, 22 DOM regressions, the seven-width public/control verifier
+and both browser engines pass. The evidence follow-up changes only documentation
+and genuine captures.

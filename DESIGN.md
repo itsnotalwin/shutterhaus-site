@@ -22,4 +22,11 @@ alignment from the preceding desktop pass remain intact.
 Sessions follow-up, 2026-10-23: desktop package images now use matching 3:2
 landscape frames with individual focal positions. This replaces the previous
 mixed landscape/portrait photo heights and the gaps they created. Phone/tablet
-image frames stay intact. New package-section captures follow browser QA.
+image frames stay intact. `SCREENSHOT-SESSIONS.png` shows the package comparison from a 1440×900 viewport
+(resulting section image 1440×1031); `SCREENSHOT-SESSIONS-MOBILE.png` shows the
+full page at viewport 390×844. Actual route `/services.html`, date 2026-10-23,
+UI commit `2f4237b`, from [run 39991738484](https://github.com/itsnotalwin/shutterhaus-site/actions/runs/39991738484).
+The crops were reviewed at 1024, 1440 and 1920px and in the live desktop browser.
+The phone comparison is pixel-identical; the existing Home captures still match
+the current build byte for byte. Build, 22 DOM tests and both browser engines
+pass.

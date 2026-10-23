@@ -51,3 +51,11 @@ Desktop cards now use one 3:2 photo frame and individual crop positions, removin
 empty gaps beneath landscape images. Existing phone/tablet frames and package
 facts remain unchanged. The public verifier checks equal frame edges and saves
 package-section captures for the browser review.
+
+Sessions validation: UI commit `2f4237b`, run 39991738484, passed the build,
+22 interaction tests, seven-width public/control verifier and both browser
+engines. The live desktop page was independently checked: four equal 3:2 frames,
+all photographs loaded, aligned booking controls and no horizontal overflow.
+New `SCREENSHOT-SESSIONS.png` and `SCREENSHOT-SESSIONS-MOBILE.png` captures at the
+root and in `src/` record the changed screen. The phone comparison and existing
+Home captures remain identical. The evidence follow-up changes no UI code.
