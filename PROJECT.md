@@ -27,5 +27,7 @@ Inherited documentation gaps in untouched folders remain separate backfill work.
 2026-10-23 desktop pass: refined inner-page proportions and About spacing,
 aligned package content rows, made the desktop enquiry form compact and improved
 footer readability. Build and 22 DOM tests pass. Local Chromium is unavailable;
-the existing gated CI provides rendered browser verification. Refresh the root
-and `src/` captures from the new release before declaring visual QA complete.
+the existing gated CI provides rendered browser verification. Release 9dce8cf
+passed the seven-width public verifier and both browser engines; root and `src/`
+captures now show the reviewed 23 October build. The final inner-page corrections
+use the same gated workflow. Phone/tablet CSS remains byte-for-byte unchanged.

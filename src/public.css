@@ -530,9 +530,10 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   .phead.editorial-intro,.editorial-intro,.shead{grid-template-columns:minmax(0,1.1fr) minmax(0,1.5fr) minmax(88px,.4fr);gap:28px;padding-top:40px;margin-bottom:56px}
   .shead{padding-bottom:0}
   .page .editorial-intro h1,.page .shead__h{font-size:clamp(60px,5.45vw,88px);line-height:1;letter-spacing:-.04em;margin:24px 0}
+  .page .shead__h{font-size:clamp(50px,5vw,84px)}
   .phead .phead__p,.intro-copy,.shead__p{font-size:15px;line-height:1.75;max-width:34ch;margin-bottom:28px}
   .editorial-intro__photo,.shead__fig{height:var(--intro-height)}
-  .editorial-intro .brand-motif,.shead .brand-motif{max-height:none;padding:0;justify-content:center}
+  .editorial-intro .brand-motif,.shead .brand-motif{height:var(--intro-height);max-height:var(--intro-height);padding:0;justify-content:center;align-self:center}
   .editorial-intro .brand-motif picture,.shead .brand-motif picture{height:100%;aspect-ratio:auto}
   .editorial-intro .brand-motif picture img,.shead .brand-motif picture img{object-position:right center}
   /* The About portrait owns its column. Containing it in the generic wide

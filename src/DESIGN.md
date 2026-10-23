@@ -4,11 +4,11 @@ White editorial pages, Bodoni Moda headings, Inter body/UI, monochrome portfolio
 photography and the existing geometric artwork. Desktop uses a full-width white
 shell with fluid 32–56px gutters and content bounded only above 1920px. This
 removes the former grey outer bars. A compact 96px header and aligned copy, photo
-and artwork columns establish the grid. The hero headline tops out at 120px with gentler tracking;
+and artwork columns establish the grid. The hero headline tops out at 112px with gentler tracking;
 the photograph uses its intrinsic aspect ratio, contained without a desktop crop,
 and stays below 760px tall. Supporting copy stays around 34 characters per
 line. Selected work uses portrait frames and 16px gaps. Inner-page introductions
-share a 500px photo height. Session cards retain all four packages and facts.
+share a fluid 440–600px photo height. Session cards retain all four packages and facts.
 
 The desktop hero uses a .95/1.7/.4 grid, giving photography more of the horizontal
 space. The complete vertical artwork shares the hero's available height, with
@@ -28,11 +28,10 @@ remains eager and high priority, following [web.dev LCP guidance](https://web.de
 
 Capture route `/`: `SCREENSHOT.png` is the 1440×900 desktop viewport;
 `SCREENSHOT-MOBILE.png` is the full phone page at a 390×844 viewport. Capture date
-2026-10-21, from [rendered CI evidence](https://github.com/itsnotalwin/shutterhaus-site/actions/runs/39505896205).
-All five pages were inspected at desktop and phone sizes; Home was also inspected
-at 1024, 1920 and tablet widths. No additional UI corrections were needed.
-The mechanical detector's one warning is intentional: the hidden photo-viewer
-image has no source until a real selected photograph is opened.
+2026-10-23, from [rendered CI evidence](https://github.com/itsnotalwin/shutterhaus-site/actions/runs/39977888626).
+The captured Home and phone presentation is unchanged by the final inner-page
+artwork-height and Sessions headline-wrap corrections. Desktop and phone views
+of all five public routes were inspected, plus Home at 1920px and About at 1024px.
 
 Desktop refinement, 2026-10-23: the five live public pages were visually reviewed.
 Inner-page artwork now occupies a proportionate column and centers alongside
@@ -45,8 +44,11 @@ borders; on viewports at least 800px tall its enquiry panel stays in view while
 reading the left column. Footer text is slightly larger. All changes are scoped
 to widths above 1000px; the approved phone/tablet rules remain intact.
 
-Current validation: build and 22 DOM interaction tests pass; mechanical CSS scan
-has no findings. Local browser tests cannot launch because Chromium is absent,
-and the cloud browser cannot reach the local preview. The committed captures
-above still show 2026-10-21; refresh them from this release's rendered CI evidence
-after the gated browser checks, then inspect the deployed pages.
+Validation: production build and 22 DOM interaction tests pass; the mechanical
+CSS scan has no findings. Release 9dce8cf passed the seven-width public verifier,
+public/admin controls and both Chromium and WebKit photo-layout jobs. Current
+root/source captures replace the 21 October images. The final inner-page
+corrections are checked by the same gated workflow before publication. Local
+Chromium is absent and the cloud browser cannot access the local preview;
+rendered CI evidence and live public inspection provide visual verification.
+Inherited documentation gaps in untouched folders remain separate backfill work.
