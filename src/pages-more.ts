@@ -1,6 +1,6 @@
 import { formatPrice } from "./pricing";
 import { SITE } from "./config";
-import { escapeHtml, motif } from "./layout";
+import { escapeHtml, icon, motif } from "./layout";
 import { DEMO_PHOTOS } from "./demo";
 import { pictureFor, bestDerivative } from "./pages";
 import type { Photo } from "./types";
@@ -35,13 +35,14 @@ export function aboutPage(photos: Photo[]): string {
 
   return `<section class="page about">
     <header class="editorial-intro about-intro">
-      <div class="editorial-intro__copy"><p class="eyebrow eyebrow--rule">About SHUTTERHAUS</p><h1 class="about__h">Behind<br>the lens.</h1><p class="intro-copy">Independent photography from Gauteng. Real connection, careful light, meaningful photographs.</p><a class="cta" href="./contact.html">Let's work together <span aria-hidden="true">→</span></a></div>
-      ${fig}${motif("about__motif")}
+      <div class="about-story__copy"><p class="eyebrow eyebrow--rule">About</p>
+        <h1 class="about__h">Behind<br> the lens.</h1>
+        <p class="about-byline">Alwin Newman · Photographer</p>
+        <div class="prose about__prose">${a.body.map(para => `<p>${escapeHtml(para)}</p>`).join("")}</div>
+        <a class="cta" href="./contact.html">${escapeHtml(a.cta)} <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="about-portrait">${fig}${motif("about-ink")}</div>
     </header>
-    <section class="about-story">
-      <div class="about-story__copy"><p class="eyebrow">Founder / Photographer</p><h2>Alwin Newman.</h2><div class="prose about__prose">${a.body.map(para => `<p>${escapeHtml(para)}</p>`).join("")}</div><a class="cta cta--line" href="./contact.html">${escapeHtml(a.cta)} <span aria-hidden="true">→</span></a></div>
-    </section>
-    <section class="about-values"><div><h2>Natural.</h2><p>Unforced moments. True to the person.</p></div><div><h2>Honest.</h2><p>Careful, respectful, thoughtful photography.</p></div><div><h2>Timeless.</h2><p>Images that still feel important years later.</p></div></section>
   </section>`;
 }
 
@@ -100,14 +101,10 @@ export function servicesPage(photos: Photo[] = []): string {
 
   return `<section class="page services">
     <header class="shead">
-      <div class="shead__col">
-        <p class="eyebrow eyebrow--rule">Sessions / Services</p>
-        <h1 class="shead__h">Sessions,<br>with intention.</h1>
-        <p class="shead__p">${escapeHtml(p.intro)}</p>
-        <a class="cta" href="./contact.html">Make an enquiry <span aria-hidden="true">→</span></a>
-      </div>
-      ${(() => { const shot = photos.find(photo => photo.filename === SITE.services.photo) ?? shotFor(p.tiers[1], 1); return shot ? `<figure class="shead__fig"><picture>${pictureFor(shot.url, "(max-width: 759px) 100vw, 45vw", shot.width)}<img src="${escapeHtml(bestDerivative(shot.url, "jpg", shot.width))}" alt="${escapeHtml(shot.alt || "")}" loading="eager" decoding="async" /></picture></figure>` : ""; })()}
-      ${motif()}
+      <p class="eyebrow eyebrow--rule">Sessions</p>
+      <h1 class="shead__h">Book a<br> session.</h1>
+      <div class="shead__col"><p class="shead__p">${escapeHtml(p.intro)}</p>
+      <a class="cta cta--line" href="./contact.html">Make an enquiry</a></div>
     </header>
     <div class="section-label"><h2>Choose your session.</h2><span>Packages / ZAR</span></div>
     <fieldset class="package-picker"><legend>Choose your session</legend>${p.tiers.map(t => `<label><input type="radio" name="package-view" id="package-${escapeHtml(t.name.toLowerCase())}" value="${escapeHtml(t.name)}"${t.popular ? ' checked' : ''} /><span>${escapeHtml(t.name)}</span></label>`).join("")}</fieldset>
@@ -202,31 +199,30 @@ export function contactPage(_photos: Photo[] = []): string {
   return `<section class="page contact">
     <div class="contact__col">
       <div class="contact__main">
-      <p class="eyebrow eyebrow--rule">Get in touch / Gauteng, SA</p>
-      <h1 class="contact__h">Let's make<br>something<br>worth keeping.</h1>
-      <p class="contact__p">Whether it’s a portrait session, a couples shoot, a family story or social content, tell me what you have in mind.</p>
-
-      ${(() => { const shot = DEMO_PHOTOS.find(p => p.filename === SITE.pricing.tiers[2]?.photo); return shot ? `<figure class="contact__photo"><picture>${pictureFor(shot.url, "(max-width: 759px) 100vw, 35vw", shot.width)}<img src="${escapeHtml(bestDerivative(shot.url, "jpg", shot.width))}" width="${shot.width}" height="${shot.height}" alt="${escapeHtml(shot.alt || "")}" loading="lazy" decoding="async" /></picture></figure>` : ""; })()}
-      <div class="contact__details"><div><p class="eyebrow">Email</p><a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></div><div><p class="eyebrow">Based in</p><p>${escapeHtml(c.location)}</p><p class="eyebrow">By appointment</p><p>${escapeHtml(c.hours)}</p><a href="${escapeHtml(wa)}" target="_blank" rel="noopener">WhatsApp</a></div></div>
+        <p class="eyebrow eyebrow--rule">Contact</p>
+        <h1 class="contact__h">Let’s work<br> together.</h1>
+        <p class="contact__p">Have a project, session or idea in mind? Tell me what you’re thinking.</p>
       </div>
-      <div class="contact__form-panel"><p class="eyebrow eyebrow--rule">Your enquiry</p>
-      <form class="cform" id="cform" action="${escapeHtml(c.formEndpoint)}" method="post" novalidate>
-        <label>Name<input name="name" type="text" required autocomplete="name" /></label>
-        <label>Email<input name="email" type="email" required autocomplete="email" /></label>
-        <label>What do you need?
-          <select name="kind" id="cform-kind">
-            ${p0.tiers.map((t) => `<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)} package (${escapeHtml(formatPrice(t.price))})</option>`).join("\n            ")}
+      <div class="contact__form-panel">
+        <form class="cform" id="cform" action="${escapeHtml(c.formEndpoint)}" method="post" novalidate>
+          <label class="field"><input name="name" type="text" required autocomplete="name" placeholder=" " /><span>Name</span></label>
+          <label class="field"><input name="email" type="email" required autocomplete="email" placeholder=" " /><span>Email</span></label>
+          <label class="field field--select"><span>Session</span><select name="kind" id="cform-kind">
+            ${p0.tiers.map(t => `<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)} package (${escapeHtml(formatPrice(t.price))})</option>`).join("")}
             <option value="Something else">Something else</option>
-          </select>
-        </label>
-        <label>Message<textarea name="message" rows="4" required></textarea></label>
-        ${HONEYPOT_FIELD}
-        <button type="submit">Send message</button>
-        <p class="cform__note dim" id="cform-note" role="status" aria-live="polite" tabindex="-1"></p>
-      </form>
+          </select></label>
+          <label class="field"><textarea name="message" rows="4" required placeholder=" "></textarea><span>Message</span></label>
+          ${HONEYPOT_FIELD}
+          <button type="submit">Send message</button>
+          <p class="cform__note dim" id="cform-note" role="status" aria-live="polite" tabindex="-1"></p>
+        </form>
       </div>
-
-
+      <div class="contact__details">
+        <a href="mailto:${escapeHtml(c.email)}">${icon("mail",20)}<span>${escapeHtml(c.email)}</span></a>
+        <p><span class="detail-label">Location</span>${escapeHtml(c.location)}</p>
+        <p><span class="detail-label">Hours</span>${escapeHtml(c.hours)}</p>
+        ${wa ? `<a href="${escapeHtml(wa)}" target="_blank" rel="noopener">${icon("whatsapp",20)}<span>WhatsApp</span></a>` : ""}
+      </div>
     </div>
   </section>`;
 }

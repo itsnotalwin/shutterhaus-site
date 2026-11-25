@@ -6,10 +6,7 @@ pages across seven widths through the shared CDP client in `lib/browser.mjs`.
 `test-public.mjs` and `test-admin.mjs` run mocked DOM interactions without sending
 real enquiries or publishing gallery changes.
 
-Keep assertions aligned with approved product behavior. Desktop now has a white,
-full-width shell; the verifier checks its actual bounds at 1024, 1440 and 1920px.
-Phone cover and scrolling-gallery checks remain in place. Run `npm run build`
-and `npm test`; the deployment workflow additionally runs browser verification.
+The public verifier checks the side-by-side desktop hero, mobile headline/photo/controls order, self-hosted fonts, safe header, published wall, full-frame links and package booking. Run `npm run build` and `npm test`. The deployment also runs browser checks.
 
 The desktop Sessions check expects four equally sized 3:2 image frames with
 aligned top and bottom edges. Phone/tablet checks preserve the existing varied

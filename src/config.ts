@@ -170,7 +170,7 @@ export const SITE: SiteConfig = {
   home: {
     eyebrow: "Shutterhaus Visuals",
     heading: "Timeless portraiture",
-    lede: "Real people. Honest moments. Portraits that look beyond the now.",
+    lede: "Natural, honest and timeless photography for portraits, couples, families and social content across Gauteng.",
     cta: "View portfolio",
     est: "2019",
     tags: ["Portraits", "Couples", "Families"],
@@ -197,14 +197,13 @@ export const SITE: SiteConfig = {
   // Alwin's favourites, 50 frames. All on the portfolio, no category filter.
   categories: ["portrait", "couple", "family", "creative"],
   portfolioFeaturePhoto: "35-img-0482.jpg",
-  // Four Home selections. The two rejected portraits stay out of this edit;
-  // replacement close-ups sit alongside the retained location portraits.
+  // The bundled editorial edit. The photo manager can publish another sequence.
   homeGalleryCount: 6, // Published admin selections may still use up to six.
   homeStrip: [
-    "19-img-0198-3.jpg",
-    "33-img-0426.jpg",
-    "2-20240718114526-img-0124.jpg",
-    "46-img-0119.jpg",
+    "5-img-0086.jpg",
+    "49-img-0131.jpg",
+    "54-img-0164.jpg",
+    "20-img-0202.jpg",
   ],
   // Pinned deliberately: strongest subject in the set AND real dark space in
   // the lower-left for the white headline. Chosen from a side-by-side of all

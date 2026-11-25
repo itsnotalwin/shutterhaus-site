@@ -602,7 +602,7 @@ for (const width of reviewWidths) {
           getComputedStyle(document.body).backgroundColor === 'rgb(255, 255, 255)';
       })(),
       headingsFit: [...document.querySelectorAll('main h1, main h2')].every(heading => heading.scrollWidth <= heading.clientWidth + 1),
-      fontsLoaded: ['Inter', 'Bodoni Moda'].every(family => [...document.fonts].some(face => face.family.replace(/["']/g, '') === family && face.status === 'loaded')),
+      fontsLoaded: ['Montserrat', 'Playfair Display'].every(family => [...document.fonts].some(face => face.family.replace(/["']/g, '') === family && face.status === 'loaded')),
       priceTops: [...document.querySelectorAll('.pkg__price')].map(price => price.getBoundingClientRect().top),
       bandHref: document.querySelector('.hcta__btn')?.getAttribute('href'),
       bandFits: [...document.querySelectorAll('main .hcta')].every(band => {
@@ -642,7 +642,7 @@ for (const width of reviewWidths) {
       if (width <= 760) {
         check(`review services ${width}: recommended package selected`, await evaluate(`document.querySelector('[name="package-view"]:checked')?.value === 'Essential'`));
         check(`review services ${width}: only the chosen package is visible`, await evaluate(`[...document.querySelectorAll('.pkg')].filter(p => p.getBoundingClientRect().height > 0).length === 1`));
-        check(`review services ${width}: editorial introduction photo loads`, await evaluate(`!!document.querySelector('.shead__fig img')?.naturalWidth`));
+        check(`review services ${width}: selected package photograph loads`, await evaluate(`!!document.querySelector('.pkg[data-package=Essential] img')?.naturalWidth`));
         for (const name of ['Starter', 'Essential', 'Signature', 'Social']) {
           await evaluate(`document.querySelector('#package-${name.toLowerCase()}').click()`);
           check(`review services ${width}: ${name} selection and enquiry`, await evaluate(`(() => { const visible = [...document.querySelectorAll('.pkg')].filter(p => p.getBoundingClientRect().height > 0); return visible.length === 1 && visible[0].dataset.package === '${name}' && visible[0].querySelector('.cta').getAttribute('href') === './contact.html?package=${name}'; })()`));
@@ -701,16 +701,23 @@ for (const width of reviewWidths) {
     const name = `${String(index + 1).padStart(2, "0")}-${route}-${width}.png`;
     writeFileSync(`${OUT}/${name}`, Buffer.from(capture.result.data, "base64"));
     if (route === 'home') {
-      const artwork = await evaluate(`(() => {
-        const frame=document.querySelector('.hero__motif'), image=frame.querySelector('img');
-        const rect=frame.getBoundingClientRect();
-        return {visible:rect.width>0&&rect.height>0, fits:rect.left>=-1&&rect.right<=document.documentElement.clientWidth+1, fit:getComputedStyle(image).objectFit, source:image.currentSrc};
+      const layout = await evaluate(`(() => {
+        const rect = selector => document.querySelector(selector).getBoundingClientRect();
+        const bar = rect('.site-header'), title = rect('.hero__title'), photo = rect('.hero__fig');
+        const arrows = rect('.hero__controls'), info = rect('.hero__info');
+        return {
+          ink: getComputedStyle(document.querySelector('.site-header'), '::before').backgroundImage.includes('ink-stroke'),
+          followsHeader: title.top >= bar.bottom - 1,
+          sideBySide: photo.left >= title.right - 1,
+          mobileOrder: photo.top >= title.bottom - 1 && arrows.top >= photo.bottom - 1 && info.top >= arrows.bottom - 1,
+          ratio: photo.width / photo.height
+        };
       })()`);
-      check(`review home ${width}: complete brand artwork stays visible and fits`, artwork.visible && artwork.fits && artwork.fit === 'contain', JSON.stringify(artwork));
-      if (width>1000) check(`review home ${width}: hero preserves the photograph`, await evaluate(`getComputedStyle(document.querySelector('.hero__fig img')).objectFit==='contain'`));
+      check(`review home ${width}: header ink is present`, layout.ink);
+      check(`review home ${width}: responsive headline, image and controls`,
+        layout.followsHeader && (width < 760 ? layout.mobileOrder && Math.abs(layout.ratio - 1.2) < .02 : layout.sideBySide && Math.abs(layout.ratio - .99) < .02), JSON.stringify(layout));
       const firstScreen = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
       writeFileSync(`${OUT}/01-home-${width}-viewport.png`, Buffer.from(firstScreen.result.data, 'base64'));
-      check(`review home ${width}: ${width < 760 ? 'cover photo fills the first screen under the header' : 'editorial hero follows the header'}`, await evaluate(`(() => { const hero = document.querySelector('.hero').getBoundingClientRect(), bar = document.querySelector('.site-header').getBoundingClientRect(); if (innerWidth >= 760) return hero.top >= bar.bottom; const photo = document.querySelector('.hero__fig').getBoundingClientRect(); return hero.top <= 1 && photo.top <= 1 && photo.height >= innerHeight - 2 && photo.height <= innerHeight + 40; })()`));
       await evaluate(`scrollTo(0, document.querySelector('.hstrip').offsetTop + 80)`);
       await sleep(150);
       const header = await evaluate(`(() => {

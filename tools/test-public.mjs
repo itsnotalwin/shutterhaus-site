@@ -267,7 +267,7 @@ test("a stale composition response cannot overwrite a newer enquiry route",async
     resolve({homeStrip:fallback.strip,heroPhoto:fallback.hero,wallRows:fallback.rows,problems:[]});await tick();
     assert.equal(w.document.querySelector('form'),form);
     assert.equal(w.document.querySelector('[name="message"]').value,'A test enquiry');
-    assert.equal(w.document.querySelector('h1').textContent,"Let's makesomethingworth keeping.");
+    assert.equal(w.document.querySelector('h1').textContent,"Let’s work together.");
   } finally {dom.window.close();}
 });
 

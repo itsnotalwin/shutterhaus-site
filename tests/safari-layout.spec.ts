@@ -45,10 +45,13 @@ for (const viewport of viewports) {
             const cover = (await page.locator('.hero__fig').boundingBox())!;
             const title = (await page.locator('.hero__title').boundingBox())!;
             const header = (await page.locator('.site-header').boundingBox())!;
-            expect(cover.y, 'Cover starts at the top of the screen').toBeCloseTo(0, 0);
-            expect(cover.height, 'Cover fills one stable screen').toBeCloseTo(Math.max(viewport.height, 560), 0);
-            expect(title.y, 'Hero title clears the navigation').toBeGreaterThanOrEqual(header.y + header.height);
-            expect(title.y + title.height, 'Hero title stays inside the cover').toBeLessThanOrEqual(cover.y + cover.height + 1);
+            const arrows = (await page.locator('.hero__controls').boundingBox())!;
+            const info = (await page.locator('.hero__info').boundingBox())!;
+            expect(title.y, 'Headline clears the navigation').toBeGreaterThanOrEqual(header.y + header.height - 1);
+            expect(cover.y, 'Photograph follows the headline').toBeGreaterThanOrEqual(title.y + title.height - 1);
+            expect(cover.width / cover.height).toBeCloseTo(1.2, 2);
+            expect(arrows.y).toBeGreaterThanOrEqual(cover.y + cover.height - 1);
+            expect(info.y).toBeGreaterThanOrEqual(arrows.y + arrows.height - 1);
           }
           await page.evaluate(()=>window.scrollTo({top:document.querySelector('.hstrip')!.getBoundingClientRect().top+scrollY-100,behavior:'instant'}));
           if (viewport.width < 760 && !baseline) await expect(page.locator('.site-header')).toHaveClass(/is-solid/);
@@ -89,11 +92,11 @@ for (const viewport of viewports) {
             await frames(`Services ${tier}`,'.pkg:not([hidden]) .pkg__fig',true);
           }
         }
-        for (const image of await page.locator('.editorial-intro__photo img,.about__fig img,.shead__fig img,.contact__photo img').all()) {
+        for (const image of await page.locator('.work-tile__photo img,.about__fig img').all()) {
           await image.scrollIntoViewIfNeeded();
           await image.evaluate((image:HTMLImageElement)=>image.decode());
         }
-        await frames(`${route} intro`,'.editorial-intro__photo,.about__fig,.shead__fig,.contact__photo',false);
+        await frames(`${route} intro`,'.work-tile__photo,.about__fig',false);
         if (route==='portfolio') {
           for (const index of [0,4,9]) {
             const cell=page.locator('.pf-cell').nth(index);
@@ -171,15 +174,17 @@ test('393px and 844px safe areas keep menu controls whole and page backgrounds c
       const menu=await page.evaluate(()=>{
         const nav=document.querySelector('.site-nav')!,button=document.querySelector('.burger')!;
         const outer=button.getBoundingClientRect(),r=nav.getBoundingClientRect();
-        const lines=[...button.querySelectorAll('.burger__bars i')].map(line=>{const b=line.getBoundingClientRect();return{x:b.x+b.width/2,y:b.y+b.height/2,inside:b.left>=outer.left&&b.right<=outer.right&&b.top>=outer.top&&b.bottom<=outer.bottom};});
+        const lines=[...button.querySelectorAll('.burger__bars i')].map(line=>{const b=line.getBoundingClientRect();return{opacity:getComputedStyle(line).opacity,x:b.x+b.width/2,y:b.y+b.height/2,inside:b.left>=outer.left&&b.right<=outer.right&&b.top>=outer.top&&b.bottom<=outer.bottom};});
         return {bottom:r.bottom,height:innerHeight,controlVisible:outer.top>=0&&outer.bottom<=innerHeight&&outer.left>=0&&outer.right<=innerWidth,art:getComputedStyle(nav,'::after').content,background:getComputedStyle(document.documentElement).backgroundColor,lines};
       });
       expect(Math.abs(menu.bottom-menu.height)).toBeLessThanOrEqual(1);
       expect(menu.art).toBe('none');expect(menu.background).toBe('rgb(17, 17, 17)');
       expect(menu.controlVisible,`${route} close button stays in the viewport after scrolling`).toBe(true);
       expect(menu.lines.every(l=>l.inside)).toBe(true);
-      expect(Math.abs(menu.lines[0].x-menu.lines[1].x)).toBeLessThan(0.5);
-      expect(Math.abs(menu.lines[0].y-menu.lines[1].y)).toBeLessThan(0.5);
+      expect(menu.lines).toHaveLength(3);
+      expect(menu.lines[1].opacity).toBe('0');
+      expect(Math.abs(menu.lines[0].x-menu.lines[2].x)).toBeLessThan(0.5);
+      expect(Math.abs(menu.lines[0].y-menu.lines[2].y)).toBeLessThan(0.5);
       await page.screenshot({path:`${folder}/safe-menu-${route}-${viewport.width}.jpg`,type:'jpeg',quality:85,scale:'css'});
       await button.click();await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content','#ffffff');
       results.push({route,viewport,geometry,menu});

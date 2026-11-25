@@ -85,7 +85,7 @@ function pageHref(id: string): string {
  * stacked words, nav offset from the left, socials pinned right.
  */
 export function header(active: string): string {
-  const wordmark = `<a class="logo" href="${pageHref("home")}" aria-label="SHUTTERHAUS VISUALS | home"><img src="./brand/wordmark-primary.svg" width="240" height="40" alt="SHUTTERHAUS VISUALS" /></a>`;
+  const wordmark = `<a class="logo" href="${pageHref("home")}" aria-label="SHUTTERHAUS VISUALS | home"><picture><source media="(max-width:759px)" srcset="./brand/wordmark-primary-mobile.svg"><img src="./brand/wordmark-primary.svg" width="361" height="65" alt="SHUTTERHAUS VISUALS" /></picture></a>`;
 
   const nav = SITE.nav
     .map(
@@ -107,7 +107,7 @@ export function header(active: string): string {
   return `<header class="site-header">
     ${wordmark}
     <button class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="site-nav">
-      <span class="burger__bars" aria-hidden="true"><i></i><i></i></span>
+      <span class="burger__bars" aria-hidden="true"><i></i><i></i><i></i></span>
     </button>
     <nav class="site-nav" id="site-nav" aria-label="Primary">${nav}</nav>
     <a class="header-book cta cta--btn" href="./contact.html">Book a session <span aria-hidden="true">→</span></a>
@@ -124,13 +124,13 @@ export function renderShell(active: string, body: string, over = false): string 
   return `<div class="shell${over ? " shell--cover" : ""}"><a class="skip-link" href="#main-content">Skip to content</a>${header(active)}<main class="main" id="main-content" tabindex="-1">${body}</main>${footer()}</div>`;
 }
 
-export function motif(className = "", orientation: "responsive" | "horizontal" = "responsive"): string {
-  const horizontal = orientation === "horizontal";
-  return `<aside class="brand-motif ${className}" aria-hidden="true"><picture><source media="(max-width: 1000px)" srcset="./brand/editorial-arcs-horizontal.webp" /><img src="./brand/editorial-arcs-${horizontal ? "horizontal" : "vertical"}.webp" width="${horizontal ? 1010 : 378}" height="${horizontal ? 389 : 1040}" alt="" /></picture><p>People<br>Places<br>Stories</p></aside>`;
+/** Decorative ink is shared by the photo frame and the site chrome. */
+export function motif(className: string): string {
+  return `<span class="ink-stroke ${className}" aria-hidden="true"></span>`;
 }
 
 function footer(): string {
-  return `<footer class="site-footer"><strong>People. Places. Stories.</strong><small>© ${new Date().getFullYear()} SHUTTERHAUS VISUALS · ${escapeHtml(SITE.contact.location)}</small><div><a href="mailto:${escapeHtml(SITE.contact.email)}">Email</a>${SITE.social.map(s => `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.label)}</a>`).join("")}</div><img src="./brand/editorial-arcs-horizontal.webp" width="104" height="40" alt="" /></footer>`;
+  return `<footer class="site-footer"><strong>People. Places. Stories.</strong><small>© ${new Date().getFullYear()} SHUTTERHAUS VISUALS · ${escapeHtml(SITE.contact.location)}</small><div><a href="mailto:${escapeHtml(SITE.contact.email)}">Email</a>${SITE.social.map(s => `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.label)}</a>`).join("")}</div>${motif("footer-ink")}</footer>`;
 }
 
 export { FONTS };

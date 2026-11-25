@@ -1,96 +1,17 @@
 # Public visual system
 
-White editorial pages, Bodoni Moda headings, Inter body/UI, monochrome portfolio
-photography and the existing geometric artwork. Desktop uses a full-width white
-shell with fluid 32–56px gutters and content bounded only above 1920px. The
-compact 96px header remains the navigation baseline.
+Use the desktop Home, mobile Home / Work / Contact and brand boards supplied on 25 November 2026. The canvas is white, body text is charcoal and section rules are soft gray. Use Playfair Display 500 for titles, Montserrat for copy and controls, and the supplied wordmark with its left-aligned phone lockup. Self-hosted type lives in `public/fonts`. One transparent dry-brush image supplies the decorative ink in the header, Home hero and mobile footer.
 
-The Home desktop hero has two columns, split .43/.57 with 48px between them
-(32px at compact desktop widths). The complete photograph leads the right
-column, uses its intrinsic aspect ratio and stays below 760px tall. The left
-column groups a two-line “Portraits / worth keeping.” heading, supporting copy
-and booking controls. The display scale runs from 56px to 96px. The actual
-horizontal artwork sits below that group with the small People / Places /
-Stories line beside it; it no longer competes with the photograph as a tall
-third column. Artwork remains complete at its native 1010/389 ratio. The
-`motif` renderer accepts a horizontal variant for Home only; inner pages retain
-their responsive artwork selection. The existing heading break returns below
-1001px, retaining the approved three-line phone cover and tablet heading.
+## Home and Work
 
-Phones retain their fullscreen cover, typography, navigation and touch gallery.
-The phone/tablet CSS preceding the desktop block is unchanged. Selected work
-uses four portrait frames with 16px desktop gaps. Inner-page introductions share
-a fluid 440–600px photo height. Session cards retain all four packages and facts.
-Viewer captions display position counts; descriptive image alt remains
-available to assistive technology.
+Desktop leads with a three-line heading at left and a square portrait at right. The six-frame carousel places its count and arrows alongside the image on large screens and below it on phones. Its selected frame survives a gallery refresh. The original seated portrait has three square cover derivatives. The full photograph stays available in the library. The selected-work strip enlarges a photograph. Collection links open a gallery.
 
-Hero asset `27-img-0297.jpg` was verified against the published composition and
-live browser on 2026-10-21; the preview and live selection match. Different crops
-made it appear different. Retain live-admin photo selection behavior.
+Work shows four collections above the published wall. Portraits, Studio, Families and Social content use the owner’s photography. Studio covers the existing studio shoot. Family and Social can feature the published session photographs when the wall lacks a matching tag. Family covers preserve the group at both wide and narrow aspect ratios. An edit with one photograph displays that one frame. The full gallery retains the curated order, native photo controls and mobile disclosure.
 
-Research: [NN/G homepage principles](https://www.nngroup.com/articles/homepage-design-principles/)
-supports an obvious offer and action; [image-focused design](https://www.nngroup.com/articles/image-focused-design/)
-supports balancing a strong photograph with navigation and actions. The hero
-remains eager and high priority, following [web.dev LCP guidance](https://web.dev/articles/optimize-lcp).
+## Sessions and enquiries
 
-Capture route `/`, date 2026-10-23, UI commit `3654d2e`: `SCREENSHOT.png` is the
-1440×900 desktop viewport; `SCREENSHOT-MOBILE.png` is the full phone page at
-viewport 390×844. These are genuine captures from [run 39988308443](https://github.com/itsnotalwin/shutterhaus-site/actions/runs/39988308443).
-The mobile PNG is byte-identical to the preceding reviewed capture, and the
-393px browser comparison is pixel-identical before and after. Home was also
-visually inspected at 1024px, 1920px and in the live desktop browser. The full
-photograph, two-line desktop heading, complete artwork and absence of horizontal
-overflow were confirmed. Header, gallery and inner-page rules remain intact.
+Four desktop package cards share aligned 3:2 image frames and price rows. The phone package picker uses each photograph’s existing focal point. Contact places the form beside the introduction on desktop and immediately after it on phones. Prices and package selection flow through the existing pricing and enquiry code. The site uses the studio's working email, WhatsApp and form endpoint.
 
-Desktop refinement, 2026-10-23: the five live public pages were visually reviewed.
-Inner-page artwork now occupies a proportionate column and centers alongside
-the photograph. About removes the duplicated top inset and sizes its photo
-column to the portrait instead of leaving empty space inside a wide frame.
-Shared package rows align prices, specifications, descriptions, inclusions and
-booking controls while retaining the natural landscape and portrait frames.
-Desktop Contact places Name and Email beside each other and uses clearer field
-borders; on viewports at least 800px tall its enquiry panel stays in view while
-reading the left column. Footer text is slightly larger. All changes are scoped
-to widths above 1000px; the approved phone/tablet rules remain intact.
+## Review evidence
 
-Validation: production build and all 22 DOM interaction tests pass. The CSS
-mechanical scan reports no findings. Run 39988308443 passed the seven-width
-public verifier, public/admin controls, Chromium and WebKit photo-layout jobs,
-GitHub Pages deployment with release-SHA confirmation and live Safari scrolling.
-Local Chromium is absent and the cloud browser cannot access the local preview;
-rendered CI evidence and live public inspection provide visual verification.
-The evidence commit changes documentation and captures only. Inherited folder
-context gaps outside this visual scope remain separate backfill work.
-
-Hero follow-up, 2026-10-23: the owner identified the Home hero as still needing
-work after the broader desktop pass. This composition supersedes that pass's
-three-column hero and 112px heading cap; it does not imply owner approval of the
-new result. Preserve the current photograph selection and successful phone
-cover in later refinements.
-
-Sessions image follow-up, 2026-10-23: the owner flagged mixed package image
-heights and crops. Above 1000px, all four images now share a 3:2 landscape frame
-with `object-fit:cover`. `pages-more.ts` supplies `--desktop-focal` from the
-existing package curation fields: Starter/Signature center, Essential 50% 18%,
-Social 50% 0%. This supersedes the earlier desktop rule that kept separate
-landscape and portrait frame shapes. The family image retains every face; the
-portrait crops are composed around the face and upper body. Shared subgrid rows
-keep image edges and package details aligned. Phone/tablet frame rules, photo
-choices, pricing, package terms and booking links are unchanged.
-
-The rendered verifier now checks equal 3:2 desktop frame sizes and aligned top
-and bottom edges; it retains the existing phone/tablet framing checks. It also
-captures the desktop package section at 1024, 1440 and 1920px for review. Current
-Sessions evidence is `SCREENSHOT-SESSIONS.png` (the package section captured from
-a 1440×900 viewport, resulting image 1440×1031) and
-`SCREENSHOT-SESSIONS-MOBILE.png` (full page at viewport 390×844). Capture route
-`/services.html`, date 2026-10-23, UI commit `2f4237b`, from
-[run 39991738484](https://github.com/itsnotalwin/shutterhaus-site/actions/runs/39991738484).
-The 393px Sessions before/after browser capture is pixel-identical. Package crops
-were reviewed at 1024, 1440 and 1920px and independently on the live desktop
-site; every face in the family photograph remains visible. Live image frames
-measure the same 258.47×172.31px, with identical top and bottom edges and no
-horizontal overflow. The Home captures above remain byte-identical to the
-current build. Build, 22 DOM regressions, the seven-width public/control verifier
-and both browser engines pass. The evidence follow-up changes only documentation
-and genuine captures.
+`SCREENSHOT.png` shows the built Home viewport at 1440 × 900. `SCREENSHOT-MOBILE.png` shows Home at 390 × 844, full page. `SCREENSHOT-SESSIONS.png` shows the 1440px package comparison, and `SCREENSHOT-SESSIONS-MOBILE.png` shows the full phone Sessions page. All four are genuine browser captures of the 25 November 2026 redesign. Browser checks exercise all five public pages, drawer focus, frame bounds, package handoff and collection navigation.

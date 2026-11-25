@@ -58,11 +58,38 @@ test('reduced motion, self-hosted type and signed-out admin gate',async({page})=
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.goto('/');
  await page.evaluate(()=>document.fonts.ready);
- expect(await page.locator('h1').evaluate(el=>getComputedStyle(el).fontFamily)).toContain('Bodoni Moda');
+ expect(await page.locator('h1').evaluate(el=>getComputedStyle(el).fontFamily)).toContain('Playfair Display');
  expect(await page.locator('.cell img').first().evaluate(el=>getComputedStyle(el).transitionDuration)).toBe('0s');
  await expect(page.locator('link[href*="fonts.googleapis"]')).toHaveCount(0);
  await page.goto('/admin.html');
  await expect(page.locator('#app')).not.toBeEmpty();
  await expect(page.locator('#app')).toContainText(/Google|isn't connected yet/);
  await expect(page.locator('#app')).not.toContainText("isn't on the admin allowlist");
+});
+
+test('featured photographs wrap and collection links open real Shutterhaus work', async ({page}) => {
+ await page.goto('/');
+ const figure = page.locator('.hero__fig');
+ const initial = await figure.getAttribute('data-frame');
+ const next = page.getByRole('button', {name:'Next featured photograph'});
+ const prev = page.getByRole('button', {name:'Previous featured photograph'});
+ await prev.focus();
+ await prev.press('Enter');
+ await expect(page.locator('[data-slide-count]')).toHaveText('06 / 06');
+ await expect(figure).not.toHaveAttribute('data-frame', initial!);
+ await next.click();
+ await expect(figure).toHaveAttribute('data-frame', initial!);
+ await expect(page.locator('[data-slide-count]')).toHaveText('01 / 06');
+ for (const label of ['Portraits','Studio','Families','Social content']) {
+  await page.goto('/portfolio.html');
+  await page.locator('.work-tile').filter({hasText:label}).click();
+  await expect(page.locator('h1')).toHaveText(label + '.');
+  const photo = page.locator('.pf-cell').first();
+  await expect(photo).toBeVisible();
+  await expect(photo.locator('img')).toHaveAttribute('src',/gallery/);
+  await photo.click();
+  await expect(page.locator('.lb')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(photo).toBeFocused();
+ }
 });

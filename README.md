@@ -15,10 +15,10 @@ live domain. Review the actual deployed pages before proposing visual changes.
 Do not use historical screenshots or an older checkout as the approved design.
 Branch recovery tags are recorded in [docs/BRANCH_CONSOLIDATION.md](docs/BRANCH_CONSOLIDATION.md).
 
-The approved public site uses Bodoni Moda headings, Inter body text, a white
-editorial layout, geometric artwork and monochrome photography. Home begins
-“Portraits worth keeping.” The current About page has one photograph with no
-caption. Preserve these choices during maintenance.
+The current desktop, mobile and brand boards use Playfair Display, Montserrat,
+white pages, fine rules and a black ink stroke. Home opens with “Portraits worth
+keeping.” Work groups the photographer’s originals into Portraits, Studio,
+Families and Social content. [Design notes and screenshots](DESIGN.md).
 
 ## Run locally
 
@@ -137,7 +137,7 @@ search metadata. The current packages are Starter R800, Essential R2,000,
 Signature R2,500 and Social R3,500; edit the JSON rather than duplicating prices.
 
 `src/public.css` owns the current editorial design. Preserve the deliberate
-monochrome treatment, crop positions, photograph order and geometric artwork.
+monochrome treatment, crop positions, photograph order and brush-stroke artwork.
 Apply grayscale once per gallery image; avoid adding filters to its wrappers.
 See [Safari photograph guidance](docs/SAFARI_IMAGE_LAYOUT.md) before changing
 photo positioning or compositing.

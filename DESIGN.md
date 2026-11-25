@@ -1,32 +1,7 @@
 # Shutterhaus public presentation
 
-The approved theme is a white editorial frame, Bodoni Moda display type, Inter
-body/UI, monochrome portfolio photography and the supplied geometric artwork.
-Generate the root HTML from `src/`; keep the static and hydrated pages aligned.
+The 25 November 2026 desktop, mobile and brand boards guide the five public pages. Playfair Display headings and Montserrat text sit on a white page with fine rules, square buttons and a black dry-brush accent. The desktop Home pairs “Portraits worth keeping.” with a square portrait and six manually controlled frames. On phones the headline precedes the photograph, arrows, introduction and booking button.
 
-The desktop Home hero uses two columns: a two-line headline, support copy,
-booking controls and complete horizontal artwork on the left; the full
-photograph on the right. White space separates these groups without a competing
-tall artwork column. The mobile cover, three-line heading and swipe gallery
-remain the responsive baseline. See `src/DESIGN.md` for implementation details.
+Every photograph comes from the Shutterhaus collection. The Home cover uses a closer crop of the published seated portrait. Work opens with Portraits, Studio, Families and Social content. Studio replaces the reference’s Couples tile at the owner's request. Visitors can still enquire about couples photography.
 
-Actual capture route `/`, date 2026-10-23, UI commit `3654d2e`:
-`SCREENSHOT.png` is the 1440×900 viewport; `SCREENSHOT-MOBILE.png` is a full-page
-capture at viewport 390×844. Both come from [run 39988308443](https://github.com/itsnotalwin/shutterhaus-site/actions/runs/39988308443).
-The mobile PNG is byte-identical to the preceding reviewed capture. Desktop was
-also inspected at 1024px, 1920px and in the live browser. Build, 22 DOM tests,
-seven-width layout/control verification, Chromium and WebKit photo checks,
-deployment and live Safari scrolling all passed. Inner-page layouts and package
-alignment from the preceding desktop pass remain intact.
-
-Sessions follow-up, 2026-10-23: desktop package images now use matching 3:2
-landscape frames with individual focal positions. This replaces the previous
-mixed landscape/portrait photo heights and the gaps they created. Phone/tablet
-image frames stay intact. `SCREENSHOT-SESSIONS.png` shows the package comparison from a 1440×900 viewport
-(resulting section image 1440×1031); `SCREENSHOT-SESSIONS-MOBILE.png` shows the
-full page at viewport 390×844. Actual route `/services.html`, date 2026-10-23,
-UI commit `2f4237b`, from [run 39991738484](https://github.com/itsnotalwin/shutterhaus-site/actions/runs/39991738484).
-The crops were reviewed at 1024, 1440 and 1920px and in the live desktop browser.
-The phone comparison is pixel-identical; the existing Home captures still match
-the current build byte for byte. Build, 22 DOM tests and both browser engines
-pass.
+The Home and Sessions screenshots in this directory and in `src/` were captured from the built website on 25 November 2026. Desktop Home uses a 1440 × 900 viewport. The phone images show full pages at 390 × 844. The desktop Sessions capture shows the package comparison at 1440px. See [the source design notes](src/DESIGN.md) for responsive behavior.

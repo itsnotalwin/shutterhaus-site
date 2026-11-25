@@ -1,6 +1,7 @@
 import { formatPrice } from "./pricing";
 import { escapeHtml, motif } from "./layout";
 import { SITE } from "./config";
+import { WORK_EDITS, belongsToEdit, collectionLink, editCover, frameLabel } from "./work-collections";
 import type { Photo } from "./types";
 import { PHOTO_ROWS, COMMITTED_ROWS } from "./rows";
 
@@ -458,14 +459,13 @@ function mobileGallery(): boolean {
  * 30 deliberately chosen ones there is nothing left for it to select between, and
  * a filter over hand-picked work hides work on purpose.
  */
-function titleCase(s: string): string { return s.charAt(0).toUpperCase() + s.slice(1); }
 
-export function editorialFigure(photo: Photo | undefined, className: string, eager = false): string {
+export function editorialFigure(photo: Photo | undefined, className: string, eager = false, sizes = "(max-width: 759px) 100vw, 44vw"): string {
   if (!photo) return "";
-  return `<figure class="${className}"><picture>${pictureFor(photo.url, "(max-width: 759px) 100vw, 44vw", photo.width)}<img src="${escapeHtml(bestDerivative(photo.url, "webp", photo.width))}" alt="${escapeHtml(photo.alt || photo.filename || "")}" width="${photo.width || 1200}" height="${photo.height || 1600}" loading="${eager ? "eager" : "lazy"}" decoding="async" /></picture></figure>`;
+  return `<figure class="${className}"><picture>${pictureFor(photo.url, sizes, photo.width)}<img src="${escapeHtml(bestDerivative(photo.url, "webp", photo.width))}" alt="${escapeHtml(photo.alt || photo.filename || "")}" width="${photo.width || 1200}" height="${photo.height || 1600}" loading="${eager ? "eager" : "lazy"}" decoding="async" /></picture></figure>`;
 }
 
-export function portfolioPage(photos: Photo[], expanded = false): string {
+export function portfolioPage(photos: Photo[], expanded = false, collection: string | null = null): string {
   if (!photos.length) return emptyGallery();
 
   const byId = new Map(photos.map((p) => [p.id, p]));
@@ -475,7 +475,6 @@ export function portfolioPage(photos: Photo[], expanded = false): string {
   // offender rather than leaving a gap for someone to photograph.
   const missing: string[] = [];
 
-    const shown: string[] = [];
     // The frames, in the curated order from rows.ts, resolved to Photo objects.
     // The row shape is still enforced below — a row that lost a frame is dropped
     // whole, because a partial row is a hole and a hole is the one defect this
@@ -497,7 +496,6 @@ export function portfolioPage(photos: Photo[], expanded = false): string {
           missing.push(`row ${ri + 1}/${id}`);
           continue;
         }
-        shown.push(p.id);
         got.push(p);
       }
       if (got.length < row.length) return; // short row: dropped whole, no hole
@@ -529,20 +527,28 @@ export function portfolioPage(photos: Photo[], expanded = false): string {
     // browser is never told a two-across width for a three-across layout.
     const sizes = wallSizes(cols);
 
+    const activeEdit = WORK_EDITS.find(edit => edit.key === collection);
+    const editFrames = (edit: typeof WORK_EDITS[number]) => {
+      const frames = ordered.filter(photo => photo.visible && belongsToEdit(photo, edit));
+      const cover = editCover(edit, ordered, photos);
+      return cover && !frames.some(photo => photo.id === cover.id) ? [cover, ...frames] : frames;
+    };
+    const displayed = activeEdit ? editFrames(activeEdit) : ordered;
+
     let n = 1;
     const wall = (frames: Photo[]) => `<div class="pf-rows" style="--pf-cols:${cols}">${pack(frames)
       .map(col => `<div class="pf-col">${col.map(p => wallCell(p, n++, sizes)).join("")}</div>`)
       .join("")}</div>`;
     // Keep the first ten in place when the visitor opens the rest of the work.
     // Desktop keeps its existing continuous, balanced wall.
-    const hasMore = mobileGallery() && ordered.length > 10;
+    const hasMore = mobileGallery() && displayed.length > 10;
     const gallery = hasMore
-      ? `${wall(ordered.slice(0, 10))}
+      ? `${wall(displayed.slice(0, 10))}
         <details class="pf-more"${expanded ? ' open' : ''}>
           <summary class="pf-more__toggle"><span class="pf-more__label pf-more__closed">Show more images</span><span class="pf-more__label pf-more__open">Show fewer images</span><svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false"><path d="m6 12 10 8 10-8" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" /></svg></summary>
-          ${wall(ordered.slice(10))}
+          ${wall(displayed.slice(10))}
         </details>`
-      : wall(ordered);
+      : wall(displayed);
 
   if (missing.length) {
     throw new Error(
@@ -551,22 +557,34 @@ export function portfolioPage(photos: Photo[], expanded = false): string {
     );
   }
 
-  const feature = photos.find(photo => photo.filename === SITE.portfolioFeaturePhoto) ?? ordered[0];
-  const featureCategory = feature ? categoryOf(feature) : "portrait";
+  const covers = WORK_EDITS.map((edit, i) => {
+    const p = editCover(edit, ordered, photos);
+    if (!p) return "";
+    return `<a class="work-tile" data-collection="${edit.key}" href="${collectionLink(edit)}" style="--focal:${edit.position}">
+      ${editorialFigure(p, "work-tile__photo", i === 0, "(max-width: 759px) 92vw, 24vw")}
+      <span class="image-label"><small>${String(i + 1).padStart(2, "0")}</small>${edit.label}</span></a>`;
+  }).join("");
+  // Static hosting cannot filter a query on the server. Fragment targets expose
+  // the same curated edit and links to its originals when scripting is off.
+  const nativeEdits = typeof window === "undefined" ? `<noscript>${WORK_EDITS.map(edit => `
+    <section class="native-edit" id="edit-${edit.key}">
+      <header class="section-label"><h2>${edit.label}</h2><a href="./portfolio.html">All work</a></header>
+      <div class="native-edit__photos">${editFrames(edit).map(p => `<a href="${escapeHtml(p.url)}">${editorialFigure(p, "native-edit__frame", false, "(max-width: 759px) 92vw, 24vw")}</a>`).join("")}</div>
+    </section>`).join("")}</noscript>` : "";
   return `<section class="page portfolio" data-mobile-layout="${mobileGallery()}">
-    <header class="phead editorial-intro">
-      <div class="editorial-intro__copy"><p class="eyebrow eyebrow--rule">Portfolio / Work</p>
-      <h1 class="phead__h">Selected<br>stories.</h1>
-      <p class="phead__p">Real people, real moments. Work with a focus on character, light and environment.</p>
-      <a class="cta" href="./contact.html">Enquire about a session <span aria-hidden="true">→</span></a></div>
-      ${editorialFigure(feature, "editorial-intro__photo portfolio-feature", true)}
-      ${motif()}
-      <div class="portfolio-feature__caption"><h2>${escapeHtml(featureCategory === "portrait" ? "Portraits" : titleCase(featureCategory))}</h2><p>Real people, real moments. Work with a focus on character, light and environment.</p></div>
+    <header class="work-intro">
+      <p class="eyebrow eyebrow--rule">Work</p>
+      <h1 class="phead__h">${activeEdit ? activeEdit.label + "." : "Selected<br> work."}</h1>
+      <p class="phead__p">Portraits, studio work and moments on location in Gauteng.</p>
     </header>
-    <div class="section-label"><h2>Our work.</h2><span>${shown.length} photographs / Gauteng</span></div>
-    ${gallery}
-        ${pfBand()}
-      </section>`;
+    ${activeEdit
+      ? `<nav class="edit-links" aria-label="Work collections"><a href="./portfolio.html">All work</a>${WORK_EDITS.map(edit => `<a href="${collectionLink(edit)}"${activeEdit.key === edit.key ? ' aria-current="page"' : ""}>${edit.label}</a>`).join("")}</nav>`
+      : `<nav class="work-index" aria-label="Browse work by collection">${covers}</nav>`}
+    ${nativeEdits}
+    <div class="section-label"><h2>${activeEdit ? activeEdit.label : "All photographs"}</h2><span>${displayed.length} ${displayed.length === 1 ? "photograph" : "photographs"}</span></div>
+    ${displayed.length ? gallery : '<p class="intro-copy">There are no published photographs in this collection yet.</p>'}
+    ${pfBand()}
+  </section>`;
 }
 
 /**
@@ -702,48 +720,42 @@ export function homePage(photos: Photo[], _cols: number): string {
     ? pinnedStrip
     : photos.filter((p) => p.id !== usedHero).slice(0, SITE.homeGalleryCount);
 
-  // The hero is the LCP element and was the single biggest byte on the home
-  // page: a 286 KB JPEG, while every other image on the site is WebP. Its
-  // `src` fallback asked bestDerivative for "jpg" explicitly, so a browser that
-  // took the <img> path paid JPEG bytes. The <picture> above already offers
-  // WebP first, so this only changes the fallback — but it is the path some
-  // browsers take, and it is free. "webp" is requested and the JPEG <source>
-  // stays as the real fallback for a browser with no WebP support at all.
-  const heroFig = hero
-    ? `<figure class="hero__fig" style="--hero-ratio:${hero.width ?? 2400}/${hero.height ?? 1866}"><picture>${pictureFor(hero.url, "(max-width: 759px) 280vw, (max-width: 1000px) 56vw, (min-width: 1920px) 980px, 54vw", hero.width)}
-        <img src="${escapeHtml(bestDerivative(hero.url, "webp", hero.width))}"
-             alt="${escapeHtml(hero.alt || hero.filename || "")}"
-             loading="eager" decoding="async" fetchpriority="high"
-             width="${hero.width ?? 1600}" height="${hero.height ?? 1067}" /></picture>
-      </figure>`
-    : "";
+  // Only explicitly featured Home and Work photographs enter the carousel.
+  const byId = new Map(photos.filter(photo => photo.visible).map(photo => [photo.id, photo]));
+  const candidates = [hero, ...strip, ...PHOTO_ROWS.flat().map(id => byId.get(id))];
+  const slides = [...new Map(candidates.filter((p): p is Photo => !!p && p.visible).map(p => [p.id, p])).values()].slice(0, 6);
+  const coverSizes = "(max-width: 759px) 92vw, 45vw";
+  const coverPicture = (photo: Photo) => {
+    const pinnedCrop = photo.url === "gallery/27-img-0297.jpg";
+    const source = pinnedCrop
+      ? `<source type="image/webp" sizes="${coverSizes}" srcset="${[520, 960, 1300].map(w => `./gallery/27-img-0297-cover-${w}.webp ${w}w`).join(", ")}" />`
+      : pictureFor(photo.url, coverSizes, photo.width);
+    return `<picture>${source}<img src="${escapeHtml(bestDerivative(photo.url, "webp", photo.width))}" alt="${escapeHtml(photo.alt || photo.filename || "Featured photograph")}"
+      width="${pinnedCrop ? 1300 : photo.width || 1200}" height="${pinnedCrop ? 1300 : photo.height || 1200}" decoding="async" loading="eager" fetchpriority="high" /></picture>`;
+  };
+  const first = slides[0];
+  const heroFig = first ? `<figure class="hero__fig" data-frame="${escapeHtml(first.id)}">${coverPicture(first)}</figure>` : "";
+  const controls = slides.length > 1 ? `<div class="hero__controls" role="group" aria-label="Featured photographs" hidden>
+      <span data-slide-count aria-live="polite" aria-atomic="true">01 / ${String(slides.length).padStart(2, "0")}</span>
+      <button type="button" data-step="-1" aria-label="Previous featured photograph"><span aria-hidden="true">←</span></button>
+      <button type="button" data-step="1" aria-label="Next featured photograph"><span aria-hidden="true">→</span></button>
+    </div>${slides.map(p => `<template data-slide="${escapeHtml(p.id)}">${coverPicture(p)}</template>`).join("")}` : "";
 
   return `<section class="page home" data-mobile-layout="${mobileGallery()}">
     <div class="hero">
-      <div class="hero__body">
-        <div class="hero__title"><p class="eyebrow eyebrow--rule">Independent photography / Gauteng, SA</p>
-        <h1 class="hero__h">Portraits<br>worth<br class="hero__break"> keeping.</h1>
-        <span class="hero__cue" aria-hidden="true">Scroll</span></div>
-        <p class="hero__lede">${escapeHtml(h.lede)}</p>
-        <div class="hero__actions"><a class="cta cta--btn" href="./contact.html">Book a session <span aria-hidden="true">→</span></a><a class="cta cta--line" href="./portfolio.html">View work <span aria-hidden="true">→</span></a></div>
-      </div>
-      ${heroFig}
-      ${motif("hero__motif", "horizontal")}
-
+      <div class="hero__title"><p class="eyebrow eyebrow--rule"><span>Independent photography / <span class="hero__location">Gauteng, SA</span></span></p>
+        <h1 class="hero__h">Portraits<br> worth<br> keeping.</h1></div>
+      <div class="hero__media">${heroFig}${controls}${motif("hero__ink")}</div>
+      <div class="hero__info"><p class="hero__lede">${escapeHtml(h.lede)}</p>
+        <div class="hero__actions"><a class="cta" href="./contact.html">Book a session <span aria-hidden="true">→</span></a><a class="cta cta--line" href="./portfolio.html">View portfolio</a></div></div>
     </div>
-
-    ${
-      strip.length
-        ? (() => {
-            return `<section class="hstrip">
-            <div class="hstrip__head"><span>Selected work</span><span class="hstrip__subjects">Portraits / Couples / Families / Social</span><a href="./portfolio.html">View all <span aria-hidden="true">→</span></a></div>
-            <div class="hstrip__grid" style="--showcase-cols:${Math.min(4, strip.length)}">${strip.map(p => `<button type="button" class="photo-trigger hstrip__item" role="button" aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photo")}">${figure(p, -1)}</button>`).join("")}</div>
-            <div class="hstrip__meter" aria-hidden="true" style="--n:${strip.length};--p:0"><span class="hstrip__count">01 / ${String(strip.length).padStart(2, "0")}</span><span class="hstrip__bar"><i></i></span></div>
-          </section>`;
-          })()
-        : ""
-    }
-
+    ${strip.length ? `<section class="hstrip" aria-label="Selected work">
+      <div class="hstrip__head"><h2>Selected work</h2><nav class="hstrip__subjects" aria-label="Work collections">${WORK_EDITS.map(edit => `<a href="${collectionLink(edit)}">${edit.label}</a>`).join("")}</nav>
+      <a class="all-work" href="./portfolio.html">View all <span aria-hidden="true">→</span></a></div>
+      <div class="hstrip__grid" style="--showcase-cols:${Math.min(4, strip.length)}">${strip.map((p, i) => `<button type="button" class="photo-trigger hstrip__item" data-cover="${WORK_EDITS.find(edit => edit.cover === p.filename)?.key ?? ""}" style="--focal:${WORK_EDITS.find(edit => edit.cover === p.filename)?.position ?? "50% 28%"}" role="button" aria-label="Enlarge ${escapeHtml(p.alt || p.filename || "photograph")}">
+        ${figure(p, -1, "(max-width: 759px) 78vw, 24vw")}<span class="image-label" aria-hidden="true"><small>${String(i + 1).padStart(2, "0")}</small>${frameLabel(p)}</span></button>`).join("")}</div>
+      <div class="hstrip__meter" aria-hidden="true" style="--n:${strip.length};--p:0"><span class="hstrip__count">01 / ${String(strip.length).padStart(2, "0")}</span><span class="hstrip__bar"><i></i></span></div>
+    </section>` : ""}
     ${homeBand()}
   </section>`;
 }

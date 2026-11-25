@@ -10,19 +10,11 @@ package configuration, published photo choices, navigation and enquiry behavior
 intact during visual maintenance. Generate HTML through `tools/build-pages.py`.
 
 Run `npm ci`, `npm run build`, and `npm test`. `npm run dev` starts development;
-`npm run preview` serves the production build. Browser checks are described in
-the README. Current work refines the desktop hero, fits the existing artwork on
-phones/tablets/desktop, and removes visible alt descriptions from the lightbox.
-The approved phone cover and swipe gallery remain the responsive baseline.
-The owner explicitly authorized research, implementation and deployment on
-2026-10-21. Preserve the sole main branch and gated deployment workflow.
+`npm run preview` serves the production build. The README lists the browser checks.
 
-Validation on 2026-10-21: production build and all 22 public/admin DOM regression
-tests pass, including the visible-caption regression. The seven-width verifier
-checks desktop shell bounds, complete Home artwork and uncropped desktop hero
-presentation. Desktop and mobile captures for all five pages were inspected.
-Current Home screenshots live at the root and in `src/`; see `src/DESIGN.md`.
-Inherited documentation gaps in untouched folders remain separate backfill work.
+The current reference is the 25 November 2026 Shutterhaus desktop, mobile and brand kit. Home uses a six-photograph carousel, Work offers Portraits, Studio, Families and Social content, and Contact puts the form first on phones. Use only the photographer’s own photographs. Visual evidence lives at the root and in `src/`. Keep the sole `main` branch and the gated GitHub Pages deployment.
+
+## Earlier releases
 
 2026-10-23 desktop pass: refined inner-page proportions and About spacing,
 aligned package content rows, made the desktop enquiry form compact and improved

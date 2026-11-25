@@ -13,6 +13,7 @@ import { setLiveRows } from "./rows";
 import { mountContactForm } from "./contact-form";
 import { mountNavigation } from "./navigation";
 import { initLightbox, markLoadedImages } from "./lightbox";
+import { mountHeroCarousel } from "./hero-carousel";
 
 const app = document.getElementById("app")!;
 
@@ -142,18 +143,20 @@ async function paint(): Promise<void> {
 
   let photos = mergePhotos();
   let portfolioExpanded = false;
+  const collection = r === 'portfolio' ? new URLSearchParams(location.search).get('collection') : null;
   const renderBody = () => r === 'contact' ? contactPage()
     : r === 'services' ? servicesPage(photos)
     : r === 'about' ? aboutPage(photos)
     : r === 'home' ? homePage(photos, columnsFor(innerWidth))
-    : portfolioPage(photos, portfolioExpanded);
+    : portfolioPage(photos, portfolioExpanded, collection);
 
-  const prerendered = app.dataset.route === r && !!app.querySelector('.main');
+  const prerendered = !collection && app.dataset.route === r && !!app.querySelector('.main');
   if (!prerendered) {
     app.innerHTML = renderShell(r, renderBody(), r === 'home');
     scrollTo(0, 0);
   }
   delete app.dataset.route;
+  if (r === 'home') mountHeroCarousel(app);
   updatePageMetadata(r);
   markLoadedImages();
   const navigation = mountNavigation(syncHeader);
@@ -194,7 +197,13 @@ async function paint(): Promise<void> {
     // Keep the visitor's package choice and keyboard focus across live photo updates.
     const packageChoice = main.querySelector<HTMLInputElement>('[name="package-view"]:checked')?.id;
     const packageFocus = focused?.matches('[name="package-view"]') ? focused.id : null;
+    const cover = main.querySelector<HTMLElement>(".hero__fig")?.dataset.frame;
+    const coverStep = focused instanceof HTMLElement ? focused.dataset.step : undefined;
     main.innerHTML = body;
+    if (r === 'home') {
+      mountHeroCarousel(main, cover);
+      if (coverStep === "1" || coverStep === "-1") main.querySelector<HTMLElement>(`[data-step="${coverStep}"]`)?.focus({preventScroll:true});
+    }
     if (packageChoice) {
       const radio = document.getElementById(packageChoice) as HTMLInputElement | null;
       if (radio) radio.checked = true;
