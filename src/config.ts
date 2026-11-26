@@ -170,7 +170,7 @@ export const SITE: SiteConfig = {
   home: {
     eyebrow: "Shutterhaus Visuals",
     heading: "Timeless portraiture",
-    lede: "Natural, honest and timeless photography for portraits, couples, families and social content across Gauteng.",
+    lede: "Portraits, family photographs and social content, shot on location across Gauteng.",
     cta: "View portfolio",
     est: "2019",
     tags: ["Portraits", "Couples", "Families"],
@@ -201,14 +201,12 @@ export const SITE: SiteConfig = {
   homeGalleryCount: 6, // Published admin selections may still use up to six.
   homeStrip: [
     "5-img-0086.jpg",
-    "49-img-0131.jpg",
+    "2-20240718114526-img-0124.jpg",
     "54-img-0164.jpg",
     "20-img-0202.jpg",
   ],
-  // Pinned deliberately: strongest subject in the set AND real dark space in
-  // the lower-left for the white headline. Chosen from a side-by-side of all
-  // six landscape frames cropped to the hero ratio.
-  heroPhoto: "27-img-0297.jpg",
+  // Backlit, windblown outdoor portrait. The face reads in both hero formats.
+  heroPhoto: "22-img-0239.jpg",
   services: { eyebrow: "Photography", heading: "Sessions & pricing.", cta: "View packages", photo: "22-img-0239.jpg" },
 };
 

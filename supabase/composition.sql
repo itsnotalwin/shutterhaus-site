@@ -75,13 +75,11 @@ create policy "composition admin delete"
 -- Source of truth: src/demo.ts (ids->filenames), src/rows.ts (the wall),
 -- src/config.ts (homeStrip, heroPhoto). Regenerate after any of those change.
 insert into public.composition (page, slot_key, sort_order, filename) values
-  ('home', 'strip', 0, '22-img-0239.jpg'),
-  ('home', 'strip', 1, '21-img-0234.jpg'),
-  ('home', 'strip', 2, '18-img-0043.jpg'),
-  ('home', 'strip', 3, '26-img-0253.jpg'),
-  ('home', 'strip', 4, '46-img-0119.jpg'),
-  ('home', 'strip', 5, '1-20240718113728-img-0065.jpg'),
-  ('home', 'hero', 0, '27-img-0297.jpg'),
+  ('home', 'strip', 0, '5-img-0086.jpg'),
+  ('home', 'strip', 1, '2-20240718114526-img-0124.jpg'),
+  ('home', 'strip', 2, '54-img-0164.jpg'),
+  ('home', 'strip', 3, '20-img-0202.jpg'),
+  ('home', 'hero', 0, '22-img-0239.jpg'),
   ('portfolio', 'wall', 0, '2-20240718114526-img-0124.jpg'),
   ('portfolio', 'wall', 1, '18-img-0043.jpg'),
   ('portfolio', 'wall', 2, '34-img-0461.jpg'),

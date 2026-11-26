@@ -82,10 +82,10 @@ ROWS = [
     ["2-20240718114526-img-0124.jpg", "18-img-0043.jpg"],          # 0.6667
     # The sharpest frame in the set and the most legible face on the wall.
     ["34-img-0461.jpg", "53-img-0155.jpg"],                       # 0.5625
-    # The studio beauty frame: warm rim light, holds together at 173px.
+    # The sunlit close portrait: warm rim light, holds together at 173px.
     ["19-img-0198-3.jpg", "47-img-0121.jpg"],                     # 0.8
     ["24-img-0245.jpg", "44-img-0098.jpg"],                       # 0.5625
-    # Tight monochrome headshot opposite the studio series.
+    # Tight monochrome headshot opposite the green-wall portrait.
     ["28-img-0308.jpg", "51-img-0145.jpg"],                       # 0.8
     ["25-img-0249.jpg", "49-img-0131.jpg"],                       # 0.6667
     # 5-img-0086 is the only male portrait on the wall. Without it the whole

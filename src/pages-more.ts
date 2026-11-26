@@ -14,12 +14,7 @@ import type { PricingTier } from "./config";
  */
 export function aboutPage(photos: Photo[]): string {
   const a = SITE.about;
-  // The photograph of the PHOTOGRAPHER, not one of his models. `photos[0]` is
-  // whatever the gallery happens to lead with — currently a studio portrait of a
-  // subject — which put a stock-looking headshot beside his name on the one page
-  // whose entire job is to answer "who is this person". A.PINNED picks the frame
-  // of Alwin on a beach with a metal detector; if the gallery is missing it the
-  // page still renders with the old fallback rather than an empty column.
+  // Keep the photographer’s own beach frame beside his biography.
   const shot = photos.find((p) => p.filename === a.photo)
     ?? DEMO_PHOTOS.find((p) => p.filename === a.photo);
 
@@ -77,7 +72,7 @@ export function servicesPage(photos: Photo[] = []): string {
   const card = (t: PricingTier, i: number): string => {
     const ph = shotFor(t, i + 1);
     return `<article class="pkg${t.popular ? " pkg--pop" : ""}" data-package="${escapeHtml(t.name)}">
-    ${ph ? `<figure class="pkg__fig${ph.width && ph.height && ph.width > ph.height ? " pkg__fig--landscape" : ""}" style="--photo-ar:${ph.width && ph.height ? `${ph.width} / ${ph.height}` : "16 / 9"};--desktop-focal:${escapeHtml(t.desktopFocal ?? t.focal ?? "50% 50%")}"><picture>${pictureFor(ph.url, "(max-width: 760px) 100vw, 33vw", ph.width)}
+    ${ph ? `<figure class="pkg__fig${ph.width && ph.height && ph.width > ph.height ? " pkg__fig--landscape" : ""}" style="--focal:${escapeHtml(t.focal ?? "50% 20%")};--photo-ar:${ph.width && ph.height ? `${ph.width} / ${ph.height}` : "16 / 9"};--desktop-focal:${escapeHtml(t.desktopFocal ?? t.focal ?? "50% 50%")}"><picture>${pictureFor(ph.url, "(max-width: 760px) 100vw, 33vw", ph.width)}
         <img src="${escapeHtml(bestDerivative(ph.url, "jpg", ph.width))}" alt="${escapeHtml(ph.alt || ph.filename || "")}"
              loading="lazy" decoding="async" /></picture></figure>` : ""}
     <p class="pkg__num"><span>${String(i + 1).padStart(2, "0")} / Session</span><span>${escapeHtml(t.spec.split(" · ")[0])}</span>${

@@ -18,6 +18,13 @@ for (const viewport of viewports) {
       mkdirSync(folder,{recursive:true});
       const measurements:unknown[] = [];
       const errors:string[] = [];
+      const photoRequests = new Set<string>();
+      if (process.env.BROWSER_TEST_URL && testInfo.project.name === 'webkit') {
+        page.on('request', request => {
+          const url = new URL(request.url());
+          if (url.hostname.endsWith('.supabase.co') && url.pathname === '/rest/v1/photos') photoRequests.add(url.href);
+        });
+      }
       page.on('pageerror', error => errors.push(error.message));
       const save = () => writeFileSync(`${folder}/measurements-${viewport.width}x${viewport.height}.json`,JSON.stringify({viewport,engine:testInfo.project.name,baseline,measurements,errors},null,2));
       const screenshot = async (label:string, fullPage=false) => page.screenshot({path:`${folder}/${label}-${viewport.width}x${viewport.height}.jpg`,type:'jpeg',quality:85,scale:'css',fullPage,animations:'disabled'});
@@ -133,8 +140,37 @@ for (const viewport of viewports) {
           await page.getByLabel('Name',{exact:true}).blur();
         }
       }
+      // WebKit also reports a paused provider's CORS diagnostic as a pageerror.
+      // Confirm that exact service failure independently, then verify every
+      // bundled photograph on the real page. Other errors still fail the test.
+      const confirmedOutages = new Set<string>();
+      for (const url of photoRequests) {
+        const message = url.slice('https://'.length) + ' due to access control checks.';
+        if (!errors.some(error => error.includes(message))) continue;
+        let providerStatus: string;
+        try {
+          const response = await page.request.get(url, {timeout: 15000});
+          if (response.status() !== 503) continue;
+          providerStatus = 'HTTP 503';
+        } catch (error) {
+          if (!(error instanceof Error && /getaddrinfo ENOTFOUND/.test(error.message))) throw error;
+          providerStatus = 'DNS unavailable';
+        }
+        await page.goto('/portfolio.html');
+        const frames = page.locator('.pf-cell img');
+        await expect(frames).toHaveCount(30);
+        const originalsLoaded = await frames.evaluateAll(async elements => {
+          const images = elements as HTMLImageElement[];
+          await Promise.all(images.map(img => { img.loading = 'eager'; return img.decode(); }));
+          return images.every(img => img.naturalWidth > 0 && new URL(img.currentSrc).origin === location.origin);
+        });
+        expect(originalsLoaded, 'All bundled gallery frames decode during a provider outage').toBe(true);
+        confirmedOutages.add(message);
+        measurements.push({providerStatus, bundledGallery: await frames.count()});
+        console.warn(`::warning::Photo service ${providerStatus}. All 30 bundled gallery photographs loaded on the live site.`);
+      }
       save();
-      if(!baseline) expect(errors).toEqual([]);
+      if(!baseline) expect(errors.filter(error => ![...confirmedOutages].some(message => error.includes(message)))).toEqual([]);
     });
   });
 }

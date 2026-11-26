@@ -73,7 +73,7 @@ FRAMES: dict[str, dict[str, str]] = {
     "22-img-0239.jpg": {"alt": "Close portrait of a woman with loose hair, warm light across her face", "cat": "portrait"},
     "28-img-0308.jpg": {"alt": "Close portrait of a woman looking at the camera, soft neutral light", "cat": "portrait"},
     "29-img-0383.jpg": {"alt": "Close portrait of a woman with dark hair against a dark background", "cat": "portrait"},
-    "20-img-0202.jpg": {"alt": "Portrait of a woman seated on a chair in a black top, lit warmly", "cat": "portrait"},
+    "20-img-0202.jpg": {"alt": "A woman in black seated on sunlit outdoor steps with her hand in her hair", "cat": "portrait"},
 
     # --- solo portraits, black and white ---
     "32-img-0404.jpg": {"alt": "Black and white portrait of a woman seated on the floor in a patterned skirt", "cat": "portrait"},
@@ -95,8 +95,8 @@ FRAMES: dict[str, dict[str, str]] = {
     "35-img-0482.jpg": {"alt": "Black and white portrait of a woman crouching, looking at the camera", "cat": "portrait"},
 
     # --- second subject ---
-    "4-img-0068.jpg": {"alt": "Black and white portrait of a young man in a beanie and sweatshirt", "cat": "portrait"},
-    "5-img-0086.jpg": {"alt": "Black and white portrait of a young man in a beanie and a Manhattan sweatshirt", "cat": "portrait"},
+    "4-img-0068.jpg": {"alt": "Black and white close-up of a man in a dark sweatshirt looking into the camera", "cat": "portrait"},
+    "5-img-0086.jpg": {"alt": "A seated man in a Manhattan sweatshirt looks into the camera, hands clasped", "cat": "portrait"},
     "1-20240718113728-img-0065.jpg": {"alt": "Portrait of a woman in a white top with her hair tied back, looking off into the distance", "cat": "portrait"},
     "2-20240718114526-img-0124.jpg": {"alt": "Portrait of a woman in a white top outdoors, hair pulled back, in bright light", "cat": "portrait"},
     # Alwin supplied this frame on 2026-10-03 as the Starter package image: the

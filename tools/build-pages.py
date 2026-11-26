@@ -135,7 +135,7 @@ def esc(s: str) -> str:
 # Structured data
 # ---------------------------------------------------------------------------
 # WHY THERE IS JSON-LD AT ALL
-# A one-person photography studio is exactly the business a LocalBusiness
+# An independent location photographer is exactly the business a LocalBusiness
 # knowledge panel is built for: one named person, one phone number, one area
 # served, one Instagram. Without markup, Google has to infer all of that from
 # page copy, and for a local "photographer near me" query the inference is worth

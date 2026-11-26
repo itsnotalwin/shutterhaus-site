@@ -12,7 +12,7 @@ intact during visual maintenance. Generate HTML through `tools/build-pages.py`.
 Run `npm ci`, `npm run build`, and `npm test`. `npm run dev` starts development;
 `npm run preview` serves the production build. The README lists the browser checks.
 
-The current reference is the 25 November 2026 Shutterhaus desktop, mobile and brand kit. Home uses a six-photograph carousel, Work offers Portraits, Studio, Families and Social content, and Contact puts the form first on phones. Use only the photographer’s own photographs. Visual evidence lives at the root and in `src/`. Keep the sole `main` branch and the gated GitHub Pages deployment.
+The current reference is the 25 November 2026 Shutterhaus desktop, mobile and brand kit. Home uses a six-photograph carousel, Work offers Portraits, On location, Families and Social content, and Contact puts the form first on phones. Use only the photographer’s own photographs. Visual evidence lives at the root and in `src/`. Keep the sole `main` branch and the gated GitHub Pages deployment.
 
 ## Earlier releases
 

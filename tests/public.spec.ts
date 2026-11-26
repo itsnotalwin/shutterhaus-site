@@ -35,7 +35,7 @@ for(const width of [320,390,430,768,1024,1440,1920]) {
 
 test('real pinned sources, gallery order and package facts survive',async({page})=>{
  await page.goto('/');
- await expect(page.locator('.hero__fig img')).toHaveAttribute('src',/27-img-0297/);
+ await expect(page.locator('.hero__fig img')).toHaveAttribute('src',/22-img-0239/);
  await expect(page.locator('.hstrip__item')).toHaveCount(4);
  const homeSources=await page.locator('.hstrip__item img').evaluateAll(images=>images.map((el:HTMLImageElement)=>el.dataset.filename));
  expect(new Set(homeSources).size).toBe(4);
@@ -80,7 +80,7 @@ test('featured photographs wrap and collection links open real Shutterhaus work'
  await next.click();
  await expect(figure).toHaveAttribute('data-frame', initial!);
  await expect(page.locator('[data-slide-count]')).toHaveText('01 / 06');
- for (const label of ['Portraits','Studio','Families','Social content']) {
+ for (const label of ['Portraits','On location','Families','Social content']) {
   await page.goto('/portfolio.html');
   await page.locator('.work-tile').filter({hasText:label}).click();
   await expect(page.locator('h1')).toHaveText(label + '.');
@@ -91,5 +91,73 @@ test('featured photographs wrap and collection links open real Shutterhaus work'
   await expect(page.locator('.lb')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(photo).toBeFocused();
+ }
+});
+
+
+test('a phone shows every Home pick and the complete family group', async ({page}) => {
+ await page.setViewportSize({width: 320, height: 568});
+ await page.goto('/');
+ const strip = page.locator('.hstrip__grid');
+ expect(await strip.evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+ const cards = await strip.locator('button').evaluateAll(items => items.map(el => {
+  const r = el.getBoundingClientRect();
+  return {x: r.x, y: r.y, right: r.right, width: r.width};
+ }));
+ expect(cards).toHaveLength(4);
+ expect(cards.every(card => card.x >= 0 && card.right <= 320 && card.width > 0)).toBe(true);
+ expect(cards[0].y).toEqual(cards[1].y);
+ expect(cards[2].y).toBeGreaterThan(cards[0].y);
+ const next = page.getByRole('button', {name: 'Next featured photograph'});
+ for (let i = 0; i < 3; i++) await next.click();
+ const family = page.locator('.hero__fig img');
+ await expect(family).toHaveAttribute('src', /54-img-0164/);
+ expect(await family.evaluate(el => getComputedStyle(el).objectFit)).toBe('contain');
+});
+
+test('bookmarked collections open the on-location photographs with and without scripting', async ({page,browser}) => {
+ const oldLink = '/portfolio.html?collection=studio#edit-studio';
+ await page.goto(oldLink);
+ await expect(page).toHaveURL(/collection=on-location#edit-on-location$/);
+ await expect(page.locator('h1')).toHaveText('On location.');
+ expect(await page.locator('.pf-cell').count()).toBeGreaterThan(4);
+ const context = await browser.newContext({javaScriptEnabled:false,baseURL:new URL(page.url()).origin});
+ try {
+  const native = await context.newPage();
+  await native.goto(oldLink);
+  const collection = native.locator('#edit-on-location');
+  await expect(collection).toBeVisible();
+  expect(await collection.locator('a[href*="gallery/"]').count()).toBeGreaterThan(4);
+ } finally { await context.close(); }
+});
+
+test('collection covers preserve the pictured faces on phones and wide screens', async ({page}) => {
+ // Face bounds measured in the original photographs, in fractions of the frame.
+ const bounds = {
+  portraits: [0.28, 0.021, 0.75, 0.39],
+  'on-location': [0.25, 0.20, 0.66, 0.52],
+  families: [0.075, 0.06, 0.93, 0.70],
+  social: [0.35, 0.025, 0.64, 0.21],
+ };
+ for (const width of [320, 390, 768, 1440]) {
+  await page.setViewportSize({width,height:900});
+  for (const route of ['/', '/portfolio.html']) {
+   await page.goto(route);
+   const tiles = page.locator('.hstrip__item, .work-tile');
+   await tiles.locator('img').evaluateAll(images => Promise.all(images.map(img => { img.loading = 'eager'; return img.decode(); })));
+   const visibleFaces = await tiles.evaluateAll((elements, bounds) => elements.map(el => {
+    const id = el.getAttribute('data-cover') || el.getAttribute('data-collection')!;
+    const image = el.querySelector('img')!;
+    const rect = image.getBoundingClientRect();
+    const css = getComputedStyle(image);
+    const [x, y] = css.objectPosition.split(' ').map(percent => parseFloat(percent)/100);
+    const scale = (css.objectFit === 'contain' ? Math.min : Math.max)(rect.width/image.naturalWidth, rect.height/image.naturalHeight);
+    const w = image.naturalWidth*scale, h = image.naturalHeight*scale;
+    const left = (rect.width-w)*x, top = (rect.height-h)*y;
+    const [x1, y1, x2, y2] = bounds[id as keyof typeof bounds];
+    return {id,inside: left+w*x1 >= -1 && top+h*y1 >= -1 && left+w*x2 <= rect.width+1 && top+h*y2 <= rect.height+1};
+   }), bounds);
+   expect(visibleFaces.filter(photo => !photo.inside), route + ' at ' + width).toEqual([]);
+  }
  }
 });
