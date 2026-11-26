@@ -145,7 +145,7 @@ jobs:
       - name: Check normal scrolling, lazy photos, frame bounds and controls
         env:
           CHROME_BIN: /usr/bin/google-chrome
-        run: npx playwright test tests/safari-layout.spec.ts --project=${{ matrix.engine }}
+        run: npx playwright test tests/safari-layout.spec.ts tests/motion.spec.ts --project=${{ matrix.engine }}
       - name: Save Safari and Chromium review evidence
         if: always()
         uses: actions/upload-artifact@v4

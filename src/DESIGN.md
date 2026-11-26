@@ -1,12 +1,18 @@
 # Public visual system
 
-Use the desktop Home, mobile Home / Work / Contact and brand boards supplied on 25 November 2026. The canvas is white, body text is charcoal and section rules are soft gray. Use Playfair Display 500 for titles, Montserrat for copy and controls, and the supplied wordmark with its left-aligned phone lockup. Self-hosted type lives in `public/fonts`. A lossless, transparent scan preserves individual fibres on larger strokes. A separate vector traced from the supplied brand board supplies the smaller edge accents. Keep both in their native proportions.
+Use the desktop Home, mobile Home / Work / Contact and brand boards supplied on 25 November 2026. The canvas is white, body text is charcoal and section rules are soft gray. Use Playfair Display 500 for titles, Montserrat for copy and controls, and the supplied wordmark with its left-aligned phone lockup. Self-hosted type lives in `public/fonts`. A fine, inline ink underline signs the Home headline. The header, footer and photographs use clean edges.
 
 ## Home and Work
 
-Desktop leads with a three-line heading at left and a square portrait at right. The six-frame carousel places its count and arrows alongside the image on large screens and below it on phones. Its selected frame survives a gallery refresh. The primary cover is the windblown outdoor portrait. Its focal point preserves the crown of the head on both screen shapes. Landscape group slides show the complete frame. Each selected photograph enlarges and its separate caption opens the collection. Phones show every selection in a two-column grid.
+Desktop leads with a three-line heading at left and a 1.1:1 photograph at right. The six-frame carousel places its count, progress line and arrows below the image on all screens. Its selected frame survives a gallery refresh. The primary cover is the windblown outdoor portrait. Its focal point preserves the crown of the head on both screen shapes. Landscape group slides show the complete frame. Each selected photograph enlarges and its separate caption opens the collection. Phones show every selection in a two-column grid.
 
 Work shows four collections above the published wall. Portraits, On location, Families and Social content use Alwin’s photography. The On location collection draws from individually reviewed frames of the published wall and its cover. Family and Social can feature the published session photographs when the wall lacks a matching tag. Family covers preserve the group at both wide and narrow aspect ratios. An edit with one photograph displays that one frame. The full gallery retains the curated order, native photo controls and mobile disclosure.
+
+## Motion
+
+The Home underline writes on once on arrival. Inner-page section rules extend on entry. The desktop navigation underline and directional arrows respond to hover or keyboard focus. The phone menu settles into place when opened. A manual carousel change dissolves over 260 ms after the new photograph decodes. The current photo stays visible during loading. Rapid taps resolve to the latest choice.
+
+With reduced motion, the completed underline, rules and each selected image appear immediately once ready. The static pages include the complete headline and lead photograph.
 
 ## Sessions and enquiries
 

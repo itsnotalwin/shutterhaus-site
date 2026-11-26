@@ -706,16 +706,16 @@ for (const width of reviewWidths) {
         const bar = rect('.site-header'), title = rect('.hero__title'), photo = rect('.hero__fig');
         const arrows = rect('.hero__controls'), info = rect('.hero__info');
         return {
-          ink: getComputedStyle(document.querySelector('.site-header'), '::before').backgroundImage.includes('ink-stroke'),
+          underline: !!document.querySelector('.hero__h .hero__underline[aria-hidden=true]') && !document.querySelector('.hero__media .ink-stroke'),
           followsHeader: title.top >= bar.bottom - 1,
           sideBySide: photo.left >= title.right - 1,
           mobileOrder: photo.top >= title.bottom - 1 && arrows.top >= photo.bottom - 1 && info.top >= arrows.bottom - 1,
           ratio: photo.width / photo.height
         };
       })()`);
-      check(`review home ${width}: header ink is present`, layout.ink);
+      check(`review home ${width}: ink stays with the headline`, layout.underline);
       check(`review home ${width}: responsive headline, image and controls`,
-        layout.followsHeader && (width < 760 ? layout.mobileOrder && Math.abs(layout.ratio - 1.2) < .02 : layout.sideBySide && Math.abs(layout.ratio - .99) < .02), JSON.stringify(layout));
+        layout.followsHeader && (width < 760 ? layout.mobileOrder && Math.abs(layout.ratio - 1.2) < .02 : layout.sideBySide && Math.abs(layout.ratio - 1.1) < .02), JSON.stringify(layout));
       const firstScreen = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
       writeFileSync(`${OUT}/01-home-${width}-viewport.png`, Buffer.from(firstScreen.result.data, 'base64'));
       await evaluate(`scrollTo(0, document.querySelector('.hstrip').offsetTop + 80)`);

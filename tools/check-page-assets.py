@@ -54,4 +54,4 @@ if __name__ == "__main__":
     missing = sorted(path for path in paths if not (ROOT / path).is_file() or (ROOT / path).stat().st_size == 0)
     if missing:
         raise SystemExit("Missing or empty published resources:\n" + "\n".join(missing))
-    print(f"Verified {len(paths)} published resources, including responsive images, originals, ink, fonts and page links.")
+    print(f"Verified {len(paths)} published resources, including responsive images, originals, fonts and page links.")

@@ -124,13 +124,8 @@ export function renderShell(active: string, body: string, over = false): string 
   return `<div class="shell${over ? " shell--cover" : ""}"><a class="skip-link" href="#main-content">Skip to content</a>${header(active)}<main class="main" id="main-content" tabindex="-1">${body}</main>${footer()}</div>`;
 }
 
-/** Decorative ink is shared by the photo frame and the site chrome. */
-export function motif(className: string): string {
-  return `<span class="ink-stroke ${className}" aria-hidden="true"></span>`;
-}
-
 function footer(): string {
-  return `<footer class="site-footer"><strong>People. Places. Stories.</strong><small>© ${new Date().getFullYear()} SHUTTERHAUS VISUALS · ${escapeHtml(SITE.contact.location)}</small><div><a href="mailto:${escapeHtml(SITE.contact.email)}">Email</a>${SITE.social.map(s => `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.label)}</a>`).join("")}</div>${motif("footer-ink")}</footer>`;
+  return `<footer class="site-footer"><strong>People. Places. Stories.</strong><small>© ${new Date().getFullYear()} SHUTTERHAUS VISUALS · ${escapeHtml(SITE.contact.location)}</small><div><a href="mailto:${escapeHtml(SITE.contact.email)}">Email</a>${SITE.social.map(s => `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.label)}</a>`).join("")}</div></footer>`;
 }
 
 export { FONTS };

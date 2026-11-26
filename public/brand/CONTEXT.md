@@ -1,3 +1,3 @@
 # Brand assets
 
-The two primary SVGs are the desktop and phone wordmarks. The phone lockup left-aligns Visuals. The large lossless ink scan and the small vector traced from the brand kit keep their own proportions. Use the scan for the hero and footer and the vector for edge accents. Keep photographic assets in the gallery.
+The two primary SVGs are the desktop and phone wordmarks. The phone lockup left-aligns Visuals. The earlier brush textures are archive assets. The current public pages use a small inline headline underline from `src/pages.ts`. Keep photographic assets in the gallery.

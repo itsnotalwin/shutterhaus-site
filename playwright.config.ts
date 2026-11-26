@@ -11,7 +11,7 @@ export default defineConfig({
   },
   projects: [
     { name: 'chromium', use: { browserName: 'chromium', launchOptions: { executablePath: process.env.CHROME_BIN || '/usr/bin/chromium', args: ['--no-sandbox', '--disable-dev-shm-usage'] } } },
-    { name: 'webkit', testMatch: 'safari-layout.spec.ts', use: { browserName: 'webkit' } },
+    { name: 'webkit', testMatch: ['safari-layout.spec.ts', 'motion.spec.ts'], use: { browserName: 'webkit' } },
   ],
   webServer: process.env.BROWSER_TEST_URL ? undefined : {command:'npm run preview', url:'http://127.0.0.1:4173', reuseExistingServer:true},
 });

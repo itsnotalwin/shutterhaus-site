@@ -1,6 +1,6 @@
 import { formatPrice } from "./pricing";
 import { SITE } from "./config";
-import { escapeHtml, icon, motif } from "./layout";
+import { escapeHtml, icon } from "./layout";
 import { DEMO_PHOTOS } from "./demo";
 import { pictureFor, bestDerivative } from "./pages";
 import type { Photo } from "./types";
@@ -36,7 +36,7 @@ export function aboutPage(photos: Photo[]): string {
         <div class="prose about__prose">${a.body.map(para => `<p>${escapeHtml(para)}</p>`).join("")}</div>
         <a class="cta" href="./contact.html">${escapeHtml(a.cta)} <span aria-hidden="true">→</span></a>
       </div>
-      <div class="about-portrait">${fig}${motif("about-ink")}</div>
+      <div class="about-portrait">${fig}</div>
     </header>
   </section>`;
 }

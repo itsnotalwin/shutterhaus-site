@@ -1,5 +1,5 @@
 import { formatPrice } from "./pricing";
-import { escapeHtml, motif } from "./layout";
+import { escapeHtml } from "./layout";
 import { SITE } from "./config";
 import { WORK_EDITS, belongsToEdit, collectionLink, editCover, frameLabel } from "./work-collections";
 import type { Photo } from "./types";
@@ -689,7 +689,7 @@ export function homePage(photos: Photo[], _cols: number): string {
   const published = PHOTO_ROWS.flat().map(id => byId.get(id));
   const candidates = [hero, ...strip, published.find(photo => photo?.filename === "18-img-0043.jpg"), ...published];
   const slides = [...new Map(candidates.filter((p): p is Photo => !!p).map(p => [p.id, p])).values()].slice(0, 6);
-  const coverSizes = "(max-width: 759px) 92vw, (max-width: 1000px) 50vw, (max-width: 1536px) 42vw, 620px";
+  const coverSizes = "(max-width: 759px) 92vw, (max-width: 1536px) 47vw, 685px";
   const coverPicture = (photo: Photo) => {
     const seatedCrop = photo.url === "gallery/27-img-0297.jpg";
     const source = seatedCrop
@@ -703,12 +703,13 @@ export function homePage(photos: Photo[], _cols: number): string {
       width="${seatedCrop ? 1300 : photo.width || 1200}" height="${seatedCrop ? 1300 : photo.height || 1200}" decoding="async" loading="eager" fetchpriority="high" /></picture>`;
   };
   const first = slides[0];
-  const heroFig = first ? `<figure class="hero__fig" data-frame="${escapeHtml(first.id)}">${coverPicture(first)}</figure>` : "";
-  const controls = slides.length > 1 ? `<div class="hero__controls" role="group" aria-label="Featured photographs" hidden>
+  const heroFig = first ? `<div class="hero__plate"><figure class="hero__fig" data-frame="${escapeHtml(first.id)}">${coverPicture(first)}</figure></div>` : "";
+  const controls = slides.length > 1 ? `<div class="hero__controls" role="group" aria-label="Featured photographs" style="--frame-progress:${1 / slides.length}" hidden>
       <span data-slide-count aria-live="polite" aria-atomic="true">01 / ${String(slides.length).padStart(2, "0")}</span>
+      <span class="hero__track" aria-hidden="true"></span>
       <button type="button" data-step="-1" aria-label="Previous featured photograph"><span aria-hidden="true">←</span></button>
       <button type="button" data-step="1" aria-label="Next featured photograph"><span aria-hidden="true">→</span></button>
-    </div>${slides.map(p => `<template data-slide="${escapeHtml(p.id)}">${coverPicture(p)}</template>`).join("")}` : "";
+    </div><p class="hero__notice" role="status"></p>${slides.map(p => `<template data-slide="${escapeHtml(p.id)}">${coverPicture(p)}</template>`).join("")}` : "";
 
   const selectedWork = strip.map((photo, index) => {
     const label = frameLabel(photo);
@@ -725,8 +726,8 @@ export function homePage(photos: Photo[], _cols: number): string {
   return `<section class="page home" data-mobile-layout="${mobileGallery()}">
     <div class="hero">
       <div class="hero__title"><p class="eyebrow eyebrow--rule"><span>Independent photography / <span class="hero__location">Gauteng, SA</span></span></p>
-        <h1 class="hero__h">Portraits<br> worth<br> keeping.</h1></div>
-      <div class="hero__media">${heroFig}${controls}${motif("hero__ink")}</div>
+        <h1 class="hero__h">Portraits<br> worth<br> <span class="hero__signoff">keeping.<svg class="hero__underline" viewBox="0 0 192 11" aria-hidden="true" focusable="false"><path fill="currentColor" d="M1 8.4C28 4.9 66 2.6 104.6 2.2c26.5-.4 54.2.4 84.7 2.4 1.9.2 2.4.6.5.7-31.9-.7-60.9-1-86.5-.1C62.4 6.1 30.3 8.7 5.2 9.3c-4.3.1-5.9-.2-4.2-.9Z"/><path fill="currentColor" opacity=".48" d="M22 10c19.2-2.1 38.5-3.2 62.7-4.1-17.8 1.4-40.8 3.7-62.7 4.1Z"/></svg></span></h1></div>
+      <div class="hero__media">${heroFig}${controls}</div>
       <div class="hero__info"><p class="hero__lede">${escapeHtml(h.lede)}</p>
         <div class="hero__actions"><a class="cta" href="./contact.html">Book a session <span aria-hidden="true">→</span></a><a class="cta cta--line" href="./portfolio.html">View portfolio</a></div></div>
     </div>

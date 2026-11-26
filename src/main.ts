@@ -130,6 +130,19 @@ async function withinBudget<T>(request: Promise<T>, ms = 6000): Promise<T | null
   } finally { clearTimeout(timer!); }
 }
 
+function startPageIntro(): void {
+  const page = app.querySelector<HTMLElement>('.page');
+  if (!page || !window.matchMedia?.('(prefers-reduced-motion: no-preference)').matches) return;
+  page.classList.add('page-arrival');
+  const finish = () => {
+    page.classList.remove('page-arrival');
+    page.removeEventListener('animationend', finish);
+    page.removeEventListener('animationcancel', finish);
+  };
+  page.addEventListener('animationend', finish);
+  page.addEventListener('animationcancel', finish);
+}
+
 async function paint(): Promise<void> {
   const r = ALIASES[route()] ?? route();
   // A restored document already contains its form, focus and scroll position.
@@ -171,6 +184,7 @@ async function paint(): Promise<void> {
   cleanupPage = navigation.destroy;
   syncHeader();
   if (r === 'contact') {
+    startPageIntro();
     const unmountForm = mountContactForm();
     cleanupPage = () => { unmountForm(); navigation.destroy(); };
     return;
@@ -204,11 +218,11 @@ async function paint(): Promise<void> {
     // Keep the visitor's package choice and keyboard focus across live photo updates.
     const packageChoice = main.querySelector<HTMLInputElement>('[name="package-view"]:checked')?.id;
     const packageFocus = focused?.matches('[name="package-view"]') ? focused.id : null;
-    const cover = main.querySelector<HTMLElement>(".hero__fig")?.dataset.frame;
+    const cover = main.querySelector<HTMLElement>(".hero__fig");
     const coverStep = focused instanceof HTMLElement ? focused.dataset.step : undefined;
     main.innerHTML = body;
     if (r === 'home') {
-      mountHeroCarousel(main, cover);
+      mountHeroCarousel(main, cover?.dataset.frame, cover?.dataset.requestedFrame);
       if (coverStep === "1" || coverStep === "-1") main.querySelector<HTMLElement>(`[data-step="${coverStep}"]`)?.focus({preventScroll:true});
     }
     if (packageChoice) {
@@ -235,6 +249,7 @@ async function paint(): Promise<void> {
     };
     refreshGalleryLayout();
   }
+  startPageIntro();
 
   try {
     const live = await withinBudget(publicPhotosOrNull());
