@@ -360,7 +360,8 @@ test('pre-rendered editorial Home retains four images and focus across breakpoin
     assert.equal(w.document.querySelectorAll('.hstrip__item').length, 4);
     assert.equal(w.document.querySelectorAll('.hstrip__item').length, 4);
     const frames = [...w.document.querySelectorAll('.hstrip img')].map(im => im.dataset.filename);
-    assert.deepEqual(frames, Array.from(w.PublicPages.SITE.homeStrip));
+    assert.deepEqual(frames, ['2-20240718114526-img-0124.jpg', '5-img-0086.jpg', '20-img-0202.jpg', '54-img-0164.jpg']);
+    assert.equal(w.document.querySelector('.hstrip__entry .work-caption').getAttribute('href'), './portfolio.html?collection=portraits#edit-portraits');
     const grid = w.document.querySelector('.hstrip__grid');
     const header = w.document.querySelector('.site-header');
     w.scrollY = 450; w.innerHeight = 500; w.dispatchEvent(new w.Event('resize'));

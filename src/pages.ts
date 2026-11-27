@@ -726,8 +726,15 @@ export function homePage(photos: Photo[], _cols: number): string {
       <button type="button" data-step="1" aria-label="Next featured photograph"><span aria-hidden="true">→</span></button>
     </div><p class="hero__notice" role="status"></p>${slides.map(p => `<template data-slide="${escapeHtml(p.id)}">${coverPicture(p)}</template>`).join("")}` : "";
 
-  const selectedWork = [...strip].sort((a, b) => Number(frameLabel(a) === "Families") - Number(frameLabel(b) === "Families")).map((photo, index) => {
-    const label = frameLabel(photo);
+  const portraitCover = strip.find(photo => photo.filename === WORK_EDITS[0].cover);
+  const locationCover = strip.find(photo => photo.filename === WORK_EDITS[1].cover);
+  const selectedWork = [...strip].sort((a, b) => Number(frameLabel(a) === "Families") - Number(frameLabel(b) === "Families")).map((slot, index) => {
+    let photo = slot;
+    if (portraitCover && locationCover) {
+      if (slot === portraitCover) photo = locationCover;
+      if (slot === locationCover) photo = portraitCover;
+    }
+    const label = frameLabel(slot);
     const edit = WORK_EDITS.find(choice => choice.label === label);
     const title = `<small aria-hidden="true">${String(index + 1).padStart(2, "0")}</small>${escapeHtml(label)}`;
     return `<div class="hstrip__entry">
