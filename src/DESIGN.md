@@ -4,11 +4,11 @@ Use the desktop Home, mobile Home / Work / Contact and brand boards supplied on 
 
 ## Home and Work
 
-Desktop leads with a three-line heading at left and a 1.1:1 photograph at right. The six-frame carousel places its count, progress line and arrows below the image on all screens. Its selected frame survives a gallery refresh. The primary cover is the windblown outdoor portrait. Its focal point preserves the crown of the head on both screen shapes. Landscape group slides show the complete frame. Each selected photograph enlarges and its separate caption opens the collection. Phones show every selection in a two-column grid.
+Desktop leads with a three-line heading at left and a 1.1:1 photograph at right. The six-frame carousel places its count, progress line and arrows below the image on all screens. Its selected frame survives a gallery refresh. The primary cover is the windblown outdoor portrait. Its focal point preserves the crown of the head on both screen shapes. Landscape group slides show the complete frame. Each selected photograph enlarges and its separate caption opens the collection. On phones the three portraits sit above the full-width family photograph.
 
-Selected Work uses the same 4:5 frames on Home and Work. Four covers fit across the desktop grid, and two fit across on phones. Each pinned portrait has a focal point for this crop. A wide family group is centered on a pale grey mount so everyone fits. Work keeps its collection labels on the covers. Home keeps the captions underneath.
+Selected Work uses 4:5 frames for the three individual portraits. The family photograph finishes both selections in its original proportions. On Portfolio, a Landscapes cover immediately precedes Families and opens the photographer’s visible landscape photographs in their original proportions. Work keeps its collection labels on the covers. Home keeps the captions underneath.
 
-Work shows four collections above the published wall. Portraits, On location, Families and Social content use Alwin’s photography. The On location collection draws from individually reviewed frames of the published wall and its cover. Family and Social can feature the published session photographs when the wall lacks a matching tag. An edit with one photograph displays that one frame. The full gallery retains the original photographs’ proportions, curated order, native photo controls and mobile disclosure.
+Work shows five collections above the published wall. Portraits, On location, Social content, Landscapes and Families use Alwin’s photography. The On location collection draws from individually reviewed frames of the published wall and its cover. Family and Social can feature the published session photographs when the wall lacks a matching tag. An edit with one photograph displays that one frame. The full gallery retains the original photographs’ proportions, curated order, native photo controls and mobile disclosure.
 
 ## Motion
 

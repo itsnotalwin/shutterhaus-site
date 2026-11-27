@@ -472,8 +472,9 @@ function selectedCoverSizes(columns: number): string {
 function selectedCoverAttributes(photo: Photo, edit?: WorkEdit): string {
   const pinned = WORK_EDITS.find(choice => choice.cover && choice.cover === photo.filename);
   const focal = pinned && "portraitPosition" in pinned ? pinned.portraitPosition : pinned?.position ?? "50% 25%";
-  const mountGroup = edit?.key === "families" && (!photo.width || !photo.height || photo.width > photo.height);
-  return `style="--focal:${focal}"${mountGroup ? " data-mounted" : ""}`;
+  const natural = edit?.key === "families" || edit?.key === "landscapes";
+  const ratio = natural && photo.width && photo.height ? `--frame-ratio:${photo.width}/${photo.height};` : "";
+  return `style="${ratio}--focal:${focal}"${natural ? " data-full-frame" : ""}`;
 }
 
 export function portfolioPage(photos: Photo[], expanded = false, collection: string | null = null): string {
@@ -540,7 +541,8 @@ export function portfolioPage(photos: Photo[], expanded = false, collection: str
 
     const activeEdit = WORK_EDITS.find(edit => edit.key === collection);
     const editFrames = (edit: typeof WORK_EDITS[number]) => {
-      const frames = ordered.filter(photo => photo.visible && belongsToEdit(photo, edit));
+      const source = edit.key === "landscapes" ? photos : ordered;
+      const frames = source.filter(photo => photo.visible && belongsToEdit(photo, edit));
       const cover = editCover(edit, ordered, photos);
       return cover && !frames.some(photo => photo.id === cover.id) ? [cover, ...frames] : frames;
     };
@@ -576,7 +578,7 @@ export function portfolioPage(photos: Photo[], expanded = false, collection: str
     const p = editCover(edit, ordered, photos);
     if (!p) return "";
     return `<a class="work-tile" data-collection="${edit.key}" href="${collectionLink(edit)}" ${selectedCoverAttributes(p, edit)}>
-      ${editorialFigure(p, "work-tile__photo", i === 0, selectedCoverSizes(WORK_EDITS.length))}
+      ${editorialFigure(p, "work-tile__photo", i === 0, (edit.key === "families" || edit.key === "landscapes") ? "(max-width: 759px) 92vw, 30vw" : selectedCoverSizes(WORK_EDITS.length))}
       <span class="image-label"><small>${String(i + 1).padStart(2, "0")}</small>${edit.label}</span></a>`;
   }).join("");
   // Static hosting cannot filter a query on the server. Fragment targets expose
@@ -724,13 +726,13 @@ export function homePage(photos: Photo[], _cols: number): string {
       <button type="button" data-step="1" aria-label="Next featured photograph"><span aria-hidden="true">→</span></button>
     </div><p class="hero__notice" role="status"></p>${slides.map(p => `<template data-slide="${escapeHtml(p.id)}">${coverPicture(p)}</template>`).join("")}` : "";
 
-  const selectedWork = strip.map((photo, index) => {
+  const selectedWork = [...strip].sort((a, b) => Number(frameLabel(a) === "Families") - Number(frameLabel(b) === "Families")).map((photo, index) => {
     const label = frameLabel(photo);
     const edit = WORK_EDITS.find(choice => choice.label === label);
     const title = `<small aria-hidden="true">${String(index + 1).padStart(2, "0")}</small>${escapeHtml(label)}`;
     return `<div class="hstrip__entry">
       <button type="button" class="photo-trigger hstrip__item" data-cover="${edit?.key ?? ""}" ${selectedCoverAttributes(photo, edit)} role="button" aria-label="Enlarge ${escapeHtml(photo.alt || photo.filename || "photograph")}">
-        ${figure(photo, -1, stripSizes)}</button>
+        ${figure(photo, -1, edit?.key === "families" ? "(max-width: 759px) 92vw, 40vw" : stripSizes)}</button>
       ${edit ? `<a class="work-caption" href="${collectionLink(edit)}">${title}<svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 16 16 4M5 4h11v11" stroke="currentColor" stroke-width="1.25"/></svg></a>` : `<span class="work-caption">${title}</span>`}
     </div>`;
   }).join("");

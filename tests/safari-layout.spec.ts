@@ -106,12 +106,17 @@ for (const viewport of viewports) {
         }
         await frames(`${route} intro`,'.work-tile__photo,.about__fig',false);
         if (!baseline && (route === 'home' || route === 'portfolio')) {
-          const ratios = await page.locator('.hstrip__item, .work-tile').evaluateAll(tiles => tiles.map(tile => {
+          const frameErrors = await page.locator('.hstrip__item, .work-tile').evaluateAll(tiles => tiles.map(tile => {
             const {width, height} = tile.getBoundingClientRect();
-            return width / height;
+            const img = tile.querySelector("img")!;
+            // Responsive image intrinsic dimensions are rounded to whole CSS pixels.
+            const ratio = width / height;
+            return tile.hasAttribute("data-full-frame")
+              ? Math.abs(img.naturalHeight - img.naturalWidth / ratio)
+              : Math.abs(height - width * 5 / 4);
           }));
-          expect(ratios.length).toBeGreaterThan(0);
-          for (const ratio of ratios) expect(ratio, `${route} Selected Work frame`).toBeCloseTo(4 / 5, 2);
+          expect(frameErrors.length).toBeGreaterThan(0);
+          for (const error of frameErrors) expect(error, `${route} Selected Work frame in pixels`).toBeLessThanOrEqual(1.1);
         }
         if (route==='portfolio') {
           for (const index of [0,4,9]) {

@@ -4,8 +4,9 @@ import type { Photo } from "./types";
 export const WORK_EDITS = [
   { key: "portraits", label: "Portraits", cover: "5-img-0086.jpg", position: "50% 2.5%" },
   { key: "on-location", label: "On location", cover: "2-20240718114526-img-0124.jpg", position: "50% 29%", portraitPosition: "50% 64%" },
-  { key: "families", label: "Families", cover: SITE.pricing.tiers.find(t => t.name === "Signature")?.photo, position: "50% 0%" },
   { key: "social", label: "Social content", cover: SITE.pricing.tiers.find(t => t.name === "Social")?.photo, position: "50% 0%" },
+  { key: "landscapes", label: "Landscapes", cover: "6-img-0161.jpg", position: "50% 50%" },
+  { key: "families", label: "Families", cover: SITE.pricing.tiers.find(t => t.name === "Signature")?.photo, position: "50% 0%" },
 ] as const;
 
 export type WorkEdit = typeof WORK_EDITS[number];
@@ -28,6 +29,7 @@ export function belongsToEdit(photo: Photo, edit: WorkEdit): boolean {
   const tags = albumTags(photo);
   switch (edit.key) {
     case "on-location": return onLocation.has(photo.filename ?? "") || tags.some(tag => ["on-location", "outdoor", "outdoors"].includes(tag));
+    case "landscapes": return tags.includes("landscape") || tags.includes("landscapes");
     case "families": return tags.some(tag => ["family", "families"].includes(tag));
     case "social": return tags.some(tag => ["social", "creative"].includes(tag));
     case "portraits": return tags.some(tag => ["portrait", "portraits"].includes(tag));

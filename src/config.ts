@@ -202,8 +202,8 @@ export const SITE: SiteConfig = {
   homeStrip: [
     "5-img-0086.jpg",
     "2-20240718114526-img-0124.jpg",
-    "54-img-0164.jpg",
     "20-img-0202.jpg",
+    "54-img-0164.jpg",
   ],
   // Backlit, windblown outdoor portrait. The face reads in both hero formats.
   heroPhoto: "22-img-0239.jpg",

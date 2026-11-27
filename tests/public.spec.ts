@@ -80,7 +80,7 @@ test('featured photographs wrap and collection links open real Shutterhaus work'
  await next.click();
  await expect(figure).toHaveAttribute('data-frame', initial!);
  await expect(page.locator('[data-slide-count]')).toHaveText('01 / 06');
- for (const label of ['Portraits','On location','Families','Social content']) {
+ for (const label of ['Portraits','On location','Social content','Landscapes','Families']) {
   await page.goto('/portfolio.html');
   await page.locator('.work-tile').filter({hasText:label}).click();
   await expect(page.locator('h1')).toHaveText(label + '.');
@@ -107,9 +107,11 @@ test('a phone shows every Home pick and the complete family group', async ({page
  expect(cards).toHaveLength(4);
  expect(cards.every(card => card.x >= 0 && card.right <= 320 && card.width > 0)).toBe(true);
  expect(cards[0].y).toEqual(cards[1].y);
- expect(cards[2].y).toBeGreaterThan(cards[0].y);
+ expect(cards[2].y).toBe(cards[0].y);
+ expect(cards[3].y).toBeGreaterThan(cards[0].y);
+ await expect(strip.locator('button').last()).toHaveAttribute('data-cover','families');
  const next = page.getByRole('button', {name: 'Next featured photograph'});
- for (let i = 0; i < 3; i++) await next.click();
+ for (let i = 0; i < 4; i++) await next.click();
  const family = page.locator('.hero__fig img');
  await expect(family).toHaveAttribute('src', /54-img-0164/);
  expect(await family.evaluate(el => getComputedStyle(el).objectFit)).toBe('contain');
@@ -136,6 +138,7 @@ test('collection covers preserve the pictured faces on phones and wide screens',
  const bounds = {
   portraits: [0.28, 0.021, 0.75, 0.39],
   'on-location': [0.25, 0.20, 0.66, 0.52],
+  landscapes: [0, 0, 1, 1],
   families: [0.075, 0.06, 0.93, 0.70],
   social: [0.35, 0.025, 0.64, 0.21],
  };

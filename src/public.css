@@ -101,7 +101,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .work-caption { display: flex; align-items: center; gap: 10px; min-height: 44px; padding-block: 7px; font: 650 10px/1.45 var(--font-body); color: var(--ink); letter-spacing: .14em; text-transform: uppercase; }
 .work-caption small { color: var(--grey); font-size: 9px; }
 .work-caption svg { flex: none; margin-left: auto; }
-.hstrip__item, .work-tile { position: relative; min-width: 0; overflow: hidden; aspect-ratio: 4 / 5; background: var(--wash); }
+.hstrip__item, .work-tile { position: relative; min-width: 0; overflow: hidden; aspect-ratio: var(--frame-ratio, 4 / 5); background: var(--wash); }
 .cell { display: block; overflow: hidden; background: var(--wash); }
 .cell picture, .cell img { display: block; width: 100%; height: auto; }
 .cell img { object-fit: contain; opacity: 1; filter: grayscale(1); transition: opacity .18s ease; }
@@ -109,10 +109,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .hstrip__item .cell, .hstrip__item picture { filter: none; transition: none; }
 .hstrip__item img, .work-tile img { object-fit: cover; object-position: var(--focal, 50% 28%); }
 .work-tile img { filter: grayscale(1); }
-:is(.hstrip__item, .work-tile)[data-mounted] img { object-fit: contain; object-position: 50% 47%; padding-inline: 4%; background: #ececec; }
+:is(.hstrip__item, .work-tile)[data-full-frame] img { object-fit: contain; object-position: center; }
+.work-index { grid-template-columns: repeat(3, minmax(0,1fr)) repeat(2, minmax(0,2fr)); align-items: start; }
+@media (min-width: 760px) {
+  .hstrip__grid:has(> :nth-child(4):last-child [data-cover="families"]) { grid-template-columns: repeat(3, minmax(0,1fr)) minmax(0,2fr); }
+}
 .work-tile::after { content: ""; position: absolute; inset: 46% 0 0; background: linear-gradient(transparent, rgb(0 0 0 / .72)); pointer-events: none; }
-.work-tile[data-mounted]::after { content: none; }
-.work-tile[data-mounted] .image-label { color: var(--ink); }
+
 .image-label { position: absolute; z-index: 1; bottom: clamp(12px,1.5vw,24px); left: clamp(13px,1.6vw,26px); display: grid; gap: 2px; color: white; font-size: 10px; pointer-events: none; }
 .image-label small { font-size: inherit; }
 .work-tile:hover .image-label { text-decoration: underline; text-underline-offset: 4px; }
@@ -302,7 +305,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .eyebrow--rule::after { flex: 1; }
   .page .work-intro h1, .page .shead h1, .page .about__h, .page .contact__h { margin: 18px 0 0; font-size: clamp(53px, 14.7vw, 84px); line-height: .94; }
   .work-intro .phead__p { display: none; }
+  .work-index, .hstrip__grid:has(> :nth-child(4):last-child [data-cover="families"]) { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .work-index [data-full-frame], .hstrip__entry:has([data-cover="families"]) { grid-column: 1 / -1; }
   .work-index { gap: 8px; margin-bottom: 28px; }
+  .work-caption { display: block; position: relative; }
+  .work-caption small { display: block; margin-bottom: 3px; }
+  .work-caption svg { position: absolute; top: 5px; right: 0; width: 12px; height: 12px; }
+  .image-label { overflow-wrap: anywhere; right: 4px; }
   .image-label { bottom: 10px; left: 10px; }
   .edit-links { gap: 6px; }
   .edit-links a { padding: 8px; letter-spacing: .1em; }

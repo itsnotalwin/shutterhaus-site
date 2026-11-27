@@ -18,7 +18,7 @@ Branch recovery tags are recorded in [docs/BRANCH_CONSOLIDATION.md](docs/BRANCH_
 The current desktop, mobile and brand boards use Playfair Display, Montserrat,
 white pages, fine rules and one ink underline beneath the Home headline. Home opens with “Portraits worth
 keeping.” The six manual frames dissolve after loading and follow the visitor’s reduced-motion preference. Work groups the photographer’s originals into Portraits, On location,
-Families and Social content. [Design notes and screenshots](DESIGN.md).
+Social content, Landscapes and Families. [Design notes and screenshots](DESIGN.md).
 
 ## Run locally
 

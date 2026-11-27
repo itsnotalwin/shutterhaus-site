@@ -669,7 +669,7 @@ for (const width of reviewWidths) {
           width:grid.getBoundingClientRect().width };
       })()`);
       check(`review home ${width}: four showcase images`, strip.count === 4);
-      check(`review home ${width}: correct showcase columns`, strip.fits && strip.tracks === (width < 760 ? 2 : 4));
+      check(`review home ${width}: correct showcase columns`, strip.fits && strip.tracks === (width < 760 ? 3 : 4));
       if (width <= 760) check(`review home ${width}: images fit the mobile showcase`, strip.widths.length === 4 && strip.widths.every(frame => frame > 0 && frame <= strip.width));
     }
     if (route === 'portfolio') {
