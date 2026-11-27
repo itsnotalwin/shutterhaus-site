@@ -6,7 +6,9 @@ Use the desktop Home, mobile Home / Work / Contact and brand boards supplied on 
 
 Desktop leads with a three-line heading at left and a 1.1:1 photograph at right. The six-frame carousel places its count, progress line and arrows below the image on all screens. Its selected frame survives a gallery refresh. The primary cover is the windblown outdoor portrait. Its focal point preserves the crown of the head on both screen shapes. Landscape group slides show the complete frame. Each selected photograph enlarges and its separate caption opens the collection. Phones show every selection in a two-column grid.
 
-Work shows four collections above the published wall. Portraits, On location, Families and Social content use Alwin’s photography. The On location collection draws from individually reviewed frames of the published wall and its cover. Family and Social can feature the published session photographs when the wall lacks a matching tag. Family covers preserve the group at both wide and narrow aspect ratios. An edit with one photograph displays that one frame. The full gallery retains the curated order, native photo controls and mobile disclosure.
+Selected Work uses the same 4:5 frames on Home and Work. Four covers fit across the desktop grid, and two fit across on phones. Each pinned portrait has a focal point for this crop. A wide family group is centered on a pale grey mount so everyone fits. Work keeps its collection labels on the covers. Home keeps the captions underneath.
+
+Work shows four collections above the published wall. Portraits, On location, Families and Social content use Alwin’s photography. The On location collection draws from individually reviewed frames of the published wall and its cover. Family and Social can feature the published session photographs when the wall lacks a matching tag. An edit with one photograph displays that one frame. The full gallery retains the original photographs’ proportions, curated order, native photo controls and mobile disclosure.
 
 ## Motion
 
@@ -20,4 +22,4 @@ Four desktop package cards share aligned 3:2 image frames and price rows. The ph
 
 ## Review evidence
 
-`SCREENSHOT.png` shows the built Home viewport at 1440 × 900. `SCREENSHOT-MOBILE.png` shows Home at 390 × 844, full page. `SCREENSHOT-SESSIONS.png` shows the 1440px package comparison, and `SCREENSHOT-SESSIONS-MOBILE.png` shows the full phone Sessions page. All four are genuine browser captures of the 26 November 2026 polish pass. Browser checks exercise all five public pages, drawer focus, frame bounds, package handoff and collection navigation.
+`SCREENSHOT.png` and `SCREENSHOT-MOBILE.png` show the full Home page captured on 27 November 2026 at 1440 × 900 and 390 × 844 viewports. `SCREENSHOT-SESSIONS.png` and `SCREENSHOT-SESSIONS-MOBILE.png` show the desktop package comparison and phone Sessions page captured on 26 November. Browser checks exercise all five public pages, drawer focus, frame bounds, package handoff and collection navigation.

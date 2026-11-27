@@ -3,7 +3,7 @@ import type { Photo } from "./types";
 
 export const WORK_EDITS = [
   { key: "portraits", label: "Portraits", cover: "5-img-0086.jpg", position: "50% 2.5%" },
-  { key: "on-location", label: "On location", cover: "2-20240718114526-img-0124.jpg", position: "50% 29%" },
+  { key: "on-location", label: "On location", cover: "2-20240718114526-img-0124.jpg", position: "50% 29%", portraitPosition: "50% 64%" },
   { key: "families", label: "Families", cover: SITE.pricing.tiers.find(t => t.name === "Signature")?.photo, position: "50% 0%" },
   { key: "social", label: "Social content", cover: SITE.pricing.tiers.find(t => t.name === "Social")?.photo, position: "50% 0%" },
 ] as const;

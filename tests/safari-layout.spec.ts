@@ -105,6 +105,14 @@ for (const viewport of viewports) {
           await image.evaluate((image:HTMLImageElement)=>image.decode());
         }
         await frames(`${route} intro`,'.work-tile__photo,.about__fig',false);
+        if (!baseline && (route === 'home' || route === 'portfolio')) {
+          const ratios = await page.locator('.hstrip__item, .work-tile').evaluateAll(tiles => tiles.map(tile => {
+            const {width, height} = tile.getBoundingClientRect();
+            return width / height;
+          }));
+          expect(ratios.length).toBeGreaterThan(0);
+          for (const ratio of ratios) expect(ratio, `${route} Selected Work frame`).toBeCloseTo(4 / 5, 2);
+        }
         if (route==='portfolio') {
           for (const index of [0,4,9]) {
             const cell=page.locator('.pf-cell').nth(index);

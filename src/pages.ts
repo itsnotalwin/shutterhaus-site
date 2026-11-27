@@ -1,7 +1,7 @@
 import { formatPrice } from "./pricing";
 import { escapeHtml } from "./layout";
 import { SITE } from "./config";
-import { WORK_EDITS, belongsToEdit, collectionLink, editCover, frameLabel } from "./work-collections";
+import { WORK_EDITS, belongsToEdit, collectionLink, editCover, frameLabel, type WorkEdit } from "./work-collections";
 import type { Photo } from "./types";
 import { PHOTO_ROWS, COMMITTED_ROWS } from "./rows";
 
@@ -465,6 +465,17 @@ export function editorialFigure(photo: Photo | undefined, className: string, eag
   return `<figure class="${className}"><picture>${pictureFor(photo.url, sizes, photo.width)}<img src="${escapeHtml(bestDerivative(photo.url, "webp", photo.width))}" alt="${escapeHtml(photo.alt || photo.filename || "")}" width="${photo.width || 1200}" height="${photo.height || 1600}" loading="${eager ? "eager" : "lazy"}" decoding="async" /></picture></figure>`;
 }
 
+function selectedCoverSizes(columns: number): string {
+  return `(max-width: 759px) 46vw, (max-width: 1536px) ${Math.ceil(96 / columns)}vw, ${Math.ceil(1400 / columns)}px`;
+}
+
+function selectedCoverAttributes(photo: Photo, edit?: WorkEdit): string {
+  const pinned = WORK_EDITS.find(choice => choice.cover && choice.cover === photo.filename);
+  const focal = pinned && "portraitPosition" in pinned ? pinned.portraitPosition : pinned?.position ?? "50% 25%";
+  const mountGroup = edit?.key === "families" && (!photo.width || !photo.height || photo.width > photo.height);
+  return `style="--focal:${focal}"${mountGroup ? " data-mounted" : ""}`;
+}
+
 export function portfolioPage(photos: Photo[], expanded = false, collection: string | null = null): string {
   if (!photos.length) return emptyGallery();
 
@@ -564,8 +575,8 @@ export function portfolioPage(photos: Photo[], expanded = false, collection: str
   const covers = WORK_EDITS.map((edit, i) => {
     const p = editCover(edit, ordered, photos);
     if (!p) return "";
-    return `<a class="work-tile" data-collection="${edit.key}" href="${collectionLink(edit)}" style="--focal:${edit.position}">
-      ${editorialFigure(p, "work-tile__photo", i === 0, "(max-width: 759px) 92vw, 24vw")}
+    return `<a class="work-tile" data-collection="${edit.key}" href="${collectionLink(edit)}" ${selectedCoverAttributes(p, edit)}>
+      ${editorialFigure(p, "work-tile__photo", i === 0, selectedCoverSizes(WORK_EDITS.length))}
       <span class="image-label"><small>${String(i + 1).padStart(2, "0")}</small>${edit.label}</span></a>`;
   }).join("");
   // Static hosting cannot filter a query on the server. Fragment targets expose
@@ -685,6 +696,8 @@ export function homePage(photos: Photo[], _cols: number): string {
   const pinnedStrip = SITE.homeStrip.map(name => byName.get(name)).filter((photo): photo is Photo => !!photo);
   const strip = (pinnedStrip.length ? pinnedStrip : visible.filter(photo => photo.id !== hero?.id))
     .slice(0, SITE.homeGalleryCount);
+  const stripColumns = Math.max(1, Math.min(4, strip.length));
+  const stripSizes = selectedCoverSizes(stripColumns);
   const byId = new Map(visible.map(photo => [photo.id, photo]));
   const published = PHOTO_ROWS.flat().map(id => byId.get(id));
   const candidates = [hero, ...strip, published.find(photo => photo?.filename === "18-img-0043.jpg"), ...published];
@@ -714,11 +727,10 @@ export function homePage(photos: Photo[], _cols: number): string {
   const selectedWork = strip.map((photo, index) => {
     const label = frameLabel(photo);
     const edit = WORK_EDITS.find(choice => choice.label === label);
-    const focal = WORK_EDITS.find(choice => choice.cover === photo.filename)?.position ?? "50% 25%";
     const title = `<small aria-hidden="true">${String(index + 1).padStart(2, "0")}</small>${escapeHtml(label)}`;
     return `<div class="hstrip__entry">
-      <button type="button" class="photo-trigger hstrip__item" data-cover="${edit?.key ?? ""}" style="--focal:${focal}" role="button" aria-label="Enlarge ${escapeHtml(photo.alt || photo.filename || "photograph")}">
-        ${figure(photo, -1, "(max-width: 759px) 46vw, 24vw")}</button>
+      <button type="button" class="photo-trigger hstrip__item" data-cover="${edit?.key ?? ""}" ${selectedCoverAttributes(photo, edit)} role="button" aria-label="Enlarge ${escapeHtml(photo.alt || photo.filename || "photograph")}">
+        ${figure(photo, -1, stripSizes)}</button>
       ${edit ? `<a class="work-caption" href="${collectionLink(edit)}">${title}<svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 16 16 4M5 4h11v11" stroke="currentColor" stroke-width="1.25"/></svg></a>` : `<span class="work-caption">${title}</span>`}
     </div>`;
   }).join("");
@@ -733,7 +745,7 @@ export function homePage(photos: Photo[], _cols: number): string {
     </div>
     ${strip.length ? `<section class="hstrip" aria-label="Selected work">
       <div class="hstrip__head"><h2>Selected work</h2><a class="all-work" href="./portfolio.html">View all <span aria-hidden="true">→</span></a></div>
-      <div class="hstrip__grid" style="--showcase-cols:${Math.min(4, strip.length)}">${selectedWork}</div>
+      <div class="hstrip__grid" style="--showcase-cols:${stripColumns}">${selectedWork}</div>
     </section>` : ""}
     ${homeBand()}
   </section>`;

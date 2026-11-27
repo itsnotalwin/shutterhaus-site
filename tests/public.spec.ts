@@ -151,9 +151,12 @@ test('collection covers preserve the pictured faces on phones and wide screens',
     const rect = image.getBoundingClientRect();
     const css = getComputedStyle(image);
     const [x, y] = css.objectPosition.split(' ').map(percent => parseFloat(percent)/100);
-    const scale = (css.objectFit === 'contain' ? Math.min : Math.max)(rect.width/image.naturalWidth, rect.height/image.naturalHeight);
+    const padLeft = parseFloat(css.paddingLeft), padTop = parseFloat(css.paddingTop);
+    const width = rect.width - padLeft - parseFloat(css.paddingRight);
+    const height = rect.height - padTop - parseFloat(css.paddingBottom);
+    const scale = (css.objectFit === 'contain' ? Math.min : Math.max)(width/image.naturalWidth, height/image.naturalHeight);
     const w = image.naturalWidth*scale, h = image.naturalHeight*scale;
-    const left = (rect.width-w)*x, top = (rect.height-h)*y;
+    const left = padLeft+(width-w)*x, top = padTop+(height-h)*y;
     const [x1, y1, x2, y2] = bounds[id as keyof typeof bounds];
     return {id,inside: left+w*x1 >= -1 && top+h*y1 >= -1 && left+w*x2 <= rect.width+1 && top+h*y2 <= rect.height+1};
    }), bounds);
