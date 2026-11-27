@@ -72,11 +72,17 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .hero__signoff { position: relative; display: inline-block; }
 .hero__underline { position: absolute; left: .04em; bottom: -.28em; width: 54%; height: auto; display: block; overflow: visible; pointer-events: none; }
 .hero__media { min-width: 0; grid-row: 1/3; grid-column: 2; align-self: start; }
-.hero__plate { position: relative; isolation: isolate; }
-.hero__fig { position: relative; aspect-ratio: 1.1; overflow: hidden; margin: 0; background: var(--wash); }
+.hero__plate { --hero-stage-ratio: 1.1; position: relative; isolation: isolate; }
+.hero__fig { position: relative; aspect-ratio: var(--hero-stage-ratio); overflow: hidden; margin: 0; background: var(--paper); }
 .hero__fig picture, .hero__fig img, .hero__outgoing, .hero__outgoing img { display: block; width: 100%; height: 100%; }
-.hero__fig img, .hero__outgoing img { object-fit: cover; object-position: var(--focal, 50% 20%); filter: grayscale(1) contrast(1.07); }
-.hero-photo--full img { object-fit: contain; background: #191919; }
+.hero__fig picture, .hero__outgoing { background: var(--paper); }
+.hero__fig img, .hero__outgoing img { object-fit: contain; filter: grayscale(1) contrast(1.07); }
+.hero__plate .hero-photo img {
+  width: min(100%, calc(100% * var(--photo-ratio) / var(--hero-stage-ratio)));
+  margin-inline: auto;
+  object-fit: cover;
+  object-position: var(--focal);
+}
 .hero__outgoing { position: absolute; inset: 0; pointer-events: none; }
 .hero__controls { display: flex; align-items: center; gap: 4px; min-height: 46px; }
 .hero__track { flex: 1; height: 1px; margin: 0 12px; background: var(--line); }
@@ -288,7 +294,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .hero__location { display: block; }
   .page .hero__h { font-size: clamp(57px, 16.8vw, 94px); line-height: .9; }
   .hero__media { width: 100%; margin-top: 34px; padding: 0; }
-  .hero__fig { aspect-ratio: 1.2; }
+  .hero__plate { --hero-stage-ratio: 1.2; }
   .hero__info { padding-top: 6px; }
   .hero__lede { font-size: 15px; line-height: 1.48; max-width: 37ch; }
   .hero__actions { margin-top: 18px; gap: 3px 16px; }

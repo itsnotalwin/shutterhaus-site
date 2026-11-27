@@ -690,6 +690,13 @@ function cheapestTier(): { name: string; price: number } | null {
   return [...tiers].sort((a, b) => n(a) - n(b))[0]!;
 }
 
+const HERO_CROPS: Record<string, { ratio: number; position: string }> = {
+  "22-img-0239.jpg": { ratio: 1.03, position: "50% 12%" },
+  "5-img-0086.jpg": { ratio: .70, position: "50% 0%" },
+  "2-20240718114526-img-0124.jpg": { ratio: .82, position: "50% 55%" },
+  "18-img-0043.jpg": { ratio: .77, position: "50% 42%" },
+};
+
 export function homePage(photos: Photo[], _cols: number): string {
   const h = SITE.home;
   const visible = photos.filter(photo => photo.visible);
@@ -710,11 +717,9 @@ export function homePage(photos: Photo[], _cols: number): string {
     const source = seatedCrop
       ? `<source type="image/webp" sizes="${coverSizes}" srcset="${[520, 960, 1300].map(w => `./gallery/27-img-0297-cover-${w}.webp ${w}w`).join(", ")}" />`
       : pictureFor(photo.url, coverSizes, photo.width);
-    const edit = WORK_EDITS.find(edit => edit.cover === photo.filename);
-    const family = WORK_EDITS.find(edit => edit.key === "families")!;
-    const fullFrame = belongsToEdit(photo, family) && (photo.width ?? 0) > (photo.height ?? 0);
-    const position = seatedCrop || photo.filename === "22-img-0239.jpg" ? "center top" : edit?.position ?? "50% 20%";
-    return `<picture class="${fullFrame ? "hero-photo--full" : "hero-photo"}" style="--focal:${position}">${source}<img src="${escapeHtml(bestDerivative(photo.url, "jpg", photo.width))}" alt="${escapeHtml(photo.alt || photo.filename || "Featured photograph")}"
+    const crop = photo.filename ? HERO_CROPS[photo.filename] : undefined;
+    const framing = crop ? ` class="hero-photo" style="--photo-ratio:${crop.ratio};--focal:${crop.position}"` : "";
+    return `<picture${framing}>${source}<img src="${escapeHtml(bestDerivative(photo.url, "jpg", photo.width))}" alt="${escapeHtml(photo.alt || photo.filename || "Featured photograph")}"
       width="${seatedCrop ? 1300 : photo.width || 1200}" height="${seatedCrop ? 1300 : photo.height || 1200}" decoding="async" loading="eager" fetchpriority="high" /></picture>`;
   };
   const first = slides[0];

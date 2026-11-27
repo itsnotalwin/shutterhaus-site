@@ -89,7 +89,7 @@ for (const viewport of viewports) {
             await page.locator('.lb__x').click();
             await expect(opener).toBeFocused();
           }
-          await frames('Home hero','.hero__fig picture',true);
+          await frames('Home hero','.hero__fig picture',false);
         }
         if (route==='services') {
           for (const tier of ['Starter','Essential','Signature','Social']) {

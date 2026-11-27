@@ -4,7 +4,7 @@ Use the desktop Home, mobile Home / Work / Contact and brand boards supplied on 
 
 ## Home and Work
 
-Desktop leads with a three-line heading at left and a 1.1:1 photograph at right. The six-frame carousel places its count, progress line and arrows below the image on all screens. Its selected frame survives a gallery refresh. The primary cover is the windblown outdoor portrait. Its focal point preserves the crown of the head on both screen shapes. Landscape group slides show the complete frame. Each selected photograph enlarges and its separate caption opens the collection. On phones the three portraits sit above the full-width family photograph.
+Desktop leads with a three-line heading at left and a 1.1:1 photograph at right. The six-frame carousel places its count, progress line and arrows below the image on all screens. Its selected frame survives a gallery refresh. The primary cover is the windblown outdoor portrait. Four hero portraits have their own crop and focal point. The seated portrait on the steps and the family group show their full compositions. Each image is centered on the same white canvas so the arrows stay in place. Each selected photograph enlarges and its separate caption opens the collection. On phones the three portraits sit above the full-width family photograph.
 
 Selected Work uses 4:5 frames for the three individual portraits. The family photograph finishes both selections in its original proportions. On Portfolio, a Landscapes cover immediately precedes Families and opens the photographer’s visible landscape photographs in their original proportions. Work keeps its collection labels on the covers. Home keeps the captions underneath.
 
